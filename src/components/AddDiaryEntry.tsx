@@ -1,4 +1,4 @@
-// This package requires additional imports on React Native! 👇🏻
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import React, { useState, useContext } from 'react';
 import {
@@ -10,7 +10,7 @@ import {
   TextStyle,
   Pressable,
 } from 'react-native';
-import { Picker } from 'react-native-web';
+import { Picker } from '@react-native-picker/picker';
 import { Fonts, Typography } from '../styles';
 
 import { GlobalContext } from '../context/GlobalState';
@@ -56,7 +56,6 @@ export const AddDiaryEntry: React.FC = () => {
       </View>
       <View>
         <Text style={styles.diaryEntryFieldLabel}>Diary Entry Type</Text>
-        {/* This picker isn't cross-platform interoperable! 👇🏻 */}
         <Picker
           style={styles.diaryEntryFieldTextInput}
           selectedValue={diaryEntryType}
