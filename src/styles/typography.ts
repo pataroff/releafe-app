@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import { Fonts } from './';
+import * as Fonts from './fonts';
 
 export const h3 = {
   marginTop: 30,

@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
   diaryEntryBody: {
     ...Fonts.poppinsRegular[Platform.OS],
     fontSize: 16,
-    letterSpacing: 1,
     marginTop: 5,
     marginHorizontal: 0,
   } as TextStyle,

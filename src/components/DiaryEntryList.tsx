@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   container: {
     height: 125,
     width: 350,
-    padding: 0,
+    marginBottom: 40,
   },
   flatListContainer: {
     height: 125,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-    paddingVertical: 20,
+    paddingVertical: 40,
   },
   emptyListText: {
     ...Fonts.poppinsLight[Platform.OS],
