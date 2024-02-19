@@ -22,7 +22,6 @@ export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Actions
   function addDiaryEntry(diaryEntry: IDiaryEntry) {
-    console.log('Action called!');
     dispatch({
       type: 'ADD_DIARY_ENTRY',
       payload: diaryEntry,

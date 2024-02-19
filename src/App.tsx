@@ -1,7 +1,7 @@
-// import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { DiaryEntryList } from './components/DiaryEntryList';
 import { AddDiaryEntry } from './components/AddDiaryEntry';
 import { GlobalProvider } from './context/GlobalState';
@@ -21,6 +21,7 @@ export default function App() {
 
   return (
     <GlobalProvider>
+      <StatusBar />
       <View style={styles.container}>
         <DiaryEntryList />
         <AddDiaryEntry />

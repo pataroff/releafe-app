@@ -19,8 +19,11 @@ export const DiaryEntry: React.FC<{ diaryEntry: IDiaryEntry }> = ({
 
   return (
     <View style={styles.listItem}>
-      <Text style={styles.diaryEntryTitle}>{diaryEntry.title}</Text>
-      <Text style={styles.diaryEntryBody}>{diaryEntry.body}</Text>
+      <View>
+        <Text style={styles.diaryEntryTitle}>{diaryEntry.title}</Text>
+        <Text style={styles.diaryEntryBody}>{diaryEntry.body}</Text>
+      </View>
+      <Text style={styles.diaryEntryType}>{diaryEntry.type}</Text>
       <Pressable
         style={styles.deleteButton}
         onPress={() => deleteDiaryEntry(diaryEntry.id)}
@@ -38,33 +41,31 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    position: 'relative',
     marginVertical: 2,
     paddingRight: 20,
   },
   diaryEntryTitle: {
-    margin: 0,
-    fontSize: 20,
-    ...Fonts.poppinsRegular[Platform.OS],
-  } as TextStyle,
-  diaryEntryBody: {
     ...Fonts.poppinsSemiBold[Platform.OS],
     fontSize: 20,
+    margin: 0,
+  } as TextStyle,
+  diaryEntryBody: {
+    ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 16,
     letterSpacing: 1,
     marginTop: 5,
     marginHorizontal: 0,
   } as TextStyle,
-  transactionPlus: {
-    color: '#2ecc71',
-  },
-  transactionMinus: {
-    color: '#c0392b',
-  },
+  diaryEntryType: {
+    ...Fonts.poppinsLight[Platform.OS],
+    fontSize: 14,
+    marginTop: 0,
+    paddingTop: 2,
+  } as TextStyle,
   deleteButton: {
     position: 'absolute',
     right: 0,
-    paddingTop: 2,
+    paddingTop: 3,
     paddingHorizontal: 5,
   },
   deleteButtonText: {
