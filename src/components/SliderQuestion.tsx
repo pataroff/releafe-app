@@ -36,9 +36,9 @@ export const SliderQuestion: React.FC = () => {
         <Text style={styles.questionText}>
           Hoe zou je je algehele {'\n'}stemming vandaag beoordelen?
         </Text>
-        <View>
+        <View style={{ marginTop: 30 }}>
           <Slider
-            style={{ width: 310, height: 40 }}
+            style={{ width: windowWidth - 2 * 40, height: 40 }}
             value={sliderValue}
             onValueChange={setSliderValue}
             minimumValue={1}
@@ -59,7 +59,7 @@ export const SliderQuestion: React.FC = () => {
         </Pressable>
         <View style={styles.progressBar}>
           <ProgressBar
-            progress={0.5}
+            progress={0.1}
             color='black'
             style={{
               backgroundColor: '#dedede',
@@ -76,7 +76,7 @@ export const SliderQuestion: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     width: windowWidth - 2 * 20,
-    height: 350,
+    height: 380,
     borderWidth: 2,
     borderRadius: 30,
     borderColor: 'black',
@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
   closeButton: {
     alignSelf: 'flex-end',
     marginTop: 20,
-    marginRight: 8,
   },
   questionText: {
     ...Fonts.poppinsMedium[Platform.OS],
