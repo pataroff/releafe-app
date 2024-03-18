@@ -1,16 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
+
 import { StyleSheet, View } from 'react-native';
 
 import { Header } from '../components/Header';
-import { DiaryGreeting } from '../components/DiaryGreeting';
+import { SliderQuestion } from '../components/SliderQuestion';
 
-export const DiaryScreen: React.FC = ({ navigation }) => {
+export const DiaryScreen2: React.FC = () => {
   return (
     <>
       <StatusBar />
       <View style={styles.container}>
         <Header />
-        <DiaryGreeting navigation={navigation} />
+        <SliderQuestion />
       </View>
     </>
   );

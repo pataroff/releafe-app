@@ -1,11 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home, BookOpen, Box, MessageSquare } from 'react-native-feather';
 
+import { DiaryStack } from './DiaryStack';
+
 // All icon packs are available by default in Expo 👇🏻
 // import Feather from '@expo/vector-icons/Feather';
 
 import { HomeScreen } from '../screens/HomeScreen';
-import { DiaryScreen } from '../screens/DiaryScreen';
 import { ToolkitScreen } from '../screens/ToolkitScreen';
 import { ChatScreen } from '../screens/ChatScreen';
 
@@ -14,6 +15,7 @@ const Tab = createBottomTabNavigator();
 export const TabNavigator = () => {
   return (
     <Tab.Navigator
+      initialRouteName='Diary'
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
@@ -44,7 +46,7 @@ export const TabNavigator = () => {
       />
       <Tab.Screen
         name='Diary'
-        component={DiaryScreen}
+        component={DiaryStack}
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (

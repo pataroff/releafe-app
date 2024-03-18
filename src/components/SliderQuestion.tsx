@@ -57,15 +57,11 @@ export const SliderQuestion: React.FC = () => {
         >
           <Text style={styles.continueButtonText}>Ga verder</Text>
         </Pressable>
-        <View style={styles.progressBar}>
+        <View style={styles.progressBarContainer}>
           <ProgressBar
             progress={0.1}
             color='black'
-            style={{
-              backgroundColor: '#dedede',
-              borderRadius: 15,
-              height: 10,
-            }}
+            style={styles.progressBar}
           />
         </View>
       </View>
@@ -75,6 +71,7 @@ export const SliderQuestion: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 80,
     width: windowWidth - 2 * 20,
     height: 380,
     borderWidth: 2,
@@ -115,7 +112,12 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsItalic[Platform.OS],
     fontStyle: 'italic',
   } as TextStyle,
-  progressBar: {
+  progressBarContainer: {
     marginTop: 50,
+  },
+  progressBar: {
+    backgroundColor: '#dedede',
+    borderRadius: 15,
+    height: 10,
   },
 });
