@@ -40,12 +40,54 @@ export const poppinsRegular = {
   },
 };
 
+export const poppinsItalic = {
+  ios: {
+    fontFamily: 'Poppins-Italic',
+  },
+  android: {
+    fontFamily: 'Poppins-Italic',
+  },
+  web: {
+    fontFamily: 'Poppins',
+    fontWeight: '400',
+  },
+  windows: {
+    fontFamily: 'Poppins',
+    fontWeight: '400',
+  },
+  macos: {
+    fontFamily: 'Poppins',
+    fontWeight: '400',
+  },
+};
+
 export const poppinsMedium = {
   ios: {
     fontFamily: 'Poppins-Medium',
   },
   android: {
     fontFamily: 'Poppins-Medium',
+  },
+  web: {
+    fontFamily: 'Poppins',
+    fontWeight: '500',
+  },
+  windows: {
+    fontFamily: 'Poppins',
+    fontWeight: '500',
+  },
+  macos: {
+    fontFamily: 'Poppins',
+    fontWeight: '500',
+  },
+};
+
+export const poppinsMediumItalic = {
+  ios: {
+    fontFamily: 'Poppins-MediumItalic',
+  },
+  android: {
+    fontFamily: 'Poppins-MediumItalic',
   },
   web: {
     fontFamily: 'Poppins',

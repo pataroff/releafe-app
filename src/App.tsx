@@ -1,16 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 
-import { StyleSheet, View } from 'react-native';
-import { DiaryEntryList } from './components/DiaryEntryList';
-import { AddDiaryEntry } from './components/AddDiaryEntry';
 import { GlobalProvider } from './context/GlobalState';
+import { PaperProvider } from 'react-native-paper';
+import { NavigationContainer } from '@react-navigation/native';
+
+import { TabNavigator } from './navigation/TabNavigator';
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
     'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
     'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
+    'Poppins-Italic': require('../assets/fonts/Poppins-Italic.ttf'),
     'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
+    'Poppins-MediumItalic': require('../assets/fonts/Poppins-MediumItalic.ttf'),
     'Poppins-SemiBold': require('../assets/fonts/Poppins-SemiBold.ttf'),
     'Poppins-Bold': require('../assets/fonts/Poppins-Bold.ttf'),
   });
@@ -21,20 +23,11 @@ export default function App() {
 
   return (
     <GlobalProvider>
-      <StatusBar />
-      <View style={styles.container}>
-        <DiaryEntryList />
-        <AddDiaryEntry />
-      </View>
+      <PaperProvider>
+        <NavigationContainer>
+          <TabNavigator />
+        </NavigationContainer>
+      </PaperProvider>
     </GlobalProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
