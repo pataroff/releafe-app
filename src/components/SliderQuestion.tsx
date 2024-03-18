@@ -14,10 +14,13 @@ import { AntDesign } from '@expo/vector-icons';
 
 import Slider from '@react-native-community/slider';
 import { ProgressBar } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
 export const SliderQuestion: React.FC = () => {
+  const navigation = useNavigation();
+
   const [sliderValue, setSliderValue] = useState(1);
 
   return (
@@ -30,7 +33,10 @@ export const SliderQuestion: React.FC = () => {
           paddingHorizontal: 20,
         }}
       >
-        <Pressable style={styles.closeButton}>
+        <Pressable
+          onPress={() => navigation.navigate('Diary1')}
+          style={styles.closeButton}
+        >
           <AntDesign name='closecircleo' size={30} color='black' />
         </Pressable>
         <Text style={styles.questionText}>

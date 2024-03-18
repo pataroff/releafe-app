@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import {
   View,
   Text,
@@ -10,12 +9,16 @@ import {
   Platform,
   TextStyle,
 } from 'react-native';
-import { Fonts, Typography } from '../styles';
+import { Fonts } from '../styles';
+
+import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export const DiaryGreeting: React.FC = ({ navigation }) => {
+export const DiaryGreeting: React.FC = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <View
@@ -50,7 +53,7 @@ export const DiaryGreeting: React.FC = ({ navigation }) => {
             })}
           </Text>
         </Text>
-        <Text style={[styles.diaryDescriptionText, { fontSize: 16 }]}>
+        <Text style={styles.diaryDescriptionText}>
           Laten we beginnen met het vastleggen van jouw reis.
         </Text>
         <Pressable
@@ -89,6 +92,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   dateLabel: {
     ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 16,
   } as TextStyle,
   dateText: {
     ...Fonts.poppinsSemiBold[Platform.OS],

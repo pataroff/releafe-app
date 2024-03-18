@@ -1,3 +1,8 @@
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
+
 export interface IDiaryEntry {
   id: string;
   type: string;
@@ -19,3 +24,10 @@ export interface IStore {
   addDiaryEntry(diaryEntry: IDiaryEntry): void;
   deleteDiaryEntry(id: string): void;
 }
+
+export type RootStackParamList = {
+  Home: undefined;
+  Diary: undefined;
+  Toolkit: undefined;
+  Chat: undefined;
+};

@@ -4,13 +4,13 @@ import { StyleSheet, View } from 'react-native';
 import { Header } from '../components/Header';
 import { DiaryGreeting } from '../components/DiaryGreeting';
 
-export const DiaryScreen: React.FC = ({ navigation }) => {
+export const DiaryScreen: React.FC = () => {
   return (
     <>
       <StatusBar />
       <View style={styles.container}>
         <Header />
-        <DiaryGreeting navigation={navigation} />
+        <DiaryGreeting />
       </View>
     </>
   );
