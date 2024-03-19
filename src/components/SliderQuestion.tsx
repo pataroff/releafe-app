@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import {
   View,
@@ -9,7 +9,7 @@ import {
   Platform,
   TextStyle,
 } from 'react-native';
-import { Fonts, Typography } from '../styles';
+import { Fonts } from '../styles';
 import { AntDesign } from '@expo/vector-icons';
 
 import Slider from '@react-native-community/slider';
@@ -18,10 +18,38 @@ import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
-export const SliderQuestion: React.FC = () => {
+export const SliderQuestion: React.FC = ({ questions }) => {
   const navigation = useNavigation();
 
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [sliderValue, setSliderValue] = useState(1);
+  const [progressValue, setProgressValue] = useState(0);
+
+  const sliderValuesRef = useRef(new Map());
+
+  const handlePrevious = () => {
+    setQuestionIndex(questionIndex - 1);
+    setProgressValue(progressValue - 0.167);
+    setSliderValue(1);
+  };
+
+  const handleNext = () => {
+    sliderValuesRef.current.set(questionIndex, Math.floor(sliderValue));
+    if (questionIndex < questions.length - 1) {
+      setQuestionIndex(questionIndex + 1);
+      setProgressValue(progressValue + 0.167);
+      setSliderValue(1);
+    } else {
+      navigation.navigate('Diary3');
+      printMap();
+    }
+  };
+
+  function printMap() {
+    sliderValuesRef.current.forEach((value, key) => {
+      console.log(`Question Index: ${key}, Slider Value: ${value}`);
+    });
+  }
 
   return (
     <View style={styles.container}>
@@ -39,14 +67,14 @@ export const SliderQuestion: React.FC = () => {
         >
           <AntDesign name='closecircleo' size={30} color='black' />
         </Pressable>
-        <Text style={styles.questionText}>
-          Hoe zou je je algehele {'\n'}stemming vandaag beoordelen?
-        </Text>
+        <View style={styles.questionContainer}>
+          <Text style={styles.questionText}>{questions[questionIndex]}</Text>
+        </View>
         <View style={{ marginTop: 30 }}>
           <Slider
             style={{ width: windowWidth - 2 * 40, height: 40 }}
             value={sliderValue}
-            onValueChange={setSliderValue}
+            onValueChange={(value) => setSliderValue(value)}
             minimumValue={1}
             maximumValue={10}
             minimumTrackTintColor='#000000'
@@ -57,15 +85,26 @@ export const SliderQuestion: React.FC = () => {
           <Text style={styles.optionsText}>Heel slecht</Text>
           <Text style={styles.optionsText}>Heel goed</Text>
         </View>
-        <Pressable
-          onPress={() => console.log(sliderValue)}
-          style={styles.continueButton}
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: questionIndex >= 1 ? 'space-between' : 'flex-end',
+          }}
         >
-          <Text style={styles.continueButtonText}>Ga verder</Text>
-        </Pressable>
+          {questionIndex >= 1 && (
+            <Pressable onPress={handlePrevious} style={styles.button}>
+              <Text style={styles.buttonText}>Ga terug</Text>
+            </Pressable>
+          )}
+          <Pressable onPress={handleNext} style={styles.button}>
+            <Text style={styles.buttonText}>Ga verder</Text>
+          </Pressable>
+        </View>
         <View style={styles.progressBarContainer}>
           <ProgressBar
-            progress={0.1}
+            progress={progressValue}
             color='black'
             style={styles.progressBar}
           />
@@ -88,10 +127,15 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginTop: 20,
   },
+  questionContainer: {
+    paddingVertical: 20,
+  },
   questionText: {
+    position: 'absolute',
+    left: 5,
+    right: 5,
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 18,
-    alignSelf: 'center',
   } as TextStyle,
   optionsContainer: {
     display: 'flex',
@@ -104,7 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontStyle: 'italic',
   } as TextStyle,
-  continueButton: {
+  button: {
     width: 130,
     alignSelf: 'flex-end',
     alignItems: 'center',
@@ -114,7 +158,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     marginTop: 20,
   },
-  continueButtonText: {
+  buttonText: {
     ...Fonts.poppinsItalic[Platform.OS],
     fontStyle: 'italic',
   } as TextStyle,

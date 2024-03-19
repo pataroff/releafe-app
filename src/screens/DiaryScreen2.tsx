@@ -11,7 +11,16 @@ export const DiaryScreen2: React.FC = () => {
       <StatusBar />
       <View style={styles.container}>
         <Header />
-        <SliderQuestion />
+        <SliderQuestion
+          questions={[
+            'Hoe zou je je algehele stemming vandaag beoordelen?',
+            'Hoe angstig voel je je op dit moment?',
+            'Hoeveel stress heb je vandaag ervaren?',
+            'Hoeveel energie heb je vandaag?',
+            'Hoe is je focus en concentratie?',
+            'Hoe goed heb je geslapen?',
+          ]}
+        />
       </View>
     </>
   );
