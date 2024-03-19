@@ -13,7 +13,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import { Fonts, Typography } from '../styles';
 
-import { GlobalContext } from '../context/GlobalState';
+import { GlobalContext } from '../context/DiaryContext';
 
 export const AddDiaryEntry: React.FC = () => {
   const [diaryEntryTitle, setDiaryEntryTitle] = useState('');

@@ -10,7 +10,7 @@ import {
 import { Fonts } from '../styles';
 import { IDiaryEntry } from '../types';
 
-import { GlobalContext } from '../context/GlobalState';
+import { GlobalContext } from '../context/DiaryContext';
 
 export const DiaryEntry: React.FC<{ diaryEntry: IDiaryEntry }> = ({
   diaryEntry,

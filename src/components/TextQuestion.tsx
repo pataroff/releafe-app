@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useState, useContext } from 'react';
+import { DiaryContext } from '../context/DiaryContext';
 
 import {
   View,
@@ -19,7 +20,28 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export const TextQuestion: React.FC = ({ questions }) => {
+  const { addTextValue, createDiaryEntry } = useContext(DiaryContext);
   const navigation = useNavigation();
+
+  const [textValues, setTextValues] = useState<Map<number, string>>(new Map());
+
+  const handleTextChange = (index: number, value: string) => {
+    setTextValues((prev) => {
+      const newValues = new Map(prev);
+      newValues.set(index, value);
+      return newValues;
+    });
+  };
+
+  const handleFinish = () => {
+    // Assuming all questions have been answered
+    textValues.forEach((value, index) => {
+      addTextValue(index, value);
+    });
+
+    createDiaryEntry(textValues);
+    navigation.navigate('Diary1');
+  };
 
   return (
     <View style={styles.container}>
@@ -37,6 +59,8 @@ export const TextQuestion: React.FC = ({ questions }) => {
             </View>
             <TextInput
               style={styles.diaryEntryFieldTextInput}
+              value={textValues.get(index) ?? ''}
+              onChangeText={(value) => handleTextChange(index, value)}
               multiline={true}
               placeholder='Schrijf het hier op...'
               placeholderTextColor='black'
@@ -44,10 +68,7 @@ export const TextQuestion: React.FC = ({ questions }) => {
           </View>
         );
       })}
-      <Pressable
-        onPress={() => navigation.navigate('Diary1')}
-        style={styles.button}
-      >
+      <Pressable onPress={handleFinish} style={styles.button}>
         <Text style={styles.buttonText}>Afronden</Text>
       </Pressable>
     </View>

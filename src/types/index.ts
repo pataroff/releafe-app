@@ -5,24 +5,15 @@ import {
 
 export interface IDiaryEntry {
   id: string;
-  type: string;
-  title: string;
-  body: string;
+  sliderValues: Map<number, number>;
+  textValues: Map<number, string>;
 }
 
-export interface IState {
+export interface IDiaryContext {
   diaryEntries: IDiaryEntry[];
-}
-
-export interface IAction {
-  type: string;
-  payload: any;
-}
-
-export interface IStore {
-  state: IState;
-  addDiaryEntry(diaryEntry: IDiaryEntry): void;
-  deleteDiaryEntry(id: string): void;
+  addSliderValue: (questionIndex: number, value: number) => void;
+  addTextValue: (questionIndex: number, value: string) => void;
+  createDiaryEntry: () => void;
 }
 
 export type RootStackParamList = {

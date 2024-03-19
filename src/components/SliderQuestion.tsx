@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useContext } from 'react';
+import { DiaryContext } from '../context/DiaryContext';
 
 import {
   View,
@@ -19,13 +20,13 @@ import { useNavigation } from '@react-navigation/native';
 const windowWidth = Dimensions.get('window').width;
 
 export const SliderQuestion: React.FC = ({ questions }) => {
+  const { addSliderValue } = useContext(DiaryContext);
+
   const navigation = useNavigation();
 
   const [questionIndex, setQuestionIndex] = useState(0);
   const [sliderValue, setSliderValue] = useState(1);
   const [progressValue, setProgressValue] = useState(0);
-
-  const sliderValuesRef = useRef(new Map());
 
   const handlePrevious = () => {
     setQuestionIndex(questionIndex - 1);
@@ -34,22 +35,16 @@ export const SliderQuestion: React.FC = ({ questions }) => {
   };
 
   const handleNext = () => {
-    sliderValuesRef.current.set(questionIndex, Math.floor(sliderValue));
+    addSliderValue(questionIndex, Math.floor(sliderValue));
+    // sliderValuesRef.current.set(questionIndex, Math.floor(sliderValue));
     if (questionIndex < questions.length - 1) {
       setQuestionIndex(questionIndex + 1);
       setProgressValue(progressValue + 0.167);
       setSliderValue(1);
     } else {
       navigation.navigate('Diary3');
-      printMap();
     }
   };
-
-  function printMap() {
-    sliderValuesRef.current.forEach((value, key) => {
-      console.log(`Question Index: ${key}, Slider Value: ${value}`);
-    });
-  }
 
   return (
     <View style={styles.container}>

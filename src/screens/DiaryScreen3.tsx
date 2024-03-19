@@ -13,6 +13,7 @@ export const DiaryScreen3: React.FC = () => {
         contentContainerStyle={{
           alignItems: 'center',
           justifyContent: 'center',
+          backgroundColor: '#ffffff',
         }}
         // Add any additional styles here if needed
         style={{ flex: 1 }}

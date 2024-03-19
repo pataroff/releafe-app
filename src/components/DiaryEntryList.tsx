@@ -10,7 +10,7 @@ import {
 import { Fonts, Typography } from '../styles';
 import { DiaryEntry } from './DiaryEntry';
 
-import { GlobalContext } from '../context/GlobalState';
+import { GlobalContext } from '../context/DiaryContext';
 
 export const DiaryEntryList: React.FC = () => {
   const { state } = useContext(GlobalContext);

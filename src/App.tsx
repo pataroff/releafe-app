@@ -1,6 +1,6 @@
 import { useFonts } from 'expo-font';
 
-import { GlobalProvider } from './context/GlobalState';
+import { DiaryProvider } from './context/DiaryContext';
 import { PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -22,12 +22,12 @@ export default function App() {
   }
 
   return (
-    <GlobalProvider>
+    <DiaryProvider>
       <PaperProvider>
         <NavigationContainer>
           <TabNavigator />
         </NavigationContainer>
       </PaperProvider>
-    </GlobalProvider>
+    </DiaryProvider>
   );
 }
