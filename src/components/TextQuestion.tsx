@@ -57,7 +57,7 @@ export const TextQuestion: React.FC = ({ questions }) => {
               <Text style={styles.questionText}>{questions[index]}</Text>
             </View>
             <TextInput
-              style={styles.diaryEntryFieldTextInput}
+              style={[styles.diaryEntryFieldTextInput]}
               value={textValues.get(index) ?? ''}
               onChangeText={(value) => handleTextChange(index, value)}
               multiline={true}

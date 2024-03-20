@@ -33,8 +33,8 @@ export const DiaryFarewell: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           rowGap: 10,
-          paddingHorizontal: 20,
-          paddingTop: 20,
+          paddingHorizontal: 25,
+          paddingTop: 25,
         }}
       >
         <Text style={styles.greetingText}>
@@ -78,7 +78,6 @@ const styles = StyleSheet.create({
   greetingText: {
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 20,
-    alignSelf: 'center',
   } as TextStyle,
   diaryDescriptionText: {
     ...Fonts.poppinsMedium[Platform.OS],
@@ -101,7 +100,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   dashboardButton: {
-    width: 280,
+    width: 270,
     alignSelf: 'center',
     alignItems: 'center',
     borderWidth: 2,
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   dashboardButtonText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.poppinsItalic[Platform.OS],
     fontSize: 12,
   } as TextStyle,
 });
