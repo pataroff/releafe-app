@@ -38,7 +38,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
-  const createDiaryEntry = (textValues) => {
+  const createDiaryEntry = () => {
     const newEntry = {
       id: uuidv4(),
       sliderValues: sliderValues,

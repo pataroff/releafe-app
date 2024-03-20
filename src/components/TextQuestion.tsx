@@ -39,8 +39,7 @@ export const TextQuestion: React.FC = ({ questions }) => {
       addTextValue(index, value);
     });
 
-    createDiaryEntry(textValues);
-    navigation.navigate('Diary1');
+    navigation.navigate('Diary4');
   };
 
   return (
