@@ -53,7 +53,7 @@ export const DiaryFarewell: React.FC = () => {
         </Text>
 
         <Pressable
-          onPress={() => navigation.navigate('Diary1')}
+          onPress={() => navigation.navigate('Dashboard')}
           style={styles.dashboardButton}
         >
           <Text style={styles.dashboardButtonText}>

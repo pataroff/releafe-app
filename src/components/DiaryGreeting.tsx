@@ -62,7 +62,7 @@ export const DiaryGreeting: React.FC = () => {
         >
           <Text>Button</Text>
         </Pressable>
-        <Pressable>
+        <Pressable onPress={() => navigation.navigate('Dashboard')}>
           <Text style={styles.dashboardButtonText}>
             Ga gelijk door naar het persoonlijk dashboard
           </Text>
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
   greetingText: {
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 20,
-    alignSelf: 'center',
   } as TextStyle,
   diaryDescriptionText: {
     ...Fonts.poppinsMedium[Platform.OS],

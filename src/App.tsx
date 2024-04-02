@@ -6,6 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import { TabNavigator } from './navigation/TabNavigator';
 
+import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
+
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
     'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
