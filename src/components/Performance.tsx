@@ -2,7 +2,6 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   Platform,
   TextStyle,
   Dimensions,
@@ -10,8 +9,7 @@ import {
 
 import { Fonts } from '../styles';
 
-import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
-
+import { CustomPicker } from './CustomPicker';
 import { PerformanceChart } from './PerformanceChart';
 import { PerformanceCalendar } from './PerformanceCalendar';
 
@@ -21,46 +19,31 @@ const windowHeight = Dimensions.get('window').height;
 export const Performance: React.FC = () => {
   return (
     <>
-      <ScrollView
-        style={{
-          position: 'absolute',
-          top: 200,
-          width: windowWidth - 2 * 25,
-          height: windowHeight,
-          paddingTop: 25,
-          paddingHorizontal: 10,
-        }}
-      >
-        {/* Prestaties */}
-        <View style={{ rowGap: 5 }}>
-          <Text style={styles.performanceTitleText}>Prestaties</Text>
-          <Text style={styles.performanceDescriptionText}>
-            Hier zie je een overzicht van jouw prestaties over de afgelopen
-            dagen.
-          </Text>
-        </View>
-        {/* Chart */}
-        <View style={{ marginTop: 20 }}>
-          {/* <WithSkiaWeb
-            // import() uses the default export of MySkiaComponent.tsx
-            getComponent={() => import('../components/PerformanceChart')}
-            fallback={<Text>Loading Skia...</Text>}
-          /> */}
-          <PerformanceChart />
-        </View>
-        {/* Calendar */}
+      <View style={styles.container}>
+        <Text style={styles.performanceTitleText}>Prestaties</Text>
+        <Text style={styles.performanceDescriptionText}>
+          Hier zie je een overzicht van jouw prestaties over de afgelopen dagen.
+        </Text>
+        <CustomPicker />
+        <PerformanceChart />
+        <Text style={styles.calendarTitleText}>Kalender</Text>
+        <Text style={styles.calendarDescriptionText}>
+          Hier vindt je een overzicht van jouw data per dag en over de hele
+          maand.
+        </Text>
         <PerformanceCalendar />
-      </ScrollView>
+      </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    top: 220,
+    width: windowWidth - 2 * 25,
+    minHeight: windowHeight + 200,
+    paddingTop: 25,
+    paddingHorizontal: 10,
   },
   performanceTitleText: {
     ...Fonts.poppinsMedium[Platform.OS],
@@ -68,5 +51,14 @@ const styles = StyleSheet.create({
   } as TextStyle,
   performanceDescriptionText: {
     ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 14,
+  } as TextStyle,
+  calendarTitleText: {
+    ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 20,
+  } as TextStyle,
+  calendarDescriptionText: {
+    ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 14,
   } as TextStyle,
 });

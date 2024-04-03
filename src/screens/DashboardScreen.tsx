@@ -18,10 +18,19 @@ export const DashboardScreen: React.FC = () => {
   return (
     <>
       <StatusBar />
-      <View style={styles.container}>
+      <ScrollView
+        // Apply layout styles here
+        contentContainerStyle={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#ffffff',
+        }}
+        // Add any additional styles here if needed
+        style={{ flex: 1 }}
+      >
         <Header />
         <Performance />
-      </View>
+      </ScrollView>
     </>
   );
 };

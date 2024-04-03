@@ -14,7 +14,12 @@ const ToolTip = ({
   x: SharedValue<number>;
   y: SharedValue<number>;
 }) => {
-  return <Circle cx={x} cy={y} r={5} color='black' />;
+  return (
+    <>
+      <Circle cx={x} cy={y} r={6} color='black' />
+      <Circle cx={x} cy={y} r={5} color='gray' />
+    </>
+  );
 };
 
 // Mock data
@@ -28,7 +33,7 @@ export const PerformanceChart = () => {
   const { state, isActive } = useChartPressState({ x: 0, y: { highTmp: 0 } });
 
   return (
-    <View style={{ height: 200 }}>
+    <View style={{ height: 250, marginVertical: 20 }}>
       <CartesianChart
         data={DATA}
         xKey='day'
