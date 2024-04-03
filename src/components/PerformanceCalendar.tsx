@@ -60,7 +60,7 @@ export const PerformanceCalendar = () => {
           borderWidth: 2,
           borderColor: 'black',
           borderRadius: 30,
-          height: 320,
+          height: 350,
         }}
         headerStyle={{ marginBottom: 15 }}
         theme={{
@@ -81,6 +81,7 @@ export const PerformanceCalendar = () => {
         }}
         hideDayNames={true}
         // hideArrows={true}
+        // hideExtraDays={true}
         renderArrow={(direction) =>
           direction === 'left' ? (
             <ChevronLeft color='black' style={{ marginLeft: 50 }} />

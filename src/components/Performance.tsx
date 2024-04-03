@@ -25,6 +25,21 @@ export const Performance: React.FC = () => {
           Hier zie je een overzicht van jouw prestaties over de afgelopen dagen.
         </Text>
         <CustomPicker />
+        {/* Wekelijks Placeholder */}
+        <View
+          style={{
+            marginTop: 20,
+            borderWidth: 2,
+            borderRadius: 15,
+            alignSelf: 'flex-start',
+            paddingHorizontal: 35,
+            paddingVertical: 4,
+          }}
+        >
+          <Text style={{ ...Fonts.poppinsMedium[Platform.OS] } as TextStyle}>
+            Wekelijks
+          </Text>
+        </View>
         <PerformanceChart />
         <Text style={styles.calendarTitleText}>Kalender</Text>
         <Text style={styles.calendarDescriptionText}>
@@ -39,9 +54,9 @@ export const Performance: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    top: 220,
+    top: 200,
     width: windowWidth - 2 * 25,
-    minHeight: windowHeight + 200,
+    minHeight: windowHeight + 350,
     paddingTop: 25,
     paddingHorizontal: 10,
   },

@@ -11,19 +11,57 @@ import {
 import { Fonts } from '../styles';
 import { ChevronLeft, ChevronRight } from 'react-native-feather';
 
+const options = [
+  'Algehele stemming',
+  'Angst',
+  'Stress',
+  'Energie',
+  'Focus en concentratie',
+  'Slaap',
+];
+
 export const CustomPicker: React.FC = () => {
-  const [selected, setSelected] = useState('Angst');
+  const [optionsIndex, setOptionsIndex] = useState(1);
+  const [selected, setSelected] = useState(options[optionsIndex]);
+
+  const handlePrev = () => {
+    if (optionsIndex > 0) {
+      setOptionsIndex(optionsIndex - 1);
+      setSelected(options[optionsIndex - 1]);
+    }
+  };
+
+  const handleNext = () => {
+    if (optionsIndex < options.length - 1) {
+      setOptionsIndex(optionsIndex + 1);
+      setSelected(options[optionsIndex + 1]);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Pressable>
-        <ChevronLeft color='black' />
+      <Pressable
+        disabled={optionsIndex === 0 ? true : false}
+        onPress={() => handlePrev()}
+      >
+        {optionsIndex === 0 ? (
+          <ChevronLeft color='#dedede' />
+        ) : (
+          <ChevronLeft color='black' />
+        )}
       </Pressable>
       <View style={styles.selectedContainer}>
         <Text style={styles.selectedText}>{selected}</Text>
       </View>
-      <Pressable>
-        <ChevronRight color='black' />
+      <Pressable
+        disabled={optionsIndex === options.length - 1 ? true : false}
+        onPress={() => handleNext()}
+      >
+        {optionsIndex === options.length - 1 ? (
+          <ChevronRight color='#dedede' />
+        ) : (
+          <ChevronRight color='black' />
+        )}
       </Pressable>
     </View>
   );
