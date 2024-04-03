@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Modal } from 'react-native';
 
 import { Header } from '../components/Header';
 import { SliderQuestion } from '../components/SliderQuestion';

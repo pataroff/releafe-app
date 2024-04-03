@@ -9,6 +9,7 @@ import {
   Dimensions,
   Platform,
   TextStyle,
+  Modal,
 } from 'react-native';
 import { Fonts } from '../styles';
 import { AntDesign } from '@expo/vector-icons';
@@ -27,6 +28,8 @@ export const SliderQuestion: React.FC = ({ questions }) => {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [sliderValue, setSliderValue] = useState(1);
   const [progressValue, setProgressValue] = useState(0);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handlePrevious = () => {
     setQuestionIndex(questionIndex - 1);
@@ -48,6 +51,47 @@ export const SliderQuestion: React.FC = ({ questions }) => {
 
   return (
     <View style={styles.container}>
+      <Modal
+        animationType='none'
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(!modalVisible)}
+      >
+        <View style={styles.modalContainer}>
+          <View>
+            <Text style={styles.modalTitleText}>
+              Stoppen met invullen dagboek
+            </Text>
+            <Text style={styles.modalDescriptionText}>
+              Je staat op het punt om het dagboek af te sluiten.
+            </Text>
+            <View style={{ rowGap: 10, marginTop: 20 }}>
+              <Pressable
+                style={styles.saveAndCloseButton}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.saveAndCloseText}>
+                  Opslaan en afsluiten
+                </Text>
+              </Pressable>
+              <Pressable
+                style={styles.dontSaveAndCloseButton}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.dontSaveAndCloseText}>
+                  Niet opslaan en afsluiten
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+          <Pressable
+            style={styles.cancelButton}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
+            <Text style={styles.cancelButtonText}>Annuleren</Text>
+          </Pressable>
+        </View>
+      </Modal>
       <View
         style={{
           display: 'flex',
@@ -57,7 +101,7 @@ export const SliderQuestion: React.FC = ({ questions }) => {
         }}
       >
         <Pressable
-          onPress={() => navigation.navigate('Diary1')}
+          onPress={() => setModalVisible(true)}
           style={styles.closeButton}
         >
           <AntDesign name='closecircleo' size={30} color='black' />
@@ -165,4 +209,67 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     height: 10,
   },
+  modalContainer: {
+    position: 'absolute',
+    alignSelf: 'center',
+    top: 315,
+    borderWidth: 2,
+    borderRadius: 30,
+    height: 300,
+    width: windowWidth - 2 * 10,
+    backgroundColor: 'white',
+    paddingHorizontal: 25,
+    paddingVertical: 25,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  modalTitleText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 18,
+  } as TextStyle,
+  modalDescriptionText: {
+    ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 14,
+  } as TextStyle,
+  saveAndCloseButton: {
+    borderWidth: 2,
+    borderRadius: 30,
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    width: 220,
+    paddingVertical: 4,
+    backgroundColor: 'black',
+  },
+
+  dontSaveAndCloseButton: {
+    borderWidth: 2,
+    borderRadius: 30,
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    width: 220,
+    paddingVertical: 4,
+    backgroundColor: 'white',
+  },
+  saveAndCloseText: {
+    ...Fonts.poppinsItalic[Platform.OS],
+    fontStyle: 'italic',
+    color: 'white',
+  } as TextStyle,
+  dontSaveAndCloseText: {
+    ...Fonts.poppinsItalic[Platform.OS],
+    fontStyle: 'italic',
+  } as TextStyle,
+  cancelButton: {
+    borderWidth: 2,
+    borderRadius: 30,
+    alignItems: 'center',
+    width: 150,
+    paddingVertical: 5,
+    backgroundColor: 'white',
+  },
+  cancelButtonText: {
+    ...Fonts.poppinsItalic[Platform.OS],
+    fontStyle: 'italic',
+  } as TextStyle,
 });
