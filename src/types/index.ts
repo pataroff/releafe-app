@@ -11,7 +11,10 @@ export interface IDiaryEntry {
 
 export interface IDiaryContext {
   diaryEntries: IDiaryEntry[];
+  sliderQuestionIndex: number;
+  setSliderQuestionIndex: React.Dispatch<React.SetStateAction<number>>;
   addSliderValue: (questionIndex: number, value: number) => void;
+  resetSliderValues: () => void;
   addTextValue: (questionIndex: number, value: string) => void;
   createDiaryEntry: () => void;
 }

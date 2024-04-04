@@ -21,27 +21,41 @@ import { useNavigation } from '@react-navigation/native';
 const windowWidth = Dimensions.get('window').width;
 
 export const SliderQuestion: React.FC = ({ questions }) => {
-  const { addSliderValue } = useContext(DiaryContext);
+  const {
+    addSliderValue,
+    resetSliderValues,
+    sliderQuestionIndex,
+    setSliderQuestionIndex,
+  } = useContext(DiaryContext);
 
   const navigation = useNavigation();
 
-  const [questionIndex, setQuestionIndex] = useState(0);
   const [sliderValue, setSliderValue] = useState(1);
   const [progressValue, setProgressValue] = useState(0);
 
   const [modalVisible, setModalVisible] = useState(false);
 
+  const handleSaveAndClose = () => {
+    navigation.navigate('Diary1');
+  };
+
+  const handleDontSaveAndClose = () => {
+    setSliderQuestionIndex(0);
+    resetSliderValues();
+    navigation.navigate('Diary1');
+  };
+
   const handlePrevious = () => {
-    setQuestionIndex(questionIndex - 1);
+    setSliderQuestionIndex(sliderQuestionIndex - 1);
     setProgressValue(progressValue - 0.167);
     setSliderValue(1);
   };
 
   const handleNext = () => {
-    addSliderValue(questionIndex, Math.floor(sliderValue));
+    addSliderValue(sliderQuestionIndex, Math.floor(sliderValue));
     // sliderValuesRef.current.set(questionIndex, Math.floor(sliderValue));
-    if (questionIndex < questions.length - 1) {
-      setQuestionIndex(questionIndex + 1);
+    if (sliderQuestionIndex < questions.length - 1) {
+      setSliderQuestionIndex(sliderQuestionIndex + 1);
       setProgressValue(progressValue + 0.167);
       setSliderValue(1);
     } else {
@@ -68,7 +82,7 @@ export const SliderQuestion: React.FC = ({ questions }) => {
             <View style={{ rowGap: 10, marginTop: 20 }}>
               <Pressable
                 style={styles.saveAndCloseButton}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={() => handleSaveAndClose()}
               >
                 <Text style={styles.saveAndCloseText}>
                   Opslaan en afsluiten
@@ -76,7 +90,7 @@ export const SliderQuestion: React.FC = ({ questions }) => {
               </Pressable>
               <Pressable
                 style={styles.dontSaveAndCloseButton}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={() => handleDontSaveAndClose()}
               >
                 <Text style={styles.dontSaveAndCloseText}>
                   Niet opslaan en afsluiten
@@ -107,7 +121,9 @@ export const SliderQuestion: React.FC = ({ questions }) => {
           <AntDesign name='closecircleo' size={30} color='black' />
         </Pressable>
         <View style={styles.questionContainer}>
-          <Text style={styles.questionText}>{questions[questionIndex]}</Text>
+          <Text style={styles.questionText}>
+            {questions[sliderQuestionIndex]}
+          </Text>
         </View>
         <View style={{ marginTop: 30 }}>
           <Slider
@@ -129,10 +145,11 @@ export const SliderQuestion: React.FC = ({ questions }) => {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: questionIndex >= 1 ? 'space-between' : 'flex-end',
+            justifyContent:
+              sliderQuestionIndex >= 1 ? 'space-between' : 'flex-end',
           }}
         >
-          {questionIndex >= 1 && (
+          {sliderQuestionIndex >= 1 && (
             <Pressable onPress={handlePrevious} style={styles.button}>
               <Text style={styles.buttonText}>Ga terug</Text>
             </Pressable>

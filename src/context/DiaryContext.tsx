@@ -7,7 +7,10 @@ import { IDiaryEntry, IDiaryContext } from '../types';
 // Create context
 export const DiaryContext = createContext<IDiaryContext>({
   diaryEntries: [],
+  sliderQuestionIndex: 0,
+  setSliderQuestionIndex: () => {},
   addSliderValue: () => {},
+  resetSliderValues: () => {},
   addTextValue: () => {},
   createDiaryEntry: () => {},
 });
@@ -17,6 +20,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [diaryEntries, setDiaryEntries] = useState<IDiaryEntry[]>([]);
+  const [sliderQuestionIndex, setSliderQuestionIndex] = useState(0);
   const [sliderValues, setSliderValues] = useState<Map<number, number>>(
     new Map()
   );
@@ -27,6 +31,13 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
       const newSliderValues = new Map<number, number>(prev); // Copy previous map
       newSliderValues.set(questionIndex, value); // Update new map
       return newSliderValues; // Return updated map
+    });
+  };
+
+  const resetSliderValues = () => {
+    setSliderValues((prev) => {
+      const newSliderValues = new Map<number, number>(); // Create a new empty map
+      return newSliderValues; // Return the new empty map
     });
   };
 
@@ -51,7 +62,10 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
     <DiaryContext.Provider
       value={{
         diaryEntries,
+        sliderQuestionIndex,
+        setSliderQuestionIndex,
         addSliderValue,
+        resetSliderValues,
         addTextValue,
         createDiaryEntry,
       }}
