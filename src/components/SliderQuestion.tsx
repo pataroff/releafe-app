@@ -42,6 +42,7 @@ export const SliderQuestion: React.FC = ({ questions }) => {
 
   const handleDontSaveAndClose = () => {
     setSliderQuestionIndex(0);
+    setProgressValue(0);
     resetSliderValues();
     navigation.navigate('Diary1');
   };
