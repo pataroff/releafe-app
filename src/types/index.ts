@@ -12,6 +12,8 @@ export interface IDiaryEntry {
 export interface IDiaryContext {
   diaryEntries: IDiaryEntry[];
   sliderQuestionIndex: number;
+  progressValue: number;
+  setProgressValue: React.Dispatch<React.SetStateAction<number>>;
   setSliderQuestionIndex: React.Dispatch<React.SetStateAction<number>>;
   addSliderValue: (questionIndex: number, value: number) => void;
   resetSliderValues: () => void;

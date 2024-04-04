@@ -22,16 +22,17 @@ const windowWidth = Dimensions.get('window').width;
 
 export const SliderQuestion: React.FC = ({ questions }) => {
   const {
+    sliderQuestionIndex,
+    progressValue,
+    setSliderQuestionIndex,
+    setProgressValue,
     addSliderValue,
     resetSliderValues,
-    sliderQuestionIndex,
-    setSliderQuestionIndex,
   } = useContext(DiaryContext);
 
   const navigation = useNavigation();
 
   const [sliderValue, setSliderValue] = useState(1);
-  const [progressValue, setProgressValue] = useState(0);
 
   const [modalVisible, setModalVisible] = useState(false);
 

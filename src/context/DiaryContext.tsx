@@ -8,6 +8,8 @@ import { IDiaryEntry, IDiaryContext } from '../types';
 export const DiaryContext = createContext<IDiaryContext>({
   diaryEntries: [],
   sliderQuestionIndex: 0,
+  progressValue: 0,
+  setProgressValue: () => {},
   setSliderQuestionIndex: () => {},
   addSliderValue: () => {},
   resetSliderValues: () => {},
@@ -21,6 +23,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [diaryEntries, setDiaryEntries] = useState<IDiaryEntry[]>([]);
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState(0);
+  const [progressValue, setProgressValue] = useState(0);
   const [sliderValues, setSliderValues] = useState<Map<number, number>>(
     new Map()
   );
@@ -63,6 +66,8 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         diaryEntries,
         sliderQuestionIndex,
+        progressValue,
+        setProgressValue,
         setSliderQuestionIndex,
         addSliderValue,
         resetSliderValues,
