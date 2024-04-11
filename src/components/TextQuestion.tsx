@@ -20,7 +20,13 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export const TextQuestion: React.FC = ({ questions }) => {
-  const { addTextValue, createDiaryEntry } = useContext(DiaryContext);
+  const {
+    resetSliderValues,
+    setSliderQuestionIndex,
+    setProgressValue,
+    addTextValue,
+    createDiaryEntry,
+  } = useContext(DiaryContext);
   const navigation = useNavigation();
 
   const [textValues, setTextValues] = useState<Map<number, string>>(new Map());
@@ -39,6 +45,9 @@ export const TextQuestion: React.FC = ({ questions }) => {
       addTextValue(index, value);
     });
 
+    setSliderQuestionIndex(0);
+    setProgressValue(0);
+    resetSliderValues();
     navigation.navigate('Diary4');
   };
 

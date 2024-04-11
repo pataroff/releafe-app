@@ -111,7 +111,7 @@ export const PerformanceCalendar = () => {
             marked: true,
             dotColor: 'green',
           },
-          ['2024-04-05']: {
+          [selected]: {
             selected: true,
             disableTouchEvent: true,
             selectedColor: 'black',
