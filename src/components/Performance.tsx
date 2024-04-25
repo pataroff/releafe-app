@@ -14,6 +14,7 @@ import { PerformanceChart } from './PerformanceChart';
 import { PerformanceCalendar } from './PerformanceCalendar';
 
 import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
+import { version } from 'canvaskit-wasm/package.json';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -46,7 +47,8 @@ export const Performance: React.FC = () => {
         {Platform.OS == 'web' ? (
           <WithSkiaWeb
             opts={{
-              locateFile: (file) => '../../web/static/js/canvaskit.wasm',
+              locateFile: (file) =>
+                `https://cdn.jsdelivr.net/npm/canvaskit-wasm@${version}/bin/full/${file}`,
             }}
             //@ts-ignore
             getComponent={() => import('./PerformanceChart')}
