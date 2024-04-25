@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { CartesianChart, Line, Area, useChartPressState } from 'victory-native';
+import { CartesianChart, Area, useChartPressState } from 'victory-native';
 import { Circle, useFont } from '@shopify/react-native-skia';
 import type { SharedValue } from 'react-native-reanimated';
 
@@ -61,3 +61,5 @@ export const PerformanceChart = () => {
     </View>
   );
 };
+
+export default PerformanceChart;

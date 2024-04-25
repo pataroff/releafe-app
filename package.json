@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "postinstall": "patch-package && node path-fs-canvaskit-postinstall.js"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.1.3",
@@ -15,9 +16,11 @@
     "@react-navigation/bottom-tabs": "^6.5.19",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
-    "expo": "~50.0.15",
+    "@shopify/react-native-skia": "0.1.221",
+    "expo": "~50.0.17",
     "expo-font": "~11.10.3",
     "expo-status-bar": "~1.11.1",
+    "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.6",
@@ -32,8 +35,8 @@
     "react-native-svg": "14.1.0",
     "react-native-web": "~0.19.6",
     "uuid": "^9.0.1",
-    "victory-native": "^40.1.0",
-    "@shopify/react-native-skia": "0.1.221"
+    "victory": "^37.0.2",
+    "victory-native": "^40.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

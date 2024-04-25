@@ -13,6 +13,8 @@ import { CustomPicker } from './CustomPicker';
 import { PerformanceChart } from './PerformanceChart';
 import { PerformanceCalendar } from './PerformanceCalendar';
 
+import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -40,7 +42,32 @@ export const Performance: React.FC = () => {
             Wekelijks
           </Text>
         </View>
-        <PerformanceChart />
+
+        {/* Web not supported! */}
+        {/* <PerformanceChart /> */}
+
+        {/* Good! */}
+        {/* <WithSkiaWeb
+          opts={{ locateFile: (file) => '../../web/static/js/canvaskit.wasm' }}
+          //@ts-ignore
+          getComponent={() => import('./PerformanceChart')}
+          fallback={<Text>Loading Skia...</Text>}
+        /> */}
+
+        {/* Optimal! */}
+        {Platform.OS == 'web' ? (
+          <WithSkiaWeb
+            opts={{
+              locateFile: (file) => '../../web/static/js/canvaskit.wasm',
+            }}
+            //@ts-ignore
+            getComponent={() => import('./PerformanceChart')}
+            fallback={<Text>Loading Skia...</Text>}
+          />
+        ) : (
+          <PerformanceChart />
+        )}
+
         <Text style={styles.calendarTitleText}>Kalender</Text>
         <Text style={styles.calendarDescriptionText}>
           Hier vindt je een overzicht van jouw data per dag en over de hele
