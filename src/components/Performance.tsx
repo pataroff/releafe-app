@@ -43,18 +43,6 @@ export const Performance: React.FC = () => {
           </Text>
         </View>
 
-        {/* Web not supported! */}
-        {/* <PerformanceChart /> */}
-
-        {/* Good! */}
-        {/* <WithSkiaWeb
-          opts={{ locateFile: (file) => '../../web/static/js/canvaskit.wasm' }}
-          //@ts-ignore
-          getComponent={() => import('./PerformanceChart')}
-          fallback={<Text>Loading Skia...</Text>}
-        /> */}
-
-        {/* Optimal! */}
         {Platform.OS == 'web' ? (
           <WithSkiaWeb
             opts={{
