@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,6 +12,8 @@ import {
 import { Fonts } from '../styles';
 import { ChevronDown } from 'react-native-feather';
 
+import { DiaryContext } from '../context/DiaryContext';
+
 const options = [
   'Algehele stemming',
   'Angst',
@@ -22,11 +24,15 @@ const options = [
 ];
 
 export const CustomMultiPicker: React.FC = ({ selected }) => {
+  const { hasData } = useContext(DiaryContext);
+
   return (
     <View>
       <View style={styles.selectedContainer}>
         <Text style={styles.selectedText}>
-          {selected === 1 || selected === 2 ? 'Meerdere' : 'Angst'}
+          {hasData === true && (selected === 1 || selected === 2)
+            ? 'Meerdere'
+            : 'Angst'}
         </Text>
         <Pressable style={styles.chevronDown}>
           <ChevronDown color={'black'} />

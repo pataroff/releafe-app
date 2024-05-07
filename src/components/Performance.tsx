@@ -53,7 +53,7 @@ export const Performance: React.FC = () => {
 
         <View style={styles.performanceContainer}>
           <CustomMultiPicker selected={selected} />
-
+          {/* The Wizard of Oz Method Chart */}
           {hasData ? (
             selected === 0 ? (
               <Image
@@ -81,6 +81,7 @@ export const Performance: React.FC = () => {
           <Text style={styles.calendarTitleText}>Kalender</Text>
         </View>
 
+        {/* The Actual Chart */}
         {/* {Platform.OS == 'web' ? (
           <WithSkiaWeb
             opts={{
