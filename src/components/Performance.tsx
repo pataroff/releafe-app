@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+
 import {
   View,
   Text,
@@ -15,36 +17,36 @@ import { PerformanceCalendar } from './PerformanceCalendar';
 
 import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
 import { version } from 'canvaskit-wasm/package.json';
+import { CustomSelector } from './CustomSelector';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+enum SelectOptions {
+  Week,
+  Maand,
+  Jaar,
+}
+
 export const Performance: React.FC = () => {
+  const [selected, setSelected] = useState<SelectOptions>();
+
+  const handleSelect = (option: SelectOptions) => {
+    setSelected(option);
+  };
+
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.performanceTitleText}>Prestaties</Text>
+        <Text style={styles.performanceTitleText}>Overzicht welzijn</Text>
         <Text style={styles.performanceDescriptionText}>
-          Hier zie je een overzicht van jouw prestaties over de afgelopen dagen.
+          Hier zie je een overzicht van de door jou ingevoerde scores in de
+          geselecteerde periode.
         </Text>
-        <CustomPicker />
-        {/* Wekelijks Placeholder */}
-        <View
-          style={{
-            marginTop: 20,
-            borderWidth: 2,
-            borderRadius: 15,
-            alignSelf: 'flex-start',
-            paddingHorizontal: 35,
-            paddingVertical: 4,
-          }}
-        >
-          <Text style={{ ...Fonts.poppinsMedium[Platform.OS] } as TextStyle}>
-            Wekelijks
-          </Text>
-        </View>
+        <CustomSelector selected={selected} handleSelect={handleSelect} />
+        {/* <CustomPicker /> */}
 
-        {Platform.OS == 'web' ? (
+        {/* {Platform.OS == 'web' ? (
           <WithSkiaWeb
             opts={{
               locateFile: (file) =>
@@ -56,13 +58,13 @@ export const Performance: React.FC = () => {
           />
         ) : (
           <PerformanceChart />
-        )}
+        )} */}
 
         <Text style={styles.calendarTitleText}>Kalender</Text>
-        <Text style={styles.calendarDescriptionText}>
+        {/* <Text style={styles.calendarDescriptionText}>
           Hier vindt je een overzicht van jouw data per dag en over de hele
           maand.
-        </Text>
+        </Text> */}
         <PerformanceCalendar />
       </View>
     </>
@@ -83,7 +85,8 @@ const styles = StyleSheet.create({
   } as TextStyle,
   performanceDescriptionText: {
     ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 14,
+    fontSize: 13,
+    marginTop: 5,
   } as TextStyle,
   calendarTitleText: {
     ...Fonts.poppinsMedium[Platform.OS],
