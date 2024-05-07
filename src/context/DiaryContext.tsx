@@ -9,6 +9,8 @@ export const DiaryContext = createContext<IDiaryContext>({
   diaryEntries: [],
   sliderQuestionIndex: 0,
   progressValue: 0,
+  hasData: false,
+  setHasData: () => {},
   setProgressValue: () => {},
   setSliderQuestionIndex: () => {},
   addSliderValue: () => {},
@@ -28,6 +30,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
     new Map()
   );
   const [textValues, setTextValues] = useState<Map<number, string>>(new Map());
+  const [hasData, setHasData] = useState(false);
 
   const addSliderValue = (questionIndex: number, value: number) => {
     setSliderValues((prev) => {
@@ -67,6 +70,8 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
         diaryEntries,
         sliderQuestionIndex,
         progressValue,
+        hasData,
+        setHasData,
         setProgressValue,
         setSliderQuestionIndex,
         addSliderValue,

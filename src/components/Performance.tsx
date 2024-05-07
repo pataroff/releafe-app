@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   Platform,
   TextStyle,
@@ -11,13 +12,14 @@ import {
 
 import { Fonts } from '../styles';
 
-import { CustomPicker } from './CustomPicker';
-import { PerformanceChart } from './PerformanceChart';
-import { PerformanceCalendar } from './PerformanceCalendar';
+import { CustomSelector } from './CustomSelector';
+import { CustomMultiPicker } from './CustomMultiPicker';
 
+import { DiaryContext } from '../context/DiaryContext';
+
+import { PerformanceChart } from './PerformanceChart';
 import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
 import { version } from 'canvaskit-wasm/package.json';
-import { CustomSelector } from './CustomSelector';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -29,7 +31,9 @@ enum SelectOptions {
 }
 
 export const Performance: React.FC = () => {
-  const [selected, setSelected] = useState<SelectOptions>();
+  const { hasData } = useContext(DiaryContext);
+
+  const [selected, setSelected] = useState<SelectOptions>(0);
 
   const handleSelect = (option: SelectOptions) => {
     setSelected(option);
@@ -38,13 +42,44 @@ export const Performance: React.FC = () => {
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.performanceTitleText}>Overzicht welzijn</Text>
-        <Text style={styles.performanceDescriptionText}>
-          Hier zie je een overzicht van de door jou ingevoerde scores in de
-          geselecteerde periode.
-        </Text>
+        <View style={styles.headersContainer}>
+          <Text style={styles.performanceTitleText}>Overzicht welzijn</Text>
+          <Text style={styles.performanceDescriptionText}>
+            Hier zie je een overzicht van de door jou ingevoerde scores in de
+            geselecteerde periode.
+          </Text>
+        </View>
         <CustomSelector selected={selected} handleSelect={handleSelect} />
-        {/* <CustomPicker /> */}
+
+        <View style={styles.performanceContainer}>
+          <CustomMultiPicker selected={selected} />
+
+          {hasData ? (
+            selected === 0 ? (
+              <Image
+                style={{ width: windowWidth, height: 350, marginTop: 20 }}
+                source={require('../../assets/images/chart_week.png')}
+              />
+            ) : selected === 1 ? (
+              <Image
+                style={{ width: windowWidth, height: 350, marginTop: 20 }}
+                source={require('../../assets/images/chart_maand.png')}
+              />
+            ) : (
+              <Image
+                style={{ width: windowWidth, height: 350, marginTop: 20 }}
+                source={require('../../assets/images/chart_jaar.png')}
+              />
+            )
+          ) : (
+            <Image
+              style={{ width: windowWidth, height: 350, marginTop: 20 }}
+              source={require('../../assets/images/chart_empty.png')}
+            />
+          )}
+
+          <Text style={styles.calendarTitleText}>Kalender</Text>
+        </View>
 
         {/* {Platform.OS == 'web' ? (
           <WithSkiaWeb
@@ -59,13 +94,6 @@ export const Performance: React.FC = () => {
         ) : (
           <PerformanceChart />
         )} */}
-
-        <Text style={styles.calendarTitleText}>Kalender</Text>
-        {/* <Text style={styles.calendarDescriptionText}>
-          Hier vindt je een overzicht van jouw data per dag en over de hele
-          maand.
-        </Text> */}
-        <PerformanceCalendar />
       </View>
     </>
   );
@@ -73,11 +101,20 @@ export const Performance: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    top: 200,
-    width: windowWidth - 2 * 25,
+    top: 210,
     minHeight: windowHeight + 380,
     paddingTop: 25,
-    paddingHorizontal: 10,
+  },
+  headersContainer: {
+    width: windowWidth,
+    paddingHorizontal: 30,
+  },
+  performanceContainer: {
+    marginTop: 20,
+    borderWidth: 2,
+    borderRadius: 30,
+    minWidth: windowWidth + 5,
+    minHeight: 600,
   },
   performanceTitleText: {
     ...Fonts.poppinsMedium[Platform.OS],
@@ -91,9 +128,6 @@ const styles = StyleSheet.create({
   calendarTitleText: {
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 20,
-  } as TextStyle,
-  calendarDescriptionText: {
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 14,
+    marginTop: 20,
   } as TextStyle,
 });

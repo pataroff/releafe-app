@@ -13,6 +13,8 @@ export interface IDiaryContext {
   diaryEntries: IDiaryEntry[];
   sliderQuestionIndex: number;
   progressValue: number;
+  hasData: boolean;
+  setHasData: React.Dispatch<React.SetStateAction<boolean>>;
   setProgressValue: React.Dispatch<React.SetStateAction<number>>;
   setSliderQuestionIndex: React.Dispatch<React.SetStateAction<number>>;
   addSliderValue: (questionIndex: number, value: number) => void;

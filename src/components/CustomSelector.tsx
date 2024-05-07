@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 15,
     marginVertical: 20,
-    marginHorizontal: 20,
+    marginHorizontal: 40,
   },
   unselectedButton: {
     flex: 1,
