@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Platform, TextStyle } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+  TextStyle,
+  Dimensions,
+} from 'react-native';
+import {
+  CalendarProvider,
+  ExpandableCalendar,
+  LocaleConfig,
+} from 'react-native-calendars';
 import { ChevronLeft, ChevronRight } from 'react-native-feather';
 
 LocaleConfig.locales['nl'] = {
@@ -47,78 +58,96 @@ LocaleConfig.locales['nl'] = {
 
 LocaleConfig.defaultLocale = 'nl';
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 const currentDate = new Date().toISOString().slice(0, 10);
 
 export const PerformanceCalendar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const [selected, setSelected] = useState(currentDate);
 
   return (
     <>
-      <Calendar
-        style={{
-          marginTop: 20,
-          borderWidth: 2,
-          borderColor: 'black',
-          borderRadius: 30,
-          height: 350,
-        }}
-        headerStyle={{ marginBottom: 15 }}
-        theme={{
-          todayTextColor: 'black',
-          selectedDayTextColor: 'black',
-          textMonthFontFamily: 'Poppins-Medium',
-          textDayFontFamily: 'Poppins-Regular',
-          arrowColor: 'black',
-          'stylesheet.dot': {
-            dot: {
-              position: 'absolute',
-              top: -5,
-              width: 7,
-              height: 7,
-              borderRadius: 30,
+      <CalendarProvider date={currentDate}>
+        <ExpandableCalendar
+          theme={{
+            todayTextColor: 'black',
+            selectedDayTextColor: 'white',
+            selectedDayBackgroundColor: 'black',
+            textMonthFontFamily: 'Poppins-Medium',
+            textDayFontFamily: 'Poppins-Regular',
+            arrowColor: 'black',
+            monthTextColor: 'black',
+            'stylesheet.dot': {
+              dot: {
+                position: 'absolute',
+                top: -5,
+                width: 7,
+                height: 7,
+                borderRadius: 30,
+              },
             },
-          },
-        }}
-        hideDayNames={true}
-        // hideArrows={true}
-        // hideExtraDays={true}
-        renderArrow={(direction) =>
-          direction === 'left' ? (
-            <ChevronLeft color='black' style={{ marginLeft: 50 }} />
-          ) : (
-            <ChevronRight color='black' style={{ marginRight: 50 }} />
-          )
-        }
-        monthFormat='MMMM'
-        onDayPress={(day) => {
-          setSelected(day.dateString);
-        }}
-        markingType='custom'
-        markedDates={{
-          ['2024-04-01']: {
-            marked: true,
-            dotColor: 'red',
-          },
-          ['2024-04-02']: {
-            marked: true,
-            dotColor: 'green',
-          },
-          ['2024-04-03']: {
-            marked: true,
-            dotColor: 'orange',
-          },
-          ['2024-04-04']: {
-            marked: true,
-            dotColor: 'green',
-          },
-          [selected]: {
-            selected: true,
-            disableTouchEvent: true,
-            selectedColor: 'black',
-            selectedTextColor: 'white',
-          },
-        }}
-      />
+          }}
+          monthFormat='MMMM'
+          initialPosition={ExpandableCalendar.positions.CLOSED}
+          hideArrows={isOpen ? false : true}
+          hideExtraDays={true}
+          // hideDayNames={true} // This bugs the week view when enabled!
+          allowShadow={false}
+          firstDay={1}
+          closeOnDayPress={false}
+          onCalendarToggled={() => setIsOpen(!isOpen)}
+          renderArrow={(direction) =>
+            direction === 'left' ? (
+              <ChevronLeft color='black' style={{ marginLeft: 75 }} />
+            ) : (
+              <ChevronRight color='black' style={{ marginRight: 75 }} />
+            )
+          }
+          onDayPress={(day) => {
+            setSelected(day.dateString);
+          }}
+          markingType='custom'
+          markedDates={{
+            ['2024-05-01']: {
+              marked: true,
+              dotColor: '#ef4848',
+            },
+            ['2024-05-02']: {
+              marked: true,
+              dotColor: '#ddb354',
+            },
+            ['2024-05-03']: {
+              marked: true,
+              dotColor: '#8cab76',
+            },
+            ['2024-05-04']: {
+              marked: true,
+              dotColor: '#ce6957',
+            },
+            ['2024-05-05']: {
+              marked: true,
+              dotColor: '#4aed94',
+            },
+            ['2024-05-06']: {
+              marked: true,
+              dotColor: '#6bcc85',
+            },
+            ['2024-05-07']: {
+              marked: true,
+              dotColor: '#d1cd79',
+            },
+            [selected]: {
+              selected: true,
+              disableTouchEvent: true,
+              selectedColor: 'black',
+              selectedTextColor: 'white',
+            },
+          }}
+        />
+      </CalendarProvider>
     </>
   );
 };

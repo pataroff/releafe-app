@@ -14,6 +14,8 @@ import { Fonts } from '../styles';
 
 import { CustomSelector } from './CustomSelector';
 import { CustomMultiPicker } from './CustomMultiPicker';
+import { PerformanceCalendar } from './PerformanceCalendar';
+import Slider from '@react-native-community/slider';
 
 import { DiaryContext } from '../context/DiaryContext';
 
@@ -29,6 +31,16 @@ enum SelectOptions {
   Maand,
   Jaar,
 }
+
+const currentDate = new Date().toLocaleString('nl-NL', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+});
+
+const currentTime = new Date().toLocaleTimeString('nl-NL', {
+  timeStyle: 'short',
+});
 
 export const Performance: React.FC = () => {
   const { hasData } = useContext(DiaryContext);
@@ -78,11 +90,92 @@ export const Performance: React.FC = () => {
             />
           )}
 
-          <Text style={styles.calendarTitleText}>Kalender</Text>
+          <View style={styles.headersContainer}>
+            <Text style={styles.calendarTitleText}>Kalender</Text>
+            <Text style={styles.calendarDescriptionText}>
+              Hier vindt je een overzicht van jouw data per dag en over de hele
+              maand.
+            </Text>
+          </View>
+          <PerformanceCalendar />
         </View>
 
-        {/* The Actual Chart */}
-        {/* {Platform.OS == 'web' ? (
+        <View style={styles.dataHeadersContainer}>
+          <Text style={styles.dataTitleText}>Datum: {currentDate}</Text>
+          <Text style={styles.dataTitleText}>
+            Tijd van invullen: {currentTime} uur{' '}
+          </Text>
+
+          {/* The Wizard of Oz Method Data Visualization */}
+          <View style={styles.dataSlidersContainer}>
+            <Text style={[styles.dataHeadingText, { fontSize: 18 }]}>
+              Algemene stemming
+            </Text>
+            <Slider
+              disabled={true}
+              style={{ width: windowWidth - 2 * 40, height: 40 }}
+              value={8}
+              minimumValue={1}
+              maximumValue={10}
+              minimumTrackTintColor='#000000'
+              maximumTrackTintColor='#dedede'
+            />
+            <Text style={styles.dataHeadingText}>Angstniveau</Text>
+            <Slider
+              disabled={true}
+              style={{ width: windowWidth - 2 * 40, height: 40 }}
+              value={3}
+              minimumValue={1}
+              maximumValue={10}
+              minimumTrackTintColor='#000000'
+              maximumTrackTintColor='#dedede'
+            />
+            <Text style={styles.dataHeadingText}>Stressniveau</Text>
+            <Slider
+              disabled={true}
+              style={{ width: windowWidth - 2 * 40, height: 40 }}
+              value={6}
+              minimumValue={1}
+              maximumValue={10}
+              minimumTrackTintColor='#000000'
+              maximumTrackTintColor='#dedede'
+            />
+            <Text style={styles.dataHeadingText}>Energieniveau</Text>
+            <Slider
+              disabled={true}
+              style={{ width: windowWidth - 2 * 40, height: 40 }}
+              value={8}
+              minimumValue={1}
+              maximumValue={10}
+              minimumTrackTintColor='#000000'
+              maximumTrackTintColor='#dedede'
+            />
+            <Text style={styles.dataHeadingText}>Focus en concentratie</Text>
+            <Slider
+              disabled={true}
+              style={{ width: windowWidth - 2 * 40, height: 40 }}
+              value={4}
+              minimumValue={1}
+              maximumValue={10}
+              minimumTrackTintColor='#000000'
+              maximumTrackTintColor='#dedede'
+            />
+            <Text style={styles.dataHeadingText}>Slaap</Text>
+            <Slider
+              disabled={true}
+              style={{ width: windowWidth - 2 * 40, height: 40 }}
+              value={5}
+              minimumValue={1}
+              maximumValue={10}
+              minimumTrackTintColor='black'
+              maximumTrackTintColor='#dedede'
+            />
+          </View>
+        </View>
+      </View>
+
+      {/* The Actual Chart */}
+      {/* {Platform.OS == 'web' ? (
           <WithSkiaWeb
             opts={{
               locateFile: (file) =>
@@ -95,7 +188,6 @@ export const Performance: React.FC = () => {
         ) : (
           <PerformanceChart />
         )} */}
-      </View>
     </>
   );
 };
@@ -103,7 +195,7 @@ export const Performance: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     top: 210,
-    minHeight: windowHeight + 380,
+    minHeight: windowHeight + 800,
     paddingTop: 25,
   },
   headersContainer: {
@@ -114,8 +206,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderWidth: 2,
     borderRadius: 30,
-    minWidth: windowWidth + 5,
-    minHeight: 600,
+    minWidth: windowWidth,
+    minHeight: 610,
+    // This needs to be fixed! 👇🏻
+    maxHeight: 610,
   },
   performanceTitleText: {
     ...Fonts.poppinsMedium[Platform.OS],
@@ -129,6 +223,29 @@ const styles = StyleSheet.create({
   calendarTitleText: {
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 20,
-    marginTop: 20,
+  } as TextStyle,
+  calendarDescriptionText: {
+    ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 14,
+    marginTop: 5,
+  } as TextStyle,
+  dataHeadersContainer: {
+    width: windowWidth,
+    paddingHorizontal: 30,
+    marginTop: 50,
+  },
+  dataSlidersContainer: {
+    width: windowWidth,
+    paddingHorizontal: 10,
+    marginTop: 40,
+  },
+  dataTitleText: {
+    ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 18,
+  } as TextStyle,
+  dataHeadingText: {
+    ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 16,
+    marginBottom: 5,
   } as TextStyle,
 });

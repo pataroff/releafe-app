@@ -12,7 +12,7 @@ import {
   TextStyle,
   ScrollView,
 } from 'react-native';
-import { Fonts, Typography } from '../styles';
+import { Fonts } from '../styles';
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
