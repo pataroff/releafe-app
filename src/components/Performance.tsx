@@ -32,16 +32,6 @@ enum SelectOptions {
   Jaar,
 }
 
-const currentDate = new Date().toLocaleString('nl-NL', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-});
-
-const currentTime = new Date().toLocaleTimeString('nl-NL', {
-  timeStyle: 'short',
-});
-
 export const Performance: React.FC = () => {
   const { hasData } = useContext(DiaryContext);
 
@@ -53,7 +43,9 @@ export const Performance: React.FC = () => {
 
   return (
     <>
-      <View style={styles.container}>
+      <View
+        style={hasData ? styles.containerHasData : styles.containerHasNoData}
+      >
         <View style={styles.headersContainer}>
           <Text style={styles.performanceTitleText}>Overzicht welzijn</Text>
           <Text style={styles.performanceDescriptionText}>
@@ -69,23 +61,23 @@ export const Performance: React.FC = () => {
           {hasData ? (
             selected === 0 ? (
               <Image
-                style={{ width: windowWidth, height: 350, marginTop: 20 }}
+                style={{ width: windowWidth, height: 350, marginTop: 25 }}
                 source={require('../../assets/images/chart_week.png')}
               />
             ) : selected === 1 ? (
               <Image
-                style={{ width: windowWidth, height: 350, marginTop: 20 }}
+                style={{ width: windowWidth, height: 350, marginTop: 25 }}
                 source={require('../../assets/images/chart_maand.png')}
               />
             ) : (
               <Image
-                style={{ width: windowWidth, height: 350, marginTop: 20 }}
+                style={{ width: windowWidth, height: 350, marginTop: 25 }}
                 source={require('../../assets/images/chart_jaar.png')}
               />
             )
           ) : (
             <Image
-              style={{ width: windowWidth, height: 350, marginTop: 20 }}
+              style={{ width: windowWidth, height: 350, marginTop: 25 }}
               source={require('../../assets/images/chart_empty.png')}
             />
           )}
@@ -98,79 +90,6 @@ export const Performance: React.FC = () => {
             </Text>
           </View>
           <PerformanceCalendar />
-        </View>
-
-        <View style={styles.dataHeadersContainer}>
-          <Text style={styles.dataTitleText}>Datum: {currentDate}</Text>
-          <Text style={styles.dataTitleText}>
-            Tijd van invullen: {currentTime} uur{' '}
-          </Text>
-
-          {/* The Wizard of Oz Method Data Visualization */}
-          <View style={styles.dataSlidersContainer}>
-            <Text style={[styles.dataHeadingText, { fontSize: 18 }]}>
-              Algemene stemming
-            </Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={8}
-              minimumValue={1}
-              maximumValue={10}
-              minimumTrackTintColor='#000000'
-              maximumTrackTintColor='#dedede'
-            />
-            <Text style={styles.dataHeadingText}>Angstniveau</Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={3}
-              minimumValue={1}
-              maximumValue={10}
-              minimumTrackTintColor='#000000'
-              maximumTrackTintColor='#dedede'
-            />
-            <Text style={styles.dataHeadingText}>Stressniveau</Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={6}
-              minimumValue={1}
-              maximumValue={10}
-              minimumTrackTintColor='#000000'
-              maximumTrackTintColor='#dedede'
-            />
-            <Text style={styles.dataHeadingText}>Energieniveau</Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={8}
-              minimumValue={1}
-              maximumValue={10}
-              minimumTrackTintColor='#000000'
-              maximumTrackTintColor='#dedede'
-            />
-            <Text style={styles.dataHeadingText}>Focus en concentratie</Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={4}
-              minimumValue={1}
-              maximumValue={10}
-              minimumTrackTintColor='#000000'
-              maximumTrackTintColor='#dedede'
-            />
-            <Text style={styles.dataHeadingText}>Slaap</Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={5}
-              minimumValue={1}
-              maximumValue={10}
-              minimumTrackTintColor='black'
-              maximumTrackTintColor='#dedede'
-            />
-          </View>
         </View>
       </View>
 
@@ -193,9 +112,14 @@ export const Performance: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    top: 210,
-    minHeight: windowHeight + 800,
+  containerHasNoData: {
+    marginTop: 210,
+    minHeight: windowHeight + 210,
+    paddingTop: 25,
+  },
+  containerHasData: {
+    marginTop: 210,
+    minHeight: windowHeight + 790,
     paddingTop: 25,
   },
   headersContainer: {
@@ -228,24 +152,5 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 14,
     marginTop: 5,
-  } as TextStyle,
-  dataHeadersContainer: {
-    width: windowWidth,
-    paddingHorizontal: 30,
-    marginTop: 50,
-  },
-  dataSlidersContainer: {
-    width: windowWidth,
-    paddingHorizontal: 10,
-    marginTop: 40,
-  },
-  dataTitleText: {
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 18,
-  } as TextStyle,
-  dataHeadingText: {
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 16,
-    marginBottom: 5,
   } as TextStyle,
 });

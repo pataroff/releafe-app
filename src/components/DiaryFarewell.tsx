@@ -20,10 +20,13 @@ const windowHeight = Dimensions.get('window').height;
 
 export const DiaryFarewell: React.FC = () => {
   const navigation = useNavigation();
-  const { createDiaryEntry } = useContext(DiaryContext);
+  const { createDiaryEntry, resetSliderValues, resetTextValues } =
+    useContext(DiaryContext);
 
   useEffect(() => {
     createDiaryEntry();
+    resetSliderValues();
+    resetTextValues();
   }, []);
 
   return (

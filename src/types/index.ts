@@ -5,6 +5,7 @@ import {
 
 export interface IDiaryEntry {
   id: string;
+  createdAt: Date;
   sliderValues: Map<number, number>;
   textValues: Map<number, string>;
 }
@@ -14,11 +15,14 @@ export interface IDiaryContext {
   sliderQuestionIndex: number;
   progressValue: number;
   hasData: boolean;
+  createdAt: Date;
   setHasData: React.Dispatch<React.SetStateAction<boolean>>;
+  setCreatedAt: React.Dispatch<React.SetStateAction<Date>>;
   setProgressValue: React.Dispatch<React.SetStateAction<number>>;
   setSliderQuestionIndex: React.Dispatch<React.SetStateAction<number>>;
   addSliderValue: (questionIndex: number, value: number) => void;
   resetSliderValues: () => void;
+  resetTextValues: () => void;
   addTextValue: (questionIndex: number, value: string) => void;
   createDiaryEntry: () => void;
 }

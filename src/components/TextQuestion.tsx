@@ -26,6 +26,7 @@ export const TextQuestion: React.FC = ({ questions }) => {
     setProgressValue,
     addTextValue,
     setHasData,
+    setCreatedAt,
   } = useContext(DiaryContext);
   const navigation = useNavigation();
 
@@ -47,7 +48,7 @@ export const TextQuestion: React.FC = ({ questions }) => {
 
     setSliderQuestionIndex(0);
     setProgressValue(0);
-    resetSliderValues();
+    setCreatedAt(new Date());
     setHasData(true);
     navigation.navigate('Diary4');
   };
