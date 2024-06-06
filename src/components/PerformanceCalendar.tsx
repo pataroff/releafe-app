@@ -6,6 +6,7 @@ import {
   Platform,
   TextStyle,
   Dimensions,
+  Pressable,
 } from 'react-native';
 
 import {
@@ -67,8 +68,8 @@ LocaleConfig.defaultLocale = 'nl';
 
 const windowWidth = Dimensions.get('window').width;
 
-export const PerformanceCalendar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
+  // const [isOpen, setIsOpen] = useState(false);
 
   const { diaryEntries } = useContext(DiaryContext);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -98,6 +99,7 @@ export const PerformanceCalendar = () => {
         'No initialization diary entry found for selected date: ',
         getFormattedDate(selectedDate)
       );
+      setDisplayDate(getFormattedDisplayDate(new Date()));
     }
   };
 
@@ -114,6 +116,7 @@ export const PerformanceCalendar = () => {
     } else {
       setSelectedDate(new Date(selectedDay)); // convert to date, then convert back to iso?
       setSelectedDiaryEntry(null); // if no diary entry, set to null?
+      setDisplayDate(getFormattedDisplayDate(new Date(selectedDay)));
       console.log('No diary entry found for selected date: ', selectedDay);
     }
   };
@@ -165,6 +168,7 @@ export const PerformanceCalendar = () => {
           allowShadow={false}
           firstDay={1}
           closeOnDayPress={false}
+          // disablePan={true}
           onCalendarToggled={() => setIsOpen(!isOpen)}
           renderArrow={(direction) =>
             direction === 'left' ? (
@@ -216,13 +220,30 @@ export const PerformanceCalendar = () => {
         />
       </CalendarProvider>
 
-      {selectedDiaryEntry && (
-        <View style={{ marginTop: 310 }}>
+      {selectedDiaryEntry ? (
+        <View style={isOpen ? { marginTop: 310 } : { marginTop: 155 }}>
           <View style={styles.dataHeadersContainer}>
-            <Text style={styles.dataTitleText}>Datum: {displayDate}</Text>
             <Text style={styles.dataTitleText}>
-              Tijd van invullen: {displayTime} uur{' '}
+              Datum:
+              <Text
+                style={{ ...Fonts.poppinsMedium[Platform.OS] } as TextStyle}
+              >
+                {' '}
+                {displayDate}
+              </Text>
             </Text>
+            <Text style={styles.dataTitleText}>
+              Tijd van invullen:
+              <Text
+                style={{ ...Fonts.poppinsMedium[Platform.OS] } as TextStyle}
+              >
+                {' '}
+                {displayTime} uur
+              </Text>
+            </Text>
+            <Pressable style={styles.editButton}>
+              <Text style={styles.editButtonText}>Pas gegevens aan</Text>
+            </Pressable>
           </View>
 
           {/* The Wizard of Oz Method Data Visualization */}
@@ -291,6 +312,42 @@ export const PerformanceCalendar = () => {
             />
           </View>
         </View>
+      ) : (
+        <View style={isOpen ? { marginTop: 310 } : { marginTop: 155 }}>
+          <View style={styles.dataHeadersContainer}>
+            <Text style={styles.dataTitleText}>
+              Datum:
+              <Text
+                style={{ ...Fonts.poppinsMedium[Platform.OS] } as TextStyle}
+              >
+                {' '}
+                {displayDate}
+              </Text>
+            </Text>
+            <Text style={styles.dataTitleText}>
+              Tijd van invullen:
+              <Text
+                style={{ ...Fonts.poppinsMedium[Platform.OS] } as TextStyle}
+              >
+                {' '}
+                -
+              </Text>
+            </Text>
+          </View>
+
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataTitleText}>
+              Nog geen gegevens beschikbaar
+            </Text>
+            <Text style={styles.noDataDescriptionText}>
+              Vul het dagboek van deze dag alsnog {'\n'}in om jouw proces weer
+              te geven
+            </Text>
+          </View>
+          <Pressable style={styles.diaryButton}>
+            <Text style={styles.diaryButtonText}>Vul het dagboek in</Text>
+          </Pressable>
+        </View>
       )}
     </>
   );
@@ -305,15 +362,57 @@ const styles = StyleSheet.create({
   dataSlidersContainer: {
     width: windowWidth,
     paddingHorizontal: 30,
-    marginTop: 40,
+    marginTop: 30,
   },
   dataTitleText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.poppinsSemiBold[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   dataHeadingText: {
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 16,
     marginBottom: 5,
+  } as TextStyle,
+  noDataContainer: {
+    marginTop: 40,
+    width: windowWidth,
+    paddingHorizontal: 60,
+  },
+  noDataTitleText: {
+    ...Fonts.poppinsMediumItalic[Platform.OS],
+    fontSize: 16,
+  } as TextStyle,
+  noDataDescriptionText: {
+    ...Fonts.poppinsItalic[Platform.OS],
+    fontSize: 13,
+    marginTop: 5,
+  } as TextStyle,
+  diaryButton: {
+    width: 225,
+    alignSelf: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 30,
+    borderColor: 'black',
+    paddingVertical: 5,
+    marginTop: 30,
+  },
+  diaryButtonText: {
+    ...Fonts.poppinsItalic[Platform.OS],
+    fontSize: 12,
+  } as TextStyle,
+  editButton: {
+    width: 175,
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 15,
+    borderColor: 'black',
+    paddingVertical: 5,
+    marginTop: 20,
+  },
+  editButtonText: {
+    ...Fonts.poppinsItalic[Platform.OS],
+    fontSize: 12,
   } as TextStyle,
 });

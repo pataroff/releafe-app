@@ -35,6 +35,7 @@ enum SelectOptions {
 export const Performance: React.FC = () => {
   const { hasData } = useContext(DiaryContext);
 
+  const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<SelectOptions>(0);
 
   const handleSelect = (option: SelectOptions) => {
@@ -44,7 +45,15 @@ export const Performance: React.FC = () => {
   return (
     <>
       <View
-        style={hasData ? styles.containerHasData : styles.containerHasNoData}
+        style={
+          hasData
+            ? isOpen
+              ? [styles.containerHasData, { minHeight: windowHeight + 790 }]
+              : styles.containerHasData
+            : isOpen
+            ? [styles.containerHasNoData, { minHeight: windowHeight + 490 }]
+            : styles.containerHasNoData
+        }
       >
         <View style={styles.headersContainer}>
           <Text style={styles.performanceTitleText}>Overzicht welzijn</Text>
@@ -89,7 +98,7 @@ export const Performance: React.FC = () => {
               maand.
             </Text>
           </View>
-          <PerformanceCalendar />
+          <PerformanceCalendar isOpen={isOpen} setIsOpen={setIsOpen} />
         </View>
       </View>
 
@@ -114,12 +123,12 @@ export const Performance: React.FC = () => {
 const styles = StyleSheet.create({
   containerHasNoData: {
     marginTop: 210,
-    minHeight: windowHeight + 210,
+    minHeight: windowHeight + 350,
     paddingTop: 25,
   },
   containerHasData: {
     marginTop: 210,
-    minHeight: windowHeight + 790,
+    minHeight: windowHeight + 600,
     paddingTop: 25,
   },
   headersContainer: {
@@ -131,9 +140,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 30,
     minWidth: windowWidth,
-    minHeight: 610,
-    // This needs to be fixed! 👇🏻
-    maxHeight: 610,
+    maxHeight: 620,
   },
   performanceTitleText: {
     ...Fonts.poppinsMedium[Platform.OS],
