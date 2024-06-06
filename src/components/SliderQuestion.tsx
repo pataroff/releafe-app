@@ -63,6 +63,8 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
 
     if (matchedDiaryEntry) {
       setSelectedDiaryEntry(matchedDiaryEntry);
+      //@ts-ignore
+      setSliderValue(matchedDiaryEntry.sliderValues.get(sliderQuestionIndex));
     } else {
       setSelectedDiaryEntry(null);
     }
@@ -94,7 +96,9 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
       addSliderValue(
         sliderQuestionIndex,
         //@ts-ignore
-        selectedDiaryEntry.sliderValues.get(sliderQuestionIndex)
+        selectedDiaryEntry.sliderValues.get(sliderQuestionIndex) != sliderValue
+          ? Math.floor(sliderValue)
+          : selectedDiaryEntry.sliderValues.get(sliderQuestionIndex)
       );
     } else {
       addSliderValue(

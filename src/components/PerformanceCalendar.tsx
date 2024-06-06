@@ -341,7 +341,7 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
               maximumTrackTintColor='#dedede'
             />
           </View>
-          <ScrollView
+          {/* <ScrollView
             horizontal={true}
             pagingEnabled={true}
             showsHorizontalScrollIndicator={false}
@@ -365,7 +365,7 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
                 </View>
               );
             })}
-          </ScrollView>
+          </ScrollView> */}
         </View>
       ) : (
         <View style={isOpen ? { marginTop: 310 } : { marginTop: 155 }}>
