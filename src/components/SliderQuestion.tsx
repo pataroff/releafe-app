@@ -36,6 +36,7 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
 
   const navigation = useNavigation();
 
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
     useState<IDiaryEntry | null>();
 
@@ -45,7 +46,7 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
   useFocusEffect(
     React.useCallback(() => {
       if (route.params?.date) {
-        console.log(route.params?.date);
+        setSelectedDate(route.params.date); // is this necessary?
         setCreatedAt(route.params.date);
         checkForExistingDiaryEntry(route.params.date);
       } else {
@@ -93,7 +94,7 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
       setProgressValue(progressValue + 0.167);
       setSliderValue(1);
     } else {
-      navigation.navigate('Diary3');
+      navigation.navigate('Diary3', { date: selectedDate });
     }
   };
 

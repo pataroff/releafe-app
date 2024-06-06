@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { DiaryContext } from '../context/DiaryContext';
 
 import {
@@ -10,28 +10,52 @@ import {
   Dimensions,
   Platform,
   TextStyle,
-  ScrollView,
 } from 'react-native';
 import { Fonts } from '../styles';
 import { AntDesign } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { IDiaryEntry } from '../types';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export const TextQuestion: React.FC = ({ questions }) => {
+export const TextQuestion: React.FC = ({ questions, route }) => {
   const {
-    createdAt,
-    resetSliderValues,
+    diaryEntries,
     setSliderQuestionIndex,
     setProgressValue,
     addTextValue,
     setHasData,
-    setCreatedAt,
   } = useContext(DiaryContext);
   const navigation = useNavigation();
 
+  const [selectedDiaryEntry, setSelectedDiaryEntry] =
+    useState<IDiaryEntry | null>();
   const [textValues, setTextValues] = useState<Map<number, string>>(new Map());
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (route.params?.date) {
+        checkForExistingDiaryEntry(route.params.date);
+      } else {
+        checkForExistingDiaryEntry(new Date());
+      }
+    }, [diaryEntries, route.params?.date])
+  );
+
+  const checkForExistingDiaryEntry = (selectedDate: Date) => {
+    const matchedDiaryEntry = diaryEntries.find(
+      (entry) =>
+        getFormattedDate(entry.createdAt) === getFormattedDate(selectedDate)
+    );
+
+    if (matchedDiaryEntry) {
+      setSelectedDiaryEntry(matchedDiaryEntry);
+      getTextValues(matchedDiaryEntry);
+    } else {
+      setSelectedDiaryEntry(null);
+    }
+  };
 
   const handleTextChange = (index: number, value: string) => {
     setTextValues((prev) => {
@@ -51,6 +75,18 @@ export const TextQuestion: React.FC = ({ questions }) => {
     setProgressValue(0);
     setHasData(true);
     navigation.navigate('Diary4');
+  };
+
+  const getFormattedDate = (date: Date) => {
+    return date.toISOString().slice(0, 10);
+  };
+
+  const getTextValues = (matchedDiaryEntry: IDiaryEntry) => {
+    const initialTextValues = new Map();
+    matchedDiaryEntry.textValues.forEach((value, key) => {
+      initialTextValues.set(key, value);
+    });
+    setTextValues(initialTextValues);
   };
 
   return (

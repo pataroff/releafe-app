@@ -89,13 +89,38 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const createDiaryEntry = () => {
+    // Check if there is a matching entry with this date
+    const matchedDiaryEntry = diaryEntries.find(
+      (entry) =>
+        getFormattedDate(entry.createdAt) === getFormattedDate(createdAt)
+    );
+
+    // Create a new diary entry
     const newEntry = {
       id: uuidv4(),
       createdAt: createdAt,
       sliderValues: sliderValues,
       textValues: textValues,
     };
-    setDiaryEntries((prev) => [...prev, newEntry]);
+
+    if (matchedDiaryEntry) {
+      // Get the index of the matching entry
+      const index = diaryEntries.indexOf(matchedDiaryEntry);
+
+      // Update the existing entry at the found index
+      setDiaryEntries((prev) => {
+        const updatedEntries = [...prev];
+        updatedEntries[index] = newEntry;
+        return updatedEntries;
+      });
+    } else {
+      // Add the new entry to the array
+      setDiaryEntries((prev) => [...prev, newEntry]);
+    }
+  };
+
+  const getFormattedDate = (date: Date) => {
+    return date.toISOString().slice(0, 10);
   };
 
   return (
