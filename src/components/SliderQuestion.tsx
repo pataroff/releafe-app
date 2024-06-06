@@ -107,6 +107,7 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
       setProgressValue(progressValue + 0.167);
       setSliderValue(1);
     } else {
+      setSliderValue(1);
       navigation.navigate('Diary3', { date: route.params?.date });
     }
   };
