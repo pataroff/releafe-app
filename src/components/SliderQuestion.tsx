@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { DiaryContext } from '../context/DiaryContext';
 
 import {
@@ -25,6 +25,7 @@ const windowWidth = Dimensions.get('window').width;
 export const SliderQuestion: React.FC = ({ questions, route }) => {
   const {
     diaryEntries,
+    sliderValues,
     sliderQuestionIndex,
     progressValue,
     setSliderQuestionIndex,
@@ -36,7 +37,6 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
 
   const navigation = useNavigation();
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
     useState<IDiaryEntry | null>();
 
@@ -44,16 +44,15 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (route.params?.date) {
-        setSelectedDate(route.params.date); // is this necessary?
         setCreatedAt(route.params.date);
         checkForExistingDiaryEntry(route.params.date);
       } else {
         setCreatedAt(new Date());
-        checkForExistingDiaryEntry(new Date());
+        // checkForExistingDiaryEntry(new Date());
       }
-    }, [diaryEntries, route.params?.date])
+    }, [diaryEntries, sliderValues, route.params?.date])
   );
 
   const checkForExistingDiaryEntry = (selectedDate: Date) => {
@@ -70,6 +69,8 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
   };
 
   const handleSaveAndClose = () => {
+    setSliderQuestionIndex(0);
+    setProgressValue(0);
     navigation.navigate('Diary1');
   };
 
@@ -81,9 +82,11 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
   };
 
   const handlePrevious = () => {
-    setSliderQuestionIndex(sliderQuestionIndex - 1);
-    setProgressValue(progressValue - 0.167);
-    setSliderValue(1);
+    if (sliderQuestionIndex > 0) {
+      setSliderQuestionIndex(sliderQuestionIndex - 1);
+      setProgressValue(progressValue - 0.167);
+      setSliderValue(1);
+    }
   };
 
   const handleNext = () => {
@@ -94,7 +97,10 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
         selectedDiaryEntry.sliderValues.get(sliderQuestionIndex)
       );
     } else {
-      addSliderValue(sliderQuestionIndex, Math.floor(sliderValue));
+      addSliderValue(
+        sliderQuestionIndex,
+        Math.floor(sliderValues.get(sliderQuestionIndex) ?? sliderValue)
+      );
     }
     // sliderValuesRef.current.set(questionIndex, Math.floor(sliderValue));
     if (sliderQuestionIndex < questions.length - 1) {
@@ -102,7 +108,7 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
       setProgressValue(progressValue + 0.167);
       setSliderValue(1);
     } else {
-      navigation.navigate('Diary3', { date: selectedDate });
+      navigation.navigate('Diary3', { date: route.params?.date });
     }
   };
 
@@ -178,7 +184,7 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
             value={
               selectedDiaryEntry
                 ? selectedDiaryEntry.sliderValues.get(sliderQuestionIndex)
-                : sliderValue
+                : sliderValues.get(sliderQuestionIndex) ?? sliderValue
             }
             onValueChange={(value) => setSliderValue(value)}
             minimumValue={1}

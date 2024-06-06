@@ -7,6 +7,7 @@ import { IDiaryEntry, IDiaryContext } from '../types';
 // Create context
 export const DiaryContext = createContext<IDiaryContext>({
   diaryEntries: [],
+  sliderValues: new Map<number, number>(),
   sliderQuestionIndex: 0,
   progressValue: 0,
   hasData: false,
@@ -127,6 +128,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
     <DiaryContext.Provider
       value={{
         diaryEntries,
+        sliderValues,
         sliderQuestionIndex,
         progressValue,
         hasData,

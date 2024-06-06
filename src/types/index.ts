@@ -12,6 +12,7 @@ export interface IDiaryEntry {
 
 export interface IDiaryContext {
   diaryEntries: IDiaryEntry[];
+  sliderValues: Map<number, number>;
   sliderQuestionIndex: number;
   progressValue: number;
   hasData: boolean;

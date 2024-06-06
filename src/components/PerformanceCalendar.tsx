@@ -70,6 +70,19 @@ LocaleConfig.defaultLocale = 'nl';
 
 const windowWidth = Dimensions.get('window').width;
 
+const dotColorMap = new Map([
+  [1, '#ef4848'],
+  [2, '#de5950'],
+  [3, '#ce6957'],
+  [4, '#d1927c'],
+  [5, '#d3a14f'],
+  [6, '#ddb364'],
+  [7, '#d1cd79'],
+  [8, '#8cab76'],
+  [9, '#6bcc85'],
+  [10, '#4aed94'],
+]);
+
 export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
   const navigation = useNavigation();
 
@@ -81,9 +94,8 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
   const [displayDate, setDisplayDate] = useState<string>();
   const [displayTime, setDisplayTime] = useState<string>();
 
-  // Review this before commit! 👇🏻
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       initializeCalendar();
     }, [diaryEntries])
   );
@@ -140,6 +152,31 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
     });
   };
 
+  const getMarkedDates = () => {
+    const markedDates = {};
+
+    diaryEntries.forEach((entry) => {
+      const formattedDate = getFormattedDate(entry.createdAt);
+      markedDates[formattedDate] = {
+        marked: true,
+        dotColor: getDotColor(entry.sliderValues.get(0)),
+      };
+    });
+
+    markedDates[getFormattedDate(selectedDate)] = {
+      selected: true,
+      disableTouchEvent: true,
+      selectedColor: 'black',
+      selectedTextColor: 'white',
+    };
+
+    return markedDates;
+  };
+
+  const getDotColor = (index: number) => {
+    return dotColorMap.get(index);
+  };
+
   const appendCurrentTime = (date: Date) => {
     const now = new Date();
     const hours = now.getHours();
@@ -193,42 +230,7 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
             handleSelect(day.dateString);
           }}
           markingType='custom'
-          markedDates={{
-            ['2024-05-01']: {
-              marked: true,
-              dotColor: '#ef4848',
-            },
-            ['2024-05-02']: {
-              marked: true,
-              dotColor: '#ddb354',
-            },
-            ['2024-05-03']: {
-              marked: true,
-              dotColor: '#8cab76',
-            },
-            ['2024-05-04']: {
-              marked: true,
-              dotColor: '#ce6957',
-            },
-            ['2024-05-05']: {
-              marked: true,
-              dotColor: '#4aed94',
-            },
-            ['2024-05-06']: {
-              marked: true,
-              dotColor: '#6bcc85',
-            },
-            ['2024-05-07']: {
-              marked: true,
-              dotColor: '#d1cd79',
-            },
-            [getFormattedDate(selectedDate)]: {
-              selected: true,
-              disableTouchEvent: true,
-              selectedColor: 'black',
-              selectedTextColor: 'white',
-            },
-          }}
+          markedDates={getMarkedDates()}
         />
       </CalendarProvider>
 

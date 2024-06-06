@@ -34,12 +34,14 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
   const [textValues, setTextValues] = useState<Map<number, string>>(new Map());
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (route.params?.date) {
+        // `date` is being passed from `SliderQuestion` component!
         checkForExistingDiaryEntry(route.params.date);
-      } else {
-        checkForExistingDiaryEntry(new Date());
       }
+      // else {
+      //   checkForExistingDiaryEntry(new Date());
+      // }
     }, [diaryEntries, route.params?.date])
   );
 
