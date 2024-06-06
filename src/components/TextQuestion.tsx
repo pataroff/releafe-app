@@ -104,7 +104,10 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
               <Text style={styles.questionText}>{questions[index]}</Text>
             </View>
             <TextInput
-              style={[styles.diaryEntryFieldTextInput]}
+              style={[
+                styles.diaryEntryFieldTextInput,
+                { outlineStyle: 'none' },
+              ]}
               value={textValues.get(index) ?? ''}
               onChangeText={(value) => handleTextChange(index, value)}
               multiline={true}

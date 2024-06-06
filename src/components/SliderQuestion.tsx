@@ -87,7 +87,15 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
   };
 
   const handleNext = () => {
-    addSliderValue(sliderQuestionIndex, Math.floor(sliderValue));
+    if (selectedDiaryEntry) {
+      addSliderValue(
+        sliderQuestionIndex,
+        //@ts-ignore
+        selectedDiaryEntry.sliderValues.get(sliderQuestionIndex)
+      );
+    } else {
+      addSliderValue(sliderQuestionIndex, Math.floor(sliderValue));
+    }
     // sliderValuesRef.current.set(questionIndex, Math.floor(sliderValue));
     if (sliderQuestionIndex < questions.length - 1) {
       setSliderQuestionIndex(sliderQuestionIndex + 1);
