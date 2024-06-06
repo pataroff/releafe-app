@@ -22,20 +22,20 @@ import { IDiaryEntry } from '../types';
 
 const windowWidth = Dimensions.get('window').width;
 
-export const SliderQuestion: React.FC = ({ questions }) => {
+export const SliderQuestion: React.FC = ({ questions, route }) => {
   const {
     diaryEntries,
     sliderQuestionIndex,
     progressValue,
     setSliderQuestionIndex,
     setProgressValue,
+    setCreatedAt,
     addSliderValue,
     resetSliderValues,
   } = useContext(DiaryContext);
 
   const navigation = useNavigation();
 
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
     useState<IDiaryEntry | null>();
 
@@ -44,11 +44,18 @@ export const SliderQuestion: React.FC = ({ questions }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      checkForExistingDiaryEntry();
-    }, [diaryEntries])
+      if (route.params?.date) {
+        console.log(route.params?.date);
+        setCreatedAt(route.params.date);
+        checkForExistingDiaryEntry(route.params.date);
+      } else {
+        setCreatedAt(new Date());
+        checkForExistingDiaryEntry(new Date());
+      }
+    }, [diaryEntries, route.params?.date])
   );
 
-  const checkForExistingDiaryEntry = () => {
+  const checkForExistingDiaryEntry = (selectedDate: Date) => {
     const matchedDiaryEntry = diaryEntries.find(
       (entry) =>
         getFormattedDate(entry.createdAt) === getFormattedDate(selectedDate)

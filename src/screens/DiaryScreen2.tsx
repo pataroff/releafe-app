@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { Header } from '../components/Header';
 import { SliderQuestion } from '../components/SliderQuestion';
 
-export const DiaryScreen2: React.FC = () => {
+export const DiaryScreen2: React.FC = ({ route }) => {
   return (
     <>
       <StatusBar />
@@ -36,6 +36,7 @@ export const DiaryScreen2: React.FC = () => {
             ],
             ['Hoe goed heb je geslapen?', 'Slecht geslapen', 'Goed geslapen'],
           ]}
+          route={route}
         />
       </View>
     </>

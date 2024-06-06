@@ -21,6 +21,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export const TextQuestion: React.FC = ({ questions }) => {
   const {
+    createdAt,
     resetSliderValues,
     setSliderQuestionIndex,
     setProgressValue,
@@ -48,7 +49,6 @@ export const TextQuestion: React.FC = ({ questions }) => {
 
     setSliderQuestionIndex(0);
     setProgressValue(0);
-    setCreatedAt(new Date());
     setHasData(true);
     navigation.navigate('Diary4');
   };

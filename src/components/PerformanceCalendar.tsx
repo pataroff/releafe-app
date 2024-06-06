@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,7 @@ import {
   Pressable,
 } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import {
   CalendarProvider,
@@ -81,9 +81,12 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
   const [displayDate, setDisplayDate] = useState<string>();
   const [displayTime, setDisplayTime] = useState<string>();
 
-  useEffect(() => {
-    initializeCalendar();
-  }, []);
+  // Review this before commit! 👇🏻
+  useFocusEffect(
+    React.useCallback(() => {
+      initializeCalendar();
+    }, [diaryEntries])
+  );
 
   const initializeCalendar = () => {
     const initialDiaryEntry = diaryEntries.find(
@@ -91,17 +94,12 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
         getFormattedDate(entry.createdAt) === getFormattedDate(selectedDate)
     );
 
-    console.log(initialDiaryEntry);
-    setSelectedDiaryEntry(initialDiaryEntry);
-
     if (initialDiaryEntry) {
+      setSelectedDiaryEntry(initialDiaryEntry);
       setDisplayDate(getFormattedDisplayDate(initialDiaryEntry.createdAt));
       setDisplayTime(getFormattedDisplayTime(initialDiaryEntry.createdAt));
     } else {
-      console.log(
-        'No initialization diary entry found for selected date: ',
-        getFormattedDate(selectedDate)
-      );
+      setSelectedDiaryEntry(null);
       setDisplayDate(getFormattedDisplayDate(new Date()));
     }
   };
@@ -117,8 +115,8 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
       setDisplayDate(getFormattedDisplayDate(matchedEntry.createdAt));
       setDisplayTime(getFormattedDisplayTime(matchedEntry.createdAt));
     } else {
-      setSelectedDate(new Date(selectedDay)); // convert to date, then convert back to iso?
-      setSelectedDiaryEntry(null); // if no diary entry, set to null?
+      setSelectedDate(appendCurrentTime(new Date(selectedDay)));
+      setSelectedDiaryEntry(null);
       setDisplayDate(getFormattedDisplayDate(new Date(selectedDay)));
       console.log('No diary entry found for selected date: ', selectedDay);
     }
@@ -141,9 +139,20 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
       timeStyle: 'short',
     });
   };
+
+  const appendCurrentTime = (date: Date) => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    const milliseconds = now.getMilliseconds();
+    date.setHours(hours, minutes, seconds, milliseconds);
+    return date;
+  };
+
   return (
     <>
-      {/* <CalendarProvider date={getFormattedDate(selectedDate)}>
+      <CalendarProvider date={getFormattedDate(selectedDate)}>
         <ExpandableCalendar
           theme={{
             todayTextColor: 'black',
@@ -221,7 +230,7 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
             },
           }}
         />
-      </CalendarProvider> */}
+      </CalendarProvider>
 
       {selectedDiaryEntry ? (
         <View style={isOpen ? { marginTop: 310 } : { marginTop: 155 }}>
@@ -246,7 +255,9 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
             </Text>
             <Pressable
               style={styles.editButton}
-              onPress={() => navigation.navigate('Diary2')}
+              onPress={() =>
+                navigation.navigate('Diary2', { date: selectedDate })
+              }
             >
               <Text style={styles.editButtonText}>Pas gegevens aan</Text>
             </Pressable>
@@ -350,7 +361,14 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
               te geven
             </Text>
           </View>
-          <Pressable style={styles.diaryButton}>
+          <Pressable
+            style={styles.diaryButton}
+            onPress={() =>
+              navigation.navigate('Diary2', {
+                date: selectedDate,
+              })
+            }
+          >
             <Text style={styles.diaryButtonText}>Vul het dagboek in</Text>
           </Pressable>
         </View>
