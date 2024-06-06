@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useCallback, useContext } from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,7 @@ import { Fonts } from '../styles';
 
 import { DiaryContext } from '../context/DiaryContext';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -23,11 +23,13 @@ export const DiaryFarewell: React.FC = () => {
   const { createDiaryEntry, resetSliderValues, resetTextValues } =
     useContext(DiaryContext);
 
-  useEffect(() => {
-    createDiaryEntry();
-    resetSliderValues();
-    resetTextValues();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      createDiaryEntry();
+      resetSliderValues();
+      resetTextValues();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>

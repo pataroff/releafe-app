@@ -9,6 +9,8 @@ import {
   Pressable,
 } from 'react-native';
 
+import { useNavigation } from '@react-navigation/native';
+
 import {
   CalendarProvider,
   ExpandableCalendar,
@@ -69,7 +71,7 @@ LocaleConfig.defaultLocale = 'nl';
 const windowWidth = Dimensions.get('window').width;
 
 export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
-  // const [isOpen, setIsOpen] = useState(false);
+  const navigation = useNavigation();
 
   const { diaryEntries } = useContext(DiaryContext);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -89,6 +91,7 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
         getFormattedDate(entry.createdAt) === getFormattedDate(selectedDate)
     );
 
+    console.log(initialDiaryEntry);
     setSelectedDiaryEntry(initialDiaryEntry);
 
     if (initialDiaryEntry) {
@@ -140,7 +143,7 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
   };
   return (
     <>
-      <CalendarProvider date={getFormattedDate(selectedDate)}>
+      {/* <CalendarProvider date={getFormattedDate(selectedDate)}>
         <ExpandableCalendar
           theme={{
             todayTextColor: 'black',
@@ -218,7 +221,7 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
             },
           }}
         />
-      </CalendarProvider>
+      </CalendarProvider> */}
 
       {selectedDiaryEntry ? (
         <View style={isOpen ? { marginTop: 310 } : { marginTop: 155 }}>
@@ -241,7 +244,10 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
                 {displayTime} uur
               </Text>
             </Text>
-            <Pressable style={styles.editButton}>
+            <Pressable
+              style={styles.editButton}
+              onPress={() => navigation.navigate('Diary2')}
+            >
               <Text style={styles.editButtonText}>Pas gegevens aan</Text>
             </Pressable>
           </View>

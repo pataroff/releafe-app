@@ -28,26 +28,26 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [diaryEntries, setDiaryEntries] = useState<IDiaryEntry[]>([
     // dummy diary entry position
-    {
-      id: uuidv4(),
-      createdAt: new Date('2024-05-14T12:13:00'),
-      sliderValues: new Map<number, number>([
-        [0, 8],
-        [1, 3],
-        [2, 6],
-        [3, 8],
-        [4, 4],
-        [5, 5],
-      ]),
-      textValues: new Map<number, string>([
-        [0, 'A'],
-        [1, 'B'],
-        [2, 'C'],
-        [3, 'D'],
-        [4, 'E'],
-        [5, 'F'],
-      ]),
-    },
+    // {
+    //   id: uuidv4(),
+    //   createdAt: new Date('2024-05-14T12:13:00'),
+    //   sliderValues: new Map<number, number>([
+    //     [0, 8],
+    //     [1, 3],
+    //     [2, 6],
+    //     [3, 8],
+    //     [4, 4],
+    //     [5, 5],
+    //   ]),
+    //   textValues: new Map<number, string>([
+    //     [0, 'A'],
+    //     [1, 'B'],
+    //     [2, 'C'],
+    //     [3, 'D'],
+    //     [4, 'E'],
+    //     [5, 'F'],
+    //   ]),
+    // },
   ]);
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState(0);
   const [progressValue, setProgressValue] = useState(0);

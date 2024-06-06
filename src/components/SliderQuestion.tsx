@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { DiaryContext } from '../context/DiaryContext';
 
 import {
@@ -16,12 +16,15 @@ import { AntDesign } from '@expo/vector-icons';
 
 import Slider from '@react-native-community/slider';
 import { ProgressBar } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+
+import { IDiaryEntry } from '../types';
 
 const windowWidth = Dimensions.get('window').width;
 
 export const SliderQuestion: React.FC = ({ questions }) => {
   const {
+    diaryEntries,
     sliderQuestionIndex,
     progressValue,
     setSliderQuestionIndex,
@@ -32,9 +35,31 @@ export const SliderQuestion: React.FC = ({ questions }) => {
 
   const navigation = useNavigation();
 
-  const [sliderValue, setSliderValue] = useState(1);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDiaryEntry, setSelectedDiaryEntry] =
+    useState<IDiaryEntry | null>();
 
+  const [sliderValue, setSliderValue] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      checkForExistingDiaryEntry();
+    }, [diaryEntries])
+  );
+
+  const checkForExistingDiaryEntry = () => {
+    const matchedDiaryEntry = diaryEntries.find(
+      (entry) =>
+        getFormattedDate(entry.createdAt) === getFormattedDate(selectedDate)
+    );
+
+    if (matchedDiaryEntry) {
+      setSelectedDiaryEntry(matchedDiaryEntry);
+    } else {
+      setSelectedDiaryEntry(null);
+    }
+  };
 
   const handleSaveAndClose = () => {
     navigation.navigate('Diary1');
@@ -63,6 +88,10 @@ export const SliderQuestion: React.FC = ({ questions }) => {
     } else {
       navigation.navigate('Diary3');
     }
+  };
+
+  const getFormattedDate = (date: Date) => {
+    return date.toISOString().slice(0, 10);
   };
 
   return (
@@ -124,13 +153,17 @@ export const SliderQuestion: React.FC = ({ questions }) => {
         </Pressable>
         <View style={styles.questionContainer}>
           <Text style={styles.questionText}>
-            {questions[sliderQuestionIndex]}
+            {questions[sliderQuestionIndex][0]}
           </Text>
         </View>
         <View style={{ marginTop: 30 }}>
           <Slider
             style={{ width: windowWidth - 2 * 40, height: 40 }}
-            value={sliderValue}
+            value={
+              selectedDiaryEntry
+                ? selectedDiaryEntry.sliderValues.get(sliderQuestionIndex)
+                : sliderValue
+            }
             onValueChange={(value) => setSliderValue(value)}
             minimumValue={1}
             maximumValue={10}
@@ -139,8 +172,12 @@ export const SliderQuestion: React.FC = ({ questions }) => {
           />
         </View>
         <View style={styles.optionsContainer}>
-          <Text style={styles.optionsText}>Heel slecht</Text>
-          <Text style={styles.optionsText}>Heel goed</Text>
+          <Text style={styles.optionsText}>
+            {questions[sliderQuestionIndex][1]}
+          </Text>
+          <Text style={styles.optionsText}>
+            {questions[sliderQuestionIndex][2]}
+          </Text>
         </View>
         <View
           style={{
