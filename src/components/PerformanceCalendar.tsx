@@ -7,6 +7,8 @@ import {
   TextStyle,
   Dimensions,
   Pressable,
+  ScrollView,
+  TextInput,
 } from 'react-native';
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -82,6 +84,15 @@ const dotColorMap = new Map([
   [9, '#6bcc85'],
   [10, '#4aed94'],
 ]);
+
+const questions = [
+  'Welke dingen zijn er vandaag\ngebeur die je gemoedstoestand hebben beïnvloed?',
+  'Hoe voelde je je daardoor?',
+  'Wat heb je toen gedaan?',
+  'Welk effect had dat op je gemoedstoestand?',
+  'Heb je ook dingen vermeden?\nZo ja, waarom en hoe voelde dat?',
+  'Waar ben je vandaag dankbaar voor?',
+];
 
 export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
   const navigation = useNavigation();
@@ -330,6 +341,31 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
               maximumTrackTintColor='#dedede'
             />
           </View>
+          <ScrollView
+            horizontal={true}
+            pagingEnabled={true}
+            showsHorizontalScrollIndicator={false}
+            style={{ height: 400 }}
+          >
+            {questions.map((question, index) => {
+              return (
+                <View
+                  key={index}
+                  style={{ width: windowWidth, paddingHorizontal: 20 }}
+                >
+                  <View style={styles.dataTextContainer}>
+                    <Text style={styles.questionText}>{questions[index]}</Text>
+                    <TextInput
+                      editable={false}
+                      value={selectedDiaryEntry.textValues.get(index)}
+                      style={styles.dataTextInputContainer}
+                      multiline={true}
+                    ></TextInput>
+                  </View>
+                </View>
+              );
+            })}
+          </ScrollView>
         </View>
       ) : (
         <View style={isOpen ? { marginTop: 310 } : { marginTop: 155 }}>
@@ -440,5 +476,33 @@ const styles = StyleSheet.create({
   editButtonText: {
     ...Fonts.poppinsItalic[Platform.OS],
     fontSize: 12,
+  } as TextStyle,
+  dataTextContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginTop: 30,
+    height: 350,
+    borderWidth: 2,
+    borderRadius: 30,
+    borderColor: 'black',
+  },
+  dataTextInputContainer: {
+    fontSize: 14,
+    height: 200,
+    ...Fonts.poppinsRegular[Platform.OS],
+    borderWidth: 2,
+    borderRadius: 30,
+    borderColor: 'black',
+    paddingTop: 20,
+    paddingLeft: 20,
+    marginHorizontal: 25,
+    marginBottom: 30,
+  } as TextStyle,
+  questionText: {
+    marginTop: 30,
+    paddingHorizontal: 25,
+    ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 16,
   } as TextStyle,
 });

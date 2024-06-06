@@ -102,7 +102,6 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
         Math.floor(sliderValues.get(sliderQuestionIndex) ?? sliderValue)
       );
     }
-    // sliderValuesRef.current.set(questionIndex, Math.floor(sliderValue));
     if (sliderQuestionIndex < questions.length - 1) {
       setSliderQuestionIndex(sliderQuestionIndex + 1);
       setProgressValue(progressValue + 0.167);
