@@ -31,8 +31,9 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     top: 0,
+    left: 0,
+    right: 0,
     height: 200,
-    width: windowWidth,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
@@ -49,6 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     columnGap: 30,
+    width: '100%',
   },
   headerTitle: {
     ...Fonts.poppinsMedium[Platform.OS],

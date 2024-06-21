@@ -19,14 +19,8 @@ export const DashboardScreen: React.FC = () => {
     <>
       <StatusBar />
       <ScrollView
-        // Apply layout styles here
-        contentContainerStyle={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#ffffff',
-        }}
-        // Add any additional styles here if needed
-        style={{ flex: 1 }}
+        style={styles.container}
+        contentContainerStyle={styles.contentContainerStyles}
       >
         <Header />
         <Performance />
@@ -38,15 +32,11 @@ export const DashboardScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+  },
+  contentContainerStyles: {
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#ffffff',
   },
-  performanceTitleText: {
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 20,
-  } as TextStyle,
-  performanceDescriptionText: {
-    ...Fonts.poppinsMedium[Platform.OS],
-  } as TextStyle,
 });

@@ -94,7 +94,7 @@ export const Performance: React.FC = () => {
           <View style={styles.headersContainer}>
             <Text style={styles.calendarTitleText}>Kalender</Text>
             <Text style={styles.calendarDescriptionText}>
-              Hier vindt je een overzicht van jouw data per dag en over de hele
+              Hier vind je een overzicht van jouw data per dag en over de hele
               maand.
             </Text>
           </View>

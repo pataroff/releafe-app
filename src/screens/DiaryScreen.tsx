@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
 import { Header } from '../components/Header';
 import { DiaryGreeting } from '../components/DiaryGreeting';
@@ -8,10 +8,13 @@ export const DiaryScreen: React.FC = () => {
   return (
     <>
       <StatusBar />
-      <View style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainerStyles}
+      >
         <Header />
         <DiaryGreeting />
-      </View>
+      </ScrollView>
     </>
   );
 };
@@ -19,8 +22,11 @@ export const DiaryScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+  },
+  contentContainerStyles: {
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#ffffff',
   },
 });

@@ -39,7 +39,7 @@ export const DiaryFarewell: React.FC = () => {
           flexDirection: 'column',
           rowGap: 10,
           paddingHorizontal: 25,
-          paddingTop: 25,
+          paddingVertical: 25,
         }}
       >
         <Text style={styles.greetingText}>
@@ -72,10 +72,10 @@ export const DiaryFarewell: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    top: 250,
+    flex: 1,
+    marginTop: 250,
+    marginBottom: 100,
     width: windowWidth - 2 * 25,
-    height: windowHeight,
     borderWidth: 2,
     borderRadius: 30,
     borderColor: 'black',

@@ -26,8 +26,8 @@ export const DiaryGreeting: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           rowGap: 10,
+          paddingVertical: 20,
           paddingHorizontal: 20,
-          paddingTop: 20,
         }}
       >
         <Text style={styles.greetingText}>
@@ -74,10 +74,10 @@ export const DiaryGreeting: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    top: 250,
+    flex: 1,
+    marginTop: 250,
+    marginBottom: 100,
     width: windowWidth - 2 * 25,
-    height: windowHeight,
     borderWidth: 2,
     borderRadius: 30,
     borderColor: 'black',
