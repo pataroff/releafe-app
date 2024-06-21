@@ -128,39 +128,41 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(!modalVisible)}
       >
-        <View style={styles.modalContainer}>
-          <View>
-            <Text style={styles.modalTitleText}>
-              Stoppen met invullen dagboek
-            </Text>
-            <Text style={styles.modalDescriptionText}>
-              Je staat op het punt om het dagboek af te sluiten.
-            </Text>
-            <View style={{ rowGap: 10, marginTop: 20 }}>
-              <Pressable
-                style={styles.saveAndCloseButton}
-                onPress={() => handleSaveAndClose()}
-              >
-                <Text style={styles.saveAndCloseText}>
-                  Opslaan en afsluiten
-                </Text>
-              </Pressable>
-              <Pressable
-                style={styles.dontSaveAndCloseButton}
-                onPress={() => handleDontSaveAndClose()}
-              >
-                <Text style={styles.dontSaveAndCloseText}>
-                  Niet opslaan en afsluiten
-                </Text>
-              </Pressable>
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            <View>
+              <Text style={styles.modalTitleText}>
+                Stoppen met invullen dagboek
+              </Text>
+              <Text style={styles.modalDescriptionText}>
+                Je staat op het punt om het dagboek af te sluiten.
+              </Text>
+              <View style={{ rowGap: 10, marginTop: 20 }}>
+                <Pressable
+                  style={styles.saveAndCloseButton}
+                  onPress={() => handleSaveAndClose()}
+                >
+                  <Text style={styles.saveAndCloseText}>
+                    Opslaan en afsluiten
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={styles.dontSaveAndCloseButton}
+                  onPress={() => handleDontSaveAndClose()}
+                >
+                  <Text style={styles.dontSaveAndCloseText}>
+                    Niet opslaan en afsluiten
+                  </Text>
+                </Pressable>
+              </View>
             </View>
+            <Pressable
+              style={styles.cancelButton}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.cancelButtonText}>Annuleren</Text>
+            </Pressable>
           </View>
-          <Pressable
-            style={styles.cancelButton}
-            onPress={() => setModalVisible(!modalVisible)}
-          >
-            <Text style={styles.cancelButtonText}>Annuleren</Text>
-          </Pressable>
         </View>
       </Modal>
       <View
@@ -292,10 +294,12 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     height: 10,
   },
+  modalWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   modalContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    top: 315,
     borderWidth: 2,
     borderRadius: 30,
     height: 300,
@@ -324,7 +328,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     backgroundColor: 'black',
   },
-
   dontSaveAndCloseButton: {
     borderWidth: 2,
     borderRadius: 30,
