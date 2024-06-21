@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 
-import { StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { Header } from '../components/Header';
 import { SliderQuestion } from '../components/SliderQuestion';
@@ -9,7 +9,16 @@ export const DiaryScreen2: React.FC = ({ route }) => {
   return (
     <>
       <StatusBar />
-      <View style={styles.container}>
+      <ScrollView
+        // Apply layout styles here
+        contentContainerStyle={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#ffffff',
+        }}
+        // Add any additional styles here if needed
+        style={{ flex: 1, backgroundColor: '#ffffff' }}
+      >
         <Header />
         <SliderQuestion
           questions={[
@@ -38,16 +47,7 @@ export const DiaryScreen2: React.FC = ({ route }) => {
           ]}
           route={route}
         />
-      </View>
+      </ScrollView>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

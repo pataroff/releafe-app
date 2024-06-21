@@ -47,7 +47,7 @@ export const DiaryFarewell: React.FC = () => {
         </Text>
         <View style={{ paddingVertical: 10 }}>
           <Image
-            style={{ width: 290, height: 150 }}
+            style={{ width: '100%', height: 150 }}
             source={require('../../assets/images/placeholder_image.png')}
           />
         </View>
