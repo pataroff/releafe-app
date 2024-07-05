@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react'
 
 import {
   View,
@@ -8,23 +8,23 @@ import {
   Platform,
   TextStyle,
   Dimensions,
-} from 'react-native';
+} from 'react-native'
 
-import { Fonts } from '../styles';
+import { Fonts } from '../styles'
+import { IDiaryEntry } from '../types'
 
-import { CustomSelector } from './CustomSelector';
-import { CustomMultiPicker } from './CustomMultiPicker';
-import { PerformanceCalendar } from './PerformanceCalendar';
-import Slider from '@react-native-community/slider';
+import { CustomSelector } from './CustomSelector'
+import { CustomMultiPicker } from './CustomMultiPicker'
+import { PerformanceCalendar } from './PerformanceCalendar'
+import Slider from '@react-native-community/slider'
 
-import { DiaryContext } from '../context/DiaryContext';
+import { PerformanceChart } from './PerformanceChart'
+import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web'
+import { version } from 'canvaskit-wasm/package.json'
+import { useFocusEffect } from '@react-navigation/native'
 
-import { PerformanceChart } from './PerformanceChart';
-import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
-import { version } from 'canvaskit-wasm/package.json';
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get('window').width
+const windowHeight = Dimensions.get('window').height
 
 enum SelectOptions {
   Week,
@@ -33,25 +33,28 @@ enum SelectOptions {
 }
 
 export const Performance: React.FC = () => {
-  const { hasData } = useContext(DiaryContext);
+  // const { hasData } = useContext(DiaryContext)
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<SelectOptions>(0);
+  const [isOpen, setIsOpen] = useState(false)
+  const [selected, setSelected] = useState<SelectOptions>(0)
+
+  const [selectedDiaryEntry, setSelectedDiaryEntry] =
+    useState<IDiaryEntry | null>(null)
 
   const handleSelect = (option: SelectOptions) => {
-    setSelected(option);
-  };
+    setSelected(option)
+  }
 
   return (
     <>
       <View
         style={
-          hasData
+          selectedDiaryEntry != null
             ? isOpen
-              ? [styles.containerHasData, { marginBottom: 1225}]
+              ? [styles.containerHasData, { marginBottom: 1225 }]
               : styles.containerHasData
             : isOpen
-            ? [styles.containerHasNoData, { marginBottom: 525}]
+            ? [styles.containerHasNoData, { marginBottom: 525 }]
             : styles.containerHasNoData
         }
       >
@@ -67,7 +70,7 @@ export const Performance: React.FC = () => {
         <View style={styles.performanceContainer}>
           <CustomMultiPicker selected={selected} />
           {/* The Wizard of Oz Method Chart */}
-          {hasData ? (
+          {selectedDiaryEntry != null ? (
             selected === 0 ? (
               <Image
                 style={{ width: windowWidth, height: 350, marginTop: 25 }}
@@ -98,7 +101,12 @@ export const Performance: React.FC = () => {
               maand.
             </Text>
           </View>
-          <PerformanceCalendar isOpen={isOpen} setIsOpen={setIsOpen} />
+          <PerformanceCalendar
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            selectedDiaryEntry={selectedDiaryEntry}
+            setSelectedDiaryEntry={setSelectedDiaryEntry}
+          />
         </View>
       </View>
 
@@ -117,8 +125,8 @@ export const Performance: React.FC = () => {
           <PerformanceChart />
         )} */}
     </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   containerHasNoData: {
@@ -127,7 +135,7 @@ const styles = StyleSheet.create({
   },
   containerHasData: {
     marginTop: 25,
-    marginBottom: 1075, 
+    marginBottom: 1075,
   },
   headersContainer: {
     width: windowWidth,
@@ -158,4 +166,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 5,
   } as TextStyle,
-});
+})

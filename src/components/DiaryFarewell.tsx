@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useContext } from 'react';
+import React, { useEffect, useCallback, useContext } from 'react'
 import {
   View,
   Text,
@@ -8,59 +8,57 @@ import {
   Dimensions,
   Platform,
   TextStyle,
-} from 'react-native';
-import { Fonts } from '../styles';
+} from 'react-native'
+import { Fonts } from '../styles'
 
-import { DiaryContext } from '../context/DiaryContext';
+import { DiaryContext } from '../context/DiaryContext'
 
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get('window').width
+const windowHeight = Dimensions.get('window').height
 
 export const DiaryFarewell: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation()
   const { createDiaryEntry, resetSliderValues, resetTextValues } =
-    useContext(DiaryContext);
+    useContext(DiaryContext)
 
   useFocusEffect(
     React.useCallback(() => {
-      createDiaryEntry();
-      resetSliderValues();
-      resetTextValues();
+      createDiaryEntry()
+      resetSliderValues()
+      resetTextValues()
     }, [])
-  );
+  )
 
   return (
-      <View
-        style={styles.container}
-      >
-        <Text style={styles.greetingText}>
-          Goed gedaan, Jan.{'\n'}Je hebt jouw dagboek met succes ingevuld.
-        </Text>
-        <View style={{ paddingVertical: 10 }}>
-          <Image
-            style={{ width: '100%', height: 150 }}
-            source={require('../../assets/images/placeholder_image.png')}
-          />
-        </View>
-        <Text style={styles.diaryDescriptionText}>
-          Door elke dag je dagboek in te vullen, worden de meest waardevolle
-          gegevens verzameld die later kunnen worden geanalyseerd in jouw
-          persoonlijk dashboard.
-        </Text>
-
-        <Pressable
-          onPress={() => navigation.navigate('Dashboard')}
-          style={styles.dashboardButton}
-        >
-          <Text style={styles.dashboardButtonText}>
-            Ga naar het persoonlijk dashboard
-          </Text>
-        </Pressable>
+    <View style={styles.container}>
+      <Text style={styles.greetingText}>
+        Goed gedaan, Jan.{'\n'}Je hebt jouw dagboek met succes ingevuld.
+      </Text>
+      <View style={{ paddingVertical: 10 }}>
+        <Image
+          style={{ width: '100%', height: 150 }}
+          source={require('../../assets/images/placeholder_image.png')}
+        />
       </View>
-  );
-};
+      <Text style={styles.diaryDescriptionText}>
+        Door elke dag je dagboek in te vullen, worden de meest waardevolle
+        gegevens verzameld die later kunnen worden geanalyseerd in jouw
+        persoonlijk dashboard.
+      </Text>
+
+      <Pressable
+        onPress={() => navigation.navigate('Dashboard')}
+        style={styles.dashboardButton}
+      >
+        <Text style={styles.dashboardButtonText}>
+          Ga naar het persoonlijk dashboard
+        </Text>
+      </Pressable>
+    </View>
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -114,4 +112,4 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsItalic[Platform.OS],
     fontSize: 12,
   } as TextStyle,
-});
+})

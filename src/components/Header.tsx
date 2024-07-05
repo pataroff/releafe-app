@@ -10,7 +10,7 @@ import {
 
 import { Avatar } from 'react-native-paper'
 
-const windowHeight = Dimensions.get('window').height;
+const windowHeight = Dimensions.get('window').height
 
 export const Header = () => {
   return (
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 40, // 25
     height: 125, // 200
-    width: "100%",
+    width: '100%',
     display: 'flex',
     justifyContent: 'center',
     borderTopWidth: 0,
