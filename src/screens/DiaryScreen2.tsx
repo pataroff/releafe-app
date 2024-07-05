@@ -10,13 +10,13 @@ export const DiaryScreen2: React.FC = ({ route }) => {
     <>
       <StatusBar />
       <ScrollView
-        // Apply layout styles here
+        bounces={false}
         contentContainerStyle={{
+          flexGrow: 1,
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-evenly',
           backgroundColor: '#ffffff',
         }}
-        // Add any additional styles here if needed
         style={{ flex: 1, backgroundColor: '#ffffff' }}
       >
         <Header />

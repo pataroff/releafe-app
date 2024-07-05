@@ -1,4 +1,4 @@
-import { Fonts, Typography } from '../styles';
+import { Fonts, Typography } from '../styles'
 import {
   View,
   Text,
@@ -6,11 +6,11 @@ import {
   Platform,
   Dimensions,
   TextStyle,
-} from 'react-native';
+} from 'react-native'
 
-import { Avatar } from 'react-native-paper';
+import { Avatar } from 'react-native-paper'
 
-const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export const Header = () => {
   return (
@@ -20,31 +20,27 @@ export const Header = () => {
           Dagboek & {'\n'}Persoonlijk dashboard
         </Text>
         <View>
-          <Avatar.Text size={64} label='JG' />
+          <Avatar.Text size={56} label='JG' />
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 200,
+    marginTop: 40, // 25
+    height: 125, // 200
+    width: "100%",
     display: 'flex',
-    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    borderTopWidth: 0,
     borderBottomStartRadius: 30,
     borderBottomEndRadius: 30,
     borderWidth: 1,
     borderColor: '#dedede',
   },
   headerContainer: {
-    marginTop: 50,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
@@ -57,4 +53,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'left',
   } as TextStyle,
-});
+})

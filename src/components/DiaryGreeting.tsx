@@ -20,15 +20,8 @@ export const DiaryGreeting: React.FC = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
       <View
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          rowGap: 10,
-          paddingVertical: 20,
-          paddingHorizontal: 20,
-        }}
+        style={styles.container}
       >
         <Text style={styles.greetingText}>
           Hi Jan, wat fijn dat je er weer bent.
@@ -60,7 +53,7 @@ export const DiaryGreeting: React.FC = () => {
           onPress={() => navigation.navigate('Diary2')}
           style={styles.continueButton}
         >
-          <Text>Button</Text>
+          <Text>Start</Text>
         </Pressable>
         <Pressable onPress={() => navigation.navigate('Dashboard')}>
           <Text style={styles.dashboardButtonText}>
@@ -68,19 +61,22 @@ export const DiaryGreeting: React.FC = () => {
           </Text>
         </Pressable>
       </View>
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 250,
-    marginBottom: 100,
     width: windowWidth - 2 * 25,
     borderWidth: 2,
     borderRadius: 30,
     borderColor: 'black',
+    marginTop: 20,
+    marginBottom: 100,
+    display: 'flex',
+    flexDirection: 'column',
+    rowGap: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
   },
   greetingText: {
     ...Fonts.poppinsMedium[Platform.OS],

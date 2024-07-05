@@ -48,10 +48,10 @@ export const Performance: React.FC = () => {
         style={
           hasData
             ? isOpen
-              ? [styles.containerHasData, { minHeight: windowHeight + 1175 }]
+              ? [styles.containerHasData, { marginBottom: 1225}]
               : styles.containerHasData
             : isOpen
-            ? [styles.containerHasNoData, { minHeight: windowHeight + 490 }]
+            ? [styles.containerHasNoData, { marginBottom: 525}]
             : styles.containerHasNoData
         }
       >
@@ -122,14 +122,12 @@ export const Performance: React.FC = () => {
 
 const styles = StyleSheet.create({
   containerHasNoData: {
-    marginTop: 210,
-    minHeight: windowHeight + 350,
-    paddingTop: 25,
+    marginTop: 25,
+    marginBottom: 375,
   },
   containerHasData: {
-    marginTop: 210,
-    minHeight: windowHeight + 1025,
-    paddingTop: 25,
+    marginTop: 25,
+    marginBottom: 1075, 
   },
   headersContainer: {
     width: windowWidth,

@@ -1,14 +1,15 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StatusBar } from 'expo-status-bar'
+import { StyleSheet, View, ScrollView } from 'react-native'
 
-import { Header } from '../components/Header';
-import { DiaryFarewell } from '../components/DiaryFarewell';
+import { Header } from '../components/Header'
+import { DiaryFarewell } from '../components/DiaryFarewell'
 
 export const DiaryScreen4: React.FC = () => {
   return (
     <>
       <StatusBar />
       <ScrollView
+        bounces={false}
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
@@ -16,8 +17,8 @@ export const DiaryScreen4: React.FC = () => {
         <DiaryFarewell />
       </ScrollView>
     </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     backgroundColor: '#ffffff',
   },
-});
+})

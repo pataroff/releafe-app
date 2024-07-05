@@ -32,15 +32,8 @@ export const DiaryFarewell: React.FC = () => {
   );
 
   return (
-    <View style={styles.container}>
       <View
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          rowGap: 10,
-          paddingHorizontal: 25,
-          paddingVertical: 25,
-        }}
+        style={styles.container}
       >
         <Text style={styles.greetingText}>
           Goed gedaan, Jan.{'\n'}Je hebt jouw dagboek met succes ingevuld.
@@ -66,19 +59,22 @@ export const DiaryFarewell: React.FC = () => {
           </Text>
         </Pressable>
       </View>
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 250,
+    marginTop: 25,
     marginBottom: 100,
     width: windowWidth - 2 * 25,
     borderWidth: 2,
     borderRadius: 30,
     borderColor: 'black',
+    display: 'flex',
+    flexDirection: 'column',
+    rowGap: 10,
+    paddingHorizontal: 25,
+    paddingVertical: 25,
   },
   greetingText: {
     ...Fonts.poppinsMedium[Platform.OS],

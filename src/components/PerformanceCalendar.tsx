@@ -227,7 +227,7 @@ export const PerformanceCalendar = ({ isOpen, setIsOpen }) => {
           // hideDayNames={true} // This bugs the week view when enabled!
           allowShadow={false}
           firstDay={1}
-          closeOnDayPress={false}
+          closeOnDayPress={true}
           // disablePan={true}
           onCalendarToggled={() => setIsOpen(!isOpen)}
           renderArrow={(direction) =>

@@ -128,14 +128,13 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    top: 240,
+    marginTop: 25,
+    marginBottom: 100,
     width: windowWidth - 2 * 20,
-    minHeight: windowHeight + 1000,
     borderWidth: 2,
     borderRadius: 30,
     borderColor: 'black',
     paddingHorizontal: 25,
-    marginBottom: 350,
   },
   closeButton: {
     alignSelf: 'flex-end',

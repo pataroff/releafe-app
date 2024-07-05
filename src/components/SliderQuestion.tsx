@@ -239,8 +239,8 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 250,
+    marginTop: 25,
+    marginBottom: 100,
     width: windowWidth - 2 * 20,
     height: 380,
     borderWidth: 2,
