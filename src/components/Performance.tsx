@@ -21,7 +21,6 @@ import Slider from '@react-native-community/slider'
 import { PerformanceChart } from './PerformanceChart'
 import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web'
 import { version } from 'canvaskit-wasm/package.json'
-import { useFocusEffect } from '@react-navigation/native'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
@@ -33,8 +32,6 @@ enum SelectOptions {
 }
 
 export const Performance: React.FC = () => {
-  // const { hasData } = useContext(DiaryContext)
-
   const [isOpen, setIsOpen] = useState(false)
   const [selected, setSelected] = useState<SelectOptions>(0)
 
@@ -51,10 +48,10 @@ export const Performance: React.FC = () => {
         style={
           selectedDiaryEntry != null
             ? isOpen
-              ? [styles.containerHasData, { marginBottom: 1225 }]
+              ? [styles.containerHasData, { marginBottom: 1250 }]
               : styles.containerHasData
             : isOpen
-            ? [styles.containerHasNoData, { marginBottom: 525 }]
+            ? [styles.containerHasNoData, { marginBottom: 550 }]
             : styles.containerHasNoData
         }
       >
@@ -131,11 +128,11 @@ export const Performance: React.FC = () => {
 const styles = StyleSheet.create({
   containerHasNoData: {
     marginTop: 25,
-    marginBottom: 375,
+    marginBottom: 400,
   },
   containerHasData: {
     marginTop: 25,
-    marginBottom: 1075,
+    marginBottom: 1100,
   },
   headersContainer: {
     width: windowWidth,

@@ -110,6 +110,7 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
                 styles.diaryEntryFieldTextInput,
                 { outlineStyle: 'none' },
               ]}
+              textAlignVertical='top'
               value={textValues.get(index) ?? ''}
               onChangeText={(value) => handleTextChange(index, value)}
               multiline={true}
