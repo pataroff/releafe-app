@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useContext } from 'react';
-import { DiaryContext } from '../context/DiaryContext';
+import React, { useState, useCallback, useContext } from 'react'
+import { DiaryContext } from '../context/DiaryContext'
 
 import {
   View,
@@ -10,17 +10,17 @@ import {
   Platform,
   TextStyle,
   Modal,
-} from 'react-native';
-import { Fonts } from '../styles';
-import { AntDesign } from '@expo/vector-icons';
+} from 'react-native'
+import { Fonts } from '../styles'
+import { AntDesign } from '@expo/vector-icons'
 
-import Slider from '@react-native-community/slider';
-import { ProgressBar } from 'react-native-paper';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import Slider from '@react-native-community/slider'
+import { ProgressBar } from 'react-native-paper'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
-import { IDiaryEntry } from '../types';
+import { IDiaryEntry } from '../types'
 
-const windowWidth = Dimensions.get('window').width;
+const windowWidth = Dimensions.get('window').width
 
 export const SliderQuestion: React.FC = ({ questions, route }) => {
   const {
@@ -33,63 +33,62 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
     setCreatedAt,
     addSliderValue,
     resetSliderValues,
-  } = useContext(DiaryContext);
+  } = useContext(DiaryContext)
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
-    useState<IDiaryEntry | null>();
+    useState<IDiaryEntry | null>()
 
-  const [sliderValue, setSliderValue] = useState(1);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [sliderValue, setSliderValue] = useState(1)
+  const [modalVisible, setModalVisible] = useState(false)
 
   useFocusEffect(
     useCallback(() => {
       if (route.params?.date) {
-        setCreatedAt(route.params.date);
-        checkForExistingDiaryEntry(route.params.date);
+        setCreatedAt(route.params.date)
+        checkForExistingDiaryEntry(route.params.date)
       } else {
-        setCreatedAt(new Date());
-        // checkForExistingDiaryEntry(new Date());
+        setCreatedAt(new Date())
       }
     }, [diaryEntries, sliderValues, route.params?.date])
-  );
+  )
 
   const checkForExistingDiaryEntry = (selectedDate: Date) => {
     const matchedDiaryEntry = diaryEntries.find(
       (entry) =>
         getFormattedDate(entry.createdAt) === getFormattedDate(selectedDate)
-    );
+    )
 
     if (matchedDiaryEntry) {
-      setSelectedDiaryEntry(matchedDiaryEntry);
+      setSelectedDiaryEntry(matchedDiaryEntry)
       //@ts-ignore
-      setSliderValue(matchedDiaryEntry.sliderValues.get(sliderQuestionIndex));
+      setSliderValue(matchedDiaryEntry.sliderValues.get(sliderQuestionIndex))
     } else {
-      setSelectedDiaryEntry(null);
+      setSelectedDiaryEntry(null)
     }
-  };
+  }
 
   const handleSaveAndClose = () => {
-    setSliderQuestionIndex(0);
-    setProgressValue(0);
-    navigation.navigate('Diary1');
-  };
+    setSliderQuestionIndex(0)
+    setProgressValue(0)
+    navigation.navigate('Diary1')
+  }
 
   const handleDontSaveAndClose = () => {
-    setSliderQuestionIndex(0);
-    setProgressValue(0);
-    resetSliderValues();
-    navigation.navigate('Diary1');
-  };
+    setSliderQuestionIndex(0)
+    setProgressValue(0)
+    resetSliderValues()
+    navigation.navigate('Diary1')
+  }
 
   const handlePrevious = () => {
     if (sliderQuestionIndex > 0) {
-      setSliderQuestionIndex(sliderQuestionIndex - 1);
-      setProgressValue(progressValue - 0.167);
-      setSliderValue(1);
+      setSliderQuestionIndex(sliderQuestionIndex - 1)
+      setProgressValue(progressValue - 0.167)
+      setSliderValue(1)
     }
-  };
+  }
 
   const handleNext = () => {
     if (selectedDiaryEntry) {
@@ -99,29 +98,32 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
         selectedDiaryEntry.sliderValues.get(sliderQuestionIndex) != sliderValue
           ? Math.floor(sliderValue)
           : selectedDiaryEntry.sliderValues.get(sliderQuestionIndex)
-      );
+      )
     } else {
       addSliderValue(
         sliderQuestionIndex,
         Math.floor(sliderValues.get(sliderQuestionIndex) ?? sliderValue)
-      );
+      )
     }
     if (sliderQuestionIndex < questions.length - 1) {
-      setSliderQuestionIndex(sliderQuestionIndex + 1);
-      setProgressValue(progressValue + 0.167);
-      setSliderValue(1);
+      setSliderQuestionIndex(sliderQuestionIndex + 1)
+      setProgressValue(progressValue + 0.167)
+      setSliderValue(1)
     } else {
-      setSliderValue(1);
-      navigation.navigate('Diary3', { date: route.params?.date });
+      setSliderValue(1)
+      navigation.navigate('Diary3', { date: route.params?.date })
     }
-  };
+  }
 
   const getFormattedDate = (date: Date) => {
-    return date.toISOString().slice(0, 10);
-  };
+    return date.toISOString().slice(0, 10)
+  }
 
   return (
     <View style={styles.container}>
+      <View style={styles.questionNumberContainer}>
+        <Text style={styles.questionNumberText}>{sliderQuestionIndex + 1}</Text>
+      </View>
       <Modal
         animationType='none'
         transparent={true}
@@ -234,15 +236,15 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 25,
+    marginTop: 60,
     marginBottom: 100,
-    width: windowWidth - 2 * 20,
-    height: 380,
+    width: windowWidth - 2 * 25,
+    height: 350,
     borderWidth: 2,
     borderRadius: 30,
     borderColor: 'black',
@@ -287,7 +289,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   } as TextStyle,
   progressBarContainer: {
-    marginTop: 50,
+    marginTop: 20,
   },
   progressBar: {
     backgroundColor: '#dedede',
@@ -358,4 +360,18 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsItalic[Platform.OS],
     fontStyle: 'italic',
   } as TextStyle,
-});
+  questionNumberContainer: {
+    position: 'absolute',
+    top: -50,
+    borderWidth: 2,
+    borderRadius: 99,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  questionNumberText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 20,
+  } as TextStyle,
+})

@@ -29,8 +29,8 @@ export const Header = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40, // 25
-    height: 125, // 200
+    marginTop: 25,
+    height: 125,
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
