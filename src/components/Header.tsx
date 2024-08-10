@@ -1,4 +1,4 @@
-import { Fonts, Typography } from '../styles'
+import { Fonts, Typography } from '../styles';
 import {
   View,
   Text,
@@ -6,13 +6,18 @@ import {
   Platform,
   Dimensions,
   TextStyle,
-} from 'react-native'
+} from 'react-native';
 
-import { Avatar } from 'react-native-paper'
+import { Avatar } from 'react-native-paper';
 
-const windowHeight = Dimensions.get('window').height
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+
+const windowHeight = Dimensions.get('window').height;
 
 export const Header = () => {
+  const { user } = useContext(AuthContext);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -20,12 +25,17 @@ export const Header = () => {
           Dagboek & {'\n'}Persoonlijk dashboard
         </Text>
         <View>
-          <Avatar.Text size={56} label='JG' />
+          <Avatar.Text
+            style={{ backgroundColor: '#00d8bd' }}
+            color='white'
+            size={56}
+            label={user.firstName[0] + user.lastName[0]}
+          />
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -53,4 +63,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'left',
   } as TextStyle,
-})
+});

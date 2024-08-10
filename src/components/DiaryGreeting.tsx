@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -13,54 +13,54 @@ import { Fonts } from '../styles';
 
 import { useNavigation } from '@react-navigation/native';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import { AuthContext } from '../context/AuthContext';
 
-export const DiaryGreeting: React.FC = () => {
+const windowWidth = Dimensions.get('window').width;
+
+export const DiaryGreeting = () => {
+  const { user } = useContext(AuthContext);
   const navigation = useNavigation();
 
   return (
-      <View
-        style={styles.container}
-      >
-        <Text style={styles.greetingText}>
-          Hi Jan, wat fijn dat je er weer bent.
-        </Text>
-        <Text style={styles.diaryDescriptionText}>
-          Door dagelijks je dagboek bij te houden, volg je zorgvuldig jouw
-          groeiproces.
-        </Text>
-        <View style={{ paddingVertical: 10 }}>
-          <Image
-            style={{ width: '100%', height: 150 }}
-            source={require('../../assets/images/placeholder_image.png')}
-          />
-        </View>
-        <Text style={[styles.dateLabel, { fontSize: 16 }]}>
-          Vandaag is het:{' '}
-          <Text style={styles.dateText}>
-            {new Date().toLocaleDateString('nl-NL', {
-              month: 'long',
-              year: 'numeric',
-              day: 'numeric',
-            })}
-          </Text>
-        </Text>
-        <Text style={styles.diaryDescriptionText}>
-          Laten we beginnen met het vastleggen van jouw reis.
-        </Text>
-        <Pressable
-          onPress={() => navigation.navigate('Diary2')}
-          style={styles.continueButton}
-        >
-          <Text>Start</Text>
-        </Pressable>
-        <Pressable onPress={() => navigation.navigate('Dashboard')}>
-          <Text style={styles.dashboardButtonText}>
-            Ga gelijk door naar het persoonlijk dashboard
-          </Text>
-        </Pressable>
+    <View style={styles.container}>
+      <Text style={styles.greetingText}>
+        Hi {user.firstName}, wat fijn dat je er weer bent.
+      </Text>
+      <Text style={styles.diaryDescriptionText}>
+        Door dagelijks je dagboek bij te houden, volg je zorgvuldig jouw
+        groeiproces.
+      </Text>
+      <View style={{ paddingVertical: 10 }}>
+        <Image
+          style={{ width: '100%', height: 150 }}
+          source={require('../../assets/images/placeholder_image.png')}
+        />
       </View>
+      <Text style={[styles.dateLabel, { fontSize: 16 }]}>
+        Vandaag is het:{' '}
+        <Text style={styles.dateText}>
+          {new Date().toLocaleDateString('nl-NL', {
+            month: 'long',
+            year: 'numeric',
+            day: 'numeric',
+          })}
+        </Text>
+      </Text>
+      <Text style={styles.diaryDescriptionText}>
+        Laten we beginnen met het vastleggen van jouw reis.
+      </Text>
+      <Pressable
+        onPress={() => navigation.navigate('Diary2')}
+        style={styles.continueButton}
+      >
+        <Text>Start</Text>
+      </Pressable>
+      <Pressable onPress={() => navigation.navigate('Dashboard')}>
+        <Text style={styles.dashboardButtonText}>
+          Ga gelijk door naar het persoonlijk dashboard
+        </Text>
+      </Pressable>
+    </View>
   );
 };
 

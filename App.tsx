@@ -2,9 +2,9 @@ import { useFonts } from 'expo-font';
 
 import { DiaryProvider } from './src/context/DiaryContext';
 import { PaperProvider } from 'react-native-paper';
+import { AuthProvider } from './src/context/AuthContext';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { TabNavigator } from './src/navigation/TabNavigator';
+import AppNav from './src/navigation/AppNav';
 
 // import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
 
@@ -24,12 +24,12 @@ export default function App() {
   }
 
   return (
-    <DiaryProvider>
-      <PaperProvider>
-        <NavigationContainer>
-          <TabNavigator />
-        </NavigationContainer>
-      </PaperProvider>
-    </DiaryProvider>
+    <PaperProvider>
+      <AuthProvider>
+        <DiaryProvider>
+          <AppNav />
+        </DiaryProvider>
+      </AuthProvider>
+    </PaperProvider>
   );
 }

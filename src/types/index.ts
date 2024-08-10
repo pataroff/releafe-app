@@ -34,3 +34,11 @@ export type RootStackParamList = {
   Toolkit: undefined;
   Chat: undefined;
 };
+
+export interface IUserData {
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  firstName: string;
+  lastName: string;
+}
