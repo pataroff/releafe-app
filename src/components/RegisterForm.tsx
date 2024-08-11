@@ -16,14 +16,39 @@ import { Fonts } from '../styles';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
+import { IUserData } from '../types';
+
 const windowWidth = Dimensions.get('window').width;
 
-export const LoginForm = () => {
-  const { signIn } = useContext(AuthContext);
+export const RegisterForm = () => {
+  const { register } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [passwordConfirm, setPasswordConfirm] = useState<string>('');
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+
+  // TODO: Is there a better way to declare parameters types here?
+  const handleRegister = (
+    email: string,
+    password: string,
+    passwordConfirm: string,
+    firstName: string,
+    lastName: string
+  ) => {
+    const userData: IUserData = {
+      email,
+      password,
+      passwordConfirm,
+      firstName,
+      lastName,
+    };
+
+    register(userData);
+    navigation.navigate('Login');
+  };
 
   return (
     <>
@@ -40,6 +65,21 @@ export const LoginForm = () => {
             value={email}
           ></TextInput>
 
+          <Text style={styles.textInputLabelText}>First Name</Text>
+          <TextInput
+            style={styles.textInputField}
+            placeholder='Enter your first name...'
+            onChangeText={(value) => setFirstName(value)}
+            value={firstName}
+          ></TextInput>
+          <Text style={styles.textInputLabelText}>Last Name</Text>
+          <TextInput
+            style={styles.textInputField}
+            placeholder='Enter your last name...'
+            onChangeText={(value) => setLastName(value)}
+            value={lastName}
+          ></TextInput>
+
           <Text style={styles.textInputLabelText}>Password</Text>
           <TextInput
             style={styles.textInputField}
@@ -49,18 +89,36 @@ export const LoginForm = () => {
             onChangeText={(value) => setPassword(value)}
             value={password}
           ></TextInput>
+          <Text style={styles.textInputLabelText}>Confirm Password</Text>
+          <TextInput
+            style={styles.textInputField}
+            placeholder='Enter your password...'
+            autoCapitalize='none'
+            secureTextEntry={true}
+            onChangeText={(value) => setPasswordConfirm(value)}
+            value={passwordConfirm}
+          ></TextInput>
+
           <Pressable
             style={styles.signInButton}
-            onPress={() => signIn(email, password)}
+            onPress={() =>
+              handleRegister(
+                email,
+                password,
+                passwordConfirm,
+                firstName,
+                lastName
+              )
+            }
           >
-            <Text style={styles.buttonText}>Sign In</Text>
+            <Text style={styles.buttonText}>Sign Up</Text>
           </Pressable>
         </View>
 
         <View style={styles.signUpBox}>
-          <Text>Don't have an account?</Text>
-          <Pressable onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.signUpText}> Sign Up</Text>
+          <Text>Already have an account?</Text>
+          <Pressable onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.signUpText}> Sign In</Text>
           </Pressable>
         </View>
       </View>
@@ -75,7 +133,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   textInputField: {
     ...Fonts.poppinsItalic[Platform.OS],
-    height: 40,
+    height: 30,
     borderWidth: 1,
     borderColor: '#dedede',
     borderRadius: 30,

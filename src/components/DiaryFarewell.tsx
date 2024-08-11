@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useContext } from 'react'
+import React, { useEffect, useCallback, useContext } from 'react';
 import {
   View,
   Text,
@@ -8,33 +8,35 @@ import {
   Dimensions,
   Platform,
   TextStyle,
-} from 'react-native'
-import { Fonts } from '../styles'
+} from 'react-native';
+import { Fonts } from '../styles';
 
-import { DiaryContext } from '../context/DiaryContext'
+import { DiaryContext } from '../context/DiaryContext';
+import { AuthContext } from '../context/AuthContext';
 
-import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-const windowWidth = Dimensions.get('window').width
-const windowHeight = Dimensions.get('window').height
+const windowWidth = Dimensions.get('window').width;
 
 export const DiaryFarewell: React.FC = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const { createDiaryEntry, resetSliderValues, resetTextValues } =
-    useContext(DiaryContext)
+    useContext(DiaryContext);
+  const { user } = useContext(AuthContext);
 
   useFocusEffect(
     React.useCallback(() => {
-      createDiaryEntry()
-      resetSliderValues()
-      resetTextValues()
+      createDiaryEntry();
+      resetSliderValues();
+      resetTextValues();
     }, [])
-  )
+  );
 
   return (
     <View style={styles.container}>
       <Text style={styles.greetingText}>
-        Goed gedaan, Jan.{'\n'}Je hebt jouw dagboek met succes ingevuld.
+        Goed gedaan, {user.firstName}.{'\n'}Je hebt jouw dagboek met succes
+        ingevuld.
       </Text>
       <View style={{ paddingVertical: 10 }}>
         <Image
@@ -57,8 +59,8 @@ export const DiaryFarewell: React.FC = () => {
         </Text>
       </Pressable>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -112,4 +114,4 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsItalic[Platform.OS],
     fontSize: 12,
   } as TextStyle,
-})
+});
