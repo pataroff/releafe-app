@@ -1,8 +1,11 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import { IDiaryEntry, IDiaryContext } from '../types';
+
+import pb from '../lib/pocketbase';
+import { AuthContext } from './AuthContext';
 
 // Create context
 export const DiaryContext = createContext<IDiaryContext>({
@@ -11,9 +14,10 @@ export const DiaryContext = createContext<IDiaryContext>({
   sliderQuestionIndex: 0,
   progressValue: 0,
   hasData: false,
-  createdAt: new Date(),
+  date: new Date(),
+  setDiaryEntries: () => {},
   setHasData: () => {},
-  setCreatedAt: () => {},
+  setDate: () => {},
   setProgressValue: () => {},
   setSliderQuestionIndex: () => {},
   addSliderValue: () => {},
@@ -21,35 +25,14 @@ export const DiaryContext = createContext<IDiaryContext>({
   resetTextValues: () => {},
   addTextValue: () => {},
   createDiaryEntry: () => {},
+  jsonToMap: (jsonStr: string) => new Map<number, number | string>(),
 });
 
 // Provider component
 export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [diaryEntries, setDiaryEntries] = useState<IDiaryEntry[]>([
-    // dummy diary entry position
-    // {
-    //   id: uuidv4(),
-    //   createdAt: new Date('2024-05-14T12:13:00'),
-    //   sliderValues: new Map<number, number>([
-    //     [0, 8],
-    //     [1, 3],
-    //     [2, 6],
-    //     [3, 8],
-    //     [4, 4],
-    //     [5, 5],
-    //   ]),
-    //   textValues: new Map<number, string>([
-    //     [0, 'A'],
-    //     [1, 'B'],
-    //     [2, 'C'],
-    //     [3, 'D'],
-    //     [4, 'E'],
-    //     [5, 'F'],
-    //   ]),
-    // },
-  ]);
+  const [diaryEntries, setDiaryEntries] = useState<IDiaryEntry[]>([]);
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState(0);
   const [progressValue, setProgressValue] = useState(0);
   const [sliderValues, setSliderValues] = useState<Map<number, number>>(
@@ -57,7 +40,9 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
   );
   const [textValues, setTextValues] = useState<Map<number, string>>(new Map());
   const [hasData, setHasData] = useState(false); // Wizard of Oz Method
-  const [createdAt, setCreatedAt] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date>(new Date());
+
+  const { user } = useContext(AuthContext);
 
   const addSliderValue = (questionIndex: number, value: number) => {
     setSliderValues((prev) => {
@@ -92,16 +77,26 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
   const createDiaryEntry = () => {
     // Check if there is a matching entry with this date
     const matchedDiaryEntry = diaryEntries.find(
-      (entry) =>
-        getFormattedDate(entry.createdAt) === getFormattedDate(createdAt)
+      (entry) => getFormattedDate(entry.date) === getFormattedDate(date)
     );
 
     // Create a new diary entry
     const newEntry = {
-      id: uuidv4(),
-      createdAt: createdAt,
+      // TODO: Locally, `id` is an empty string prior to fetching diary entries from the database!
+      id: '',
+      date: date,
       sliderValues: sliderValues,
       textValues: textValues,
+    };
+
+    // Create a new diary entry for database
+    const newEntryDatabase = {
+      // NOTE: "id: the length must be exactly 15."
+      id: '',
+      user: user.id,
+      date: newEntry.date,
+      sliderValues: mapToJson(newEntry.sliderValues),
+      textValues: mapToJson(newEntry.textValues),
     };
 
     if (matchedDiaryEntry) {
@@ -114,14 +109,33 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
         updatedEntries[index] = newEntry;
         return updatedEntries;
       });
+      // Update the existing entry in the database
+      pb.collection('diary_entries').update(
+        matchedDiaryEntry.id,
+        newEntryDatabase
+      );
     } else {
       // Add the new entry to the array
       setDiaryEntries((prev) => [...prev, newEntry]);
+      // Add the new entry to the database
+      pb.collection('diary_entries').create(newEntryDatabase);
     }
   };
 
   const getFormattedDate = (date: Date) => {
     return date.toISOString().slice(0, 10);
+  };
+
+  const mapToJson = (map) => {
+    return JSON.stringify(Object.fromEntries(map));
+  };
+
+  const jsonToMap = (data: {
+    [key: string]: number | string;
+  }): Map<number, number | string> => {
+    return new Map<number, number | string>(
+      Object.entries(data).map(([key, value]) => [Number(key), value])
+    );
   };
 
   return (
@@ -132,9 +146,10 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
         sliderQuestionIndex,
         progressValue,
         hasData,
-        createdAt,
+        date,
+        setDiaryEntries,
         setHasData,
-        setCreatedAt,
+        setDate,
         setProgressValue,
         setSliderQuestionIndex,
         addSliderValue,
@@ -142,6 +157,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
         resetTextValues,
         addTextValue,
         createDiaryEntry,
+        jsonToMap,
       }}
     >
       {children}

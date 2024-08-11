@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react'
+import React, { useState, useCallback, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,22 +9,21 @@ import {
   Pressable,
   ScrollView,
   TextInput,
-} from 'react-native'
+} from 'react-native';
 
-import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import {
   CalendarProvider,
   ExpandableCalendar,
   LocaleConfig,
-} from 'react-native-calendars'
+} from 'react-native-calendars';
 
-import { ChevronLeft, ChevronRight } from 'react-native-feather'
-import { Fonts } from '../styles'
+import { ChevronLeft, ChevronRight } from 'react-native-feather';
+import { Fonts } from '../styles';
 
-import Slider from '@react-native-community/slider'
-import { DiaryContext } from '../context/DiaryContext'
-import { IDiaryEntry } from '../types'
+import Slider from '@react-native-community/slider';
+import { DiaryContext } from '../context/DiaryContext';
 
 LocaleConfig.locales['nl'] = {
   monthNames: [
@@ -66,11 +65,11 @@ LocaleConfig.locales['nl'] = {
   ],
   dayNamesShort: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
   today: 'Vandaag',
-}
+};
 
-LocaleConfig.defaultLocale = 'nl'
+LocaleConfig.defaultLocale = 'nl';
 
-const windowWidth = Dimensions.get('window').width
+const windowWidth = Dimensions.get('window').width;
 
 const dotColorMap = new Map([
   [1, '#ef4848'],
@@ -83,7 +82,7 @@ const dotColorMap = new Map([
   [8, '#8cab76'],
   [9, '#6bcc85'],
   [10, '#4aed94'],
-])
+]);
 
 const questions = [
   'Welke dingen zijn er vandaag\ngebeur die je gemoedstoestand hebben beïnvloed?',
@@ -92,7 +91,7 @@ const questions = [
   'Welk effect had dat op je gemoedstoestand?',
   'Heb je ook dingen vermeden?\nZo ja, waarom en hoe voelde dat?',
   'Waar ben je vandaag dankbaar voor?',
-]
+];
 
 export const PerformanceCalendar = ({
   isOpen,
@@ -100,106 +99,105 @@ export const PerformanceCalendar = ({
   selectedDiaryEntry,
   setSelectedDiaryEntry,
 }) => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
-  const { diaryEntries } = useContext(DiaryContext)
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const { diaryEntries } = useContext(DiaryContext);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const [displayDate, setDisplayDate] = useState<string>()
-  const [displayTime, setDisplayTime] = useState<string>()
+  const [displayDate, setDisplayDate] = useState<string>();
+  const [displayTime, setDisplayTime] = useState<string>();
 
   useFocusEffect(
     useCallback(() => {
-      initializeCalendar()
+      initializeCalendar();
     }, [diaryEntries])
-  )
+  );
 
-  const initializeCalendar = () => {
+  const initializeCalendar = async () => {
     const initialDiaryEntry = diaryEntries.find(
-      (entry) =>
-        getFormattedDate(entry.createdAt) === getFormattedDate(selectedDate)
-    )
+      (entry) => getFormattedDate(entry.date) === getFormattedDate(selectedDate)
+    );
 
     if (initialDiaryEntry) {
-      setSelectedDiaryEntry(initialDiaryEntry)
-      setDisplayDate(getFormattedDisplayDate(initialDiaryEntry.createdAt))
-      setDisplayTime(getFormattedDisplayTime(initialDiaryEntry.createdAt))
+      setSelectedDiaryEntry(initialDiaryEntry);
+      setDisplayDate(getFormattedDisplayDate(initialDiaryEntry.date));
+      setDisplayTime(getFormattedDisplayTime(initialDiaryEntry.date));
     } else {
-      setSelectedDiaryEntry(null)
-      setDisplayDate(getFormattedDisplayDate(new Date()))
+      setSelectedDiaryEntry(null);
+      setDisplayDate(getFormattedDisplayDate(new Date()));
     }
-  }
+  };
 
   const handleSelect = (selectedDay: string) => {
     const matchedEntry = diaryEntries.find(
-      (entry) => entry.createdAt.toISOString().slice(0, 10) === selectedDay
-    )
+      (entry) => entry.date.toISOString().slice(0, 10) === selectedDay
+    );
 
     if (matchedEntry) {
-      setSelectedDate(matchedEntry.createdAt)
-      setSelectedDiaryEntry(matchedEntry)
-      setDisplayDate(getFormattedDisplayDate(matchedEntry.createdAt))
-      setDisplayTime(getFormattedDisplayTime(matchedEntry.createdAt))
+      setSelectedDate(matchedEntry.date);
+      setSelectedDiaryEntry(matchedEntry);
+      setDisplayDate(getFormattedDisplayDate(matchedEntry.date));
+      setDisplayTime(getFormattedDisplayTime(matchedEntry.date));
     } else {
-      setSelectedDate(appendCurrentTime(new Date(selectedDay)))
-      setSelectedDiaryEntry(null)
-      setDisplayDate(getFormattedDisplayDate(new Date(selectedDay)))
-      console.log('No diary entry found for selected date: ', selectedDay)
+      setSelectedDate(appendCurrentTime(new Date(selectedDay)));
+      setSelectedDiaryEntry(null);
+      setDisplayDate(getFormattedDisplayDate(new Date(selectedDay)));
+      console.log('No diary entry found for selected date: ', selectedDay);
     }
-  }
+  };
 
   const getFormattedDate = (date: Date) => {
-    return date.toISOString().slice(0, 10)
-  }
+    return date.toISOString().slice(0, 10);
+  };
 
   const getFormattedDisplayDate = (date: Date) => {
     return date.toLocaleString('nl-NL', {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
-    })
-  }
+    });
+  };
 
   const getFormattedDisplayTime = (date: Date) => {
     return date.toLocaleTimeString('nl-NL', {
       timeStyle: 'short',
-    })
-  }
+    });
+  };
 
   const getMarkedDates = () => {
-    const markedDates = {}
+    const markedDates = {};
 
     diaryEntries.forEach((entry) => {
-      const formattedDate = getFormattedDate(entry.createdAt)
+      const formattedDate = getFormattedDate(entry.date);
       markedDates[formattedDate] = {
         marked: true,
         dotColor: getDotColor(entry.sliderValues.get(0)),
-      }
-    })
+      };
+    });
 
     markedDates[getFormattedDate(selectedDate)] = {
       selected: true,
       disableTouchEvent: true,
       selectedColor: 'black',
       selectedTextColor: 'white',
-    }
+    };
 
-    return markedDates
-  }
+    return markedDates;
+  };
 
   const getDotColor = (index: number) => {
-    return dotColorMap.get(index)
-  }
+    return dotColorMap.get(index);
+  };
 
   const appendCurrentTime = (date: Date) => {
-    const now = new Date()
-    const hours = now.getHours()
-    const minutes = now.getMinutes()
-    const seconds = now.getSeconds()
-    const milliseconds = now.getMilliseconds()
-    date.setHours(hours, minutes, seconds, milliseconds)
-    return date
-  }
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    const milliseconds = now.getMilliseconds();
+    date.setHours(hours, minutes, seconds, milliseconds);
+    return date;
+  };
 
   return (
     <>
@@ -241,7 +239,7 @@ export const PerformanceCalendar = ({
             )
           }
           onDayPress={(day) => {
-            handleSelect(day.dateString)
+            handleSelect(day.dateString);
           }}
           markingType='custom'
           markedDates={getMarkedDates()}
@@ -366,7 +364,7 @@ export const PerformanceCalendar = ({
                     ></TextInput>
                   </View>
                 </View>
-              )
+              );
             })}
           </ScrollView>
         </View>
@@ -415,8 +413,8 @@ export const PerformanceCalendar = ({
         </View>
       )}
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   dataHeadersContainer: {
@@ -508,4 +506,4 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 16,
   } as TextStyle,
-})
+});

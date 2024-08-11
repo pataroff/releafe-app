@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useContext } from 'react'
-import { DiaryContext } from '../context/DiaryContext'
+import React, { useState, useCallback, useContext } from 'react';
+import { DiaryContext } from '../context/DiaryContext';
 
 import {
   View,
@@ -10,17 +10,17 @@ import {
   Platform,
   TextStyle,
   Modal,
-} from 'react-native'
-import { Fonts } from '../styles'
-import { AntDesign } from '@expo/vector-icons'
+} from 'react-native';
+import { Fonts } from '../styles';
+import { AntDesign } from '@expo/vector-icons';
 
-import Slider from '@react-native-community/slider'
-import { ProgressBar } from 'react-native-paper'
-import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import Slider from '@react-native-community/slider';
+import { ProgressBar } from 'react-native-paper';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-import { IDiaryEntry } from '../types'
+import { IDiaryEntry } from '../types';
 
-const windowWidth = Dimensions.get('window').width
+const windowWidth = Dimensions.get('window').width;
 
 export const SliderQuestion: React.FC = ({ questions, route }) => {
   const {
@@ -30,65 +30,63 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
     progressValue,
     setSliderQuestionIndex,
     setProgressValue,
-    setCreatedAt,
+    setDate,
     addSliderValue,
     resetSliderValues,
-  } = useContext(DiaryContext)
-
-  const navigation = useNavigation()
+  } = useContext(DiaryContext);
+  const navigation = useNavigation();
 
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
-    useState<IDiaryEntry | null>()
+    useState<IDiaryEntry | null>();
 
-  const [sliderValue, setSliderValue] = useState(1)
-  const [modalVisible, setModalVisible] = useState(false)
+  const [sliderValue, setSliderValue] = useState(1);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       if (route.params?.date) {
-        setCreatedAt(route.params.date)
-        checkForExistingDiaryEntry(route.params.date)
+        setDate(route.params.date);
+        checkForExistingDiaryEntry(route.params.date);
       } else {
-        setCreatedAt(new Date())
+        setDate(new Date());
       }
     }, [diaryEntries, sliderValues, route.params?.date])
-  )
+  );
 
   const checkForExistingDiaryEntry = (selectedDate: Date) => {
     const matchedDiaryEntry = diaryEntries.find(
-      (entry) =>
-        getFormattedDate(entry.createdAt) === getFormattedDate(selectedDate)
-    )
+      (entry) => getFormattedDate(entry.date) === getFormattedDate(selectedDate)
+    );
 
     if (matchedDiaryEntry) {
-      setSelectedDiaryEntry(matchedDiaryEntry)
+      setSelectedDiaryEntry(matchedDiaryEntry);
       //@ts-ignore
-      setSliderValue(matchedDiaryEntry.sliderValues.get(sliderQuestionIndex))
+      setSliderValue(matchedDiaryEntry.sliderValues.get(sliderQuestionIndex));
     } else {
-      setSelectedDiaryEntry(null)
+      setSelectedDiaryEntry(null);
     }
-  }
+  };
 
   const handleSaveAndClose = () => {
-    setSliderQuestionIndex(0)
-    setProgressValue(0)
-    navigation.navigate('Diary1')
-  }
+    setSliderQuestionIndex(0);
+    setProgressValue(0);
+    navigation.navigate('Diary1');
+  };
 
   const handleDontSaveAndClose = () => {
-    setSliderQuestionIndex(0)
-    setProgressValue(0)
-    resetSliderValues()
-    navigation.navigate('Diary1')
-  }
+    setSliderQuestionIndex(0);
+    setProgressValue(0);
+    resetSliderValues();
+    navigation.navigate('Diary1');
+  };
 
   const handlePrevious = () => {
     if (sliderQuestionIndex > 0) {
-      setSliderQuestionIndex(sliderQuestionIndex - 1)
-      setProgressValue(progressValue - 0.167)
-      setSliderValue(1)
+      setSliderQuestionIndex(sliderQuestionIndex - 1);
+      setProgressValue(progressValue - 0.167);
+      setSliderValue(1);
     }
-  }
+  };
 
   const handleNext = () => {
     if (selectedDiaryEntry) {
@@ -98,26 +96,26 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
         selectedDiaryEntry.sliderValues.get(sliderQuestionIndex) != sliderValue
           ? Math.floor(sliderValue)
           : selectedDiaryEntry.sliderValues.get(sliderQuestionIndex)
-      )
+      );
     } else {
       addSliderValue(
         sliderQuestionIndex,
         Math.floor(sliderValues.get(sliderQuestionIndex) ?? sliderValue)
-      )
+      );
     }
     if (sliderQuestionIndex < questions.length - 1) {
-      setSliderQuestionIndex(sliderQuestionIndex + 1)
-      setProgressValue(progressValue + 0.167)
-      setSliderValue(1)
+      setSliderQuestionIndex(sliderQuestionIndex + 1);
+      setProgressValue(progressValue + 0.167);
+      setSliderValue(1);
     } else {
-      setSliderValue(1)
-      navigation.navigate('Diary3', { date: route.params?.date })
+      setSliderValue(1);
+      navigation.navigate('Diary3', { date: route.params?.date });
     }
-  }
+  };
 
   const getFormattedDate = (date: Date) => {
-    return date.toISOString().slice(0, 10)
-  }
+    return date.toISOString().slice(0, 10);
+  };
 
   return (
     <View style={styles.container}>
@@ -236,8 +234,8 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -374,4 +372,4 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsSemiBold[Platform.OS],
     fontSize: 20,
   } as TextStyle,
-})
+});

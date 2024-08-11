@@ -13,7 +13,7 @@ export const RegisterScreen = () => {
         contentContainerStyle={styles.contentContainerStyles}
       >
         <Image
-          style={{ width: '90%', height: 100, marginBottom: 20 }}
+          style={{ width: '90%', height: 100, marginVertical: 20 }}
           source={require('../../assets/images/logo_releafe_02.png')}
         />
         <RegisterForm />

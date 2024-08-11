@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   textInputField: {
     ...Fonts.poppinsItalic[Platform.OS],
-    height: 30,
+    height: 40,
     borderWidth: 1,
     borderColor: '#dedede',
     borderRadius: 30,
@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     borderColor: '#dedede',
     borderRadius: 30,
     paddingVertical: 20,
+    marginBottom: 20,
   },
   signUpText: {
     color: '#00d8bd',

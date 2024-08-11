@@ -37,9 +37,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(pb.authStore.isValid ? pb.authStore.model : null);
       setIsLoggedIn(pb.authStore.isValid);
       setIsLoading(false);
-      console.log(res.record);
     } catch (error) {
-      console.log('Error: ', error);
+      console.error('Error: ', error);
     }
   };
 
@@ -51,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoggedIn(false);
       setIsLoading(false);
     } catch (error) {
-      console.log('Error: ', error);
+      console.error('Error: ', error);
     }
   };
 
@@ -70,9 +69,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         firstName: firstName ?? '',
         lastName: lastName ?? '',
       });
-      console.log(res);
     } catch (error) {
-      console.log('Error: ', error);
+      console.error('Error: ', error);
     }
   };
 

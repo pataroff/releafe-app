@@ -5,7 +5,7 @@ import {
 
 export interface IDiaryEntry {
   id: string;
-  createdAt: Date;
+  date: Date;
   sliderValues: Map<number, number>;
   textValues: Map<number, string>;
 }
@@ -16,9 +16,10 @@ export interface IDiaryContext {
   sliderQuestionIndex: number;
   progressValue: number;
   hasData: boolean;
-  createdAt: Date;
+  date: Date;
+  setDiaryEntries: React.Dispatch<React.SetStateAction<IDiaryEntry[]>>;
   setHasData: React.Dispatch<React.SetStateAction<boolean>>;
-  setCreatedAt: React.Dispatch<React.SetStateAction<Date>>;
+  setDate: React.Dispatch<React.SetStateAction<Date>>;
   setProgressValue: React.Dispatch<React.SetStateAction<number>>;
   setSliderQuestionIndex: React.Dispatch<React.SetStateAction<number>>;
   addSliderValue: (questionIndex: number, value: number) => void;
@@ -26,6 +27,7 @@ export interface IDiaryContext {
   resetTextValues: () => void;
   addTextValue: (questionIndex: number, value: string) => void;
   createDiaryEntry: () => void;
+  jsonToMap: (jsonStr: string) => Map<number, number | string>;
 }
 
 export type RootStackParamList = {

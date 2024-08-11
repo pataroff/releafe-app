@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useContext } from 'react'
-import { DiaryContext } from '../context/DiaryContext'
+import React, { useState, useCallback, useContext } from 'react';
+import { DiaryContext } from '../context/DiaryContext';
 
 import {
   View,
@@ -10,14 +10,14 @@ import {
   Dimensions,
   Platform,
   TextStyle,
-} from 'react-native'
-import { Fonts } from '../styles'
-import { AntDesign } from '@expo/vector-icons'
-import { useNavigation, useFocusEffect } from '@react-navigation/native'
-import { IDiaryEntry } from '../types'
+} from 'react-native';
+import { Fonts } from '../styles';
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { IDiaryEntry } from '../types';
 
-const windowWidth = Dimensions.get('window').width
-const windowHeight = Dimensions.get('window').height
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export const TextQuestion: React.FC = ({ questions, route }) => {
   const {
@@ -26,70 +26,69 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
     setProgressValue,
     addTextValue,
     setHasData,
-  } = useContext(DiaryContext)
-  const navigation = useNavigation()
+  } = useContext(DiaryContext);
+  const navigation = useNavigation();
 
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
-    useState<IDiaryEntry | null>()
-  const [textValues, setTextValues] = useState<Map<number, string>>(new Map())
+    useState<IDiaryEntry | null>();
+  const [textValues, setTextValues] = useState<Map<number, string>>(new Map());
 
   useFocusEffect(
     useCallback(() => {
       if (route.params?.date) {
         // `date` is being passed from `SliderQuestion` component!
-        checkForExistingDiaryEntry(route.params.date)
+        checkForExistingDiaryEntry(route.params.date);
       }
       // else {
       //   checkForExistingDiaryEntry(new Date());
       // }
     }, [diaryEntries, route.params?.date])
-  )
+  );
 
   const checkForExistingDiaryEntry = (selectedDate: Date) => {
     const matchedDiaryEntry = diaryEntries.find(
-      (entry) =>
-        getFormattedDate(entry.createdAt) === getFormattedDate(selectedDate)
-    )
+      (entry) => getFormattedDate(entry.date) === getFormattedDate(selectedDate)
+    );
 
     if (matchedDiaryEntry) {
-      setSelectedDiaryEntry(matchedDiaryEntry)
-      getTextValues(matchedDiaryEntry)
+      setSelectedDiaryEntry(matchedDiaryEntry);
+      getTextValues(matchedDiaryEntry);
     } else {
-      setSelectedDiaryEntry(null)
+      setSelectedDiaryEntry(null);
     }
-  }
+  };
 
   const handleTextChange = (index: number, value: string) => {
     setTextValues((prev) => {
-      const newValues = new Map(prev)
-      newValues.set(index, value)
-      return newValues
-    })
-  }
+      const newValues = new Map(prev);
+      newValues.set(index, value);
+      return newValues;
+    });
+  };
 
   const handleFinish = () => {
     // Assuming all questions have been answered
     textValues.forEach((value, index) => {
-      addTextValue(index, value)
-    })
+      addTextValue(index, value);
+    });
 
-    setSliderQuestionIndex(0)
-    setProgressValue(0)
-    setHasData(true)
-    navigation.navigate('Diary4')
-  }
+    setSliderQuestionIndex(0);
+    setProgressValue(0);
+    setHasData(true);
+    navigation.navigate('Diary4');
+  };
 
   const getFormattedDate = (date: Date) => {
-    return date.toISOString().slice(0, 10)
-  }
+    return date.toISOString().slice(0, 10);
+  };
 
   const getTextValues = (matchedDiaryEntry: IDiaryEntry) => {
-    const initialTextValues = new Map()
+    const initialTextValues = new Map();
     matchedDiaryEntry.textValues.forEach((value, key) => {
-      initialTextValues.set(key, value)
-    })
-    setTextValues(initialTextValues)
-  }
+      initialTextValues.set(key, value);
+    });
+    setTextValues(initialTextValues);
+  };
 
   return (
     <View style={styles.container}>
@@ -118,14 +117,14 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
               placeholderTextColor='black'
             ></TextInput>
           </View>
-        )
+        );
       })}
       <Pressable onPress={handleFinish} style={styles.button}>
         <Text style={styles.buttonText}>Afronden</Text>
       </Pressable>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -173,4 +172,4 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsItalic[Platform.OS],
     fontStyle: 'italic',
   } as TextStyle,
-})
+});
