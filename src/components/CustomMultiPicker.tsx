@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
-import { ChevronDown } from 'react-native-feather';
+import Feather from '@expo/vector-icons/Feather';
 
 import { DiaryContext } from '../context/DiaryContext';
 
@@ -35,7 +35,7 @@ export const CustomMultiPicker: React.FC = ({ selected }) => {
             : 'Angst'}
         </Text>
         <Pressable style={styles.chevronDown}>
-          <ChevronDown color={'black'} />
+          <Feather name='chevron-down' size={24} color='black' />
         </Pressable>
       </View>
     </View>

@@ -23,27 +23,35 @@ export const DiaryScreen2: React.FC = ({ route }) => {
         <SliderQuestion
           questions={[
             [
-              'Hoe zou je je algehele stemming vandaag beoordelen?',
-              'Heel slecht',
-              'Heel goed',
+              'Hoe zou je je algemene stemming vandaag beschrijven?',
+              'Zeer slecht',
+              'Uitstekend',
             ],
             [
-              'Hoe angstig voel je je op dit moment?',
-              'Erg angstig',
-              'Totaal niet angstig',
+              'Hoeveel angst of zorgen heb je vandaag ervaren?',
+              'Heel veel angst of zorgen',
+              'Helemaal geen angst of zorgen',
             ],
             [
-              'Hoeveel stress heb je vandaag ervaren?',
-              'Veel stress',
-              'Geen stress',
+              'Hoe gestrest voelde je je vandaag?',
+              'Zeer gestresst',
+              'Helemaal niet gestresst',
             ],
-            ['Hoeveel energie heb je vandaag?', 'Geen energie', 'Veel energie'],
             [
-              'Hoe is je focus en concentratie?',
-              'Niet aanwezig',
-              'Sterk aanwezig',
+              'Hoe zou je je energieniveau vandaag beoordelen?',
+              'Zeer lage energie',
+              'Zeer energiek',
             ],
-            ['Hoe goed heb je geslapen?', 'Slecht geslapen', 'Goed geslapen'],
+            [
+              'Hoe goed kon je je vandaag concentreren op dingen die je deed?',
+              'Helemaal geen concentratie',
+              'Uitstekende concentratie',
+            ],
+            [
+              'Hoe goed heb je geslapen afgelopen nacht?',
+              'Zeer slecht',
+              'Uitstekend',
+            ],
           ]}
           route={route}
         />

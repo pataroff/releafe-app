@@ -19,7 +19,7 @@ import {
   LocaleConfig,
 } from 'react-native-calendars';
 
-import { ChevronLeft, ChevronRight } from 'react-native-feather';
+import Feather from '@expo/vector-icons/Feather';
 import { Fonts } from '../styles';
 
 import Slider from '@react-native-community/slider';
@@ -85,11 +85,10 @@ const dotColorMap = new Map([
 ]);
 
 const questions = [
-  'Welke dingen zijn er vandaag\ngebeur die je gemoedstoestand hebben beïnvloed?',
-  'Hoe voelde je je daardoor?',
-  'Wat heb je toen gedaan?',
-  'Welk effect had dat op je gemoedstoestand?',
-  'Heb je ook dingen vermeden?\nZo ja, waarom en hoe voelde dat?',
+  'Heb je je vandaag ergens zorgen over gemaakt?',
+  'Zijn er vandaag ook andere dingen gebeurd die je gemoedstoestand hebben beïnvloed? En zo ja, hoe voelde je je daardoor?',
+  'Wat heb je toen gedaan en welk effect had dit op je gemoedstoestand?',
+  'Heb je ook dingen vermeden? Zo ja, waarom en hoe voelde dat?',
   'Waar ben je vandaag dankbaar voor?',
 ];
 
@@ -233,9 +232,19 @@ export const PerformanceCalendar = ({
           onCalendarToggled={() => setIsOpen(!isOpen)}
           renderArrow={(direction) =>
             direction === 'left' ? (
-              <ChevronLeft color='black' style={{ marginLeft: 75 }} />
+              <Feather
+                name='chevron-left'
+                size={24}
+                color='black'
+                style={{ marginLeft: 75 }}
+              />
             ) : (
-              <ChevronRight color='black' style={{ marginRight: 75 }} />
+              <Feather
+                name='chevron-right'
+                size={24}
+                color='black'
+                style={{ marginRight: 75 }}
+              />
             )
           }
           onDayPress={(day) => {

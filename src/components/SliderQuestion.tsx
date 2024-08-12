@@ -271,6 +271,7 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsMediumItalic[Platform.OS],
     fontSize: 12,
     fontStyle: 'italic',
+    flexShrink: 1, // text wrap
   } as TextStyle,
   button: {
     width: 130,

@@ -20,11 +20,11 @@ export const DiaryScreen3: React.FC = ({ route }) => {
         <Header />
         <TextQuestion
           questions={[
-            'Welke dingen zijn er vandaag gebeur die je gemoedstoestand hebben beïnvloed?',
-            'Hoe voelde je je daardoor?',
-            'Wat heb je toen gedaan?',
+            'Heb je je vandaag ergens zorgen over gemaakt?',
+            'Zijn er vandaag ook andere dingen gebeurd die je gemoedstoestand hebben beïnvloed? En zo ja, hoe voelde je je daardoor?',
+            'Wat heb je toen gedaan en welk effect had dit op je gemoedstoestand?',
             'Welk effect had dat op je gemoedstoestand?',
-            'Heb je ook dingen vermeden?\nZo ja, waarom en hoe voelde dat?',
+            'Heb je ook dingen vermeden? Zo ja, waarom en hoe voelde dat?',
             'Waar ben je vandaag dankbaar voor?',
           ]}
           route={route}

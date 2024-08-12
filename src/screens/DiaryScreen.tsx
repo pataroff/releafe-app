@@ -18,6 +18,7 @@ export const DiaryScreen: React.FC = () => {
     const fetchDiaryEntries = async () => {
       if (user) {
         try {
+          // TODO: Consider subscribing to the `diary_entries` collection!
           const diaryEntriesList = await pb
             .collection('diary_entries')
             .getList(1, 50, {

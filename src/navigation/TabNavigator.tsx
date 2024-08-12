@@ -1,14 +1,16 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, BookOpen, Box, MessageSquare } from 'react-native-feather';
 
 import { DiaryStack } from './DiaryStack';
 
-// All icon packs are available by default in Expo 👇🏻
-// import Feather from '@expo/vector-icons/Feather';
+import Feather from '@expo/vector-icons/Feather';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import { HomeScreen } from '../screens/HomeScreen';
 import { ToolkitScreen } from '../screens/ToolkitScreen';
 import { ChatScreen } from '../screens/ChatScreen';
+import { AIScreen } from '../screens/AIScreen';
+
+import { Image } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -37,9 +39,9 @@ export const TabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (
-              <Home fill='black' stroke='black' />
+              <Feather name='home' size={24} color='black' />
             ) : (
-              <Home stroke='black' />
+              <Feather name='home' size={24} color='gray' />
             );
           },
         }}
@@ -50,24 +52,35 @@ export const TabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (
-              <BookOpen fill='black' stroke='black' />
+              <Feather name='book' size={24} color='black' />
             ) : (
-              <BookOpen stroke='black' />
+              <Feather name='book' size={24} color='gray' />
             );
           },
         }}
       />
+
+      {/* Custom Tab Bar Icon */}
+      <Tab.Screen
+        name='AI'
+        component={AIScreen}
+        options={{
+          tabBarIcon: ({ size, focused, color }) => {},
+        }}
+      />
+
       <Tab.Screen
         name='Toolkit'
         component={ToolkitScreen}
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (
-              <Box fill='black' stroke='black' />
+              <FontAwesome6 name='lightbulb' size={22} color='black' />
             ) : (
-              <Box stroke='black' />
+              <FontAwesome6 name='lightbulb' size={22} color='gray' />
             );
           },
+          tabBarBadge: 2,
         }}
       />
       <Tab.Screen
@@ -76,9 +89,9 @@ export const TabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (
-              <MessageSquare fill='black' stroke='black' />
+              <FontAwesome6 name='message' size={22} color='black' />
             ) : (
-              <MessageSquare stroke='black' />
+              <FontAwesome6 name='message' size={22} color='gray' />
             );
           },
         }}
