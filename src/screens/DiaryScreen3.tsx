@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, ScrollView } from 'react-native';
 
-import { Header } from '../components/Header';
 import { TextQuestion } from '../components/TextQuestion';
 
 export const DiaryScreen3: React.FC = ({ route }) => {
@@ -17,7 +16,6 @@ export const DiaryScreen3: React.FC = ({ route }) => {
         }}
         style={{ flex: 1 }}
       >
-        <Header />
         <TextQuestion
           questions={[
             'Heb je je vandaag ergens zorgen over gemaakt?',

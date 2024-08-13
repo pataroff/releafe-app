@@ -9,9 +9,6 @@ import {
   Dimensions,
 } from 'react-native';
 
-import { Fonts } from '../styles';
-
-import { Header } from '../components/Header';
 import { Performance } from '../components/Performance';
 
 export const DashboardScreen: React.FC = () => {
@@ -22,7 +19,6 @@ export const DashboardScreen: React.FC = () => {
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
-        <Header />
         <Performance />
       </ScrollView>
     </>

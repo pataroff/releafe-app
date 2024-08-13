@@ -1,9 +1,19 @@
+import React, { useEffect } from 'react';
+
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 
-import { DiaryFarewell } from '../components/DiaryFarewell';
+import { useNavigation } from '@react-navigation/native';
 
-export const DiaryScreen4: React.FC = () => {
+import Drawer from '../components/Drawer';
+
+export const WorryBoxScreen: React.FC = () => {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({ headerTitle: 'Zorgenbakje' });
+  }, [navigation]);
+
   return (
     <>
       <StatusBar />
@@ -12,7 +22,7 @@ export const DiaryScreen4: React.FC = () => {
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
-        <DiaryFarewell />
+        <Drawer />
       </ScrollView>
     </>
   );
@@ -21,6 +31,7 @@ export const DiaryScreen4: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
   contentContainerStyles: {
     flexGrow: 1,

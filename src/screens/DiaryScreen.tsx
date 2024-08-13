@@ -2,7 +2,6 @@ import React, { useEffect, useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
-import { Header } from '../components/Header';
 import { DiaryGreeting } from '../components/DiaryGreeting';
 
 import pb from '../lib/pocketbase';
@@ -56,7 +55,6 @@ export const DiaryScreen: React.FC = () => {
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
-        <Header />
         <DiaryGreeting />
       </ScrollView>
     </>

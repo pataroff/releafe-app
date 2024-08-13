@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 import {
   View,
@@ -8,22 +8,20 @@ import {
   Platform,
   TextStyle,
   Dimensions,
-} from 'react-native'
+} from 'react-native';
 
-import { Fonts } from '../styles'
-import { IDiaryEntry } from '../types'
+import { Fonts } from '../styles';
+import { IDiaryEntry } from '../types';
 
-import { CustomSelector } from './CustomSelector'
-import { CustomMultiPicker } from './CustomMultiPicker'
-import { PerformanceCalendar } from './PerformanceCalendar'
-import Slider from '@react-native-community/slider'
+import { CustomSelector } from './CustomSelector';
+import { CustomMultiPicker } from './CustomMultiPicker';
+import { PerformanceCalendar } from './PerformanceCalendar';
 
-import { PerformanceChart } from './PerformanceChart'
-import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web'
-import { version } from 'canvaskit-wasm/package.json'
+import { PerformanceChart } from './PerformanceChart';
+import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
+import { version } from 'canvaskit-wasm/package.json';
 
-const windowWidth = Dimensions.get('window').width
-const windowHeight = Dimensions.get('window').height
+const windowWidth = Dimensions.get('window').width;
 
 enum SelectOptions {
   Week,
@@ -32,15 +30,15 @@ enum SelectOptions {
 }
 
 export const Performance: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [selected, setSelected] = useState<SelectOptions>(0)
+  const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState<SelectOptions>(0);
 
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
-    useState<IDiaryEntry | null>(null)
+    useState<IDiaryEntry | null>(null);
 
   const handleSelect = (option: SelectOptions) => {
-    setSelected(option)
-  }
+    setSelected(option);
+  };
 
   return (
     <>
@@ -122,8 +120,8 @@ export const Performance: React.FC = () => {
           <PerformanceChart />
         )} */}
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   containerHasNoData: {
@@ -163,4 +161,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 5,
   } as TextStyle,
-})
+});

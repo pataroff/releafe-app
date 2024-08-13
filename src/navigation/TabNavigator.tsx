@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { DiaryStack } from './DiaryStack';
+import { ToolkitStack } from './ToolkitStack';
 
 import Feather from '@expo/vector-icons/Feather';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -71,7 +72,7 @@ export const TabNavigator = () => {
 
       <Tab.Screen
         name='Toolkit'
-        component={ToolkitScreen}
+        component={ToolkitStack}
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (

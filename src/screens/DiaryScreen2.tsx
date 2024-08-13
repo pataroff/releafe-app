@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 
 import { View, Text, ScrollView } from 'react-native';
 
-import { Header } from '../components/Header';
 import { SliderQuestion } from '../components/SliderQuestion';
 
 export const DiaryScreen2: React.FC = ({ route }) => {
@@ -19,7 +18,6 @@ export const DiaryScreen2: React.FC = ({ route }) => {
         }}
         style={{ flex: 1, backgroundColor: '#ffffff' }}
       >
-        <Header />
         <SliderQuestion
           questions={[
             [
