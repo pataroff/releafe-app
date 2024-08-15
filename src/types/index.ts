@@ -44,3 +44,26 @@ export interface IUserData {
   firstName: string;
   lastName: string;
 }
+
+export enum Category {
+  Work,
+  Health,
+  Relationships,
+}
+
+export enum Priority {
+  None,
+  Low,
+  Medium,
+  High,
+}
+
+export interface IWorriesListItem {
+  id: string;
+  category: Category;
+  priority: Priority;
+  date: Date;
+  title: string;
+  description: string;
+  reframed: boolean;
+}
