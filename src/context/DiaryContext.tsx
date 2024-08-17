@@ -75,7 +75,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     });
   };
 
-  const createDiaryEntry = () => {
+  const createDiaryEntry = async () => {
     // Check if there is a matching entry with this date
     const matchedDiaryEntry = diaryEntries.find(
       (entry) => getFormattedDate(entry.date) === getFormattedDate(date)
@@ -83,8 +83,8 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
 
     // Create a new diary entry
     const newDiaryEntry = {
-      // TODO: Locally, `id` is an empty string prior to fetching diary entries from the database!
-      id: uuidv4(),
+      id: '',
+      uuid: uuidv4(),
       date: date,
       sliderValues: sliderValues,
       textValues: textValues,
@@ -94,8 +94,9 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     const newDiaryEntryDatabase = {
       // NOTE: "id: the length must be exactly 15."
       id: '',
+      uuid: newDiaryEntry.uuid,
       // @ts-ignore 'user' is possibly 'null'
-      user: user.id,
+      user: user?.id,
       date: newDiaryEntry.date,
       sliderValues: mapToJson(newDiaryEntry.sliderValues),
       textValues: mapToJson(newDiaryEntry.textValues),
@@ -111,23 +112,21 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
         updatedEntries[index] = newDiaryEntry;
         return updatedEntries;
       });
-      // Get the existing entry in the database
-      // const oldDiaryEntry = pb
-      //   .collection('diary_entries')
-      //   .getFirstListItem(`date="${matchedDiaryEntry.date}"`);
 
-      // console.log(oldDiaryEntry);
+      // Get the existing entry from the databasae
+      const matchedDiaryEntryDatabase = await pb
+        .collection('diary_entries')
+        .getFirstListItem(`uuid="${matchedDiaryEntry.uuid}"`);
 
       // Update the existing entry in the database
-      pb.collection('diary_entries').update(
-        matchedDiaryEntry.id,
-        newDiaryEntryDatabase
-      );
+      await pb
+        .collection('diary_entries')
+        .update(matchedDiaryEntryDatabase.id, newDiaryEntryDatabase);
     } else {
       // Add the new entry to the array
       setDiaryEntries((prev) => [...prev, newDiaryEntry]);
       // Add the new entry to the database
-      pb.collection('diary_entries').create(newDiaryEntryDatabase);
+      await pb.collection('diary_entries').create(newDiaryEntryDatabase);
     }
   };
 

@@ -29,9 +29,10 @@ export const DiaryScreen: React.FC = () => {
 
           const modifiedDiaryEntriesList: IDiaryEntry[] =
             diaryEntriesList.items.map((item) => {
-              const { id, date, sliderValues, textValues } = item;
+              const { id, uuid, date, sliderValues, textValues } = item;
               return {
                 id,
+                uuid,
                 date: new Date(date),
                 sliderValues: jsonToMap(sliderValues),
                 textValues: jsonToMap(textValues),

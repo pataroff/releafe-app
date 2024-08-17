@@ -7,6 +7,7 @@ import { AuthModel } from 'pocketbase';
 
 export interface IDiaryEntry {
   id: string;
+  uuid: string;
   date: Date;
   sliderValues: Map<number, number | string>;
   textValues: Map<number, number | string>;
