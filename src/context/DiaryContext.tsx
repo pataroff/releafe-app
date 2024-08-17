@@ -84,7 +84,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     // Create a new diary entry
     const newDiaryEntry = {
       // TODO: Locally, `id` is an empty string prior to fetching diary entries from the database!
-      id: '',
+      id: uuidv4(),
       date: date,
       sliderValues: sliderValues,
       textValues: textValues,
@@ -93,7 +93,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     // Create a new diary entry for database
     const newDiaryEntryDatabase = {
       // NOTE: "id: the length must be exactly 15."
-      id: uuidv4(),
+      id: '',
       // @ts-ignore 'user' is possibly 'null'
       user: user.id,
       date: newDiaryEntry.date,
@@ -111,6 +111,13 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
         updatedEntries[index] = newDiaryEntry;
         return updatedEntries;
       });
+      // Get the existing entry in the database
+      // const oldDiaryEntry = pb
+      //   .collection('diary_entries')
+      //   .getFirstListItem(`date="${matchedDiaryEntry.date}"`);
+
+      // console.log(oldDiaryEntry);
+
       // Update the existing entry in the database
       pb.collection('diary_entries').update(
         matchedDiaryEntry.id,

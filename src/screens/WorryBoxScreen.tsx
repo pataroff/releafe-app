@@ -14,7 +14,7 @@ import Drawer from '../components/Drawer';
 
 export const WorryBoxScreen: React.FC = () => {
   const { user } = useContext(AuthContext);
-  const { setWorryEntries } = useContext(WorryContext);
+  const { worryEntries, setWorryEntries } = useContext(WorryContext);
 
   const navigation = useNavigation();
 
@@ -61,7 +61,6 @@ export const WorryBoxScreen: React.FC = () => {
     };
 
     fetchDiaryEntries();
-
     navigation.setOptions({ headerTitle: 'Zorgenbakje' });
   }, [navigation]);
 

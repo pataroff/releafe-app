@@ -17,6 +17,7 @@ import Feather from '@expo/vector-icons/Feather';
 
 import { WorryListModal } from './WorryListModal';
 import { WorryListItemAddModal } from './WorryListItemAddModal';
+import { WorryListItemAddedModal } from './WorryListItemAddedModal';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -26,6 +27,8 @@ const Drawer = () => {
   const [modalWorryListVisible, setModalWorryListVisible] =
     useState<boolean>(false);
   const [modalAddWorryListItemVisible, setModalAddWorryListItemVisible] =
+    useState<boolean>(false);
+  const [modalAddedWorryListItemVisible, setModalAddedWorryListItemVisible] =
     useState<boolean>(false);
 
   const handleDrawer = () => {
@@ -55,6 +58,14 @@ const Drawer = () => {
       <WorryListItemAddModal
         modalAddWorryListItemVisible={modalAddWorryListItemVisible}
         setModalAddWorryListItemVisible={setModalAddWorryListItemVisible}
+        modalAddedWorryListItemVisible={modalAddedWorryListItemVisible}
+        setModalAddedWorryListItemVisible={setModalAddedWorryListItemVisible}
+      />
+
+      {/* Added Worry List Item Modal */}
+      <WorryListItemAddedModal
+        modalAddedWorryListItemVisible={modalAddedWorryListItemVisible}
+        setModalAddedWorryListItemVisible={setModalAddedWorryListItemVisible}
       />
 
       {/* Drawer */}

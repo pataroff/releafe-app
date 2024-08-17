@@ -8,8 +8,8 @@ import { AuthModel } from 'pocketbase';
 export interface IDiaryEntry {
   id: string;
   date: Date;
-  sliderValues: Map<number, number>;
-  textValues: Map<number, string>;
+  sliderValues: Map<number, number | string>;
+  textValues: Map<number, number | string>;
 }
 
 export interface IDiaryContext {

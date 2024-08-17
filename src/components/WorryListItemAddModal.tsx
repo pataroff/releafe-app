@@ -44,11 +44,17 @@ interface WorryListItemAddModalProps {
   setModalAddWorryListItemVisible: React.Dispatch<
     React.SetStateAction<boolean>
   >;
+  modalAddedWorryListItemVisible: boolean;
+  setModalAddedWorryListItemVisible: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
 }
 
 export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
   modalAddWorryListItemVisible,
   setModalAddWorryListItemVisible,
+  modalAddedWorryListItemVisible,
+  setModalAddedWorryListItemVisible,
 }) => {
   const {
     category,
@@ -67,12 +73,10 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     useState<boolean>(false);
 
   const handleStore = () => {
-    // Create worry entry
-    createWorryEntry();
-    // Reset modal fields
-    resetWorryEntryFields();
-    // Close modal
-    setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
+    createWorryEntry(),
+      resetWorryEntryFields(),
+      setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
+    setModalAddedWorryListItemVisible(!modalAddedWorryListItemVisible);
   };
 
   const handlePriority = (priority: Priority) => {
