@@ -15,9 +15,9 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
-import { Category, Priority, IWorriesListItem } from '../types';
+import { Category, Priority, IWorryListItem } from '../types';
 
-const getCategory = (category: Category) => {
+const getCategory = (category: Category): React.ReactElement => {
   switch (category) {
     case Category.Work:
       return <FontAwesome6 name='suitcase' size={24} color='black' />;
@@ -28,7 +28,7 @@ const getCategory = (category: Category) => {
   }
 };
 
-const getPriority = (priority: Priority) => {
+const getPriority = (priority: Priority): string => {
   switch (priority) {
     case Priority.None:
       return 'gray';
@@ -43,9 +43,7 @@ const getPriority = (priority: Priority) => {
   }
 };
 
-export const WorriesListItem: React.FC<{ data: IWorriesListItem }> = ({
-  data,
-}) => {
+export const WorryListItem: React.FC<{ data: IWorryListItem }> = ({ data }) => {
   const { id, category, priority, date, title, description, reframed } = data;
 
   const [expandedItems, setExpandedItems] = useState<{
@@ -61,17 +59,17 @@ export const WorriesListItem: React.FC<{ data: IWorriesListItem }> = ({
 
   return (
     <Pressable onPress={() => expandItem(id)}>
-      {/* Worries List Item */}
+      {/* Worry List Item */}
       <View
         style={
           expandedItems[id] === true
             ? [
-                styles.worriesListItemContainer,
+                styles.WorryListItemContainer,
                 {
                   height: 220, // TODO: Is this gonna be a hard-coded value?
                 },
               ]
-            : styles.worriesListItemContainer
+            : styles.WorryListItemContainer
         }
       >
         {/* Priority Bar */}
@@ -127,7 +125,7 @@ export const WorriesListItem: React.FC<{ data: IWorriesListItem }> = ({
                 }}
               >
                 {/* Title */}
-                <Text style={styles.worriesListItemText}>{title}</Text>
+                <Text style={styles.WorryListItemText}>{title}</Text>
                 {/* Date */}
                 {expandedItems[id] == true && (
                   <Text style={{ fontSize: 11 }}>
@@ -231,7 +229,7 @@ export const WorriesListItem: React.FC<{ data: IWorriesListItem }> = ({
 };
 
 const styles = StyleSheet.create({
-  worriesListItemContainer: {
+  WorryListItemContainer: {
     position: 'relative',
     display: 'flex',
     flexDirection: 'row',
@@ -243,7 +241,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
   },
-  worriesListItemText: {
+  WorryListItemText: {
     ...Fonts.poppinsRegular[Platform.OS],
   } as TextStyle,
 });

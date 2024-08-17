@@ -1,13 +1,14 @@
 import React, { useEffect, useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
+
+import { IDiaryEntry } from '../types';
 
 import { DiaryGreeting } from '../components/DiaryGreeting';
 
 import pb from '../lib/pocketbase';
 import { AuthContext } from '../context/AuthContext';
 import { DiaryContext } from '../context/DiaryContext';
-import { IDiaryEntry } from '../types';
 
 export const DiaryScreen: React.FC = () => {
   const { user } = useContext(AuthContext);

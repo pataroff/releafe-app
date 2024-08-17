@@ -15,27 +15,27 @@ import {
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 
-import { WorriesListModal } from './WorriesListModal';
-import { WorriesListItemAddModal } from './WorriesListItemAddModal';
+import { WorryListModal } from './WorryListModal';
+import { WorryListItemAddModal } from './WorryListItemAddModal';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const Drawer = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [modalWorriesListVisible, setModalWorriesListVisible] =
+  const [modalWorryListVisible, setModalWorryListVisible] =
     useState<boolean>(false);
-  const [modalAddWorriesListItemVisible, setModalAddWorriesListItemVisible] =
+  const [modalAddWorryListItemVisible, setModalAddWorryListItemVisible] =
     useState<boolean>(false);
 
   const handleDrawer = () => {
     if (!isDrawerOpen) {
       setIsDrawerOpen(!isDrawerOpen);
       setTimeout(() => {
-        setModalWorriesListVisible(!modalWorriesListVisible);
+        setModalWorryListVisible(!modalWorryListVisible);
       }, 500);
     } else {
-      setModalWorriesListVisible(!modalWorriesListVisible);
+      setModalWorryListVisible(!modalWorryListVisible);
       setTimeout(() => {
         setIsDrawerOpen(!isDrawerOpen);
       }, 500);
@@ -44,17 +44,17 @@ const Drawer = () => {
 
   return (
     <>
-      {/* Worries List Modal */}
-      <WorriesListModal
-        modalWorriesListVisible={modalWorriesListVisible}
-        setModalWorriesListVisible={setModalWorriesListVisible}
+      {/* Worry List Modal */}
+      <WorryListModal
+        modalWorryListVisible={modalWorryListVisible}
+        setModalWorryListVisible={setModalWorryListVisible}
         handleDrawer={handleDrawer}
       />
 
-      {/* Add Worries List Item Modal */}
-      <WorriesListItemAddModal
-        modalAddWorriesListItemVisible={modalAddWorriesListItemVisible}
-        setModalAddWorriesListItemVisible={setModalAddWorriesListItemVisible}
+      {/* Add Worry List Item Modal */}
+      <WorryListItemAddModal
+        modalAddWorryListItemVisible={modalAddWorryListItemVisible}
+        setModalAddWorryListItemVisible={setModalAddWorryListItemVisible}
       />
 
       {/* Drawer */}
@@ -111,7 +111,7 @@ const Drawer = () => {
         </Pressable>
         <Pressable
           onPress={() =>
-            setModalAddWorriesListItemVisible(!modalAddWorriesListItemVisible)
+            setModalAddWorryListItemVisible(!modalAddWorryListItemVisible)
           }
         >
           <View style={{ width: 150 }}>

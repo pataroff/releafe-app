@@ -3,6 +3,8 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
+import { AuthModel } from 'pocketbase';
+
 export interface IDiaryEntry {
   id: string;
   date: Date;
@@ -27,7 +29,9 @@ export interface IDiaryContext {
   resetTextValues: () => void;
   addTextValue: (questionIndex: number, value: string) => void;
   createDiaryEntry: () => void;
-  jsonToMap: (jsonStr: string) => Map<number, number | string>;
+  jsonToMap: (data: {
+    [key: string]: number | string;
+  }) => Map<number, number | string>;
 }
 
 export type RootStackParamList = {
@@ -45,20 +49,29 @@ export interface IUserData {
   lastName: string;
 }
 
+export interface IAuthContext {
+  signIn: (email: string, password: string) => void;
+  signOut: () => void;
+  register: ({}: IUserData) => void;
+  isLoading: boolean;
+  isLoggedIn: boolean;
+  user: AuthModel | null;
+}
+
 export enum Category {
-  Work,
-  Health,
-  Relationships,
+  Work = 'WORK',
+  Health = 'HEALTH',
+  Relationships = 'RELATIONSHIPS',
 }
 
 export enum Priority {
-  None,
-  Low,
-  Medium,
-  High,
+  None = 'NONE',
+  Low = 'LOW',
+  Medium = 'MEDIUM',
+  High = 'HIGH',
 }
 
-export interface IWorriesListItem {
+export interface IWorryListItem {
   id: string;
   category: Category;
   priority: Priority;
@@ -66,4 +79,23 @@ export interface IWorriesListItem {
   title: string;
   description: string;
   reframed: boolean;
+}
+
+export interface IWorryContext {
+  worryEntries: IWorryListItem[];
+  category: Category;
+  priority: Priority;
+  date: Date;
+  title: string;
+  description: string;
+  reframed: boolean;
+  setWorryEntries: React.Dispatch<React.SetStateAction<IWorryListItem[]>>;
+  setCategory: React.Dispatch<React.SetStateAction<Category>>;
+  setPriority: React.Dispatch<React.SetStateAction<Priority>>;
+  setDate: React.Dispatch<React.SetStateAction<Date>>;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  setDescription: React.Dispatch<React.SetStateAction<string>>;
+  setReframed: React.Dispatch<React.SetStateAction<boolean>>;
+  createWorryEntry: () => void;
+  resetWorryEntryFields: () => void;
 }

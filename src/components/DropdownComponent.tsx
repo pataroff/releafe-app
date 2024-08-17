@@ -6,6 +6,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
+import { Category } from '../types';
+
 interface IIcon {
   label: string;
   value: string;
@@ -35,7 +37,26 @@ const getIcon = (selectedValue: string | null) => {
   return selectedItem ? selectedItem.icon : null;
 };
 
-export const DropdownComponent = () => {
+const getCategory = (category: string) => {
+  switch (category) {
+    case 'werk':
+      return Category.Work;
+    case 'gezondheid':
+      return Category.Health;
+    case 'relaties':
+      return Category.Relationships;
+  }
+};
+
+interface DropdownComponentProps {
+  category: Category;
+  setCategory: React.Dispatch<React.SetStateAction<Category>>;
+}
+
+export const DropdownComponent: React.FC<DropdownComponentProps> = ({
+  category,
+  setCategory,
+}) => {
   const [value, setValue] = useState<string>('werk');
 
   const customDropdownItem = (item: IIcon) => {
@@ -62,6 +83,7 @@ export const DropdownComponent = () => {
         value={value}
         onChange={(item) => {
           setValue(item.value);
+          setCategory(getCategory(item.value));
         }}
         renderLeftIcon={() => getIcon(value)}
         renderItem={customDropdownItem}

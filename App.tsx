@@ -1,8 +1,10 @@
 import { useFonts } from 'expo-font';
 
-import { DiaryProvider } from './src/context/DiaryContext';
 import { PaperProvider } from 'react-native-paper';
+
+import { DiaryProvider } from './src/context/DiaryContext';
 import { AuthProvider } from './src/context/AuthContext';
+import { WorryProvider } from './src/context/WorryContext';
 
 import AppNav from './src/navigation/AppNav';
 
@@ -27,7 +29,9 @@ export default function App() {
     <PaperProvider>
       <AuthProvider>
         <DiaryProvider>
-          <AppNav />
+          <WorryProvider>
+            <AppNav />
+          </WorryProvider>
         </DiaryProvider>
       </AuthProvider>
     </PaperProvider>

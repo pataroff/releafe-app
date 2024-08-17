@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 
 import {
   StyleSheet,
@@ -16,66 +16,32 @@ import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
-import { Category, Priority, IWorriesListItem } from '../types';
-import { WorriesListItem } from './WorriesListItem';
+import { WorryListItem } from './WorryListItem';
 
-import { v4 as uuidv4 } from 'uuid';
+import { WorryContext } from '../context/WorryContext';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-interface WorriesListModalProps {
-  modalWorriesListVisible: boolean;
-  setModalWorriesListVisible: React.Dispatch<React.SetStateAction<boolean>>;
+interface WorryListModalProps {
+  modalWorryListVisible: boolean;
+  setModalWorryListVisible: React.Dispatch<React.SetStateAction<boolean>>;
   handleDrawer: () => void;
 }
 
-const mockData: IWorriesListItem[] = [
-  {
-    id: uuidv4(),
-    category: Category.Work,
-    priority: Priority.Low,
-    date: new Date(),
-    title: 'Angst voor presentatie',
-    description:
-      "Ik moet volgende week een belangrijke presentatie geven op het werk voor een groot publiek, inclusief mijn manager en een aantal senior collega's. Dit is een cruciale presentatie omdat het over een nieuw project gaat waar ik de leiding over heb gehad.",
-    reframed: true,
-  },
-  {
-    id: uuidv4(),
-    category: Category.Relationships,
-    priority: Priority.High,
-    date: new Date(),
-    title: 'Ruzies met partner',
-    description:
-      'Mijn partner en ik hebben de laatste tijd vaak ruzie, en ik ben bang dat onze relatie op het punt staat te eindigen.',
-    reframed: false,
-  },
-  {
-    id: uuidv4(),
-    category: Category.Health,
-    priority: Priority.Medium,
-    date: new Date(),
-    title: 'Hoofdpijn',
-    description:
-      'Ik heb de laatste tijd veel hoofdpijn en maak me zorgen dat het iets ernstigs kan zin, zoals een hersentumor.',
-    reframed: false,
-  },
-];
-
-export const WorriesListModal: React.FC<WorriesListModalProps> = ({
-  modalWorriesListVisible,
-  setModalWorriesListVisible,
+export const WorryListModal: React.FC<WorryListModalProps> = ({
+  modalWorryListVisible,
+  setModalWorryListVisible,
   handleDrawer,
 }) => {
+  const { worryEntries } = useContext(WorryContext);
+
   return (
     <Modal
       animationType='none'
       transparent={true}
-      visible={modalWorriesListVisible}
-      onRequestClose={() =>
-        setModalWorriesListVisible(!modalWorriesListVisible)
-      }
+      visible={modalWorryListVisible}
+      onRequestClose={() => setModalWorryListVisible(!modalWorryListVisible)}
     >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
@@ -95,14 +61,14 @@ export const WorriesListModal: React.FC<WorriesListModalProps> = ({
               <Feather name='x-circle' size={24} color='black' />
             </Pressable>
           </View>
-          {/* Worries List */}
+          {/* Worry List */}
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={styles.worriesListContainer}
-            contentContainerStyle={styles.worriesListContentContainer}
+            style={styles.WorryListContainer}
+            contentContainerStyle={styles.WorryListContentContainer}
           >
-            {mockData.map((data) => {
-              return <WorriesListItem key={data.id} data={data} />;
+            {worryEntries.map((data) => {
+              return <WorryListItem key={data.id} data={data} />;
             })}
           </ScrollView>
           <View
@@ -161,12 +127,12 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsItalic[Platform.OS],
     fontStyle: 'italic',
   } as TextStyle,
-  worriesListContainer: {
+  WorryListContainer: {
     marginVertical: 20,
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  worriesListContentContainer: {
+  WorryListContentContainer: {
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',

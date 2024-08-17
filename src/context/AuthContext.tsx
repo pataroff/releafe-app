@@ -2,16 +2,23 @@ import React, { createContext, useState, useEffect } from 'react';
 import pb from '../lib/pocketbase';
 
 import { AuthModel } from 'pocketbase';
-import { IUserData } from '../types';
+import { IUserData, IAuthContext } from '../types';
 
 // TODO: Make usage of the `pb_auth` item in local storage!
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Create context
-export const AuthContext = createContext({});
+export const AuthContext = createContext<IAuthContext>({
+  signIn: (email: string, password: string) => {},
+  signOut: () => {},
+  register: ({}: IUserData) => {},
+  isLoading: false,
+  isLoggedIn: false,
+  user: null,
+});
 
 // Provider component
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
   const [isLoading, setIsLoading] = useState(false);

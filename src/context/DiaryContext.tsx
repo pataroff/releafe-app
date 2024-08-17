@@ -25,11 +25,12 @@ export const DiaryContext = createContext<IDiaryContext>({
   resetTextValues: () => {},
   addTextValue: () => {},
   createDiaryEntry: () => {},
-  jsonToMap: (jsonStr: string) => new Map<number, number | string>(),
+  jsonToMap: (data: { [key: string]: number | string }) =>
+    new Map<number, number | string>(),
 });
 
 // Provider component
-export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
+export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
   const [diaryEntries, setDiaryEntries] = useState<IDiaryEntry[]>([]);
@@ -81,7 +82,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 
     // Create a new diary entry
-    const newEntry = {
+    const newDiaryEntry = {
       // TODO: Locally, `id` is an empty string prior to fetching diary entries from the database!
       id: '',
       date: date,
@@ -90,13 +91,14 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     // Create a new diary entry for database
-    const newEntryDatabase = {
+    const newDiaryEntryDatabase = {
       // NOTE: "id: the length must be exactly 15."
-      id: '',
+      id: uuidv4(),
+      // @ts-ignore 'user' is possibly 'null'
       user: user.id,
-      date: newEntry.date,
-      sliderValues: mapToJson(newEntry.sliderValues),
-      textValues: mapToJson(newEntry.textValues),
+      date: newDiaryEntry.date,
+      sliderValues: mapToJson(newDiaryEntry.sliderValues),
+      textValues: mapToJson(newDiaryEntry.textValues),
     };
 
     if (matchedDiaryEntry) {
@@ -106,19 +108,19 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
       // Update the existing entry at the found index
       setDiaryEntries((prev) => {
         const updatedEntries = [...prev];
-        updatedEntries[index] = newEntry;
+        updatedEntries[index] = newDiaryEntry;
         return updatedEntries;
       });
       // Update the existing entry in the database
       pb.collection('diary_entries').update(
         matchedDiaryEntry.id,
-        newEntryDatabase
+        newDiaryEntryDatabase
       );
     } else {
       // Add the new entry to the array
-      setDiaryEntries((prev) => [...prev, newEntry]);
+      setDiaryEntries((prev) => [...prev, newDiaryEntry]);
       // Add the new entry to the database
-      pb.collection('diary_entries').create(newEntryDatabase);
+      pb.collection('diary_entries').create(newDiaryEntryDatabase);
     }
   };
 
@@ -126,7 +128,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactNode }> = ({
     return date.toISOString().slice(0, 10);
   };
 
-  const mapToJson = (map) => {
+  const mapToJson = (map: Map<number, number | string>) => {
     return JSON.stringify(Object.fromEntries(map));
   };
 
