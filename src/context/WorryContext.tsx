@@ -31,39 +31,7 @@ export const WorryContext = createContext<IWorryContext>({
 export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
-  const [worryEntries, setWorryEntries] = useState<IWorryListItem[]>([
-    // Mock data
-    {
-      id: uuidv4(),
-      category: Category.Work,
-      priority: Priority.Low,
-      date: new Date(),
-      title: 'Angst voor presentatie',
-      description:
-        "Ik moet volgende week een belangrijke presentatie geven op het werk voor een groot publiek, inclusief mijn manager en een aantal senior collega's. Dit is een cruciale presentatie omdat het over een nieuw project gaat waar ik de leiding over heb gehad.",
-      reframed: true,
-    },
-    {
-      id: uuidv4(),
-      category: Category.Relationships,
-      priority: Priority.High,
-      date: new Date(),
-      title: 'Ruzies met partner',
-      description:
-        'Mijn partner en ik hebben de laatste tijd vaak ruzie, en ik ben bang dat onze relatie op het punt staat te eindigen.',
-      reframed: false,
-    },
-    {
-      id: uuidv4(),
-      category: Category.Health,
-      priority: Priority.Medium,
-      date: new Date(),
-      title: 'Hoofdpijn',
-      description:
-        'Ik heb de laatste tijd veel hoofdpijn en maak me zorgen dat het iets ernstigs kan zin, zoals een hersentumor.',
-      reframed: false,
-    },
-  ]);
+  const [worryEntries, setWorryEntries] = useState<IWorryListItem[]>([]);
   const [category, setCategory] = useState<Category>(Category.Work);
   const [priority, setPriority] = useState<Priority>(Priority.None);
   const [date, setDate] = useState<Date>(new Date());
@@ -75,7 +43,8 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
 
   const createWorryEntry = () => {
     const newWorryEntry = {
-      id: uuidv4(),
+      id: '',
+      uuid: uuidv4(),
       category,
       priority,
       date,
@@ -86,6 +55,7 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
 
     const newWorryEntryDatabase = {
       id: '',
+      uuid: newWorryEntry.uuid,
       // @ts-ignore 'user' is possibly 'null'!
       user: user.id,
       category,

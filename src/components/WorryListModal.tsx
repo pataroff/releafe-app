@@ -67,8 +67,8 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
             style={styles.WorryListContainer}
             contentContainerStyle={styles.WorryListContentContainer}
           >
-            {worryEntries.map((data) => {
-              return <WorryListItem key={data.id} data={data} />;
+            {worryEntries.map((item) => {
+              return <WorryListItem key={item.uuid} item={item} />;
             })}
           </ScrollView>
           <View

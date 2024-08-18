@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     borderWidth: 2,
     borderRadius: 30,
-    height: windowHeight <= 667 ? '65%' : '40%',
+    height: windowHeight <= 667 ? '50%' : '40%',
     width: windowWidth - 2 * 10,
     backgroundColor: 'white',
     paddingHorizontal: 25,

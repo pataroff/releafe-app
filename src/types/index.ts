@@ -74,6 +74,7 @@ export enum Priority {
 
 export interface IWorryListItem {
   id: string;
+  uuid: string;
   category: Category;
   priority: Priority;
   date: Date;

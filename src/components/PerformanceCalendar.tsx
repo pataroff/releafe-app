@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { IDiaryEntry } from '../types';
 
 import {
   CalendarProvider,
@@ -93,17 +94,25 @@ const questions = [
   'Waar ben je vandaag dankbaar voor?',
 ];
 
-export const PerformanceCalendar = ({
+interface PerformanceCalendarProps {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedDiaryEntry: IDiaryEntry | null;
+  setSelectedDiaryEntry: React.Dispatch<
+    React.SetStateAction<IDiaryEntry | null>
+  >;
+}
+
+export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
   isOpen,
   setIsOpen,
   selectedDiaryEntry,
   setSelectedDiaryEntry,
 }) => {
   const navigation = useNavigation();
-
   const { diaryEntries } = useContext(DiaryContext);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [displayDate, setDisplayDate] = useState<string>();
   const [displayTime, setDisplayTime] = useState<string>();
 

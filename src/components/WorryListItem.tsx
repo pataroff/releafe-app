@@ -43,26 +43,26 @@ const getPriority = (priority: Priority): string => {
   }
 };
 
-export const WorryListItem: React.FC<{ data: IWorryListItem }> = ({ data }) => {
-  const { id, category, priority, date, title, description, reframed } = data;
+export const WorryListItem: React.FC<{ item: IWorryListItem }> = ({ item }) => {
+  const { uuid, category, priority, date, title, description, reframed } = item;
 
   const [expandedItems, setExpandedItems] = useState<{
     [key: string]: boolean;
   }>({});
 
-  const expandItem = (id: string) => {
+  const expandItem = (uuid: string) => {
     setExpandedItems((prev) => ({
       ...prev,
-      [id]: !prev[id],
+      [uuid]: !prev[uuid],
     }));
   };
 
   return (
-    <Pressable onPress={() => expandItem(id)}>
+    <Pressable onPress={() => expandItem(uuid)}>
       {/* Worry List Item */}
       <View
         style={
-          expandedItems[id] === true
+          expandedItems[uuid] === true
             ? [
                 styles.WorryListItemContainer,
                 {
@@ -127,7 +127,7 @@ export const WorryListItem: React.FC<{ data: IWorryListItem }> = ({ data }) => {
                 {/* Title */}
                 <Text style={styles.WorryListItemText}>{title}</Text>
                 {/* Date */}
-                {expandedItems[id] == true && (
+                {expandedItems[uuid] == true && (
                   <Text style={{ fontSize: 11 }}>
                     Angemaakt op{' '}
                     <Text
@@ -168,7 +168,7 @@ export const WorryListItem: React.FC<{ data: IWorryListItem }> = ({ data }) => {
 
           {/* Description [2] */}
           <View>
-            {expandedItems[id] == true && (
+            {expandedItems[uuid] == true && (
               <Text
                 style={
                   {
@@ -183,7 +183,7 @@ export const WorryListItem: React.FC<{ data: IWorryListItem }> = ({ data }) => {
           </View>
 
           {/* Reframe + Details [3]  */}
-          {expandedItems[data.id] == true && (
+          {expandedItems[item.uuid] == true && (
             <View
               style={{
                 display: 'flex',

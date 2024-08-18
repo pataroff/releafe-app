@@ -35,6 +35,7 @@ export const WorryBoxScreen: React.FC = () => {
             worryEntriesList.items.map((item) => {
               const {
                 id,
+                uuid,
                 category,
                 priority,
                 date,
@@ -44,6 +45,7 @@ export const WorryBoxScreen: React.FC = () => {
               } = item;
               return {
                 id,
+                uuid,
                 category,
                 date: new Date(date),
                 priority,
