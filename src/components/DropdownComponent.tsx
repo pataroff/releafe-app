@@ -50,7 +50,7 @@ const getCategory = (category: string) => {
 
 interface DropdownComponentProps {
   category: Category;
-  setCategory: React.Dispatch<React.SetStateAction<Category>>;
+  setCategory: React.Dispatch<React.SetStateAction<Category | undefined>>;
 }
 
 export const DropdownComponent: React.FC<DropdownComponentProps> = ({
@@ -59,7 +59,7 @@ export const DropdownComponent: React.FC<DropdownComponentProps> = ({
 }) => {
   const [value, setValue] = useState<string>('werk');
 
-  const customDropdownItem = (item: IIcon) => {
+  const CustomDropdownItem = (item: IIcon) => {
     return (
       <View style={styles.item}>
         {item.icon}
@@ -86,7 +86,7 @@ export const DropdownComponent: React.FC<DropdownComponentProps> = ({
           setCategory(getCategory(item.value));
         }}
         renderLeftIcon={() => getIcon(value)}
-        renderItem={customDropdownItem}
+        renderItem={CustomDropdownItem}
       />
     </View>
   );

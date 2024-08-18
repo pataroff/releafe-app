@@ -12,7 +12,7 @@ import { DiaryContext } from '../context/DiaryContext';
 
 export const DiaryScreen: React.FC = () => {
   const { user } = useContext(AuthContext);
-  const { diaryEntries, setDiaryEntries, jsonToMap } = useContext(DiaryContext);
+  const { setDiaryEntries, jsonToMap } = useContext(DiaryContext);
 
   useEffect(() => {
     const fetchDiaryEntries = async () => {

@@ -29,7 +29,7 @@ export const Header = ({ title }) => {
               style={{ backgroundColor: '#00d8bd' }}
               color='white'
               size={56}
-              label={user.firstName[0] + user.lastName[0]}
+              label={user?.firstName[0] + user?.lastName[0]}
             />
           </View>
         </View>

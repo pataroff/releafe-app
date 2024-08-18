@@ -1,21 +1,100 @@
+import React, { useEffect, useContext } from 'react';
+import { View, Image } from 'react-native';
+
+import Feather from '@expo/vector-icons/Feather';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+
+import { IWorryListItem } from '../types';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { DiaryStack } from './DiaryStack';
 import { ToolkitStack } from './ToolkitStack';
 
-import Feather from '@expo/vector-icons/Feather';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-
 import { HomeScreen } from '../screens/HomeScreen';
-import { ToolkitScreen } from '../screens/ToolkitScreen';
 import { ChatScreen } from '../screens/ChatScreen';
 import { AIScreen } from '../screens/AIScreen';
 
-import { Image } from 'react-native';
+import { AuthContext } from '../context/AuthContext';
+import { WorryContext } from '../context/WorryContext';
+
+import pb from '../lib/pocketbase';
 
 const Tab = createBottomTabNavigator();
 
 export const TabNavigator = () => {
+  const { user } = useContext(AuthContext);
+  const { worryEntries, setWorryEntries } = useContext(WorryContext);
+
+  // TODO: Is this the right place of fetching the worry entries?
+  useEffect(() => {
+    const fetchWorryEntries = async () => {
+      if (user) {
+        try {
+          const worryEntriesList = await pb
+            .collection('worry_entries')
+            .getList(1, 50, {
+              filter: `user.id='${user.id}'`,
+              sort: '-date', // desc order
+              expand: 'user',
+            });
+
+          const modifiedWorryEntriesList: IWorryListItem[] =
+            worryEntriesList.items.map((item) => {
+              const {
+                id,
+                uuid,
+                category,
+                priority,
+                date,
+                title,
+                description,
+                reframed,
+              } = item;
+              return {
+                id,
+                uuid,
+                category,
+                date: new Date(date),
+                priority,
+                title,
+                description,
+                reframed,
+              };
+            });
+
+          setWorryEntries(modifiedWorryEntriesList);
+        } catch (error) {
+          console.error('Error fetching worry entries:', error);
+        }
+      }
+    };
+
+    fetchWorryEntries();
+  }, [user]);
+
+  const CustomTabIcon = () => {
+    return (
+      <View
+        style={{
+          alignItems: 'center',
+          borderRadius: 99,
+          backgroundColor: '#8afc78',
+          width: 75,
+          height: 75,
+          marginBottom: 20,
+          paddingVertical: 10,
+        }}
+      >
+        <Image
+          resizeMode='contain'
+          style={{ width: '100%', height: 58 }}
+          source={require('../../assets/images/bonsai_tree_placeholder_icon.png')}
+        />
+      </View>
+    );
+  };
+
   return (
     <Tab.Navigator
       initialRouteName='Diary'
@@ -66,7 +145,9 @@ export const TabNavigator = () => {
         name='AI'
         component={AIScreen}
         options={{
-          tabBarIcon: ({ size, focused, color }) => {},
+          tabBarIcon: ({ size, focused, color }) => {
+            return <CustomTabIcon />;
+          },
         }}
       />
 
@@ -81,7 +162,10 @@ export const TabNavigator = () => {
               <FontAwesome6 name='lightbulb' size={22} color='gray' />
             );
           },
-          tabBarBadge: 2,
+          tabBarBadge:
+            //	The || operator returns the first truthy value it encounters or the last value if all are falsy.
+            worryEntries.filter((item) => item.reframed !== true).length ||
+            undefined,
         }}
       />
       <Tab.Screen
