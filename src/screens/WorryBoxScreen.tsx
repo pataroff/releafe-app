@@ -5,7 +5,7 @@ import { StyleSheet, ScrollView } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-import Drawer from '../components/Drawer';
+import { WorryDrawer } from '../components/WorryDrawer';
 
 export const WorryBoxScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -22,7 +22,7 @@ export const WorryBoxScreen: React.FC = () => {
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
-        <Drawer />
+        <WorryDrawer />
       </ScrollView>
     </>
   );

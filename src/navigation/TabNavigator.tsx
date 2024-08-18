@@ -88,7 +88,7 @@ export const TabNavigator = () => {
       >
         <Image
           resizeMode='contain'
-          style={{ width: '100%', height: 58 }}
+          style={{ width: '100%', height: 55 }}
           source={require('../../assets/images/bonsai_tree_placeholder_icon.png')}
         />
       </View>

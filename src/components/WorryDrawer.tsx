@@ -20,9 +20,8 @@ import { WorryListItemAddModal } from './WorryListItemAddModal';
 import { WorryListItemAddedModal } from './WorryListItemAddedModal';
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
-const Drawer = () => {
+export const WorryDrawer = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [modalWorryListVisible, setModalWorryListVisible] =
     useState<boolean>(false);
@@ -140,7 +139,6 @@ const Drawer = () => {
     </>
   );
 };
-export default Drawer;
 
 const styles = StyleSheet.create({
   drawerContainer: {
