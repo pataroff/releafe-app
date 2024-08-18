@@ -13,6 +13,6 @@ const pb = new Pocketbase(process.env.PB_URL, store);
 // `ipconfig getifaddr en0` in the terminal. After that
 // run `./pocketnase serve --http YOUR_IP:PORT` and ensure
 // that the Pocketbase SDK is pointing to this IP address.
-// const pb = new Pocketbase('http://192.168.0.106:8090', store);
+// const pb = new Pocketbase('http://192.168.1.5:8090', store);
 
 export default pb;

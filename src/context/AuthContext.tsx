@@ -70,11 +70,11 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
   }: IUserData) => {
     try {
       const res = await pb.collection('users').create({
-        email,
+        email: email.trim(),
         password,
         passwordConfirm,
-        firstName: firstName ?? '',
-        lastName: lastName ?? '',
+        firstName: firstName.trim() ?? '',
+        lastName: lastName.trim() ?? '',
       });
     } catch (error) {
       console.error('Error: ', error);

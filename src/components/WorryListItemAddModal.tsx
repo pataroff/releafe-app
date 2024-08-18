@@ -166,6 +166,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                     } as TextStyle
                   }
                   placeholder='Titel'
+                  placeholderTextColor='#dedede'
                   value={title}
                   onChangeText={(value) => setTitle(value)}
                 />
@@ -185,6 +186,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                   } as TextStyle
                 }
                 placeholder='Omschrijving'
+                placeholderTextColor='#dedede'
                 multiline
                 value={description}
                 onChangeText={(value) => setDescription(value)}
@@ -282,7 +284,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                   resizeMode='contain'
                   style={{
                     width: '100%',
-                    height: 40,
+                    height: 45,
                   }}
                   source={require('../../assets/images/opbergen_in_zorgenbakje_button.png')}
                 />

@@ -45,12 +45,14 @@ const getCategory = (category: string) => {
       return Category.Health;
     case 'relaties':
       return Category.Relationships;
+    default:
+      return Category.Work;
   }
 };
 
 interface DropdownComponentProps {
   category: Category;
-  setCategory: React.Dispatch<React.SetStateAction<Category | undefined>>;
+  setCategory: React.Dispatch<React.SetStateAction<Category>>;
 }
 
 export const DropdownComponent: React.FC<DropdownComponentProps> = ({
