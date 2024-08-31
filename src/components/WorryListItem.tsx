@@ -54,6 +54,8 @@ interface WorryListItemProps {
   setModalAddWorryListItemVisible: React.Dispatch<
     React.SetStateAction<boolean>
   >;
+  modalReframingVisible: boolean;
+  setModalReframingVisible: React.Dispatch<React.SetStateAction<boolean>>;
   handleDrawer: () => void;
 }
 
@@ -63,12 +65,13 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
   setModalWorryListVisible,
   modalAddWorryListItemVisible,
   setModalAddWorryListItemVisible,
+  modalReframingVisible,
+  setModalReframingVisible,
   handleDrawer,
 }) => {
   const { uuid, category, priority, date, title, description, reframed } = item;
 
-  const { updateWorryEntryFields, deleteWorryEntry, resetWorryEntryFields } =
-    useContext(WorryContext);
+  const { updateWorryEntryFields, deleteWorryEntry } = useContext(WorryContext);
 
   const [expandedItems, setExpandedItems] = useState<{
     [key: string]: boolean;
@@ -92,6 +95,12 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
 
   const handleDelete = () => {
     deleteWorryEntry(uuid);
+  };
+
+  const handleReframing = () => {
+    updateWorryEntryFields(uuid, category, priority, title, description);
+    setModalWorryListVisible(!modalWorryListVisible);
+    setModalReframingVisible(!modalReframingVisible);
   };
 
   return (
@@ -233,7 +242,7 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
               {/* Reframe Button */}
               <Pressable
                 style={{ width: 160 }}
-                onPress={() => console.log('Reframe button pressed!')}
+                onPress={() => handleReframing()}
               >
                 {reframed ? (
                   <Image

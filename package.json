@@ -38,7 +38,8 @@
     "react-native-web": "~0.19.6",
     "uuid": "^9.0.1",
     "victory": "^37.0.2",
-    "victory-native": "^40.1.0"
+    "victory-native": "^40.1.0",
+    "expo-checkbox": "~3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

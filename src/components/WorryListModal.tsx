@@ -30,6 +30,8 @@ interface WorryListModalProps {
   setModalAddWorryListItemVisible: React.Dispatch<
     React.SetStateAction<boolean>
   >;
+  modalReframingVisible: boolean;
+  setModalReframingVisible: React.Dispatch<React.SetStateAction<boolean>>;
   handleDrawer: () => void;
 }
 
@@ -38,6 +40,8 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
   setModalWorryListVisible,
   modalAddWorryListItemVisible,
   setModalAddWorryListItemVisible,
+  modalReframingVisible,
+  setModalReframingVisible,
   handleDrawer,
 }) => {
   const { worryEntries } = useContext(WorryContext);
@@ -85,6 +89,8 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
                     setModalAddWorryListItemVisible={
                       setModalAddWorryListItemVisible
                     }
+                    modalReframingVisible={modalReframingVisible}
+                    setModalReframingVisible={setModalReframingVisible}
                     handleDrawer={handleDrawer}
                   />
                 );

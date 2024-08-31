@@ -66,7 +66,6 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setTitle,
     setDescription,
     createWorryEntry,
-    deleteWorryEntry,
     resetWorryEntryFields,
   } = useContext(WorryContext);
 

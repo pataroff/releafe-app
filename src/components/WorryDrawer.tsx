@@ -18,6 +18,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { WorryListModal } from './WorryListModal';
 import { WorryListItemAddModal } from './WorryListItemAddModal';
 import { WorryListItemAddedModal } from './WorryListItemAddedModal';
+import { ReframingModal } from './ReframingModal';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -28,6 +29,8 @@ export const WorryDrawer = () => {
   const [modalAddWorryListItemVisible, setModalAddWorryListItemVisible] =
     useState<boolean>(false);
   const [modalAddedWorryListItemVisible, setModalAddedWorryListItemVisible] =
+    useState<boolean>(false);
+  const [modalReframingVisible, setModalReframingVisible] =
     useState<boolean>(false);
 
   const handleDrawer = () => {
@@ -50,9 +53,11 @@ export const WorryDrawer = () => {
       <WorryListModal
         modalWorryListVisible={modalWorryListVisible}
         setModalWorryListVisible={setModalWorryListVisible}
-        handleDrawer={handleDrawer}
         modalAddWorryListItemVisible={modalAddWorryListItemVisible}
         setModalAddWorryListItemVisible={setModalAddWorryListItemVisible}
+        modalReframingVisible={modalReframingVisible}
+        setModalReframingVisible={setModalReframingVisible}
+        handleDrawer={handleDrawer}
       />
 
       {/* Add Worry List Item Modal */}
@@ -67,6 +72,14 @@ export const WorryDrawer = () => {
       <WorryListItemAddedModal
         modalAddedWorryListItemVisible={modalAddedWorryListItemVisible}
         setModalAddedWorryListItemVisible={setModalAddedWorryListItemVisible}
+      />
+
+      {/* Reframing Modal */}
+      <ReframingModal
+        modalReframingVisible={modalReframingVisible}
+        setModalReframingVisible={setModalReframingVisible}
+        modalWorryListVisible={modalWorryListVisible}
+        setModalWorryListVisible={setModalWorryListVisible}
       />
 
       {/* Drawer */}
