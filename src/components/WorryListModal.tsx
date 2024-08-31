@@ -26,12 +26,18 @@ const windowHeight = Dimensions.get('window').height;
 interface WorryListModalProps {
   modalWorryListVisible: boolean;
   setModalWorryListVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  modalAddWorryListItemVisible: boolean;
+  setModalAddWorryListItemVisible: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
   handleDrawer: () => void;
 }
 
 export const WorryListModal: React.FC<WorryListModalProps> = ({
   modalWorryListVisible,
   setModalWorryListVisible,
+  modalAddWorryListItemVisible,
+  setModalAddWorryListItemVisible,
   handleDrawer,
 }) => {
   const { worryEntries } = useContext(WorryContext);
@@ -64,12 +70,36 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
           {/* Worry List */}
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={styles.WorryListContainer}
-            contentContainerStyle={styles.WorryListContentContainer}
+            style={styles.worryListContainer}
+            contentContainerStyle={styles.worryListContentContainer}
           >
-            {worryEntries.map((item) => {
-              return <WorryListItem key={item.uuid} item={item} />;
-            })}
+            {worryEntries.length > 0 ? (
+              worryEntries.map((item) => {
+                return (
+                  <WorryListItem
+                    key={item.uuid}
+                    item={item}
+                    modalWorryListVisible={modalWorryListVisible}
+                    setModalWorryListVisible={setModalWorryListVisible}
+                    modalAddWorryListItemVisible={modalAddWorryListItemVisible}
+                    setModalAddWorryListItemVisible={
+                      setModalAddWorryListItemVisible
+                    }
+                    handleDrawer={handleDrawer}
+                  />
+                );
+              })
+            ) : (
+              <>
+                <View style={styles.noDataContainer}>
+                  <Text style={styles.noDataTitleText}>Zorgenbakje leeg</Text>
+                  <Text style={styles.noDataDescriptionText}>
+                    Er staat geen zorgen in jouw zorgenbakje. Keer terug als je
+                    een zorg wilt toevoegen.
+                  </Text>
+                </View>
+              </>
+            )}
           </ScrollView>
           <View
             style={{
@@ -127,16 +157,33 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsItalic[Platform.OS],
     fontStyle: 'italic',
   } as TextStyle,
-  WorryListContainer: {
+  worryListContainer: {
     marginVertical: 20,
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  WorryListContentContainer: {
+  worryListContentContainer: {
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#ffffff',
     rowGap: 5,
   },
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    rowGap: 10,
+    paddingHorizontal: 30,
+  },
+  noDataTitleText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 16,
+    textAlign: 'center',
+  } as TextStyle,
+  noDataDescriptionText: {
+    ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 16,
+    textAlign: 'center',
+  } as TextStyle,
 });

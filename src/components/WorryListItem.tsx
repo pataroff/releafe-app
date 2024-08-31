@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import {
   StyleSheet,
@@ -11,11 +11,14 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
+
+import Feather from '@expo/vector-icons/Feather';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import { Category, Priority, IWorryListItem } from '../types';
+import { WorryContext } from '../context/WorryContext';
 
 const getCategory = (category: Category): React.ReactElement => {
   switch (category) {
@@ -43,18 +46,52 @@ const getPriority = (priority: Priority): string => {
   }
 };
 
-export const WorryListItem: React.FC<{ item: IWorryListItem }> = ({ item }) => {
+interface WorryListItemProps {
+  item: IWorryListItem;
+  modalWorryListVisible: boolean;
+  setModalWorryListVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  modalAddWorryListItemVisible: boolean;
+  setModalAddWorryListItemVisible: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+  handleDrawer: () => void;
+}
+
+export const WorryListItem: React.FC<WorryListItemProps> = ({
+  item,
+  modalWorryListVisible,
+  setModalWorryListVisible,
+  modalAddWorryListItemVisible,
+  setModalAddWorryListItemVisible,
+  handleDrawer,
+}) => {
   const { uuid, category, priority, date, title, description, reframed } = item;
+
+  const { updateWorryEntryFields, deleteWorryEntry, resetWorryEntryFields } =
+    useContext(WorryContext);
 
   const [expandedItems, setExpandedItems] = useState<{
     [key: string]: boolean;
   }>({});
+
+  const [showOptionButtons, setShowOptionButtons] = useState<boolean>(false);
 
   const expandItem = (uuid: string) => {
     setExpandedItems((prev) => ({
       ...prev,
       [uuid]: !prev[uuid],
     }));
+  };
+
+  const handleEdit = () => {
+    updateWorryEntryFields(uuid, category, priority, title, description);
+    setModalWorryListVisible(!modalWorryListVisible);
+    handleDrawer();
+    setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
+  };
+
+  const handleDelete = () => {
+    deleteWorryEntry(uuid);
   };
 
   return (
@@ -64,12 +101,12 @@ export const WorryListItem: React.FC<{ item: IWorryListItem }> = ({ item }) => {
         style={
           expandedItems[uuid] === true
             ? [
-                styles.WorryListItemContainer,
+                styles.worryListItemContainer,
                 {
                   height: 220, // TODO: Is this gonna be a hard-coded value?
                 },
               ]
-            : styles.WorryListItemContainer
+            : styles.worryListItemContainer
         }
       >
         {/* Priority Bar */}
@@ -125,7 +162,7 @@ export const WorryListItem: React.FC<{ item: IWorryListItem }> = ({ item }) => {
                 }}
               >
                 {/* Title */}
-                <Text style={styles.WorryListItemText}>{title}</Text>
+                <Text style={styles.worryListItemText}>{title}</Text>
                 {/* Date */}
                 {expandedItems[uuid] == true && (
                   <Text style={{ fontSize: 11 }}>
@@ -214,12 +251,51 @@ export const WorryListItem: React.FC<{ item: IWorryListItem }> = ({ item }) => {
               </Pressable>
 
               {/* Details Button */}
-              <Pressable
-                style={{ position: 'absolute', right: 0 }}
-                onPress={() => console.log('Ellipsis button pressed!')}
-              >
-                <FontAwesome6 name='ellipsis-vertical' size={24} color='gray' />
-              </Pressable>
+              {showOptionButtons ? (
+                <>
+                  <Pressable
+                    style={{ position: 'absolute', right: 0 }}
+                    onPress={() => setShowOptionButtons(!showOptionButtons)}
+                  >
+                    <FontAwesome name='caret-down' size={24} color='#93bab5' />
+                  </Pressable>
+
+                  <Pressable
+                    style={[styles.optionButton, { bottom: 120 }]}
+                    onPress={() => handleEdit()}
+                  >
+                    <Feather name='edit' size={20} color='white' />
+                    <Text style={styles.optionButtonText}>Bewerken</Text>
+                  </Pressable>
+
+                  <Pressable
+                    style={[styles.optionButton, { bottom: 75 }]}
+                    onPress={() => console.log('Option 2 pressed!')}
+                  >
+                    <Feather name='archive' size={20} color='white' />
+                    <Text style={styles.optionButtonText}>Archiveren</Text>
+                  </Pressable>
+
+                  <Pressable
+                    style={[styles.optionButton, { bottom: 30 }]}
+                    onPress={() => handleDelete()}
+                  >
+                    <FontAwesome6 name='trash-alt' size={22} color='white' />
+                    <Text style={styles.optionButtonText}>Verwijderen</Text>
+                  </Pressable>
+                </>
+              ) : (
+                <Pressable
+                  style={{ position: 'absolute', right: 0 }}
+                  onPress={() => setShowOptionButtons(!showOptionButtons)}
+                >
+                  <FontAwesome6
+                    name='ellipsis-vertical'
+                    size={24}
+                    color='gray'
+                  />
+                </Pressable>
+              )}
             </View>
           )}
         </View>
@@ -229,7 +305,7 @@ export const WorryListItem: React.FC<{ item: IWorryListItem }> = ({ item }) => {
 };
 
 const styles = StyleSheet.create({
-  WorryListItemContainer: {
+  worryListItemContainer: {
     position: 'relative',
     display: 'flex',
     flexDirection: 'row',
@@ -241,7 +317,25 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
   },
-  WorryListItemText: {
+  worryListItemText: {
     ...Fonts.poppinsRegular[Platform.OS],
+  } as TextStyle,
+  optionButton: {
+    position: 'absolute',
+    right: 0,
+    borderRadius: 30,
+    height: 40,
+    width: 150,
+    backgroundColor: '#93bab5',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingLeft: 15,
+    paddingRight: 10,
+  },
+  optionButtonText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    color: 'white',
+    fontSize: 16,
   } as TextStyle,
 });

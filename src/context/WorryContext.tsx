@@ -10,6 +10,7 @@ import { AuthContext } from './AuthContext';
 // Create context
 export const WorryContext = createContext<IWorryContext>({
   worryEntries: [],
+  uuid: '',
   category: Category.Work,
   priority: Priority.None,
   date: new Date(),
@@ -17,6 +18,7 @@ export const WorryContext = createContext<IWorryContext>({
   description: '',
   reframed: false,
   setWorryEntries: () => {},
+  setUuid: () => {},
   setCategory: () => {},
   setPriority: () => {},
   setDate: () => {},
@@ -24,6 +26,8 @@ export const WorryContext = createContext<IWorryContext>({
   setDescription: () => {},
   setReframed: () => {},
   createWorryEntry: () => {},
+  deleteWorryEntry: () => {},
+  updateWorryEntryFields: () => {},
   resetWorryEntryFields: () => {},
 });
 
@@ -32,6 +36,7 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
   const [worryEntries, setWorryEntries] = useState<IWorryListItem[]>([]);
+  const [uuid, setUuid] = useState<string>('');
   const [category, setCategory] = useState<Category>(Category.Work);
   const [priority, setPriority] = useState<Priority>(Priority.None);
   const [date, setDate] = useState<Date>(new Date());
@@ -41,7 +46,9 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
 
   const { user } = useContext(AuthContext);
 
-  const createWorryEntry = () => {
+  const createWorryEntry = async () => {
+    const matchedWorryEntry = worryEntries.find((entry) => entry.uuid == uuid);
+
     const newWorryEntry = {
       id: '',
       uuid: uuidv4(),
@@ -66,8 +73,64 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
       reframed,
     };
 
-    setWorryEntries((prev) => [...prev, newWorryEntry]);
-    pb.collection('worry_entries').create(newWorryEntryDatabase);
+    if (matchedWorryEntry) {
+      // Get the index of the matching entry
+      const index = worryEntries.indexOf(matchedWorryEntry);
+
+      // Update the existing entry at the found index
+      setWorryEntries((prev) => {
+        const updatedEntries = [...prev];
+        updatedEntries[index] = newWorryEntry;
+        return updatedEntries;
+      });
+
+      try {
+        // Get the existing entry from the database
+        const matchedWorryEntryDatabase = await pb
+          .collection('worry_entries')
+          .getFirstListItem(`uuid="${matchedWorryEntry.uuid}"`);
+
+        // Update the existing entry in the database
+        await pb
+          .collection('worry_entries')
+          .update(matchedWorryEntryDatabase.id, newWorryEntryDatabase);
+      } catch (error) {
+        console.error('Error updating worry entry:', error);
+      }
+    } else {
+      setWorryEntries((prev) => [...prev, newWorryEntry]);
+      pb.collection('worry_entries').create(newWorryEntryDatabase);
+    }
+  };
+
+  const deleteWorryEntry = async (uuid: string) => {
+    setWorryEntries((prev) => prev.filter((entry) => entry.uuid != uuid));
+
+    try {
+      // Get the corresponding entry from the database
+      const matchedWorryEntryDatabase = await pb
+        .collection('worry_entries')
+        .getFirstListItem(`uuid="${uuid}"`);
+
+      // Delete the existing entry from the database
+      await pb.collection('worry_entries').delete(matchedWorryEntryDatabase.id);
+    } catch (error) {
+      console.error('Error deleting worry entry:', error);
+    }
+  };
+
+  const updateWorryEntryFields = (
+    uuid: string,
+    category: Category,
+    priority: Priority,
+    title: string,
+    description: string
+  ) => {
+    setUuid(uuid);
+    setCategory(category);
+    setPriority(priority);
+    setTitle(title);
+    setDescription(description);
   };
 
   const resetWorryEntryFields = () => {
@@ -81,6 +144,7 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
     <WorryContext.Provider
       value={{
         worryEntries,
+        uuid,
         category,
         priority,
         date,
@@ -88,6 +152,7 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
         description,
         reframed,
         setWorryEntries,
+        setUuid,
         setCategory,
         setPriority,
         setDate,
@@ -95,6 +160,8 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
         setDescription,
         setReframed,
         createWorryEntry,
+        deleteWorryEntry,
+        updateWorryEntryFields,
         resetWorryEntryFields,
       }}
     >

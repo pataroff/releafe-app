@@ -51,6 +51,8 @@ export const WorryDrawer = () => {
         modalWorryListVisible={modalWorryListVisible}
         setModalWorryListVisible={setModalWorryListVisible}
         handleDrawer={handleDrawer}
+        modalAddWorryListItemVisible={modalAddWorryListItemVisible}
+        setModalAddWorryListItemVisible={setModalAddWorryListItemVisible}
       />
 
       {/* Add Worry List Item Modal */}

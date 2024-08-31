@@ -66,6 +66,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setTitle,
     setDescription,
     createWorryEntry,
+    deleteWorryEntry,
     resetWorryEntryFields,
   } = useContext(WorryContext);
 
@@ -79,6 +80,11 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setModalAddedWorryListItemVisible(!modalAddedWorryListItemVisible);
   };
 
+  const handleClose = () => {
+    resetWorryEntryFields(),
+      setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
+  };
+
   const handlePriority = (priority: Priority) => {
     setPriority(priority);
     setShowPriorityButtons(!showPriorityButtons);
@@ -89,9 +95,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
       animationType='none'
       transparent={true}
       visible={modalAddWorryListItemVisible}
-      onRequestClose={() =>
-        setModalAddWorryListItemVisible(!modalAddWorryListItemVisible)
-      }
+      onRequestClose={() => handleClose()}
     >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
@@ -107,9 +111,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
             <Text style={styles.modalTitleText}>Zorg toevoegen</Text>
             <Pressable
               style={{ position: 'absolute', right: 0 }}
-              onPress={() =>
-                setModalAddWorryListItemVisible(!modalAddWorryListItemVisible)
-              }
+              onPress={() => handleClose()}
             >
               <Feather name='x-circle' size={24} color='black' />
             </Pressable>

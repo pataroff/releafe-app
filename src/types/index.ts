@@ -85,6 +85,7 @@ export interface IWorryListItem {
 
 export interface IWorryContext {
   worryEntries: IWorryListItem[];
+  uuid: string;
   category: Category;
   priority: Priority;
   date: Date;
@@ -92,6 +93,7 @@ export interface IWorryContext {
   description: string;
   reframed: boolean;
   setWorryEntries: React.Dispatch<React.SetStateAction<IWorryListItem[]>>;
+  setUuid: React.Dispatch<React.SetStateAction<string>>;
   setCategory: React.Dispatch<React.SetStateAction<Category>>;
   setPriority: React.Dispatch<React.SetStateAction<Priority>>;
   setDate: React.Dispatch<React.SetStateAction<Date>>;
@@ -99,5 +101,13 @@ export interface IWorryContext {
   setDescription: React.Dispatch<React.SetStateAction<string>>;
   setReframed: React.Dispatch<React.SetStateAction<boolean>>;
   createWorryEntry: () => void;
+  deleteWorryEntry: (uuid: string) => void;
+  updateWorryEntryFields: (
+    uuid: string,
+    category: Category,
+    priority: Priority,
+    title: string,
+    description: string
+  ) => void;
   resetWorryEntryFields: () => void;
 }

@@ -50,6 +50,19 @@ const getCategory = (category: string) => {
   }
 };
 
+const categoryToString = (category: Category) => {
+  switch (category) {
+    case Category.Work:
+      return 'werk';
+    case Category.Health:
+      return 'gezondheid';
+    case Category.Relationships:
+      return 'relaties';
+    default:
+      return 'werk';
+  }
+};
+
 interface DropdownComponentProps {
   category: Category;
   setCategory: React.Dispatch<React.SetStateAction<Category>>;
@@ -59,7 +72,7 @@ export const DropdownComponent: React.FC<DropdownComponentProps> = ({
   category,
   setCategory,
 }) => {
-  const [value, setValue] = useState<string>('werk');
+  const [value, setValue] = useState<string>(categoryToString(category));
 
   const CustomDropdownItem = (item: IIcon) => {
     return (
