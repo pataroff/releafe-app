@@ -76,6 +76,22 @@ export const WorryDrawer = () => {
 
       {/* Reframing Modal */}
       <ReframingModal
+        // @TODO: Create a 'ReframingStep' custom type!
+        reframingSteps={[
+          {
+            title: 'Reframing: Situatieomschrijving',
+            description:
+              'De situatie is automatisch overgenomen vanuit je zorg. Je kan deze hier eventueel nog aanpassen. Het resultaat van deze methode is een Note-to-Self. Als je deze niet wilt koppelen aan je bestaande zorg, kan je dit uitschakelen.',
+            instruction: 'Laten we beginnen!',
+          },
+          {
+            title: 'Reframing: Gevoelsomschrijving',
+            description:
+              'Omschrijf hier hoe je je voelt door deze situatie, zodat we er mee aan de slag kunnen.',
+            instruction:
+              'Het opschrijven van je gevoelens helpt om je emoties te verhelderen en te begrijpen, wat kan leiden tot meer zelfinzicht en een betere emotionele verwerking.',
+          },
+        ]}
         modalReframingVisible={modalReframingVisible}
         setModalReframingVisible={setModalReframingVisible}
         modalWorryListVisible={modalWorryListVisible}

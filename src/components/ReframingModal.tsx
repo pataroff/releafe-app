@@ -27,6 +27,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 interface ReframingModalProps {
+  reframingSteps: { title: string; description: string; instruction: string }[];
   modalReframingVisible: boolean;
   setModalReframingVisible: React.Dispatch<React.SetStateAction<boolean>>;
   modalWorryListVisible: boolean;
@@ -34,6 +35,7 @@ interface ReframingModalProps {
 }
 
 export const ReframingModal: React.FC<ReframingModalProps> = ({
+  reframingSteps,
   modalReframingVisible,
   setModalReframingVisible,
   modalWorryListVisible,
@@ -50,11 +52,28 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
   } = useContext(WorryContext);
 
   const [isChecked, setChecked] = useState<boolean>(true);
+  const [reframingModalIndex, setReframingModalIndex] = useState<number>(0);
+
+  const [feeling, setFeeling] = useState<string>('');
 
   const handleClose = () => {
     resetWorryEntryFields();
     setModalReframingVisible(!modalReframingVisible);
     setModalWorryListVisible(!modalWorryListVisible);
+  };
+
+  const handlePrevious = () => {
+    if (reframingModalIndex > 0) {
+      setReframingModalIndex(reframingModalIndex - 1);
+    } else {
+      handleClose();
+    }
+  };
+
+  const handleNext = () => {
+    if (reframingModalIndex < reframingSteps.length - 1) {
+      setReframingModalIndex(reframingModalIndex + 1);
+    }
   };
 
   return (
@@ -76,7 +95,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
             }}
           >
             <Text style={styles.modalTitleText}>
-              Reframing: Situatieomschrijving
+              {reframingSteps[reframingModalIndex].title}
             </Text>
             <Pressable
               style={{ position: 'absolute', right: 0 }}
@@ -97,10 +116,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
               } as TextStyle
             }
           >
-            De situatie is automatisch overgenomen vanuit je zorg. Je kan deze
-            hier eventueel nog aanpassen. Het resultaat van deze methode is een
-            Note-to-Self. Als je deze niet wilt koppelen aan je bestaande zorg,
-            kan je dit uitschakelen.
+            {reframingSteps[reframingModalIndex].description}
           </Text>
 
           {/* Main Content Wrapper */}
@@ -113,48 +129,95 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
             }}
           >
             {/* Dropdown + Title + Description + Priority [1] */}
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                rowGap: 10,
-                marginTop: 20,
-              }}
-            >
-              {/* Dropdown + Title */}
+            {reframingModalIndex == 0 && (
               <View
                 style={{
                   display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: '100%',
+                  flexDirection: 'column',
+                  rowGap: 10,
+                  marginTop: 20,
                 }}
               >
-                <DropdownComponent
-                  category={category}
-                  setCategory={setCategory}
-                />
+                {/* Dropdown + Title */}
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: '100%',
+                  }}
+                >
+                  <DropdownComponent
+                    category={category}
+                    setCategory={setCategory}
+                  />
+                  <TextInput
+                    style={
+                      {
+                        ...Fonts.poppinsItalic[Platform.OS],
+                        fontStyle: 'italic',
+                        borderWidth: 1,
+                        borderColor: '#dedede',
+                        borderRadius: 5,
+                        height: 30,
+                        width: '77%',
+                        paddingLeft: 5,
+                      } as TextStyle
+                    }
+                    placeholder='Titel'
+                    placeholderTextColor='#dedede'
+                    value={title}
+                    onChangeText={(value) => setTitle(value)}
+                  />
+                </View>
+                {/* Description */}
                 <TextInput
                   style={
                     {
                       ...Fonts.poppinsItalic[Platform.OS],
                       fontStyle: 'italic',
+                      position: 'relative',
+                      padding: 10,
                       borderWidth: 1,
-                      borderColor: '#dedede',
                       borderRadius: 5,
-                      height: 30,
-                      width: '77%',
-                      paddingLeft: 5,
+                      borderColor: '#dedede',
+                      height: windowHeight <= 667 ? 250 : 340,
                     } as TextStyle
                   }
-                  placeholder='Titel'
+                  placeholder='Omschrijving'
                   placeholderTextColor='#dedede'
-                  value={title}
-                  onChangeText={(value) => setTitle(value)}
+                  multiline
+                  value={description}
+                  onChangeText={(value) => setDescription(value)}
                 />
+
+                {reframingModalIndex == 0 && (
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      columnGap: 10,
+                      marginTop: 10,
+                    }}
+                  >
+                    <Checkbox
+                      color='black'
+                      value={isChecked}
+                      onValueChange={setChecked}
+                    />
+                    <Text style={{ ...Fonts.poppinsRegular } as TextStyle}>
+                      Koppelen aan zorg
+                    </Text>
+                  </View>
+                )}
               </View>
-              {/* Description */}
+            )}
+
+            {reframingModalIndex > 0 && reframingModalIndex !== 5 && (
+              // @TODO Create a 'NotesContext'!
               <TextInput
                 style={
                   {
@@ -165,39 +228,29 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                     borderWidth: 1,
                     borderRadius: 5,
                     borderColor: '#dedede',
-                    height: 340,
+                    height: 200,
+                    marginTop: 20,
                   } as TextStyle
                 }
-                placeholder='Omschrijving'
+                placeholder='Ik voel me...'
                 placeholderTextColor='#dedede'
                 multiline
-                value={description}
-                onChangeText={(value) => setDescription(value)}
+                value={feeling}
+                onChangeText={(value) => setFeeling(value)}
               />
+            )}
 
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  columnGap: 10,
-                  marginTop: 10,
-                }}
-              >
-                <Checkbox
-                  color='black'
-                  value={isChecked}
-                  onValueChange={setChecked}
-                />
-                <Text style={{ ...Fonts.poppinsRegular } as TextStyle}>
-                  Koppelen aan zorg
-                </Text>
-              </View>
-            </View>
+            {/* Slider Option */}
+            {/* {reframingModalIndex == 1 || reframingModalIndex == 6 &&} */}
 
-            <Text style={{ alignSelf: 'center', color: 'gray' }}>
-              Laten we beginnen!
+            <Text
+              style={{
+                textAlign: 'center',
+                alignSelf: 'center',
+                color: 'gray',
+              }}
+            >
+              {reframingSteps[reframingModalIndex].instruction}
             </Text>
 
             {/* Buttons */}
@@ -211,14 +264,19 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
             >
               <Pressable
                 style={styles.backButton}
-                onPress={() => handleClose()}
+                onPress={() => handlePrevious()}
               >
-                <Text style={styles.backButtonText}>Afsluiten</Text>
+                <Text style={styles.backButtonText}>
+                  {reframingModalIndex == 0 ? 'Afsluiten' : 'Terug'}
+                </Text>
               </Pressable>
-              <CustomProgressBar progress={0} totalSteps={10} />
+              <CustomProgressBar
+                progress={reframingModalIndex}
+                totalSteps={10}
+              />
               <Pressable
                 style={styles.continueButton}
-                onPress={() => console.log('Next button pressed!')}
+                onPress={() => handleNext()}
               >
                 <Text style={styles.continueButtonText}>Verder</Text>
               </Pressable>
@@ -255,7 +313,7 @@ const styles = StyleSheet.create({
   backButton: {
     borderRadius: 30,
     alignItems: 'center',
-    width: 100,
+    width: 90,
     paddingVertical: 10,
     backgroundColor: '#dedede',
   },
@@ -266,7 +324,7 @@ const styles = StyleSheet.create({
   continueButton: {
     borderRadius: 30,
     alignItems: 'center',
-    width: 100,
+    width: 90,
     paddingVertical: 10,
     backgroundColor: '#00d8bd',
   },
