@@ -6,13 +6,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
-import { Category } from '../types';
-
-interface IIcon {
-  label: string;
-  value: string;
-  icon: React.ReactElement;
-}
+import { Category, IIcon } from '../types';
 
 const icons: IIcon[] = [
   {

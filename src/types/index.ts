@@ -72,6 +72,12 @@ export enum Priority {
   High = 'HIGH',
 }
 
+export interface IIcon {
+  label: string;
+  value: string;
+  icon: React.ReactElement;
+}
+
 export interface IWorryListItem {
   id: string;
   uuid: string;
@@ -110,4 +116,51 @@ export interface IWorryContext {
     description: string
   ) => void;
   resetWorryEntryFields: () => void;
+}
+
+// @TODO: What about the slider values?
+export interface INoteEntry {
+  id: string;
+  uuid: string;
+  category: Category;
+  title: string;
+  situationDescription: string;
+  feelingDescription: string;
+  thoughtLikelihoodSliderOne: number;
+  forThoughtEvidence: string;
+  againstThoughtEvidence: string;
+  friendAdvice: string;
+  thoughtLikelihoodSliderTwo: number;
+  thoughtLikelihood: string;
+  alternativePerspective: string;
+}
+
+export interface INoteContext {
+  noteEntries: INoteEntry[];
+  uuid: string;
+  category: Category;
+  title: string;
+  situationDescription: string;
+  feelingDescription: string;
+  thoughtLikelihoodSliderOne: number;
+  forThoughtEvidence: string;
+  againstThoughtEvidence: string;
+  friendAdvice: string;
+  thoughtLikelihoodSliderTwo: number;
+  thoughtLikelihood: string;
+  alternativePerspective: string;
+  setNoteEntries: React.Dispatch<React.SetStateAction<INoteEntry[]>>;
+  setUuid: React.Dispatch<React.SetStateAction<string>>;
+  setCategory: React.Dispatch<React.SetStateAction<Category>>;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  setSituationDescription: React.Dispatch<React.SetStateAction<string>>;
+  setFeelingDescription: React.Dispatch<React.SetStateAction<string>>;
+  setThoughtLikelihoodSliderOne: React.Dispatch<React.SetStateAction<number>>;
+  setForThoughtEvidence: React.Dispatch<React.SetStateAction<string>>;
+  setAgainstThoughtEvidence: React.Dispatch<React.SetStateAction<string>>;
+  setFriendAdvice: React.Dispatch<React.SetStateAction<string>>;
+  setThoughtLikelihoodSliderTwo: React.Dispatch<React.SetStateAction<number>>;
+  setThoughtLikelihood: React.Dispatch<React.SetStateAction<string>>;
+  setAlternativePerspective: React.Dispatch<React.SetStateAction<string>>;
+  resetNoteEntryFields: () => void;
 }

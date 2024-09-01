@@ -5,6 +5,7 @@ import { PaperProvider } from 'react-native-paper';
 import { DiaryProvider } from './src/context/DiaryContext';
 import { AuthProvider } from './src/context/AuthContext';
 import { WorryProvider } from './src/context/WorryContext';
+import { NoteProvider } from './src/context/NoteContext';
 
 import AppNav from './src/navigation/AppNav';
 
@@ -30,7 +31,9 @@ export default function App() {
       <AuthProvider>
         <DiaryProvider>
           <WorryProvider>
-            <AppNav />
+            <NoteProvider>
+              <AppNav />
+            </NoteProvider>
           </WorryProvider>
         </DiaryProvider>
       </AuthProvider>

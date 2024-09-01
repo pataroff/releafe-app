@@ -12,8 +12,6 @@ import {
   Platform,
 } from 'react-native';
 
-import { WorryContext } from '../context/WorryContext';
-
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 
