@@ -23,6 +23,7 @@ export interface IDiaryContext {
   date: Date;
   setDiaryEntries: React.Dispatch<React.SetStateAction<IDiaryEntry[]>>;
   setTextValues: React.Dispatch<React.SetStateAction<Map<number, string>>>;
+  addTextValue: (questionIndex: number, value: string) => void;
   setHasData: React.Dispatch<React.SetStateAction<boolean>>;
   setDate: React.Dispatch<React.SetStateAction<Date>>;
   setProgressValue: React.Dispatch<React.SetStateAction<number>>;
@@ -30,7 +31,6 @@ export interface IDiaryContext {
   addSliderValue: (questionIndex: number, value: number) => void;
   resetSliderValues: () => void;
   resetTextValues: () => void;
-  addTextValue: (questionIndex: number, value: string) => void;
   createDiaryEntry: () => void;
   jsonToMap: (data: {
     [key: string]: number | string;

@@ -18,6 +18,7 @@ export const DiaryContext = createContext<IDiaryContext>({
   date: new Date(),
   setDiaryEntries: () => {},
   setTextValues: () => {},
+  addTextValue: () => {},
   setHasData: () => {},
   setDate: () => {},
   setProgressValue: () => {},
@@ -25,7 +26,6 @@ export const DiaryContext = createContext<IDiaryContext>({
   addSliderValue: () => {},
   resetSliderValues: () => {},
   resetTextValues: () => {},
-  addTextValue: () => {},
   createDiaryEntry: () => {},
   jsonToMap: (data: { [key: string]: number | string }) =>
     new Map<number, number | string>(),
@@ -47,6 +47,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
 
   const { user } = useContext(AuthContext);
 
+  // @TODO Is there a better way of doing this?
   const addSliderValue = (questionIndex: number, value: number) => {
     setSliderValues((prev) => {
       const newSliderValues = new Map<number, number>(prev); // Copy previous map
@@ -55,26 +56,20 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     });
   };
 
-  const resetSliderValues = () => {
-    setSliderValues((prev) => {
-      const newSliderValues = new Map<number, number>(); // Create a new empty map
-      return newSliderValues; // Return the new empty map
+  const addTextValue = (questionIndex: number, value: string) => {
+    setTextValues((prev) => {
+      const newTextValues = new Map(prev);
+      newTextValues.set(questionIndex, value);
+      return newTextValues;
     });
   };
 
-  const addTextValue = (questionIndex: number, value: string) => {
-    setTextValues((prev) => {
-      const newTextValues = new Map<number, string>(prev); // Copy previous map
-      newTextValues.set(questionIndex, value); // Update new map
-      return newTextValues; // Return updated map
-    });
+  const resetSliderValues = () => {
+    setSliderValues(new Map());
   };
 
   const resetTextValues = () => {
-    setTextValues((prev) => {
-      const newSliderValues = new Map<number, string>(); // Create a new empty map
-      return newSliderValues; // Return the new empty map
-    });
+    setTextValues(new Map());
   };
 
   const createDiaryEntry = async () => {
@@ -160,6 +155,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
         date,
         setDiaryEntries,
         setTextValues,
+        addTextValue,
         setHasData,
         setDate,
         setProgressValue,
@@ -167,7 +163,6 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
         addSliderValue,
         resetSliderValues,
         resetTextValues,
-        addTextValue,
         createDiaryEntry,
         jsonToMap,
       }}

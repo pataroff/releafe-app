@@ -26,6 +26,7 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
     diaryEntries,
     textValues,
     setTextValues,
+    addTextValue,
     setSliderQuestionIndex,
     setProgressValue,
     setHasData,
@@ -52,15 +53,6 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
     if (matchedDiaryEntry) {
       setTextValues(matchedDiaryEntry.textValues);
     }
-  };
-
-  // @TODO Is there a better way of doing this?
-  const handleTextChange = (index: number, value: string) => {
-    setTextValues((prev) => {
-      const newValues = new Map(prev);
-      newValues.set(index, value);
-      return newValues;
-    });
   };
 
   const handleFinish = () => {
@@ -153,7 +145,7 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
               ]}
               textAlignVertical='top'
               value={textValues.get(index) ?? ''}
-              onChangeText={(value) => handleTextChange(index, value)}
+              onChangeText={(value) => addTextValue(index, value)}
               multiline={true}
               placeholder='Schrijf het hier op...'
               placeholderTextColor='black'
