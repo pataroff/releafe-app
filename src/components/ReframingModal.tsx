@@ -105,8 +105,9 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     [2, { value: forThoughtEvidence, setter: setForThoughtEvidence }],
     [3, { value: againstThoughtEvidence, setter: setAgainstThoughtEvidence }],
     [4, { value: friendAdvice, setter: setFriendAdvice }],
-    [5, { value: thoughtLikelihood, setter: setThoughtLikelihood }],
-    [6, { value: alternativePerspective, setter: setAlternativePerspective }],
+    // Skipping `reframingModalIndex` 5 as there is no state corressponding to it!
+    [6, { value: thoughtLikelihood, setter: setThoughtLikelihood }],
+    [7, { value: alternativePerspective, setter: setAlternativePerspective }],
   ]);
   const reframingModalSliderState = new Map<number, NumberStateSetterPair>([
     [

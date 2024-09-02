@@ -134,10 +134,12 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
   };
 
   const resetWorryEntryFields = () => {
+    setUuid('');
     setCategory(Category.Work);
     setPriority(Priority.None);
     setTitle('');
     setDescription('');
+    setReframed(false);
   };
 
   return (

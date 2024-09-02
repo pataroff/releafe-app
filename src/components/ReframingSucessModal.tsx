@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 
 import {
   StyleSheet,
@@ -88,18 +88,28 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
   modalReframingVisible,
   setModalReframingVisible,
 }) => {
-  const { category, title, resetWorryEntryFields, createWorryEntry } =
-    useContext(WorryContext);
+  const {
+    category,
+    title,
+    description,
+    resetWorryEntryFields,
+    createWorryEntry,
+  } = useContext(WorryContext);
 
   const {
     alternativePerspective,
     friendAdvice,
     againstThoughtEvidence,
     thoughtLikelihood,
+    feelingDescription,
     resetNoteEntryFields,
   } = useContext(NoteContext);
 
+  const [showOldSituation, setShowOldSituation] = useState<boolean>(false);
+
   const handleClose = () => {
+    setReframingModalIndex(0);
+    setShowOldSituation(false);
     resetWorryEntryFields();
     resetNoteEntryFields();
     setModalReframingSuccessVisible(!modalReframingSuccessVisible);
@@ -113,6 +123,7 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
 
   const handleFinish = () => {
     setReframingModalIndex(0);
+    setShowOldSituation(false);
     setModalReframingSuccessVisible(!modalReframingSuccessVisible);
     setModalWorryListVisible(!modalWorryListVisible);
     createWorryEntry();
@@ -200,69 +211,110 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
             </View>
 
             {/* Main Content */}
-            {/* @TODO: Remove `length > 0` conditional check! */}
-            <View style={{ marginTop: 10, rowGap: 10 }}>
+            <View
+              style={{
+                marginTop: 10,
+                width: '100%',
+                rowGap: 10,
+              }}
+            >
               {/* Alternative Perspective Text */}
-              <Text style={styles.bodyText}>
-                {alternativePerspective.length > 0
-                  ? alternativePerspective
-                  : 'Ik ben goed voorbereid en heb al vaak succesvol gepresenteerd. Het is normaal om zenuwachtig te zijn, maar dat betekent niet dat de presentatie zal mislukken.'}
-              </Text>
+              <Text style={styles.bodyText}>{alternativePerspective}</Text>
 
               {/* Friend Advice Text */}
               <View>
                 <Text style={styles.headingText}>Advies:</Text>
-                <Text style={styles.bodyText}>
-                  {friendAdvice.length > 0
-                    ? friendAdvice
-                    : 'Je hebt hard gewerkt aan deze presentatie en je bent goed voorbereid. Zelfs als er iets misgaat, is het niet het einde van de wereld. ledereen maakt weleens een fout.'}
-                </Text>
+                <Text style={styles.bodyText}>{friendAdvice}</Text>
               </View>
 
               {/* Against Thought Evidence Text */}
               <View>
                 <Text style={styles.headingText}>Tegenbewijs:</Text>
-                <Text style={styles.bodyText}>
-                  {againstThoughtEvidence.length > 0
-                    ? againstThoughtEvidence
-                    : 'Ik heb ook meerdere presentaties gegeven die goed gingen, waarbij ik positieve feedback kreeg van collegas.'}
-                </Text>
+                <Text style={styles.bodyText}>{againstThoughtEvidence}</Text>
               </View>
 
               {/* Likelihood Text */}
               <View>
                 <Text style={styles.headingText}>Waarschijnlijkheid:</Text>
-                <Text style={styles.bodyText}>
-                  {thoughtLikelihood.length > 0
-                    ? thoughtLikelihood
-                    : 'Hoewel er een kans is dat ik een fout maak, is het niet erg waarschijnlijk gezien mijn voorbereiding en eerdere prestaties.'}
-                </Text>
+                <Text style={styles.bodyText}>{thoughtLikelihood}</Text>
               </View>
 
               {/* View Old Situation */}
-              <View
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  rowGap: 5,
-                }}
-              >
-                <Text
-                  style={
-                    {
-                      textAlign: 'center',
-                      marginTop: 20,
-                      ...Fonts.poppinsRegular[Platform.OS],
-                      fontSize: 11,
-                      color: 'gray',
-                    } as TextStyle
-                  }
+              {!showOldSituation && (
+                <Pressable
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: 125,
+                    alignSelf: 'center',
+                  }}
+                  onPress={() => setShowOldSituation(!showOldSituation)}
                 >
-                  Oude situatie bekijken
-                </Text>
-                <FontAwesome6 name='chevron-down' size={10} color='gray' />
-              </View>
+                  <Text
+                    style={
+                      {
+                        textAlign: 'center',
+                        ...Fonts.poppinsRegular[Platform.OS],
+                        fontSize: 11,
+                        color: 'gray',
+                      } as TextStyle
+                    }
+                  >
+                    Oude situatie bekijken
+                  </Text>
+                  <FontAwesome6 name='chevron-down' size={10} color='gray' />
+                </Pressable>
+              )}
+
+              {showOldSituation && (
+                <>
+                  {/* Situation Description */}
+                  <View>
+                    <Text style={[styles.headingText, { color: 'gray' }]}>
+                      Situatieomschrijving:
+                    </Text>
+                    <Text style={[styles.bodyText, { color: 'gray' }]}>
+                      {description}
+                    </Text>
+                  </View>
+
+                  {/* Feeling Description */}
+                  <View>
+                    <Text style={[styles.headingText, { color: 'gray' }]}>
+                      Gevoelsomschrijving:
+                    </Text>
+                    <Text style={[styles.bodyText, { color: 'gray' }]}>
+                      {feelingDescription}
+                    </Text>
+                  </View>
+
+                  <Pressable
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: 70,
+                      alignSelf: 'center',
+                    }}
+                    onPress={() => setShowOldSituation(!showOldSituation)}
+                  >
+                    <FontAwesome6 name='chevron-up' size={10} color='gray' />
+                    <Text
+                      style={
+                        {
+                          textAlign: 'center',
+                          ...Fonts.poppinsRegular[Platform.OS],
+                          fontSize: 11,
+                          color: 'gray',
+                        } as TextStyle
+                      }
+                    >
+                      Inklappen
+                    </Text>
+                  </Pressable>
+                </>
+              )}
             </View>
           </ScrollView>
 

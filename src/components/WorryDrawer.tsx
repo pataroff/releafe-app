@@ -3,13 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   Image,
   Pressable,
   Dimensions,
   Platform,
   TextStyle,
-  Modal,
 } from 'react-native';
 
 import { Fonts } from '../styles';

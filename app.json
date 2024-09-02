@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "stap-app",
-    "slug": "stap-app",
+    "name": "releafe-app",
+    "slug": "releafe-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
