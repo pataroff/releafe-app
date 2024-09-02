@@ -35,7 +35,7 @@ export const DiaryFarewell: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.greetingText}>
-        Goed gedaan, {user.firstName}.{'\n'}Je hebt jouw dagboek met succes
+        Goed gedaan, {user?.firstName}.{'\n'}Je hebt jouw dagboek met succes
         ingevuld.
       </Text>
       <View style={{ paddingVertical: 10 }}>

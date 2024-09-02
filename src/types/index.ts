@@ -9,8 +9,8 @@ export interface IDiaryEntry {
   id: string;
   uuid: string;
   date: Date;
-  sliderValues: Map<number, number | string>;
-  textValues: Map<number, number | string>;
+  sliderValues: Map<number, number>;
+  textValues: Map<number, string>;
 }
 
 export interface IDiaryContext {
@@ -18,9 +18,11 @@ export interface IDiaryContext {
   sliderValues: Map<number, number>;
   sliderQuestionIndex: number;
   progressValue: number;
+  textValues: Map<number, string>;
   hasData: boolean;
   date: Date;
   setDiaryEntries: React.Dispatch<React.SetStateAction<IDiaryEntry[]>>;
+  setTextValues: React.Dispatch<React.SetStateAction<Map<number, string>>>;
   setHasData: React.Dispatch<React.SetStateAction<boolean>>;
   setDate: React.Dispatch<React.SetStateAction<Date>>;
   setProgressValue: React.Dispatch<React.SetStateAction<number>>;

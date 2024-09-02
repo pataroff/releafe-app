@@ -5,43 +5,42 @@ import {
   View,
   Text,
   TextInput,
+  Modal,
   StyleSheet,
   Pressable,
   Dimensions,
   Platform,
   TextStyle,
 } from 'react-native';
+
 import { Fonts } from '../styles';
-import { AntDesign } from '@expo/vector-icons';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { IDiaryEntry } from '../types';
 
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 export const TextQuestion: React.FC = ({ questions, route }) => {
   const {
     diaryEntries,
+    textValues,
+    setTextValues,
     setSliderQuestionIndex,
     setProgressValue,
-    addTextValue,
     setHasData,
+    resetSliderValues,
+    resetTextValues,
   } = useContext(DiaryContext);
   const navigation = useNavigation();
 
-  const [selectedDiaryEntry, setSelectedDiaryEntry] =
-    useState<IDiaryEntry | null>();
-  const [textValues, setTextValues] = useState<Map<number, string>>(new Map());
+  const [modalVisible, setModalVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       if (route.params?.date) {
-        // `date` is being passed from `SliderQuestion` component!
         checkForExistingDiaryEntry(route.params.date);
       }
-      // else {
-      //   checkForExistingDiaryEntry(new Date());
-      // }
     }, [diaryEntries, route.params?.date])
   );
 
@@ -51,13 +50,11 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
     );
 
     if (matchedDiaryEntry) {
-      setSelectedDiaryEntry(matchedDiaryEntry);
-      getTextValues(matchedDiaryEntry);
-    } else {
-      setSelectedDiaryEntry(null);
+      setTextValues(matchedDiaryEntry.textValues);
     }
   };
 
+  // @TODO Is there a better way of doing this?
   const handleTextChange = (index: number, value: string) => {
     setTextValues((prev) => {
       const newValues = new Map(prev);
@@ -67,33 +64,78 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
   };
 
   const handleFinish = () => {
-    // Assuming all questions have been answered
-    textValues.forEach((value, index) => {
-      addTextValue(index, value);
-    });
-
+    // `DiaryFarewell` calls both `resetSliderValues` and `resetTextValues`!
     setSliderQuestionIndex(0);
     setProgressValue(0);
-    setHasData(true);
+    setHasData(true); // @TODO Remove leftover state from testing!
     navigation.navigate('Diary4');
+  };
+
+  const handleSaveAndClose = () => {
+    setSliderQuestionIndex(0);
+    setProgressValue(0);
+    navigation.navigate('Diary1');
+  };
+
+  const handleDontSaveAndClose = () => {
+    setSliderQuestionIndex(0);
+    setProgressValue(0);
+    resetSliderValues();
+    resetTextValues();
+    navigation.navigate('Diary1');
   };
 
   const getFormattedDate = (date: Date) => {
     return date.toISOString().slice(0, 10);
   };
 
-  const getTextValues = (matchedDiaryEntry: IDiaryEntry) => {
-    const initialTextValues = new Map();
-    matchedDiaryEntry.textValues.forEach((value, key) => {
-      initialTextValues.set(key, value);
-    });
-    setTextValues(initialTextValues);
-  };
-
   return (
     <View style={styles.container}>
+      <Modal
+        animationType='none'
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(!modalVisible)}
+      >
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            <View>
+              <Text style={styles.modalTitleText}>
+                Stoppen met invullen dagboek
+              </Text>
+              <Text style={styles.modalDescriptionText}>
+                Je staat op het punt om het dagboek af te sluiten.
+              </Text>
+              <View style={{ rowGap: 10, marginTop: 20 }}>
+                <Pressable
+                  style={styles.saveAndCloseButton}
+                  onPress={() => handleSaveAndClose()}
+                >
+                  <Text style={styles.saveAndCloseText}>
+                    Opslaan en afsluiten
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={styles.dontSaveAndCloseButton}
+                  onPress={() => handleDontSaveAndClose()}
+                >
+                  <Text style={styles.dontSaveAndCloseText}>
+                    Niet opslaan en afsluiten
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+            <Pressable
+              style={styles.cancelButton}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.cancelButtonText}>Annuleren</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       <Pressable
-        onPress={() => navigation.navigate('Diary1')}
+        onPress={() => setModalVisible(!modalVisible)}
         style={styles.closeButton}
       >
         <AntDesign name='closecircleo' size={30} color='black' />
@@ -169,6 +211,70 @@ const styles = StyleSheet.create({
     marginVertical: 30,
   },
   buttonText: {
+    ...Fonts.poppinsItalic[Platform.OS],
+    fontStyle: 'italic',
+  } as TextStyle,
+  modalWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    borderWidth: 2,
+    borderRadius: 30,
+    height: 300,
+    width: windowWidth - 2 * 10,
+    backgroundColor: 'white',
+    paddingHorizontal: 25,
+    paddingVertical: 25,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  modalTitleText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 18,
+  } as TextStyle,
+  modalDescriptionText: {
+    ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 14,
+  } as TextStyle,
+  saveAndCloseButton: {
+    borderWidth: 2,
+    borderRadius: 30,
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    width: 220,
+    paddingVertical: 4,
+    backgroundColor: 'black',
+  },
+  dontSaveAndCloseButton: {
+    borderWidth: 2,
+    borderRadius: 30,
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    width: 220,
+    paddingVertical: 4,
+    backgroundColor: 'white',
+  },
+  saveAndCloseText: {
+    ...Fonts.poppinsItalic[Platform.OS],
+    fontStyle: 'italic',
+    color: 'white',
+  } as TextStyle,
+  dontSaveAndCloseText: {
+    ...Fonts.poppinsItalic[Platform.OS],
+    fontStyle: 'italic',
+  } as TextStyle,
+  cancelButton: {
+    borderWidth: 2,
+    borderRadius: 30,
+    alignItems: 'center',
+    width: 150,
+    paddingVertical: 5,
+    backgroundColor: 'white',
+  },
+  cancelButtonText: {
     ...Fonts.poppinsItalic[Platform.OS],
     fontStyle: 'italic',
   } as TextStyle,
