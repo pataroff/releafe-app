@@ -65,7 +65,6 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setPriority,
     setTitle,
     setDescription,
-    setReframed,
     createWorryEntry,
     resetWorryEntryFields,
   } = useContext(WorryContext);
@@ -74,7 +73,6 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     useState<boolean>(false);
 
   const handleStore = () => {
-    setReframed(false);
     createWorryEntry(),
       resetWorryEntryFields(),
       setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);

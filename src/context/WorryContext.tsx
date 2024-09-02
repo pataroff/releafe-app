@@ -98,7 +98,7 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
         console.error('Error updating worry entry:', error);
       }
     } else {
-      setWorryEntries((prev) => [...prev, newWorryEntry]);
+      setWorryEntries((prev) => [newWorryEntry, ...prev]);
       pb.collection('worry_entries').create(newWorryEntryDatabase);
     }
   };
@@ -137,6 +137,7 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
     setUuid('');
     setCategory(Category.Work);
     setPriority(Priority.None);
+    setDate(new Date());
     setTitle('');
     setDescription('');
     setReframed(false);

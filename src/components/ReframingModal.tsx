@@ -444,8 +444,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         }
                         onValueChange={(value) =>
                           reframingModalIndex === 1
-                            ? reframingModalSliderState.get(1)?.setter
-                            : reframingModalSliderState.get(2)?.setter
+                            ? reframingModalSliderState.get(1)?.setter(value)
+                            : reframingModalSliderState.get(2)?.setter(value)
                         }
                         minimumTrackTintColor='#007667'
                         maximumTrackTintColor='#007667'

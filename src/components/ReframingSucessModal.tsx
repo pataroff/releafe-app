@@ -13,6 +13,9 @@ import {
   Platform,
 } from 'react-native';
 
+import Slider from '@react-native-community/slider';
+import { MarkerProps } from '@react-native-community/slider';
+
 import { Fonts } from '../styles';
 import { Category, IIcon } from '../types';
 
@@ -102,6 +105,10 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
     againstThoughtEvidence,
     thoughtLikelihood,
     feelingDescription,
+    thoughtLikelihoodSliderOne,
+    thoughtLikelihoodSliderTwo,
+    setThoughtLikelihoodSliderOne,
+    setThoughtLikelihoodSliderTwo,
     resetNoteEntryFields,
   } = useContext(NoteContext);
 
@@ -129,6 +136,21 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
     createWorryEntry();
     resetWorryEntryFields();
     resetNoteEntryFields();
+  };
+
+  const StepMarker: React.FC<MarkerProps> = ({ stepMarked }) => {
+    return (
+      <View
+        style={{
+          position: 'absolute',
+          top: 6,
+          borderRadius: 99,
+          width: 8,
+          height: 8,
+          backgroundColor: stepMarked ? '#00d7bc' : '#007667',
+        }}
+      ></View>
+    );
   };
 
   return (
@@ -237,6 +259,21 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
               <View>
                 <Text style={styles.headingText}>Waarschijnlijkheid:</Text>
                 <Text style={styles.bodyText}>{thoughtLikelihood}</Text>
+                <Slider
+                  style={{ width: '100%', height: 40 }}
+                  disabled={true}
+                  minimumValue={0}
+                  maximumValue={4}
+                  step={1}
+                  thumbTintColor='#00d7bc'
+                  StepMarker={StepMarker}
+                  value={thoughtLikelihoodSliderTwo}
+                  onValueChange={(value) =>
+                    setThoughtLikelihoodSliderTwo(value)
+                  }
+                  minimumTrackTintColor='#007667'
+                  maximumTrackTintColor='#007667'
+                />
               </View>
 
               {/* View Old Situation */}
@@ -287,6 +324,21 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
                     <Text style={[styles.bodyText, { color: 'gray' }]}>
                       {feelingDescription}
                     </Text>
+                    <Slider
+                      style={{ width: '100%', height: 40 }}
+                      disabled={true}
+                      minimumValue={0}
+                      maximumValue={4}
+                      step={1}
+                      thumbTintColor='#00d7bc'
+                      StepMarker={StepMarker}
+                      value={thoughtLikelihoodSliderOne}
+                      onValueChange={(value) =>
+                        setThoughtLikelihoodSliderOne(value)
+                      }
+                      minimumTrackTintColor='#007667'
+                      maximumTrackTintColor='#007667'
+                    />
                   </View>
 
                   <Pressable
