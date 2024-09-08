@@ -7,7 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { WorryDrawer } from '../components/WorryDrawer';
 
-export const WorryBoxScreen: React.FC = () => {
+// @TODO Correct the `route` type annotation!
+export const WorryBoxScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export const WorryBoxScreen: React.FC = () => {
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
-        <WorryDrawer />
+        <WorryDrawer route={route} />
       </ScrollView>
     </>
   );

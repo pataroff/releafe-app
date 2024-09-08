@@ -88,7 +88,9 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
         // Get the existing entry from the database
         const matchedWorryEntryDatabase = await pb
           .collection('worry_entries')
-          .getFirstListItem(`uuid="${matchedWorryEntry.uuid}"`);
+          .getFirstListItem(`uuid="${matchedWorryEntry.uuid}"`, {
+            requestKey: null, // prevents auto-cancelling duplicate pending requests
+          });
 
         // Update the existing entry in the database
         await pb

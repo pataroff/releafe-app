@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
-import { IDiaryEntry } from '../types';
+import { IDiaryEntry, SelectOptions } from '../types';
 
 import { CustomSelector } from './CustomSelector';
 import { CustomMultiPicker } from './CustomMultiPicker';
@@ -22,12 +22,6 @@ import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
 import { version } from 'canvaskit-wasm/package.json';
 
 const windowWidth = Dimensions.get('window').width;
-
-enum SelectOptions {
-  Week,
-  Maand,
-  Jaar,
-}
 
 export const Performance: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);

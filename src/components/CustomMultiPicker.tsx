@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
+import { SelectOptions } from '../types';
 import Feather from '@expo/vector-icons/Feather';
 
 import { DiaryContext } from '../context/DiaryContext';
@@ -23,7 +24,9 @@ const options = [
   'Slaap',
 ];
 
-export const CustomMultiPicker: React.FC = ({ selected }) => {
+export const CustomMultiPicker: React.FC<{ selected: SelectOptions }> = ({
+  selected,
+}) => {
   const { hasData } = useContext(DiaryContext);
 
   return (

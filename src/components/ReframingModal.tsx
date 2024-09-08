@@ -39,6 +39,8 @@ type NumberStateSetterPair = {
 };
 
 interface ReframingModalProps {
+  // @TODO Correct the `route` type annotation!
+  route: any;
   reframingModalIndex: number;
   setReframingModalIndex: React.Dispatch<React.SetStateAction<number>>;
   reframingSteps: {
@@ -50,8 +52,8 @@ interface ReframingModalProps {
   }[];
   modalReframingVisible: boolean;
   setModalReframingVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  modalWorryListVisible: boolean;
-  setModalWorryListVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  modalWorryListVisible?: boolean;
+  setModalWorryListVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   modalReframingSuccessVisible: boolean;
   setModalReframingSuccessVisible: React.Dispatch<
     React.SetStateAction<boolean>
@@ -59,6 +61,7 @@ interface ReframingModalProps {
 }
 
 export const ReframingModal: React.FC<ReframingModalProps> = ({
+  route,
   reframingModalIndex,
   setReframingModalIndex,
   reframingSteps,
@@ -80,6 +83,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     resetWorryEntryFields,
   } = useContext(WorryContext);
   const {
+    isChecked,
     feelingDescription,
     thoughtLikelihoodSliderOne,
     forThoughtEvidence,
@@ -88,6 +92,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     thoughtLikelihoodSliderTwo,
     thoughtLikelihood,
     alternativePerspective,
+    setIsChecked,
     setThoughtLikelihoodSliderOne,
     setFeelingDescription,
     setForThoughtEvidence,
@@ -126,14 +131,14 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     ],
   ]);
 
-  const [isChecked, setChecked] = useState<boolean>(true);
-
   const handleClose = () => {
     setReframingModalIndex(0);
     resetWorryEntryFields();
     resetNoteEntryFields();
     setModalReframingVisible(!modalReframingVisible);
-    setModalWorryListVisible(!modalWorryListVisible);
+    if (route.name == 'WorryBox' && setModalWorryListVisible !== undefined) {
+      setModalWorryListVisible(!modalWorryListVisible);
+    }
   };
 
   const handlePrevious = () => {
@@ -351,7 +356,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                     <Checkbox
                       color='black'
                       value={isChecked}
-                      onValueChange={setChecked}
+                      onValueChange={setIsChecked}
                     />
                     <Text style={{ ...Fonts.poppinsRegular } as TextStyle}>
                       Koppelen aan zorg

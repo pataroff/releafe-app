@@ -61,6 +61,12 @@ export interface IAuthContext {
   user: AuthModel | null;
 }
 
+export enum SelectOptions {
+  Week,
+  Maand,
+  Jaar,
+}
+
 export enum Category {
   Work = 'WORK',
   Health = 'HEALTH',
@@ -126,7 +132,7 @@ export interface INoteEntry {
   uuid: string;
   category: Category;
   title: string;
-  situationDescription: string;
+  description: string;
   feelingDescription: string;
   thoughtLikelihoodSliderOne: number;
   forThoughtEvidence: string;
@@ -139,10 +145,8 @@ export interface INoteEntry {
 
 export interface INoteContext {
   noteEntries: INoteEntry[];
+  isChecked: boolean;
   uuid: string;
-  category: Category;
-  title: string;
-  situationDescription: string;
   feelingDescription: string;
   thoughtLikelihoodSliderOne: number;
   forThoughtEvidence: string;
@@ -152,10 +156,8 @@ export interface INoteContext {
   thoughtLikelihood: string;
   alternativePerspective: string;
   setNoteEntries: React.Dispatch<React.SetStateAction<INoteEntry[]>>;
+  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
   setUuid: React.Dispatch<React.SetStateAction<string>>;
-  setCategory: React.Dispatch<React.SetStateAction<Category>>;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
-  setSituationDescription: React.Dispatch<React.SetStateAction<string>>;
   setFeelingDescription: React.Dispatch<React.SetStateAction<string>>;
   setThoughtLikelihoodSliderOne: React.Dispatch<React.SetStateAction<number>>;
   setForThoughtEvidence: React.Dispatch<React.SetStateAction<string>>;
@@ -164,5 +166,6 @@ export interface INoteContext {
   setThoughtLikelihoodSliderTwo: React.Dispatch<React.SetStateAction<number>>;
   setThoughtLikelihood: React.Dispatch<React.SetStateAction<string>>;
   setAlternativePerspective: React.Dispatch<React.SetStateAction<string>>;
+  createNoteEntry: (worryEntryUuid?: string) => void;
   resetNoteEntryFields: () => void;
 }

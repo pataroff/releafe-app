@@ -32,57 +32,34 @@ const windowHeight = Dimensions.get('window').height;
 
 // @TODO: DRY (DO NOT REPEAT YOURSELF)!
 
-const icons: IIcon[] = [
-  {
-    label: 'Werk',
-    value: 'werk',
-    icon: <FontAwesome6 name='suitcase' size={24} color='black' />,
-  },
-  {
-    label: 'Gezondheid',
-    value: 'gezondheid',
-    icon: <FontAwesome5 name='plus' size={24} color='black' />,
-  },
-  {
-    label: 'Relaties',
-    value: 'relaties',
-    icon: <FontAwesome name='heart' size={24} color='black' />,
-  },
-];
-
-const getIcon = (selectedValue: string | null) => {
-  const selectedItem = icons.find((icon) => icon.value === selectedValue);
-  return selectedItem ? selectedItem.icon : null;
-};
-
-const categoryToString = (category: Category) => {
+const getCategory = (category: Category): React.ReactElement => {
   switch (category) {
     case Category.Work:
-      return 'werk';
+      return <FontAwesome6 name='suitcase' size={24} color='black' />;
     case Category.Health:
-      return 'gezondheid';
+      return <FontAwesome5 name='plus' size={24} color='black' />;
     case Category.Relationships:
-      return 'relaties';
-    default:
-      return 'werk';
+      return <FontAwesome name='heart' size={24} color='black' />;
   }
 };
 
 interface ReframingSuccessModalProps {
-  reframingModalIndex: number;
+  // @TODO: Correct the `route` type annotation!
+  route: any;
+  reframingModalIndex?: number;
   setReframingModalIndex: React.Dispatch<React.SetStateAction<number>>;
   modalReframingSuccessVisible: boolean;
   setModalReframingSuccessVisible: React.Dispatch<
     React.SetStateAction<boolean>
   >;
-  modalWorryListVisible: boolean;
-  setModalWorryListVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  modalWorryListVisible?: boolean;
+  setModalWorryListVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   modalReframingVisible: boolean;
   setModalReframingVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
-  reframingModalIndex,
+  route,
   setReframingModalIndex,
   modalReframingSuccessVisible,
   setModalReframingSuccessVisible,
@@ -92,6 +69,7 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
   setModalReframingVisible,
 }) => {
   const {
+    uuid,
     category,
     title,
     description,
@@ -100,6 +78,7 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
   } = useContext(WorryContext);
 
   const {
+    isChecked,
     alternativePerspective,
     friendAdvice,
     againstThoughtEvidence,
@@ -109,6 +88,7 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
     thoughtLikelihoodSliderTwo,
     setThoughtLikelihoodSliderOne,
     setThoughtLikelihoodSliderTwo,
+    createNoteEntry,
     resetNoteEntryFields,
   } = useContext(NoteContext);
 
@@ -120,7 +100,10 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
     resetWorryEntryFields();
     resetNoteEntryFields();
     setModalReframingSuccessVisible(!modalReframingSuccessVisible);
-    setModalWorryListVisible(!modalWorryListVisible);
+
+    if (route.name == 'WorryBox' && setModalWorryListVisible !== undefined) {
+      setModalWorryListVisible(!modalWorryListVisible);
+    }
   };
 
   const handleAdjust = () => {
@@ -132,8 +115,18 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
     setReframingModalIndex(0);
     setShowOldSituation(false);
     setModalReframingSuccessVisible(!modalReframingSuccessVisible);
-    setModalWorryListVisible(!modalWorryListVisible);
-    createWorryEntry();
+
+    if (route.name == 'WorryBox' && setModalWorryListVisible !== undefined) {
+      setModalWorryListVisible(!modalWorryListVisible);
+    }
+
+    if (isChecked) {
+      createWorryEntry();
+      createNoteEntry(uuid);
+    } else {
+      createNoteEntry();
+    }
+
     resetWorryEntryFields();
     resetNoteEntryFields();
   };
@@ -203,6 +196,7 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
             Hier is je nieuwe Note-to-Self:
           </Text>
 
+          {/* // @TODO: Create a `NoteListItemExpanded` component and move this logic in there! */}
           {/* Note Item Component */}
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -219,7 +213,7 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
                 rowGap: 10,
               }}
             >
-              {getIcon(categoryToString(category))}
+              {getCategory(category)}
               <Text
                 style={
                   {

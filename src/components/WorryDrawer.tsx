@@ -91,7 +91,8 @@ const reframingSteps = [
   },
 ];
 
-export const WorryDrawer = () => {
+// @TODO Correct the `route` type annotation!
+export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [modalWorryListVisible, setModalWorryListVisible] =
     useState<boolean>(false);
@@ -148,6 +149,7 @@ export const WorryDrawer = () => {
 
       {/* Reframing Modal */}
       <ReframingModal
+        route={route}
         reframingModalIndex={reframingModalIndex}
         setReframingModalIndex={setReframingModalIndex}
         reframingSteps={reframingSteps}
@@ -161,6 +163,7 @@ export const WorryDrawer = () => {
 
       {/* Reframing Sucess Modal */}
       <ReframingSuccessModal
+        route={route}
         reframingModalIndex={reframingModalIndex}
         setReframingModalIndex={setReframingModalIndex}
         modalReframingSuccessVisible={modalReframingSuccessVisible}

@@ -10,9 +10,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { DiaryStack } from './DiaryStack';
 import { ToolkitStack } from './ToolkitStack';
+import { NotesToSelfStack } from './NotesToSelfStack';
 
 import { HomeScreen } from '../screens/HomeScreen';
-import { ChatScreen } from '../screens/ChatScreen';
 import { AIScreen } from '../screens/AIScreen';
 
 import { AuthContext } from '../context/AuthContext';
@@ -169,8 +169,8 @@ export const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name='Chat'
-        component={ChatScreen}
+        name='NotesToSelf'
+        component={NotesToSelfStack}
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (
