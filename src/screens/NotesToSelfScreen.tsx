@@ -19,7 +19,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import { ReframingModal } from '../components/ReframingModal';
 import { ReframingSuccessModal } from '../components/ReframingSucessModal';
-import { NotesList } from '../components/NotesList';
+import { NoteList } from '../components/NoteList';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -104,7 +104,7 @@ export const NotesToSelfScreen: React.FC = ({ route }) => {
     <>
       <StatusBar />
       <ReframingModal
-        // @TODO Fix type checking!
+        // @TODO: Correct `route` type annotation!
         route={route}
         reframingModalIndex={reframingModalIndex}
         setReframingModalIndex={setReframingModalIndex}
@@ -117,7 +117,7 @@ export const NotesToSelfScreen: React.FC = ({ route }) => {
 
       {/* Reframing Sucess Modal */}
       <ReframingSuccessModal
-        // @TODO Fix type checking!
+        // @TODO: Correct `route` type annotation!
         route={route}
         reframingModalIndex={reframingModalIndex}
         setReframingModalIndex={setReframingModalIndex}
@@ -157,8 +157,8 @@ export const NotesToSelfScreen: React.FC = ({ route }) => {
           </Pressable>
         </View>
 
-        {/* Notes List */}
-        <NotesList />
+        {/* Note List */}
+        <NoteList />
 
         {/* Buttons */}
         <View style={styles.bottomBarContainer}>

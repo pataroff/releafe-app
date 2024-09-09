@@ -1,185 +1,106 @@
+import React, { useState } from 'react';
+
+import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
-  Text,
   ScrollView,
   View,
+  Text,
+  Pressable,
   Platform,
+  Dimensions,
   TextStyle,
 } from 'react-native';
 
 import { Fonts } from '../styles';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Feather from '@expo/vector-icons/Feather';
 
-import { Category } from '../types';
+import { useNavigation } from '@react-navigation/native';
 
-import Slider from '@react-native-community/slider';
-import { MarkerProps } from '@react-native-community/slider';
+import { NoteListItemExpanded } from '../components/NoteListItemExpanded';
 
-const getCategory = (category: Category): React.ReactElement => {
-  switch (category) {
-    case Category.Work:
-      return <FontAwesome6 name='suitcase' size={24} color='black' />;
-    case Category.Health:
-      return <FontAwesome5 name='plus' size={24} color='black' />;
-    case Category.Relationships:
-      return <FontAwesome name='heart' size={24} color='black' />;
-  }
-};
+const windowWidth = Dimensions.get('window').width;
 
-export const NotesToSelfScreen2: React.FC = ({ route }) => {
-  const {
-    category,
-    title,
-    description,
-    feelingDescription,
-    alternativePerspective,
-    friendAdvice,
-    againstThoughtEvidence,
-    thoughtLikelihood,
-    thoughtLikelihoodSliderOne,
-    thoughtLikelihoodSliderTwo,
-  } = route.params.item;
-
-  const StepMarker: React.FC<MarkerProps> = ({ stepMarked }) => {
-    return (
-      <View
-        style={{
-          position: 'absolute',
-          top: 6,
-          borderRadius: 99,
-          width: 8,
-          height: 8,
-          backgroundColor: stepMarked ? '#00d7bc' : '#007667',
-        }}
-      ></View>
-    );
-  };
+export const NotesToSelfScreen2: React.FC<{ route: any }> = ({ route }) => {
+  const navigation = useNavigation();
 
   return (
-    // @TODO: Create a `NoteListItemExpanded` component and move this logic in there!
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={styles.mainContainer}
-      contentContainerStyle={styles.mainContentContainer}
-    >
-      {/* Icon + Title */}
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          rowGap: 10,
-        }}
+    <>
+      <StatusBar />
+      <ScrollView
+        bounces={false}
+        style={styles.container}
+        contentContainerStyle={styles.contentContainerStyles}
       >
-        {getCategory(category)}
-        <Text
-          style={
-            {
-              ...Fonts.poppinsSemiBold[Platform.OS],
-              fontSize: 16,
-            } as TextStyle
-          }
-        >
-          {title}
-        </Text>
-      </View>
+        <NoteListItemExpanded route={route} />
 
-      {/* Main Content */}
-      <View
-        style={{
-          marginTop: 10,
-          width: '100%',
-          rowGap: 10,
-        }}
-      >
-        {/* Alternative Perspective Text */}
-        <Text style={styles.bodyText}>{alternativePerspective}</Text>
-
-        {/* Friend Advice Text */}
-        <View>
-          <Text style={styles.headingText}>Advies:</Text>
-          <Text style={styles.bodyText}>{friendAdvice}</Text>
+        {/* Buttons */}
+        <View style={styles.bottomBarContainer}>
+          <Pressable
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>Terug</Text>
+          </Pressable>
+          <View style={styles.editButton}>
+            <Feather name='edit' size={20} color='white' />
+            <Pressable onPress={() => console.log('Edit button pressed!')}>
+              <Text style={styles.editButtonText}>Bewerken</Text>
+            </Pressable>
+          </View>
         </View>
-
-        {/* Against Thought Evidence Text */}
-        <View>
-          <Text style={styles.headingText}>Tegenbewijs:</Text>
-          <Text style={styles.bodyText}>{againstThoughtEvidence}</Text>
-        </View>
-
-        {/* Likelihood Text */}
-        <View>
-          <Text style={styles.headingText}>Waarschijnlijkheid:</Text>
-          <Text style={styles.bodyText}>{thoughtLikelihood}</Text>
-          <Slider
-            style={{ width: '100%', height: 40 }}
-            disabled={true}
-            minimumValue={0}
-            maximumValue={4}
-            step={1}
-            thumbTintColor='#00d7bc'
-            StepMarker={StepMarker}
-            value={thoughtLikelihoodSliderTwo}
-            minimumTrackTintColor='#007667'
-            maximumTrackTintColor='#007667'
-          />
-        </View>
-
-        {/* Situation Description */}
-        <View>
-          <Text style={[styles.headingText, { color: 'gray' }]}>
-            Situatieomschrijving:
-          </Text>
-          <Text style={[styles.bodyText, { color: 'gray' }]}>
-            {description}
-          </Text>
-        </View>
-
-        {/* Feeling Description */}
-        <View>
-          <Text style={[styles.headingText, { color: 'gray' }]}>
-            Gevoelsomschrijving:
-          </Text>
-          <Text style={[styles.bodyText, { color: 'gray' }]}>
-            {feelingDescription}
-          </Text>
-          <Slider
-            style={{ width: '100%', height: 40 }}
-            disabled={true}
-            minimumValue={0}
-            maximumValue={4}
-            step={1}
-            thumbTintColor='#00d7bc'
-            StepMarker={StepMarker}
-            value={thoughtLikelihoodSliderOne}
-            minimumTrackTintColor='#007667'
-            maximumTrackTintColor='#007667'
-          />
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 };
+
 const styles = StyleSheet.create({
-  mainContainer: {
-    paddingHorizontal: 20,
+  container: {
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  mainContentContainer: {
+  contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     backgroundColor: '#ffffff',
   },
-  headingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
-  } as TextStyle,
-  bodyText: {
+  bottomBarContainer: {
+    marginBottom: 100,
+    width: windowWidth,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderColor: '#dedede',
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    paddingHorizontal: 20,
+    paddingTop: 15,
+  },
+  backButton: {
+    borderRadius: 30,
+    alignItems: 'center',
+    width: 80,
+    paddingVertical: 10,
+    backgroundColor: '#dedede',
+  },
+  backButtonText: {
     ...Fonts.poppinsRegular[Platform.OS],
-    fontSize: 13,
+  } as TextStyle,
+  editButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    columnGap: 10,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 125,
+    paddingVertical: 10,
+    backgroundColor: '#0f7c6f',
+  },
+  editButtonText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    color: 'white',
   } as TextStyle,
 });
