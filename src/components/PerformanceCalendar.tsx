@@ -187,7 +187,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
     markedDates[getFormattedDate(selectedDate)] = {
       selected: true,
       disableTouchEvent: true,
-      selectedColor: 'black',
+      selectedColor: '#A9C1A1',
       selectedTextColor: 'white',
     };
 
@@ -215,7 +215,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
           theme={{
             todayTextColor: 'black',
             selectedDayTextColor: 'white',
-            selectedDayBackgroundColor: 'black',
+            selectedDayBackgroundColor: '#A9C1A1',
             textMonthFontFamily: 'Poppins-Medium',
             textDayFontFamily: 'Poppins-Regular',
             arrowColor: 'black',
@@ -231,15 +231,11 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             },
           }}
           monthFormat='MMMM'
-          // initialPosition={ExpandableCalendar.positions.CLOSED}
           hideArrows={isOpen ? false : true}
-          hideExtraDays={true}
-          // hideDayNames={true} // This bugs the week view when enabled!
           allowShadow={false}
           firstDay={1}
           closeOnDayPress={true}
-          // disablePan={true}
-          onCalendarToggled={() => setIsOpen(!isOpen)}
+          onCalendarToggled={(isOpen) => setIsOpen(isOpen)}
           renderArrow={(direction) =>
             direction === 'left' ? (
               <Feather
@@ -266,7 +262,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
       </CalendarProvider>
 
       {selectedDiaryEntry ? (
-        <View style={isOpen ? { marginTop: 310 } : { marginTop: 155 }}>
+        <View style={isOpen ? { marginTop: 330 } : { marginTop: 155 }}>
           <View style={styles.dataHeadersContainer}>
             <Text style={styles.dataTitleText}>
               Datum:
@@ -307,7 +303,8 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               value={selectedDiaryEntry?.sliderValues.get(0)}
               minimumValue={1}
               maximumValue={10}
-              minimumTrackTintColor='#000000'
+              thumbTintColor='#A5B79F'
+              minimumTrackTintColor='#A9C1A1'
               maximumTrackTintColor='#dedede'
             />
             <Text style={styles.dataHeadingText}>Angstniveau</Text>
@@ -317,7 +314,8 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               value={selectedDiaryEntry?.sliderValues.get(1)}
               minimumValue={1}
               maximumValue={10}
-              minimumTrackTintColor='#000000'
+              thumbTintColor='#A5B79F'
+              minimumTrackTintColor='#A9C1A1'
               maximumTrackTintColor='#dedede'
             />
             <Text style={styles.dataHeadingText}>Stressniveau</Text>
@@ -327,7 +325,8 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               value={selectedDiaryEntry?.sliderValues.get(2)}
               minimumValue={1}
               maximumValue={10}
-              minimumTrackTintColor='#000000'
+              thumbTintColor='#A5B79F'
+              minimumTrackTintColor='#A9C1A1'
               maximumTrackTintColor='#dedede'
             />
             <Text style={styles.dataHeadingText}>Energieniveau</Text>
@@ -337,7 +336,8 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               value={selectedDiaryEntry?.sliderValues.get(3)}
               minimumValue={1}
               maximumValue={10}
-              minimumTrackTintColor='#000000'
+              thumbTintColor='#A5B79F'
+              minimumTrackTintColor='#A9C1A1'
               maximumTrackTintColor='#dedede'
             />
             <Text style={styles.dataHeadingText}>Focus en concentratie</Text>
@@ -347,7 +347,8 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               value={selectedDiaryEntry?.sliderValues.get(4)}
               minimumValue={1}
               maximumValue={10}
-              minimumTrackTintColor='#000000'
+              thumbTintColor='#A5B79F'
+              minimumTrackTintColor='#A9C1A1'
               maximumTrackTintColor='#dedede'
             />
             <Text style={styles.dataHeadingText}>Slaap</Text>
@@ -357,7 +358,8 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               value={selectedDiaryEntry?.sliderValues.get(5)}
               minimumValue={1}
               maximumValue={10}
-              minimumTrackTintColor='black'
+              thumbTintColor='#A5B79F'
+              minimumTrackTintColor='#A9C1A1'
               maximumTrackTintColor='#dedede'
             />
           </View>
@@ -388,7 +390,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
           </ScrollView>
         </View>
       ) : (
-        <View style={isOpen ? { marginTop: 310 } : { marginTop: 155 }}>
+        <View style={isOpen ? { marginTop: 330 } : { marginTop: 155 }}>
           <View style={styles.dataHeadersContainer}>
             <Text style={styles.dataTitleText}>
               Datum:

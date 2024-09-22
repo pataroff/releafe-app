@@ -168,7 +168,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
           borderRadius: 99,
           width: 8,
           height: 8,
-          backgroundColor: stepMarked ? '#00d7bc' : '#007667',
+          backgroundColor: stepMarked ? '#A5B79F' : '#5C6B57',
         }}
       ></View>
     );
@@ -440,7 +440,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         minimumValue={0}
                         maximumValue={4}
                         step={1}
-                        thumbTintColor='#00d7bc'
+                        thumbTintColor='#A5B79F'
                         StepMarker={StepMarker}
                         value={
                           reframingModalIndex === 1
@@ -452,8 +452,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                             ? reframingModalSliderState.get(1)?.setter(value)
                             : reframingModalSliderState.get(2)?.setter(value)
                         }
-                        minimumTrackTintColor='#007667'
-                        maximumTrackTintColor='#007667'
+                        minimumTrackTintColor='#5C6B57'
+                        maximumTrackTintColor='#5C6B57'
                       />
                       <View
                         style={{
@@ -568,7 +568,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 90,
     paddingVertical: 10,
-    backgroundColor: '#00d8bd',
+    backgroundColor: '#A9C1A1',
   },
   continueButtonText: {
     ...Fonts.poppinsSemiBold[Platform.OS],

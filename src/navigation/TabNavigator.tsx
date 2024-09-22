@@ -79,7 +79,7 @@ export const TabNavigator = () => {
         style={{
           alignItems: 'center',
           borderRadius: 99,
-          backgroundColor: '#c1d6ba',
+          backgroundColor: '#C1D6BA',
           width: 75,
           height: 75,
           marginBottom: 20,

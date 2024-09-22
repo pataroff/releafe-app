@@ -232,13 +232,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
   } as TextStyle,
   saveAndCloseButton: {
-    borderWidth: 2,
     borderRadius: 30,
     alignSelf: 'flex-start',
     alignItems: 'center',
     width: 220,
-    paddingVertical: 4,
-    backgroundColor: 'black',
+    paddingVertical: 5,
+    backgroundColor: '#A9C1A1',
   },
   dontSaveAndCloseButton: {
     borderWidth: 2,

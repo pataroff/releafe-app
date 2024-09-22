@@ -140,7 +140,7 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
           borderRadius: 99,
           width: 8,
           height: 8,
-          backgroundColor: stepMarked ? '#00d7bc' : '#007667',
+          backgroundColor: stepMarked ? '#A5B79F' : '#5C6B57',
         }}
       ></View>
     );
@@ -259,15 +259,25 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
                   minimumValue={0}
                   maximumValue={4}
                   step={1}
-                  thumbTintColor='#00d7bc'
+                  thumbTintColor='#A5B79F'
                   StepMarker={StepMarker}
                   value={thoughtLikelihoodSliderTwo}
                   onValueChange={(value) =>
                     setThoughtLikelihoodSliderTwo(value)
                   }
-                  minimumTrackTintColor='#007667'
-                  maximumTrackTintColor='#007667'
+                  minimumTrackTintColor='#5C6B57'
+                  maximumTrackTintColor='#5C6B57'
                 />
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Text style={styles.optionsText}>Heel klein</Text>
+                  <Text style={styles.optionsText}>Heel groot</Text>
+                </View>
               </View>
 
               {/* View Old Situation */}
@@ -324,15 +334,25 @@ export const ReframingSuccessModal: React.FC<ReframingSuccessModalProps> = ({
                       minimumValue={0}
                       maximumValue={4}
                       step={1}
-                      thumbTintColor='#00d7bc'
+                      thumbTintColor='#A5B79F'
                       StepMarker={StepMarker}
                       value={thoughtLikelihoodSliderOne}
                       onValueChange={(value) =>
                         setThoughtLikelihoodSliderOne(value)
                       }
-                      minimumTrackTintColor='#007667'
-                      maximumTrackTintColor='#007667'
+                      minimumTrackTintColor='#5C6B57'
+                      maximumTrackTintColor='#5C6B57'
                     />
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Text style={styles.optionsText}>Heel klein</Text>
+                      <Text style={styles.optionsText}>Heel groot</Text>
+                    </View>
                   </View>
 
                   <Pressable
@@ -432,7 +452,7 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsRegular[Platform.OS],
   } as TextStyle,
   finishButton: {
-    backgroundColor: '#00d8bd',
+    backgroundColor: '#A9C1A1',
     borderRadius: 30,
     paddingVertical: 10,
     paddingHorizontal: 15,
@@ -459,4 +479,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#ffffff',
   },
+  optionsText: {
+    ...Fonts.poppinsMediumItalic[Platform.OS],
+    fontSize: 12,
+    fontStyle: 'italic',
+    flexShrink: 1, // text wrap
+  } as TextStyle,
 });

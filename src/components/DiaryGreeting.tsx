@@ -51,7 +51,7 @@ export const DiaryGreeting = () => {
       </Text>
       <Pressable
         onPress={() => navigation.navigate('Diary2')}
-        style={styles.continueButton}
+        style={styles.startButton}
       >
         <Text>Start</Text>
       </Pressable>
@@ -92,15 +92,16 @@ const styles = StyleSheet.create({
   dateText: {
     ...Fonts.poppinsSemiBold[Platform.OS],
   } as TextStyle,
-  continueButton: {
+  startButton: {
     width: 150,
     alignSelf: 'flex-start',
     alignItems: 'center',
-    borderWidth: 2,
+    // borderWidth: 2,
     borderRadius: 30,
     borderColor: 'black',
-    paddingVertical: 4,
+    paddingVertical: 5,
     marginTop: 10,
+    backgroundColor: '#A9C1A1',
   },
   dashboardButtonText: {
     ...Fonts.poppinsRegular[Platform.OS],

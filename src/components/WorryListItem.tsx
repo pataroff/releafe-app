@@ -266,7 +266,7 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
                     style={{ position: 'absolute', right: 0 }}
                     onPress={() => setShowOptionButtons(!showOptionButtons)}
                   >
-                    <FontAwesome name='caret-down' size={24} color='#93bab5' />
+                    <FontAwesome name='caret-down' size={24} color='#A5B79F' />
                   </Pressable>
 
                   <Pressable
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     height: 40,
     width: 150,
-    backgroundColor: '#93bab5',
+    backgroundColor: '#A5B79F',
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',

@@ -27,11 +27,7 @@ export const NotesToSelfScreen2: React.FC<{ route: any }> = ({ route }) => {
   return (
     <>
       <StatusBar />
-      <ScrollView
-        bounces={false}
-        style={styles.container}
-        contentContainerStyle={styles.contentContainerStyles}
-      >
+      <View style={styles.container}>
         <NoteListItemExpanded route={route} />
 
         {/* Buttons */}
@@ -49,7 +45,7 @@ export const NotesToSelfScreen2: React.FC<{ route: any }> = ({ route }) => {
             </Pressable>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </>
   );
 };
@@ -66,7 +62,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   bottomBarContainer: {
-    marginBottom: 100,
+    marginBottom: 55,
     width: windowWidth,
     display: 'flex',
     flexDirection: 'row',
@@ -77,6 +73,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     paddingHorizontal: 20,
     paddingTop: 15,
+    paddingBottom: 35,
   },
   backButton: {
     borderRadius: 30,
@@ -97,7 +94,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 125,
     paddingVertical: 10,
-    backgroundColor: '#0f7c6f',
+    backgroundColor: '#A9C1A1',
   },
   editButtonText: {
     ...Fonts.poppinsSemiBold[Platform.OS],

@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsRegular[Platform.OS],
   } as TextStyle,
   reframeButton: {
-    backgroundColor: '#00d8bd',
+    backgroundColor: '#A9C1A1',
     borderRadius: 30,
     paddingVertical: 10,
     paddingHorizontal: 15,

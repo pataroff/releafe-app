@@ -46,7 +46,6 @@ export const CustomMultiPicker: React.FC<{ selected: SelectOptions }> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {},
   selectedContainer: {
     position: 'absolute',
     top: -20,

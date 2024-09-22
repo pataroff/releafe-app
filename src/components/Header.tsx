@@ -26,8 +26,8 @@ export const Header = ({ title }) => {
           <Text style={styles.headerTitle}>{title}</Text>
           <View>
             <Avatar.Text
-              style={{ backgroundColor: '#00d8bd' }}
-              color='white'
+              style={{ backgroundColor: '#C1D6BA' }}
+              color='black'
               size={56}
               label={user?.firstName[0] + user?.lastName[0]}
             />

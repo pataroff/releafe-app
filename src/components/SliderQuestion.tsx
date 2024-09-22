@@ -119,9 +119,6 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.questionNumberContainer}>
-        <Text style={styles.questionNumberText}>{sliderQuestionIndex + 1}</Text>
-      </View>
       <Modal
         animationType='none'
         transparent={true}
@@ -165,6 +162,10 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
           </View>
         </View>
       </Modal>
+
+      <View style={styles.questionNumberContainer}>
+        <Text style={styles.questionNumberText}>{sliderQuestionIndex + 1}</Text>
+      </View>
       <View
         style={{
           display: 'flex',
@@ -195,7 +196,8 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
             onValueChange={(value) => setSliderValue(value)}
             minimumValue={1}
             maximumValue={10}
-            minimumTrackTintColor='#000000'
+            thumbTintColor='#A5B79F'
+            minimumTrackTintColor='#A9C1A1'
             maximumTrackTintColor='#dedede'
           />
         </View>
@@ -217,18 +219,18 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
           }}
         >
           {sliderQuestionIndex >= 1 && (
-            <Pressable onPress={handlePrevious} style={styles.button}>
+            <Pressable onPress={handlePrevious} style={styles.backButton}>
               <Text style={styles.buttonText}>Ga terug</Text>
             </Pressable>
           )}
-          <Pressable onPress={handleNext} style={styles.button}>
+          <Pressable onPress={handleNext} style={styles.nextButton}>
             <Text style={styles.buttonText}>Ga verder</Text>
           </Pressable>
         </View>
         <View style={styles.progressBarContainer}>
           <ProgressBar
             progress={progressValue}
-            color='black'
+            color='#A9C1A1'
             style={styles.progressBar}
           />
         </View>
@@ -273,7 +275,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     flexShrink: 1, // text wrap
   } as TextStyle,
-  button: {
+  backButton: {
     width: 130,
     alignSelf: 'flex-end',
     alignItems: 'center',
@@ -282,6 +284,16 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     paddingVertical: 4,
     marginTop: 20,
+  },
+  nextButton: {
+    width: 130,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    borderRadius: 30,
+    borderColor: 'black',
+    paddingVertical: 6,
+    marginTop: 20,
+    backgroundColor: '#A9C1A1',
   },
   buttonText: {
     ...Fonts.poppinsItalic[Platform.OS],
@@ -321,13 +333,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
   } as TextStyle,
   saveAndCloseButton: {
-    borderWidth: 2,
     borderRadius: 30,
     alignSelf: 'flex-start',
     alignItems: 'center',
     width: 220,
-    paddingVertical: 4,
-    backgroundColor: 'black',
+    paddingVertical: 5,
+    backgroundColor: '#A9C1A1',
   },
   dontSaveAndCloseButton: {
     borderWidth: 2,
@@ -362,7 +373,7 @@ const styles = StyleSheet.create({
   questionNumberContainer: {
     position: 'absolute',
     top: -50,
-    borderWidth: 2,
+    borderWidth: 3,
     borderRadius: 99,
     width: 40,
     height: 40,
@@ -370,7 +381,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   questionNumberText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.poppinsBold[Platform.OS],
     fontSize: 20,
   } as TextStyle,
 });

@@ -52,7 +52,7 @@ export const NoteListItemExpanded: React.FC<{ route: any }> = ({ route }) => {
           borderRadius: 99,
           width: 8,
           height: 8,
-          backgroundColor: stepMarked ? '#00d7bc' : '#007667',
+          backgroundColor: stepMarked ? '#A5B79F' : '#5C6B57',
         }}
       ></View>
     );
@@ -131,12 +131,22 @@ export const NoteListItemExpanded: React.FC<{ route: any }> = ({ route }) => {
             minimumValue={0}
             maximumValue={4}
             step={1}
-            thumbTintColor='#00d7bc'
+            thumbTintColor='#A5B79F'
             StepMarker={StepMarker}
             value={thoughtLikelihoodSliderTwo}
-            minimumTrackTintColor='#007667'
-            maximumTrackTintColor='#007667'
+            minimumTrackTintColor='#5C6B57'
+            maximumTrackTintColor='#5C6B57'
           />
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Text style={styles.optionsText}>Heel klein</Text>
+            <Text style={styles.optionsText}>Heel groot</Text>
+          </View>
         </View>
 
         {/* Situation Description */}
@@ -163,12 +173,22 @@ export const NoteListItemExpanded: React.FC<{ route: any }> = ({ route }) => {
             minimumValue={0}
             maximumValue={4}
             step={1}
-            thumbTintColor='#00d7bc'
+            thumbTintColor='#A5B79F'
             StepMarker={StepMarker}
             value={thoughtLikelihoodSliderOne}
-            minimumTrackTintColor='#007667'
-            maximumTrackTintColor='#007667'
+            minimumTrackTintColor='#5C6B57'
+            maximumTrackTintColor='#5C6B57'
           />
+        </View>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Text style={styles.optionsText}>Heel klein</Text>
+          <Text style={styles.optionsText}>Heel groot</Text>
         </View>
       </View>
     </ScrollView>
@@ -193,5 +213,11 @@ const styles = StyleSheet.create({
   bodyText: {
     ...Fonts.poppinsRegular[Platform.OS],
     fontSize: 13,
+  } as TextStyle,
+  optionsText: {
+    ...Fonts.poppinsMediumItalic[Platform.OS],
+    fontSize: 12,
+    fontStyle: 'italic',
+    flexShrink: 1, // text wrap
   } as TextStyle,
 });

@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#dedede',
+    backgroundColor: '#A9C1A1',
     paddingVertical: 5,
   },
   leftButton: {

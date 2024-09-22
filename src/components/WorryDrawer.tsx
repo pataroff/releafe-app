@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsMedium[Platform.OS],
   } as TextStyle,
   bottomBarContainer: {
-    marginBottom: 95,
+    marginBottom: 55,
     width: windowWidth,
     display: 'flex',
     flexDirection: 'row',
@@ -272,6 +272,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     paddingHorizontal: 20,
     paddingTop: 15,
+    paddingBottom: 35,
+    backgroundColor: '#E5F1E3',
   },
   archiveButtonText: {
     color: 'gray',

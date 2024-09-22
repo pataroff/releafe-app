@@ -152,12 +152,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
   } as TextStyle,
   backButton: {
-    borderWidth: 2,
     borderRadius: 30,
     alignItems: 'center',
     width: 100,
-    paddingVertical: 5,
-    backgroundColor: 'white',
+    paddingVertical: 6,
+    backgroundColor: '#dedede',
   },
   backButtonText: {
     ...Fonts.poppinsItalic[Platform.OS],

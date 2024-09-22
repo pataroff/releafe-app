@@ -104,11 +104,10 @@ const styles = StyleSheet.create({
     width: 270,
     alignSelf: 'center',
     alignItems: 'center',
-    borderWidth: 2,
     borderRadius: 30,
-    borderColor: 'black',
-    paddingVertical: 5,
+    paddingVertical: 6,
     marginTop: 20,
+    backgroundColor: '#A9C1A1',
   },
   dashboardButtonText: {
     ...Fonts.poppinsItalic[Platform.OS],
