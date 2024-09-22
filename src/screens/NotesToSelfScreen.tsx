@@ -142,6 +142,7 @@ export const NotesToSelfScreen: React.FC = ({ route }) => {
             width: '100%',
             height: 40,
             paddingHorizontal: 30,
+            marginTop: 20,
           }}
         >
           <Text

@@ -1,6 +1,8 @@
+import React, { useEffect, useContext } from 'react';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { Header } from '../components/Header';
+import { useNavigation } from '@react-navigation/native';
 
 import { NotesToSelfScreen } from '../screens/NotesToSelfScreen';
 import { NotesToSelfScreen2 } from '../screens/NotesToSelfScreen2';
@@ -8,14 +10,17 @@ import { NotesToSelfScreen2 } from '../screens/NotesToSelfScreen2';
 const Stack = createNativeStackNavigator();
 
 export const NotesToSelfStack: React.FC = () => {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({ headerTitle: 'Notes to Self' });
+  }, [navigation]);
+
   return (
     <Stack.Navigator
       initialRouteName='NotesToSelf'
       screenOptions={{
-        header: ({ options }) => {
-          const title = options.headerTitle || 'Notes to Self';
-          return <Header title={title} />;
-        },
+        headerShown: false,
       }}
     >
       <Stack.Screen name='NotesToSelf1' component={NotesToSelfScreen} />

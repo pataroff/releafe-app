@@ -4,19 +4,20 @@ import { View, Image } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
-import { IWorryListItem } from '../types';
+import { IWorryListItem, INoteEntry } from '../types';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { DiaryStack } from './DiaryStack';
 import { ToolkitStack } from './ToolkitStack';
-import { NotesToSelfStack } from './NotesToSelfStack';
 
 import { HomeScreen } from '../screens/HomeScreen';
 import { AIScreen } from '../screens/AIScreen';
+import { ChatScreen } from '../screens/ChatScreen';
 
 import { AuthContext } from '../context/AuthContext';
 import { WorryContext } from '../context/WorryContext';
+import { NoteContext } from '../context/NoteContext';
 
 import pb from '../lib/pocketbase';
 
@@ -25,8 +26,9 @@ const Tab = createBottomTabNavigator();
 export const TabNavigator = () => {
   const { user } = useContext(AuthContext);
   const { worryEntries, setWorryEntries } = useContext(WorryContext);
+  const { setNoteEntries } = useContext(NoteContext);
 
-  // TODO: Is this the right place of fetching the worry entries?
+  // TODO: Is this the right place to fetch the data?
   useEffect(() => {
     const fetchWorryEntries = async () => {
       if (user) {
@@ -70,7 +72,62 @@ export const TabNavigator = () => {
       }
     };
 
+    const fetchNoteEntries = async () => {
+      if (user) {
+        try {
+          const noteEntriesList = await pb
+            .collection('note_entries')
+            .getList(1, 50, {
+              filter: `user.id='${user.id}'`,
+              sort: '-created',
+              expand: 'user',
+            });
+
+          const modifiedNoteEntriesList: INoteEntry[] =
+            noteEntriesList.items.map((item) => {
+              const {
+                id,
+                uuid,
+                worry,
+                category,
+                title,
+                description,
+                feelingDescription,
+                thoughtLikelihoodSliderOne,
+                forThoughtEvidence,
+                againstThoughtEvidence,
+                friendAdvice,
+                thoughtLikelihoodSliderTwo,
+                thoughtLikelihood,
+                alternativePerspective,
+              } = item;
+              return {
+                id,
+                uuid,
+                worry,
+                category,
+                title,
+                description,
+                feelingDescription,
+                thoughtLikelihoodSliderOne,
+                forThoughtEvidence,
+                againstThoughtEvidence,
+                friendAdvice,
+                thoughtLikelihoodSliderTwo,
+                thoughtLikelihood,
+                alternativePerspective,
+              };
+            });
+
+          setNoteEntries(modifiedNoteEntriesList);
+        } catch (error) {
+          console.error('Error fetching note entries:', error);
+        }
+      }
+    };
+
     fetchWorryEntries();
+    fetchNoteEntries();
   }, [user]);
 
   const CustomTabIcon = () => {
@@ -170,7 +227,7 @@ export const TabNavigator = () => {
       />
       <Tab.Screen
         name='NotesToSelf'
-        component={NotesToSelfStack}
+        component={ChatScreen}
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (

@@ -197,6 +197,7 @@ export const NoteListItemExpanded: React.FC<{ route: any }> = ({ route }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     width: '100%',
+    marginVertical: 20,
     paddingHorizontal: 20,
     flex: 1,
     backgroundColor: '#ffffff',

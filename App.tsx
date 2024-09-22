@@ -1,5 +1,7 @@
 import { useFonts } from 'expo-font';
 
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import { PaperProvider } from 'react-native-paper';
 
 import { DiaryProvider } from './src/context/DiaryContext';
@@ -27,16 +29,18 @@ export default function App() {
   }
 
   return (
-    <PaperProvider>
-      <AuthProvider>
-        <DiaryProvider>
-          <WorryProvider>
-            <NoteProvider>
-              <AppNav />
-            </NoteProvider>
-          </WorryProvider>
-        </DiaryProvider>
-      </AuthProvider>
-    </PaperProvider>
+    <SafeAreaProvider>
+      <PaperProvider>
+        <AuthProvider>
+          <DiaryProvider>
+            <WorryProvider>
+              <NoteProvider>
+                <AppNav />
+              </NoteProvider>
+            </WorryProvider>
+          </DiaryProvider>
+        </AuthProvider>
+      </PaperProvider>
+    </SafeAreaProvider>
   );
 }

@@ -1,40 +1,50 @@
-import { Fonts, Typography } from '../styles';
 import {
   View,
   Text,
   StyleSheet,
   Platform,
-  Dimensions,
   TextStyle,
+  Pressable,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { Fonts } from '../styles';
 
 import { Avatar } from 'react-native-paper';
 
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
-const windowHeight = Dimensions.get('window').height;
-
 export const Header = ({ title }) => {
-  const { user } = useContext(AuthContext);
+  const insets = useSafeAreaInsets();
+
+  const { user, signOut } = useContext(AuthContext);
 
   return (
-    <SafeAreaView style={{ backgroundColor: 'white' }}>
+    <View
+      style={{
+        backgroundColor: 'white',
+        paddingTop: insets.top,
+        // paddingBottom: insets.bottom,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+      }}
+    >
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>{title}</Text>
-          <View>
+          {/* TODO: Change this to a <View> component! */}
+          <Pressable onPress={() => signOut()}>
             <Avatar.Text
               style={{ backgroundColor: '#C1D6BA' }}
-              color='black'
+              color='white'
               size={56}
               label={user?.firstName[0] + user?.lastName[0]}
             />
-          </View>
+          </Pressable>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   bottomBarContainer: {
-    marginBottom: 55,
+    marginBottom: 60,
     width: windowWidth,
     display: 'flex',
     flexDirection: 'row',
