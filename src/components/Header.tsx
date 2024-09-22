@@ -33,7 +33,7 @@ export const Header = ({ title }) => {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>{title}</Text>
-          {/* TODO: Change this to a <View> component! */}
+          {/* TODO: Change this to a <View> component after testing phase! */}
           <Pressable onPress={() => signOut()}>
             <Avatar.Text
               style={{ backgroundColor: '#C1D6BA' }}

@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     color: 'white',
   } as TextStyle,
   signInButton: {
-    backgroundColor: '#00d8bd',
+    backgroundColor: '#A9C1A1',
     alignItems: 'center',
     borderRadius: 30,
     paddingVertical: 8,
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   signUpText: {
-    color: '#00d8bd',
+    color: '#A9C1A1',
     ...Fonts.poppinsMedium[Platform.OS],
   } as TextStyle,
 });

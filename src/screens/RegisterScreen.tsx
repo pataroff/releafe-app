@@ -14,7 +14,7 @@ export const RegisterScreen = () => {
       >
         <Image
           style={{ width: '90%', height: 100, marginVertical: 20 }}
-          source={require('../../assets/images/logo_releafe_02.png')}
+          source={require('../../assets/images/logo_releafe_04.png')}
         />
         <RegisterForm />
       </ScrollView>
