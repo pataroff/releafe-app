@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#ffffff',
-    rowGap: 5,
-    marginHorizontal: 5,
+    rowGap: 10,
+    marginHorizontal: 30,
   },
   noDataContainer: {
     flex: 1,

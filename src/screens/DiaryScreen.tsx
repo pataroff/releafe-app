@@ -1,5 +1,4 @@
 import React, { useEffect, useContext } from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, ScrollView } from 'react-native';
 
 import { IDiaryEntry } from '../types';
@@ -51,7 +50,6 @@ export const DiaryScreen: React.FC = () => {
 
   return (
     <>
-      <StatusBar />
       <ScrollView
         bounces={false}
         style={styles.container}

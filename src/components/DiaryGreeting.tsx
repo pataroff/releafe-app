@@ -55,7 +55,7 @@ export const DiaryGreeting = () => {
       >
         <Text>Start</Text>
       </Pressable>
-      <Pressable onPress={() => navigation.navigate('Dashboard')}>
+      <Pressable onPress={() => navigation.navigate('WellbeingOverview')}>
         <Text style={styles.dashboardButtonText}>
           Ga gelijk door naar het persoonlijk dashboard
         </Text>

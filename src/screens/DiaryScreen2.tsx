@@ -1,13 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
-
-import { View, Text, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { SliderQuestion } from '../components/SliderQuestion';
 
 export const DiaryScreen2: React.FC = ({ route }) => {
   return (
     <>
-      <StatusBar />
       <ScrollView
         bounces={false}
         contentContainerStyle={{

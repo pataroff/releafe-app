@@ -32,11 +32,23 @@ export const NoteListItem: React.FC<{ item: INoteEntry }> = ({ item }) => {
   const { title, category } = item;
 
   return (
-    <Pressable onPress={() => navigation.navigate('NotesToSelf2', { item })}>
-      <View style={styles.container}>
-        <Text style={styles.titleText}>{title}</Text>
+    <Pressable
+      onPress={() => navigation.navigate('NotesToSelf3', { item })}
+      style={styles.container}
+    >
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          columnGap: 15,
+        }}
+      >
         {getCategory(category)}
+        <Text style={styles.titleText}>{title}</Text>
       </View>
+
+      <FontAwesome5 name='chevron-right' size={24} color='#5C6B57' />
     </Pressable>
   );
 };
@@ -47,9 +59,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: 5,
-    borderWidth: 1,
-    height: 70,
+    backgroundColor: '#C1D6BA',
+    borderRadius: 20,
+    height: 60,
     width: '100%',
     paddingHorizontal: 20,
   },

@@ -39,7 +39,7 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
     useState<IDiaryEntry | null>();
 
-  const [sliderValue, setSliderValue] = useState(1);
+  const [sliderValue, setSliderValue] = useState(5);
   const [modalVisible, setModalVisible] = useState(false);
 
   useFocusEffect(
@@ -84,7 +84,7 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
     if (sliderQuestionIndex > 0) {
       setSliderQuestionIndex(sliderQuestionIndex - 1);
       setProgressValue(progressValue - 0.167);
-      setSliderValue(1);
+      setSliderValue(5);
     }
   };
 
@@ -106,9 +106,9 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
     if (sliderQuestionIndex < questions.length - 1) {
       setSliderQuestionIndex(sliderQuestionIndex + 1);
       setProgressValue(progressValue + 0.167);
-      setSliderValue(1);
+      setSliderValue(5);
     } else {
-      setSliderValue(1);
+      setSliderValue(5);
       navigation.navigate('Diary3', { date: route.params?.date });
     }
   };

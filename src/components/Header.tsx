@@ -1,3 +1,5 @@
+import { StatusBar } from 'expo-status-bar';
+
 import {
   View,
   Text,
@@ -5,8 +7,12 @@ import {
   Platform,
   TextStyle,
   Pressable,
+  Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { Fonts } from '../styles';
 
@@ -15,64 +21,96 @@ import { Avatar } from 'react-native-paper';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
-export const Header = ({ title }) => {
-  const insets = useSafeAreaInsets();
+const windowHeight = Dimensions.get('window').height;
 
+export const Header: React.FC<{ title: string; route?: any }> = ({
+  title,
+  route,
+}) => {
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
   const { user, signOut } = useContext(AuthContext);
 
   return (
-    <View
-      style={{
-        backgroundColor: 'white',
-        paddingTop: insets.top,
-        // paddingBottom: insets.bottom,
-        paddingLeft: insets.left,
-        paddingRight: insets.right,
-      }}
-    >
-      <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerTitle}>{title}</Text>
-          {/* TODO: Change this to a <View> component after testing phase! */}
-          <Pressable onPress={() => signOut()}>
-            <Avatar.Text
-              style={{ backgroundColor: '#C1D6BA' }}
-              color='white'
-              size={56}
-              label={user?.firstName[0] + user?.lastName[0]}
-            />
-          </Pressable>
+    <>
+      <StatusBar style='light' />
+      {/* SafeAreaView */}
+      <View
+        style={{
+          backgroundColor: route?.name == 'Toolkit1' ? '#F9F9F9' : '#ffffff',
+          paddingLeft: insets.left,
+          paddingRight: insets.right,
+        }}
+      >
+        {/* Main Container */}
+        <View style={styles.container}>
+          {/* Header Container */}
+          <View style={styles.headerContainer}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                columnGap: 10,
+              }}
+            >
+              {route?.params?.toolkitStackScreen &&
+                route?.name !== 'Toolkit1' && (
+                  <Pressable onPress={() => navigation.goBack()}>
+                    <MaterialCommunityIcons
+                      name='chevron-left-circle-outline'
+                      size={28}
+                      color='white'
+                    />
+                  </Pressable>
+                )}
+              <Text style={styles.headerTitle}>{title}</Text>
+            </View>
+            {/* TODO: Change this to a <View> component after testing phase! */}
+            <Pressable onPress={() => signOut()}>
+              <Avatar.Text
+                style={{
+                  backgroundColor: '#C1D6BA',
+                  borderWidth: 2,
+                  borderColor: 'white',
+                }}
+                color='white'
+                size={56}
+                label={user?.firstName[0] + user?.lastName[0]}
+              />
+            </Pressable>
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 125,
+    height: windowHeight <= 667 ? 145 : 165,
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
     borderTopWidth: 0,
     borderBottomStartRadius: 30,
     borderBottomEndRadius: 30,
-    borderWidth: 1,
-    borderColor: '#dedede',
-    backgroundColor: 'white',
+    backgroundColor: '#C1D6BA',
   },
   headerContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingTop: windowHeight <= 667 ? 20 : 40,
     paddingHorizontal: 30,
     alignItems: 'center',
     columnGap: 30,
     width: '100%',
   },
   headerTitle: {
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 20,
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 22,
+    color: 'white',
     textAlign: 'left',
   } as TextStyle,
 });

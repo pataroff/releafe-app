@@ -1,17 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Platform,
-  TextStyle,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
+import { Header } from '../components/Header';
 import { Performance } from '../components/Performance';
 
 export const DashboardScreen: React.FC = () => {
+  const title = 'Welzijnsoverzicht';
+
   return (
     <>
       <StatusBar />
@@ -19,6 +14,7 @@ export const DashboardScreen: React.FC = () => {
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
+        <Header title={title} />
         <Performance />
       </ScrollView>
     </>

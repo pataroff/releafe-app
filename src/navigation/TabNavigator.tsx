@@ -1,9 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { View, Image } from 'react-native';
 
-import Feather from '@expo/vector-icons/Feather';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-
 import { IWorryListItem, INoteEntry } from '../types';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -13,7 +10,7 @@ import { ToolkitStack } from './ToolkitStack';
 
 import { HomeScreen } from '../screens/HomeScreen';
 import { AIScreen } from '../screens/AIScreen';
-import { ChatScreen } from '../screens/ChatScreen';
+import { DashboardScreen } from '../screens/DashboardScreen';
 
 import { AuthContext } from '../context/AuthContext';
 import { WorryContext } from '../context/WorryContext';
@@ -176,9 +173,17 @@ export const TabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (
-              <Feather name='home' size={24} color='black' />
+              <Image
+                resizeMode='contain'
+                style={{ width: '100%', height: 25 }}
+                source={require('../../assets/images/navigation_bar/home_icon_active.png')}
+              />
             ) : (
-              <Feather name='home' size={24} color='gray' />
+              <Image
+                resizeMode='contain'
+                style={{ width: '100%', height: 25 }}
+                source={require('../../assets/images/navigation_bar/home_icon.png')}
+              />
             );
           },
         }}
@@ -189,9 +194,17 @@ export const TabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (
-              <Feather name='book' size={24} color='black' />
+              <Image
+                resizeMode='contain'
+                style={{ width: '100%', height: 25 }}
+                source={require('../../assets/images/navigation_bar/diary_icon_active.png')}
+              />
             ) : (
-              <Feather name='book' size={24} color='gray' />
+              <Image
+                resizeMode='contain'
+                style={{ width: '100%', height: 25 }}
+                source={require('../../assets/images/navigation_bar/diary_icon.png')}
+              />
             );
           },
         }}
@@ -209,33 +222,50 @@ export const TabNavigator = () => {
       />
 
       <Tab.Screen
+        name='WellbeingOverview'
+        component={DashboardScreen}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return focused ? (
+              <Image
+                resizeMode='contain'
+                style={{ width: '100%', height: 25 }}
+                source={require('../../assets/images/navigation_bar/wellbeing_overview_icon_active.png')}
+              />
+            ) : (
+              <Image
+                resizeMode='contain'
+                style={{ width: '100%', height: 25 }}
+                source={require('../../assets/images/navigation_bar/wellbeing_overview_icon.png')}
+              />
+            );
+          },
+        }}
+      />
+
+      <Tab.Screen
         name='Toolkit'
         component={ToolkitStack}
         options={{
           tabBarIcon: ({ focused }) => {
             return focused ? (
-              <FontAwesome6 name='lightbulb' size={22} color='black' />
+              <Image
+                resizeMode='contain'
+                style={{ width: '100%', height: 25 }}
+                source={require('../../assets/images/navigation_bar/toolkit_icon_active.png')}
+              />
             ) : (
-              <FontAwesome6 name='lightbulb' size={22} color='gray' />
+              <Image
+                resizeMode='contain'
+                style={{ width: '100%', height: 25 }}
+                source={require('../../assets/images/navigation_bar/toolkit_icon.png')}
+              />
             );
           },
           tabBarBadge:
             //	The || operator returns the first truthy value it encounters or the last value if all are falsy.
             worryEntries.filter((item) => item.reframed !== true).length ||
             undefined,
-        }}
-      />
-      <Tab.Screen
-        name='NotesToSelf'
-        component={ChatScreen}
-        options={{
-          tabBarIcon: ({ focused }) => {
-            return focused ? (
-              <FontAwesome6 name='message' size={22} color='black' />
-            ) : (
-              <FontAwesome6 name='message' size={22} color='gray' />
-            );
-          },
         }}
       />
     </Tab.Navigator>

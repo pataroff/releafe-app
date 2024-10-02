@@ -1,12 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, ScrollView } from 'react-native';
-
 import { DiaryFarewell } from '../components/DiaryFarewell';
 
 export const DiaryScreen4: React.FC = () => {
   return (
     <>
-      <StatusBar />
       <ScrollView
         bounces={false}
         style={styles.container}
@@ -21,6 +18,7 @@ export const DiaryScreen4: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
   contentContainerStyles: {
     flexGrow: 1,

@@ -311,7 +311,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         borderColor: '#dedede',
                         borderRadius: 5,
                         height: 30,
-                        width: '77%',
+                        width: '67%',
                         paddingLeft: 5,
                       } as TextStyle
                     }

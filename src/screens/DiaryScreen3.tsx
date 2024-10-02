@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, ScrollView } from 'react-native';
 
 import { TextQuestion } from '../components/TextQuestion';
@@ -6,7 +5,6 @@ import { TextQuestion } from '../components/TextQuestion';
 export const DiaryScreen3: React.FC = ({ route }) => {
   return (
     <>
-      <StatusBar />
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
@@ -14,7 +12,7 @@ export const DiaryScreen3: React.FC = ({ route }) => {
           justifyContent: 'space-evenly',
           backgroundColor: '#ffffff',
         }}
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: '#ffffff' }}
       >
         <TextQuestion
           questions={[

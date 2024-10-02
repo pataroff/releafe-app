@@ -13,15 +13,27 @@ export const ToolkitStack: React.FC = () => {
     <Stack.Navigator
       initialRouteName='Toolkit1'
       screenOptions={{
-        header: ({ options }) => {
-          const title = options.headerTitle || 'Informatie & Toolkit';
-          return <Header title={title} />;
+        header: ({ route }) => {
+          const title = 'Toolkit';
+          return <Header title={title} route={route} />;
         },
       }}
     >
-      <Stack.Screen name='Toolkit1' component={ToolkitScreen} />
-      <Stack.Screen name='WorryBox' component={WorryBoxScreen} />
-      <Stack.Screen name='NotesToSelf' component={NotesToSelfStack} />
+      <Stack.Screen
+        name='Toolkit1'
+        component={ToolkitScreen}
+        initialParams={{ toolkitStackScreen: true }}
+      />
+      <Stack.Screen
+        name='WorryBox'
+        component={WorryBoxScreen}
+        initialParams={{ toolkitStackScreen: true }}
+      />
+      <Stack.Screen
+        name='NotesToSelf'
+        component={NotesToSelfStack}
+        initialParams={{ toolkitStackScreen: true }}
+      />
     </Stack.Navigator>
   );
 };
