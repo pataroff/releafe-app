@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   Platform,
   TextStyle,
@@ -64,7 +65,18 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                     />
                   </Pressable>
                 )}
-              <Text style={styles.headerTitle}>{title}</Text>
+              {route?.name !== 'Home' ? (
+                <Text style={styles.headerTitle}>{title}</Text>
+              ) : (
+                <Image
+                  style={{
+                    height: 80,
+                    width: 80,
+                  }}
+                  resizeMode='contain'
+                  source={require('../../assets/images/logo_releafe_white.png')}
+                />
+              )}
             </View>
             {/* TODO: Change this to a <View> component after testing phase! */}
             <Pressable onPress={() => signOut()}>

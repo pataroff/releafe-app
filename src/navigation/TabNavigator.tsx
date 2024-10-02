@@ -151,7 +151,7 @@ export const TabNavigator = () => {
 
   return (
     <Tab.Navigator
-      initialRouteName='Diary'
+      initialRouteName='Home'
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,

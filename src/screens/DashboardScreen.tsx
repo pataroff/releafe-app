@@ -10,11 +10,11 @@ export const DashboardScreen: React.FC = () => {
   return (
     <>
       <StatusBar />
+      <Header title={title} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
-        <Header title={title} />
         <Performance />
       </ScrollView>
     </>
@@ -24,6 +24,7 @@ export const DashboardScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
   contentContainerStyles: {
     flexGrow: 1,
