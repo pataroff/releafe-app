@@ -38,7 +38,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
       {/* SafeAreaView */}
       <View
         style={{
-          backgroundColor: route?.name == 'Toolkit1' ? '#F9F9F9' : '#ffffff',
+          backgroundColor: '#F9F9F9',
           paddingLeft: insets.left,
           paddingRight: insets.right,
         }}

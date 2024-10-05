@@ -59,10 +59,11 @@ const styles = StyleSheet.create({
   },
   noDataContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     rowGap: 10,
     paddingHorizontal: 30,
+    paddingTop: 20,
   },
   noDataTitleText: {
     ...Fonts.poppinsSemiBold[Platform.OS],

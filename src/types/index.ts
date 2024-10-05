@@ -80,6 +80,13 @@ export enum Priority {
   High = 'HIGH',
 }
 
+export enum GoalCategory {
+  Bewegen = 'BEWEGEN',
+  Ontspanning = 'ONTSPANNING',
+  Voeding = 'VOEDING',
+  Slapen = 'SLAPEN',
+}
+
 export interface IIcon {
   label: string;
   value: string;
