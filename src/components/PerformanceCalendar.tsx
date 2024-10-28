@@ -11,6 +11,8 @@ import {
   TextInput,
 } from 'react-native';
 
+import { Divider } from 'react-native-paper';
+
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { IDiaryEntry } from '../types';
 
@@ -20,8 +22,9 @@ import {
   LocaleConfig,
 } from 'react-native-calendars';
 
-import Feather from '@expo/vector-icons/Feather';
 import { Fonts } from '../styles';
+import Feather from '@expo/vector-icons/Feather';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import Slider from '@react-native-community/slider';
 import { DiaryContext } from '../context/DiaryContext';
@@ -85,13 +88,23 @@ const dotColorMap = new Map([
   [10, '#4aed94'],
 ]);
 
-const questions = [
-  'Heb je je vandaag ergens zorgen over gemaakt?',
-  'Zijn er vandaag ook andere dingen gebeurd die je gemoedstoestand hebben beïnvloed? En zo ja, hoe voelde je je daardoor?',
-  'Wat heb je toen gedaan en welk effect had dit op je gemoedstoestand?',
-  'Welk effect had dat op je gemoedstoestand?',
-  'Heb je ook dingen vermeden? Zo ja, waarom en hoe voelde dat?',
-  'Waar ben je vandaag dankbaar voor?',
+const sliderTitlesAndDescriptions = [
+  [
+    'Algeheel gevoel',
+    'Je algemene gevoel op deze dag was overwegend positief.',
+  ],
+  ['Angst & zorgen', 'Je ervaarde redelijk wat angst en/of zorgen deze dag.'],
+  ['Stress', 'Je ervaarde weinig stress deze dag.'],
+  ['Energie', 'Je had erg veel energie deze dag.'],
+  ['Concentratie', 'Je had erg weinig concentratie deze dag.'],
+  ['Slaap', 'Je had de nacht ervoor gemiddeld geslapen.'],
+];
+
+const textQuestions = [
+  'Heb jij je vandaag ergens zorgen over gemaakt?',
+  'Zijn er ook andere dingen gebeurd die je gevoel hebben beïnvloed?',
+  'Heb je ook dingen vermeden?',
+  'Wat heeft je vandaag dankbaar, trots of blij gemaakt?',
 ];
 
 interface PerformanceCalendarProps {
@@ -113,8 +126,11 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
   const { diaryEntries } = useContext(DiaryContext);
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [displayDate, setDisplayDate] = useState<string>();
-  const [displayTime, setDisplayTime] = useState<string>();
+  const [displayDate, setDisplayDate] = useState<string>('');
+  const [displayTime, setDisplayTime] = useState<string>('');
+
+  const [sliderQuestionIndex, setSliderQuestionIndex] = useState<number>(0);
+  const [textQuestionIndex, setTextQuestionIndex] = useState<number>(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -152,6 +168,36 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
       setSelectedDiaryEntry(null);
       setDisplayDate(getFormattedDisplayDate(new Date(selectedDay)));
       console.log('No diary entry found for selected date: ', selectedDay);
+    }
+  };
+
+  const handlePreviousSlider = () => {
+    if (sliderQuestionIndex !== 0) {
+      setSliderQuestionIndex(sliderQuestionIndex - 1);
+    }
+  };
+
+  const handleNextSlider = () => {
+    // @ts-ignore
+    if (sliderQuestionIndex === selectedDiaryEntry?.sliderValues.size - 1) {
+      setSliderQuestionIndex(0);
+    } else {
+      setSliderQuestionIndex(sliderQuestionIndex + 1);
+    }
+  };
+
+  const handlePreviousText = () => {
+    if (textQuestionIndex !== 0) {
+      setTextQuestionIndex(textQuestionIndex - 1);
+    }
+  };
+
+  const handleNextText = () => {
+    // @ts-ignore
+    if (textQuestionIndex === selectedDiaryEntry?.textValues.size - 1) {
+      setTextQuestionIndex(0);
+    } else {
+      setTextQuestionIndex(textQuestionIndex + 1);
     }
   };
 
@@ -210,8 +256,21 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
   return (
     <>
-      <CalendarProvider date={getFormattedDate(selectedDate)}>
+      <CalendarProvider
+        style={{
+          marginTop: 40,
+          // Shadow Test
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.1,
+          shadowRadius: 2,
+          elevation: 2,
+        }}
+        date={getFormattedDate(selectedDate)}
+      >
         <ExpandableCalendar
+          calendarWidth={windowWidth - 2 * 20}
+          style={{ borderRadius: 30, overflow: 'hidden' }}
           theme={{
             todayTextColor: 'black',
             selectedDayTextColor: 'white',
@@ -220,6 +279,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             textDayFontFamily: 'Poppins-Regular',
             arrowColor: 'black',
             monthTextColor: 'black',
+            // @ts-ignore
             'stylesheet.dot': {
               dot: {
                 position: 'absolute',
@@ -230,9 +290,8 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               },
             },
           }}
-          monthFormat='MMMM'
+          monthFormat='MMMM yyyy'
           hideArrows={isOpen ? false : true}
-          allowShadow={false}
           firstDay={1}
           closeOnDayPress={true}
           onCalendarToggled={(isOpen) => setIsOpen(isOpen)}
@@ -242,14 +301,14 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
                 name='chevron-left'
                 size={24}
                 color='black'
-                style={{ marginLeft: 75 }}
+                style={{ marginLeft: 40 }}
               />
             ) : (
               <Feather
                 name='chevron-right'
                 size={24}
                 color='black'
-                style={{ marginRight: 75 }}
+                style={{ marginRight: 40 }}
               />
             )
           }
@@ -262,12 +321,26 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
       </CalendarProvider>
 
       {selectedDiaryEntry ? (
-        <View style={isOpen ? { marginTop: 330 } : { marginTop: 155 }}>
+        <View
+          style={[
+            {
+              marginTop: 40,
+              backgroundColor: 'white',
+              borderRadius: 30,
+              // Shadow Test
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.1,
+              shadowRadius: 2,
+              elevation: 2,
+            },
+          ]}
+        >
           <View style={styles.dataHeadersContainer}>
             <Text style={styles.dataTitleText}>
               Datum:
               <Text
-                style={{ ...Fonts.poppinsMedium[Platform.OS] } as TextStyle}
+                style={{ ...Fonts.poppinsRegular[Platform.OS] } as TextStyle}
               >
                 {' '}
                 {displayDate}
@@ -276,86 +349,26 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             <Text style={styles.dataTitleText}>
               Tijd van invullen:
               <Text
-                style={{ ...Fonts.poppinsMedium[Platform.OS] } as TextStyle}
+                style={{ ...Fonts.poppinsRegular[Platform.OS] } as TextStyle}
               >
                 {' '}
                 {displayTime} uur
               </Text>
             </Text>
-            <Pressable
-              style={styles.editButton}
-              onPress={() =>
-                navigation.navigate('Diary2', { date: selectedDate })
-              }
-            >
-              <Text style={styles.editButtonText}>Pas gegevens aan</Text>
-            </Pressable>
           </View>
 
           {/* The Wizard of Oz Method Data Visualization */}
           <View style={styles.dataSlidersContainer}>
-            <Text style={[styles.dataHeadingText, { fontSize: 18 }]}>
-              Algemene stemming
+            <Text style={styles.dataHeadingText}>
+              {sliderTitlesAndDescriptions[sliderQuestionIndex][0]}
+            </Text>
+            <Text style={styles.dataDescriptionText}>
+              {sliderTitlesAndDescriptions[sliderQuestionIndex][1]}
             </Text>
             <Slider
               disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={selectedDiaryEntry?.sliderValues.get(0)}
-              minimumValue={1}
-              maximumValue={10}
-              thumbTintColor='#A5B79F'
-              minimumTrackTintColor='#A9C1A1'
-              maximumTrackTintColor='#dedede'
-            />
-            <Text style={styles.dataHeadingText}>Angstniveau</Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={selectedDiaryEntry?.sliderValues.get(1)}
-              minimumValue={1}
-              maximumValue={10}
-              thumbTintColor='#A5B79F'
-              minimumTrackTintColor='#A9C1A1'
-              maximumTrackTintColor='#dedede'
-            />
-            <Text style={styles.dataHeadingText}>Stressniveau</Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={selectedDiaryEntry?.sliderValues.get(2)}
-              minimumValue={1}
-              maximumValue={10}
-              thumbTintColor='#A5B79F'
-              minimumTrackTintColor='#A9C1A1'
-              maximumTrackTintColor='#dedede'
-            />
-            <Text style={styles.dataHeadingText}>Energieniveau</Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={selectedDiaryEntry?.sliderValues.get(3)}
-              minimumValue={1}
-              maximumValue={10}
-              thumbTintColor='#A5B79F'
-              minimumTrackTintColor='#A9C1A1'
-              maximumTrackTintColor='#dedede'
-            />
-            <Text style={styles.dataHeadingText}>Focus en concentratie</Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={selectedDiaryEntry?.sliderValues.get(4)}
-              minimumValue={1}
-              maximumValue={10}
-              thumbTintColor='#A5B79F'
-              minimumTrackTintColor='#A9C1A1'
-              maximumTrackTintColor='#dedede'
-            />
-            <Text style={styles.dataHeadingText}>Slaap</Text>
-            <Slider
-              disabled={true}
-              style={{ width: windowWidth - 2 * 40, height: 40 }}
-              value={selectedDiaryEntry?.sliderValues.get(5)}
+              style={{ width: '100%', height: 40 }}
+              value={selectedDiaryEntry?.sliderValues.get(sliderQuestionIndex)}
               minimumValue={1}
               maximumValue={10}
               thumbTintColor='#A5B79F'
@@ -363,34 +376,172 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               maximumTrackTintColor='#dedede'
             />
           </View>
-          <ScrollView
-            horizontal={true}
-            pagingEnabled={true}
-            showsHorizontalScrollIndicator={false}
-            style={{ height: 400 }}
+
+          {/* Slider Index Controls */}
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginVertical: 20,
+              paddingHorizontal: 25,
+            }}
           >
-            {questions.map((question, index) => {
-              return (
-                <View
-                  key={index}
-                  style={{ width: windowWidth, paddingHorizontal: 20 }}
-                >
-                  <View style={styles.dataTextContainer}>
-                    <Text style={styles.questionText}>{questions[index]}</Text>
-                    <TextInput
-                      editable={false}
-                      value={selectedDiaryEntry.textValues.get(index)}
-                      style={styles.dataTextInputContainer}
-                      multiline={true}
-                    ></TextInput>
-                  </View>
-                </View>
-              );
-            })}
-          </ScrollView>
+            <Pressable
+              onPress={() => handlePreviousSlider()}
+              disabled={sliderQuestionIndex == 0 ? true : false}
+              style={sliderQuestionIndex == 0 ? { opacity: 0.4 } : {}}
+            >
+              <MaterialCommunityIcons
+                name='chevron-left-circle-outline'
+                size={27}
+                color='black'
+              />
+            </Pressable>
+
+            <View
+              style={{ display: 'flex', flexDirection: 'row', columnGap: 7 }}
+            >
+              {Array.from({ length: 6 }).map((_, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      width: 8,
+                      height: 8,
+                      backgroundColor:
+                        index === sliderQuestionIndex ? '#829c7a' : '#E4E1E1',
+                      borderRadius: 99,
+                    }}
+                  ></View>
+                );
+              })}
+            </View>
+
+            <Pressable
+              onPress={() => handleNextSlider()}
+              disabled={
+                sliderQuestionIndex == selectedDiaryEntry.sliderValues.size - 1
+                  ? true
+                  : false
+              }
+              style={
+                sliderQuestionIndex == selectedDiaryEntry.sliderValues.size - 1
+                  ? { opacity: 0.4 }
+                  : {}
+              }
+            >
+              <MaterialCommunityIcons
+                name='chevron-right-circle-outline'
+                size={27}
+                color='black'
+              />
+            </Pressable>
+          </View>
+
+          <Divider style={{ marginHorizontal: 30 }} bold={true} />
+
+          <View style={{ marginTop: 30, paddingHorizontal: 25 }}>
+            <Text style={styles.dataHeadingText}>Aanvullende vragen</Text>
+            <Text style={styles.dataDescriptionText}>
+              {textQuestions[textQuestionIndex]}
+            </Text>
+            <TextInput
+              editable={false}
+              value={selectedDiaryEntry.textValues.get(textQuestionIndex)}
+              style={styles.dataTextInputContainer}
+              multiline={true}
+            ></TextInput>
+          </View>
+
+          {/* Text Index Controls */}
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginVertical: 20,
+              paddingHorizontal: 25,
+            }}
+          >
+            <Pressable
+              onPress={() => handlePreviousText()}
+              disabled={textQuestionIndex == 0 ? true : false}
+              style={textQuestionIndex == 0 ? { opacity: 0.4 } : {}}
+            >
+              <MaterialCommunityIcons
+                name='chevron-left-circle-outline'
+                size={27}
+                color='black'
+              />
+            </Pressable>
+
+            <View
+              style={{ display: 'flex', flexDirection: 'row', columnGap: 7 }}
+            >
+              {Array.from({ length: 4 }).map((_, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      width: 8,
+                      height: 8,
+                      backgroundColor:
+                        index === textQuestionIndex ? '#829c7a' : '#E4E1E1',
+                      borderRadius: 99,
+                    }}
+                  ></View>
+                );
+              })}
+            </View>
+
+            <Pressable
+              onPress={() => handleNextText()}
+              disabled={
+                textQuestionIndex == selectedDiaryEntry.textValues.size - 1
+                  ? true
+                  : false
+              }
+              style={
+                textQuestionIndex == selectedDiaryEntry.textValues.size - 1
+                  ? { opacity: 0.4 }
+                  : {}
+              }
+            >
+              <MaterialCommunityIcons
+                name='chevron-right-circle-outline'
+                size={27}
+                color='black'
+              />
+            </Pressable>
+          </View>
+
+          {/* Edit Button */}
+          <Pressable
+            style={styles.editButton}
+            onPress={() =>
+              navigation.navigate('Diary2', { date: selectedDate })
+            }
+          >
+            <Text style={styles.editButtonText}>Pas gegevens aan</Text>
+          </Pressable>
         </View>
       ) : (
-        <View style={isOpen ? { marginTop: 330 } : { marginTop: 155 }}>
+        <View
+          style={{
+            marginTop: 40,
+            backgroundColor: 'white',
+            borderRadius: 30,
+            // Shadow Test
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.1,
+            shadowRadius: 2,
+            elevation: 2,
+          }}
+        >
           <View style={styles.dataHeadersContainer}>
             <Text style={styles.dataTitleText}>
               Datum:
@@ -441,90 +592,77 @@ const styles = StyleSheet.create({
   dataHeadersContainer: {
     width: windowWidth,
     paddingHorizontal: 30,
-    marginTop: 50,
+    marginTop: 30,
   },
   dataSlidersContainer: {
-    width: windowWidth,
     paddingHorizontal: 30,
     marginTop: 30,
   },
   dataTitleText: {
     ...Fonts.poppinsSemiBold[Platform.OS],
-    fontSize: 18,
+    fontSize: 14,
   } as TextStyle,
   dataHeadingText: {
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 16,
     marginBottom: 5,
   } as TextStyle,
+  dataDescriptionText: {
+    ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 14,
+  } as TextStyle,
   noDataContainer: {
-    marginTop: 40,
-    width: windowWidth,
-    paddingHorizontal: 60,
+    marginTop: 20,
+    paddingHorizontal: 30,
   },
   noDataTitleText: {
-    ...Fonts.poppinsMediumItalic[Platform.OS],
+    ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   noDataDescriptionText: {
-    ...Fonts.poppinsItalic[Platform.OS],
+    ...Fonts.poppinsRegular[Platform.OS],
     fontSize: 13,
     marginTop: 5,
   } as TextStyle,
   diaryButton: {
-    width: 225,
-    alignSelf: 'center',
+    width: 160,
     alignItems: 'center',
-    borderWidth: 2,
-    borderRadius: 30,
-    borderColor: 'black',
-    paddingVertical: 5,
+    borderRadius: 10,
+    paddingVertical: 13,
     marginTop: 30,
+    marginLeft: 30,
+    marginBottom: 20,
+    backgroundColor: '#5c6b57',
   },
   diaryButtonText: {
-    ...Fonts.poppinsItalic[Platform.OS],
+    ...Fonts.poppinsBold[Platform.OS],
+    color: 'white',
     fontSize: 12,
   } as TextStyle,
   editButton: {
-    width: 175,
-    alignSelf: 'flex-start',
+    width: 160,
     alignItems: 'center',
-    borderWidth: 2,
-    borderRadius: 15,
+    borderRadius: 10,
     borderColor: 'black',
-    paddingVertical: 5,
-    marginTop: 20,
+    paddingVertical: 13,
+    marginTop: 10,
+    marginBottom: 20,
+    marginLeft: 25,
+    backgroundColor: '#5c6b57',
   },
   editButtonText: {
-    ...Fonts.poppinsItalic[Platform.OS],
+    ...Fonts.poppinsBold[Platform.OS],
+    color: 'white',
     fontSize: 12,
   } as TextStyle,
-  dataTextContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    marginTop: 30,
-    height: 350,
-    borderWidth: 2,
-    borderRadius: 30,
-    borderColor: 'black',
-  },
   dataTextInputContainer: {
     fontSize: 14,
-    height: 200,
+    height: 150,
     ...Fonts.poppinsRegular[Platform.OS],
-    borderWidth: 2,
-    borderRadius: 30,
-    borderColor: 'black',
+    borderRadius: 10,
     paddingTop: 20,
     paddingLeft: 20,
-    marginHorizontal: 25,
-    marginBottom: 30,
-  } as TextStyle,
-  questionText: {
-    marginTop: 30,
-    paddingHorizontal: 25,
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 16,
+    marginTop: 20,
+    backgroundColor: '#F6F7F8',
   } as TextStyle,
 });

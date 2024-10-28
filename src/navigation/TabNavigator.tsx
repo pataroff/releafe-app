@@ -131,19 +131,21 @@ export const TabNavigator = () => {
     return (
       <View
         style={{
+          display: 'flex',
+          justifyContent: 'center',
           alignItems: 'center',
           borderRadius: 99,
           backgroundColor: '#C1D6BA',
-          width: 75,
-          height: 75,
+          width: 70,
+          height: 70,
           marginBottom: 20,
           paddingVertical: 10,
         }}
       >
         <Image
           resizeMode='contain'
-          style={{ width: '100%', height: 55 }}
-          source={require('../../assets/images/bonsai_tree_placeholder_icon.png')}
+          style={{ width: '100%', height: 45 }}
+          source={require('../../assets/images/bonsai_tree_icon.png')}
         />
       </View>
     );

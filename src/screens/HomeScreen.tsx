@@ -124,22 +124,22 @@ export const HomeScreen: React.FC = ({ route }) => {
     [selectedIndex]
   );
 
-  useEffect(() => {
-    const fetchQuote = async () => {
-      const res = await axios.get(process.env.API_NINJAS_API_URL as string, {
-        headers: {
-          'X-Api-Key': process.env.API_NINJAS_API_KEY,
-        },
-      });
+  // useEffect(() => {
+  //   const fetchQuote = async () => {
+  //     const res = await axios.get(process.env.API_NINJAS_API_URL as string, {
+  //       headers: {
+  //         'X-Api-Key': process.env.API_NINJAS_API_KEY,
+  //       },
+  //     });
 
-      const { data } = res;
+  //     const { data } = res;
 
-      setQuote(data[0].quote);
-      setAuthor(data[0].author);
-    };
+  //     setQuote(data[0].quote);
+  //     setAuthor(data[0].author);
+  //   };
 
-    fetchQuote();
-  }, []);
+  //   fetchQuote();
+  // }, []);
 
   const handlePrevious = () => {
     if (selectedIndex == 0) {

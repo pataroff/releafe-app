@@ -37,7 +37,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
 }) => {
   const [diaryEntries, setDiaryEntries] = useState<IDiaryEntry[]>([]);
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState(0);
-  const [progressValue, setProgressValue] = useState(0);
+  const [progressValue, setProgressValue] = useState(0.125);
   const [sliderValues, setSliderValues] = useState<Map<number, number>>(
     new Map()
   );

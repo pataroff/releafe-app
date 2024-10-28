@@ -18,12 +18,12 @@ export const DiaryScreen4: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F9F9F9',
   },
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F9F9F9',
   },
 });

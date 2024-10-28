@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
 import { TextQuestion } from '../components/TextQuestion';
 
@@ -6,22 +6,27 @@ export const DiaryScreen3: React.FC = ({ route }) => {
   return (
     <>
       <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          alignItems: 'center',
-          justifyContent: 'space-evenly',
-          backgroundColor: '#ffffff',
-        }}
-        style={{ flex: 1, backgroundColor: '#ffffff' }}
+        contentContainerStyle={styles.contentContainerStyles}
+        style={styles.container}
       >
         <TextQuestion
           questions={[
-            'Heb je je vandaag ergens zorgen over gemaakt?',
-            'Zijn er vandaag ook andere dingen gebeurd die je gemoedstoestand hebben beïnvloed? En zo ja, hoe voelde je je daardoor?',
-            'Wat heb je toen gedaan en welk effect had dit op je gemoedstoestand?',
-            'Welk effect had dat op je gemoedstoestand?',
-            'Heb je ook dingen vermeden? Zo ja, waarom en hoe voelde dat?',
-            'Waar ben je vandaag dankbaar voor?',
+            [
+              'Heb jij je vandaag ergens zorgen over gemaakt?',
+              'Omschrijf hier je angsten of zorgen en hoe ju je daardoor voelde...',
+            ],
+            [
+              'Zijn er ook andere dingen gebeurd die je gevoel hebben beïnvloed?',
+              'Omschrijf hier wat er is gebeurd en hoe ju je daardoor voelde...',
+            ],
+            [
+              'Heb je ook dingen vermeden?',
+              'Omschrijf hier wat je hebt vermeden en waarom en hoe ju je daardoor voelde...',
+            ],
+            [
+              'Wat heeft je vandaag dankbaar, trots of blij gemaakt?',
+              'Schrijf het hier op... ',
+            ],
           ]}
           route={route}
         />
@@ -29,3 +34,16 @@ export const DiaryScreen3: React.FC = ({ route }) => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9F9F9',
+  },
+  contentContainerStyles: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    backgroundColor: '#F9F9F9',
+  },
+});

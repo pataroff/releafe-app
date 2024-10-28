@@ -22,7 +22,19 @@ import { IDiaryEntry } from '../types';
 
 const windowWidth = Dimensions.get('window').width;
 
-export const SliderQuestion: React.FC = ({ questions, route }) => {
+const screenTitles = [
+  'Algeheel gevoel',
+  'Angst & zorgen',
+  'Stress',
+  'Energie',
+  'Concentratie',
+  'Slaap',
+];
+
+export const SliderQuestion: React.FC<{
+  questions: string[][];
+  route: any;
+}> = ({ questions, route }) => {
   const {
     diaryEntries,
     sliderValues,
@@ -83,7 +95,7 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
   const handlePrevious = () => {
     if (sliderQuestionIndex > 0) {
       setSliderQuestionIndex(sliderQuestionIndex - 1);
-      setProgressValue(progressValue - 0.167);
+      setProgressValue(progressValue - 0.125);
       setSliderValue(5);
     }
   };
@@ -105,7 +117,7 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
     }
     if (sliderQuestionIndex < questions.length - 1) {
       setSliderQuestionIndex(sliderQuestionIndex + 1);
-      setProgressValue(progressValue + 0.167);
+      setProgressValue(progressValue + 0.125);
       setSliderValue(5);
     } else {
       setSliderValue(5);
@@ -163,31 +175,36 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
         </View>
       </Modal>
 
-      <View style={styles.questionNumberContainer}>
-        <Text style={styles.questionNumberText}>{sliderQuestionIndex + 1}</Text>
-      </View>
       <View
         style={{
           display: 'flex',
           flexDirection: 'column',
           rowGap: 10,
-          paddingHorizontal: 20,
+          paddingHorizontal: 25,
+          position: 'relative',
         }}
       >
         <Pressable
           onPress={() => setModalVisible(true)}
           style={styles.closeButton}
         >
-          <AntDesign name='closecircleo' size={30} color='black' />
+          <AntDesign name='closecircleo' size={24} color='gray' />
         </Pressable>
+
+        <View style={styles.headingContainer}>
+          <Text style={styles.headingText}>
+            {screenTitles[sliderQuestionIndex]}
+          </Text>
+        </View>
+
         <View style={styles.questionContainer}>
           <Text style={styles.questionText}>
             {questions[sliderQuestionIndex][0]}
           </Text>
         </View>
-        <View style={{ marginTop: 30 }}>
+        <View style={{ marginTop: 20 }}>
           <Slider
-            style={{ width: windowWidth - 2 * 40, height: 40 }}
+            style={{ width: windowWidth - 2 * 50, height: 40 }}
             value={
               selectedDiaryEntry
                 ? selectedDiaryEntry.sliderValues.get(sliderQuestionIndex)
@@ -214,20 +231,27 @@ export const SliderQuestion: React.FC = ({ questions, route }) => {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            justifyContent:
-              sliderQuestionIndex >= 1 ? 'space-between' : 'flex-end',
+            justifyContent: 'space-between',
           }}
         >
-          {sliderQuestionIndex >= 1 && (
-            <Pressable onPress={handlePrevious} style={styles.backButton}>
-              <Text style={styles.buttonText}>Ga terug</Text>
-            </Pressable>
-          )}
+          <Pressable
+            onPress={handlePrevious}
+            disabled={sliderQuestionIndex == 0 ? true : false}
+            style={
+              sliderQuestionIndex == 0
+                ? [styles.backButton, { opacity: 0.4 }]
+                : styles.backButton
+            }
+          >
+            <Text style={styles.buttonText}>Ga terug</Text>
+          </Pressable>
+
           <Pressable onPress={handleNext} style={styles.nextButton}>
             <Text style={styles.buttonText}>Ga verder</Text>
           </Pressable>
         </View>
         <View style={styles.progressBarContainer}>
+          <Text style={styles.progressBarText}>{progressValue * 100}%</Text>
           <ProgressBar
             progress={progressValue}
             color='#A9C1A1'
@@ -243,25 +267,35 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 60,
     marginBottom: 100,
-    width: windowWidth - 2 * 25,
-    height: 350,
-    borderWidth: 2,
+    width: windowWidth - 2 * 30,
     borderRadius: 30,
-    borderColor: 'black',
+    backgroundColor: 'white',
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   closeButton: {
-    alignSelf: 'flex-end',
-    marginTop: 20,
+    position: 'absolute',
+    top: 25,
+    right: 20,
+    zIndex: 1,
   },
+  headingContainer: {
+    marginTop: 30,
+  },
+  headingText: {
+    ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 18,
+  } as TextStyle,
   questionContainer: {
     paddingVertical: 20,
   },
   questionText: {
-    position: 'absolute',
-    left: 5,
-    right: 5,
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 18,
+    ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 14,
   } as TextStyle,
   optionsContainer: {
     display: 'flex',
@@ -270,53 +304,61 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   optionsText: {
-    ...Fonts.poppinsMediumItalic[Platform.OS],
-    fontSize: 12,
-    fontStyle: 'italic',
+    ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 14,
     flexShrink: 1, // text wrap
   } as TextStyle,
   backButton: {
     width: 130,
     alignSelf: 'flex-end',
     alignItems: 'center',
-    borderWidth: 2,
-    borderRadius: 30,
+    borderRadius: 10,
     borderColor: 'black',
-    paddingVertical: 4,
+    paddingVertical: 6,
     marginTop: 20,
+    backgroundColor: '#a8c1a0',
   },
   nextButton: {
     width: 130,
     alignSelf: 'flex-end',
     alignItems: 'center',
-    borderRadius: 30,
+    borderRadius: 10,
     borderColor: 'black',
     paddingVertical: 6,
     marginTop: 20,
-    backgroundColor: '#A9C1A1',
+    backgroundColor: '#5c6b57',
   },
   buttonText: {
-    ...Fonts.poppinsItalic[Platform.OS],
-    fontStyle: 'italic',
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    color: 'white',
   } as TextStyle,
   progressBarContainer: {
-    marginTop: 20,
+    display: 'flex',
+    alignItems: 'center',
+    rowGap: 5,
+    marginTop: 50,
+    marginBottom: 30,
   },
+  progressBarText: {
+    ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 13,
+  } as TextStyle,
   progressBar: {
     backgroundColor: '#dedede',
     borderRadius: 15,
     height: 10,
+    width: 250,
   },
   modalWrapper: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   modalContainer: {
-    borderWidth: 2,
     borderRadius: 30,
-    height: 300,
-    width: windowWidth - 2 * 10,
+    height: 270,
+    width: windowWidth - 2 * 15,
     backgroundColor: 'white',
     paddingHorizontal: 25,
     paddingVertical: 25,
@@ -325,11 +367,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   modalTitleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   modalDescriptionText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.poppinsRegular[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   saveAndCloseButton: {
@@ -341,7 +383,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#A9C1A1',
   },
   dontSaveAndCloseButton: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 30,
     alignSelf: 'flex-start',
     alignItems: 'center',
@@ -350,16 +392,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   saveAndCloseText: {
-    ...Fonts.poppinsItalic[Platform.OS],
-    fontStyle: 'italic',
+    ...Fonts.poppinsMedium[Platform.OS],
     color: 'white',
   } as TextStyle,
   dontSaveAndCloseText: {
-    ...Fonts.poppinsItalic[Platform.OS],
-    fontStyle: 'italic',
+    ...Fonts.poppinsMedium[Platform.OS],
   } as TextStyle,
   cancelButton: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 30,
     alignItems: 'center',
     width: 150,
@@ -367,21 +407,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   cancelButtonText: {
-    ...Fonts.poppinsItalic[Platform.OS],
-    fontStyle: 'italic',
-  } as TextStyle,
-  questionNumberContainer: {
-    position: 'absolute',
-    top: -50,
-    borderWidth: 3,
-    borderRadius: 99,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  questionNumberText: {
-    ...Fonts.poppinsBold[Platform.OS],
-    fontSize: 20,
+    ...Fonts.poppinsMedium[Platform.OS],
   } as TextStyle,
 });

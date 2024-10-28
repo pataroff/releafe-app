@@ -9,7 +9,9 @@ import {
   Platform,
   TextStyle,
 } from 'react-native';
+
 import { Fonts } from '../styles';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -23,42 +25,52 @@ export const DiaryGreeting = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.greetingText}>
-        Hi {user.firstName}, wat fijn dat je er weer bent.
-      </Text>
-      <Text style={styles.diaryDescriptionText}>
-        Door dagelijks je dagboek bij te houden, volg je zorgvuldig jouw
-        groeiproces.
-      </Text>
-      <View style={{ paddingVertical: 10 }}>
-        <Image
-          style={{ width: '100%', height: 150 }}
-          source={require('../../assets/images/placeholder_image.png')}
-        />
-      </View>
-      <Text style={[styles.dateLabel, { fontSize: 16 }]}>
-        Vandaag is het:{' '}
-        <Text style={styles.dateText}>
-          {new Date().toLocaleDateString('nl-NL', {
-            month: 'long',
-            year: 'numeric',
-            day: 'numeric',
-          })}
+      {/* Header Container */}
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          rowGap: 20,
+          marginTop: 10,
+        }}
+      >
+        <FontAwesome name='heart' size={36} color='#5C6B57' />
+        <Text style={styles.greetingText}>
+          Hi {user?.firstName}, wat goed dat je er weer bent. Laten we gelijk
+          beginnen.
         </Text>
-      </Text>
-      <Text style={styles.diaryDescriptionText}>
-        Laten we beginnen met het vastleggen van jouw reis.
-      </Text>
+      </View>
+      {/* Body Container */}
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          rowGap: 20,
+          marginTop: 20,
+        }}
+      >
+        <Text style={styles.diaryDescriptionText}>
+          Door dagelijks je dagboek bij te houden, volg je zorgvuldig jouw
+          groeiproces.
+        </Text>
+        <Text style={styles.dateLabel}>
+          Het is vandaag:{' '}
+          <Text style={styles.dateText}>
+            {new Date().toLocaleDateString('nl-NL', {
+              month: 'long',
+              year: 'numeric',
+              day: 'numeric',
+              weekday: 'long',
+            })}
+          </Text>
+        </Text>
+      </View>
       <Pressable
         onPress={() => navigation.navigate('Diary2')}
         style={styles.startButton}
       >
-        <Text>Start</Text>
-      </Pressable>
-      <Pressable onPress={() => navigation.navigate('WellbeingOverview')}>
-        <Text style={styles.dashboardButtonText}>
-          Ga gelijk door naar het persoonlijk dashboard
-        </Text>
+        <Text style={styles.startButtonText}>Start met dagboek</Text>
       </Pressable>
     </View>
   );
@@ -66,47 +78,52 @@ export const DiaryGreeting = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width: windowWidth - 2 * 25,
-    borderWidth: 2,
+    width: windowWidth - 2 * 30,
+    backgroundColor: 'white',
     borderRadius: 30,
-    borderColor: 'black',
     marginTop: 20,
     marginBottom: 100,
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'space-between',
     rowGap: 10,
     paddingVertical: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 25,
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   greetingText: {
+    alignSelf: 'flex-start',
     ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 20,
+    fontSize: 18,
   } as TextStyle,
   diaryDescriptionText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.poppinsRegular[Platform.OS],
   } as TextStyle,
   dateLabel: {
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   dateText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.poppinsRegular[Platform.OS],
   } as TextStyle,
   startButton: {
-    width: 150,
+    width: 160,
     alignSelf: 'flex-start',
     alignItems: 'center',
-    // borderWidth: 2,
-    borderRadius: 30,
+    borderRadius: 10,
     borderColor: 'black',
-    paddingVertical: 5,
-    marginTop: 10,
-    backgroundColor: '#A9C1A1',
+    paddingVertical: 13,
+    marginTop: 40,
+    marginBottom: 10,
+    backgroundColor: '#5c6b57',
   },
-  dashboardButtonText: {
-    ...Fonts.poppinsRegular[Platform.OS],
-    textDecorationLine: 'underline',
-    fontSize: 12,
-    marginTop: 10,
+  startButtonText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    color: 'white',
   } as TextStyle,
 });

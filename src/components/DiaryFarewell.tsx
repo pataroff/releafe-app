@@ -3,13 +3,13 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   Pressable,
   Dimensions,
   Platform,
   TextStyle,
 } from 'react-native';
 import { Fonts } from '../styles';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { DiaryContext } from '../context/DiaryContext';
 import { AuthContext } from '../context/AuthContext';
@@ -34,29 +34,55 @@ export const DiaryFarewell: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.greetingText}>
-        Goed gedaan, {user?.firstName}.{'\n'}Je hebt jouw dagboek met succes
-        ingevuld.
-      </Text>
-      <View style={{ paddingVertical: 10 }}>
-        <Image
-          style={{ width: '100%', height: 150 }}
-          source={require('../../assets/images/placeholder_image.png')}
-        />
+      {/* Header Container */}
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          rowGap: 20,
+          marginTop: 10,
+        }}
+      >
+        <FontAwesome name='thumbs-up' size={36} color='#5C6B57' />
+        <Text style={styles.greetingText}>
+          Goed gedaan, {user?.firstName}.{'\n'}Je hebt jouw dagboek met succes
+          ingevuld.
+        </Text>
       </View>
-      <Text style={styles.diaryDescriptionText}>
-        Door elke dag je dagboek in te vullen, worden de meest waardevolle
-        gegevens verzameld die later kunnen worden geanalyseerd in jouw
-        persoonlijk dashboard.
-      </Text>
+
+      {/* Body Container */}
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          rowGap: 20,
+          marginTop: 20,
+        }}
+      >
+        <Text style={styles.diaryDescriptionText}>
+          <Text style={{ ...(Fonts.poppinsMedium[Platform.OS] as TextStyle) }}>
+            Hou dit vol!
+          </Text>{' '}
+          Door elke dag je dagboek in te vullen worden de meest waardevolle
+          gegevens verzameld. Deze worden opgeslagen in jouw welzijnsoverzicht.
+        </Text>
+      </View>
 
       <Pressable
-        onPress={() => navigation.navigate('Dashboard')}
+        onPress={() => navigation.navigate('WellbeingOverview')}
         style={styles.dashboardButton}
       >
         <Text style={styles.dashboardButtonText}>
-          Ga naar het persoonlijk dashboard
+          Ga door naar welzijnsoverzicht
         </Text>
+      </Pressable>
+
+      <Pressable
+        onPress={() => navigation.navigate('Home')}
+        style={styles.closeButton}
+      >
+        <Text style={styles.closeButtonText}>Afsluiten</Text>
       </Pressable>
     </View>
   );
@@ -67,7 +93,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 100,
     width: windowWidth - 2 * 25,
-    borderWidth: 2,
     borderRadius: 30,
     borderColor: 'black',
     display: 'flex',
@@ -75,13 +100,21 @@ const styles = StyleSheet.create({
     rowGap: 10,
     paddingHorizontal: 25,
     paddingVertical: 25,
+    backgroundColor: 'white',
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   greetingText: {
+    alignSelf: 'flex-start',
     ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 20,
   } as TextStyle,
   diaryDescriptionText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.poppinsRegular[Platform.OS],
   } as TextStyle,
   dateLabel: {
     ...Fonts.poppinsMedium[Platform.OS],
@@ -101,16 +134,28 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   dashboardButton: {
-    width: 270,
-    alignSelf: 'center',
+    width: 225,
     alignItems: 'center',
-    borderRadius: 30,
-    paddingVertical: 6,
+    borderRadius: 10,
+    paddingVertical: 12,
     marginTop: 20,
     backgroundColor: '#A9C1A1',
   },
   dashboardButtonText: {
-    ...Fonts.poppinsItalic[Platform.OS],
-    fontSize: 12,
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    color: 'white',
+    fontSize: 13,
+  } as TextStyle,
+  closeButton: {
+    width: 125,
+    alignItems: 'center',
+    borderRadius: 10,
+    paddingVertical: 6,
+    marginTop: 10,
+    borderWidth: 1,
+  },
+  closeButtonText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 13,
   } as TextStyle,
 });

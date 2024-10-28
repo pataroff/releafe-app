@@ -36,67 +36,57 @@ export const Performance: React.FC = () => {
 
   return (
     <>
-      <View
-        style={
-          selectedDiaryEntry != null
-            ? isOpen
-              ? [styles.containerHasData, { marginBottom: 1250 }]
-              : styles.containerHasData
-            : isOpen
-            ? [styles.containerHasNoData, { marginBottom: 550 }]
-            : styles.containerHasNoData
-        }
-      >
+      <View style={styles.container}>
         <View style={styles.headersContainer}>
           <Text style={styles.performanceTitleText}>Overzicht welzijn</Text>
           <Text style={styles.performanceDescriptionText}>
-            Hier zie je een overzicht van de door jou ingevoerde scores in de
-            geselecteerde periode.
+            Hier vind je een overzicht van de door jou ingevoerde gegevens uit
+            het dagboek voor de geselecteerde periode.
+          </Text>
+          <Text style={styles.performanceHeadingText}>
+            Persoonlijk dashboard
           </Text>
         </View>
-        <CustomSelector selected={selected} handleSelect={handleSelect} />
 
         <View style={styles.performanceContainer}>
-          <CustomMultiPicker selected={selected} />
-          {/* The Wizard of Oz Method Chart */}
-          {selectedDiaryEntry != null ? (
-            selected === 0 ? (
-              <Image
-                style={{ width: windowWidth, height: 350, marginTop: 25 }}
-                source={require('../../assets/images/chart_week.png')}
-              />
-            ) : selected === 1 ? (
-              <Image
-                style={{ width: windowWidth, height: 350, marginTop: 25 }}
-                source={require('../../assets/images/chart_maand.png')}
-              />
+          <CustomSelector selected={selected} handleSelect={handleSelect} />
+          <View style={styles.performanceImageContainer}>
+            {selectedDiaryEntry != null ? (
+              selected === 0 ? (
+                <Image
+                  resizeMode='contain'
+                  style={{ width: '100%', height: 350 }}
+                  source={require('../../assets/images/chart_week.png')}
+                />
+              ) : selected === 1 ? (
+                <Image
+                  resizeMode='contain'
+                  style={{ width: '100%', height: 350 }}
+                  source={require('../../assets/images/chart_maand.png')}
+                />
+              ) : (
+                <Image
+                  resizeMode='contain'
+                  style={{ width: '100%', height: 350 }}
+                  source={require('../../assets/images/chart_jaar.png')}
+                />
+              )
             ) : (
               <Image
-                style={{ width: windowWidth, height: 350, marginTop: 25 }}
-                source={require('../../assets/images/chart_jaar.png')}
+                resizeMode='contain'
+                style={{ width: '100%', height: 350 }}
+                source={require('../../assets/images/chart_empty.png')}
               />
-            )
-          ) : (
-            <Image
-              style={{ width: windowWidth, height: 350, marginTop: 25 }}
-              source={require('../../assets/images/chart_empty.png')}
-            />
-          )}
-
-          <View style={styles.headersContainer}>
-            <Text style={styles.calendarTitleText}>Kalender</Text>
-            <Text style={styles.calendarDescriptionText}>
-              Hier vind je een overzicht van jouw data per dag en over de hele
-              maand.
-            </Text>
+            )}
           </View>
-          <PerformanceCalendar
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            selectedDiaryEntry={selectedDiaryEntry}
-            setSelectedDiaryEntry={setSelectedDiaryEntry}
-          />
         </View>
+
+        <PerformanceCalendar
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          selectedDiaryEntry={selectedDiaryEntry}
+          setSelectedDiaryEntry={setSelectedDiaryEntry}
+        />
       </View>
 
       {/* The Actual Chart */}
@@ -118,28 +108,40 @@ export const Performance: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  containerHasNoData: {
+  container: {
+    width: windowWidth,
     marginTop: 25,
-    marginBottom: 400,
-  },
-  containerHasData: {
-    marginTop: 25,
-    marginBottom: 1100,
+    marginBottom: 110,
+    paddingHorizontal: 20,
   },
   headersContainer: {
-    width: windowWidth,
-    paddingHorizontal: 30,
+    paddingHorizontal: 10,
   },
-  performanceContainer: {
+  performanceHeadingText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 18,
     marginTop: 20,
-    borderWidth: 2,
+  } as TextStyle,
+  performanceContainer: {
+    backgroundColor: 'white',
+    marginTop: 20,
     borderRadius: 30,
-    minWidth: windowWidth,
-    maxHeight: 620,
+    maxHeight: 400,
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  performanceImageContainer: {
+    width: '100%',
+    paddingHorizontal: 15,
   },
   performanceTitleText: {
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 20,
+    ...Fonts.poppinsBold[Platform.OS],
+    color: '#5c6b57',
+    fontSize: 22,
   } as TextStyle,
   performanceDescriptionText: {
     ...Fonts.poppinsMedium[Platform.OS],

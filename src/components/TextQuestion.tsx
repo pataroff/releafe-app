@@ -14,14 +14,17 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
-import { IDiaryEntry } from '../types';
-
 import { AntDesign } from '@expo/vector-icons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
-export const TextQuestion: React.FC = ({ questions, route }) => {
+export const TextQuestion: React.FC<{ questions: string[][]; route: any }> = ({
+  questions,
+  route,
+}) => {
   const {
     diaryEntries,
     textValues,
@@ -36,6 +39,7 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
   const navigation = useNavigation();
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [textQuestionIndex, setTextQuestionIndex] = useState<number>(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -55,12 +59,21 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
     }
   };
 
-  const handleFinish = () => {
-    // `DiaryFarewell` calls both `resetSliderValues` and `resetTextValues`!
-    setSliderQuestionIndex(0);
-    setProgressValue(0);
-    setHasData(true); // @TODO Remove leftover state from testing!
-    navigation.navigate('Diary4');
+  const handlePrevious = () => {
+    if (textQuestionIndex !== 0) {
+      setTextQuestionIndex(textQuestionIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (textQuestionIndex === questions.length - 1) {
+      setSliderQuestionIndex(0);
+      setProgressValue(0.125);
+      setHasData(true); // @TODO Remove leftover state from testing!
+      navigation.navigate('Diary4');
+    } else {
+      setTextQuestionIndex(textQuestionIndex + 1);
+    }
   };
 
   const handleSaveAndClose = () => {
@@ -130,32 +143,94 @@ export const TextQuestion: React.FC = ({ questions, route }) => {
         onPress={() => setModalVisible(!modalVisible)}
         style={styles.closeButton}
       >
-        <AntDesign name='closecircleo' size={30} color='black' />
+        <AntDesign name='closecircleo' size={24} color='gray' />
       </Pressable>
-      {questions.map((question, index) => {
-        return (
-          <View key={index}>
-            <View style={styles.questionContainer}>
-              <Text style={styles.questionText}>{questions[index]}</Text>
-            </View>
-            <TextInput
-              style={[
-                styles.diaryEntryFieldTextInput,
-                { outlineStyle: 'none' },
-              ]}
-              textAlignVertical='top'
-              value={textValues.get(index) ?? ''}
-              onChangeText={(value) => addTextValue(index, value)}
-              multiline={true}
-              placeholder='Schrijf het hier op...'
-              placeholderTextColor='black'
-            ></TextInput>
-          </View>
-        );
-      })}
-      <Pressable onPress={handleFinish} style={styles.button}>
-        <Text style={styles.buttonText}>Afronden</Text>
-      </Pressable>
+      <View style={styles.headingContainer}>
+        <Text style={styles.headingText}>Aanvullende vragen</Text>
+      </View>
+
+      <View>
+        <View style={styles.questionContainer}>
+          <Text style={styles.questionLabel}>
+            Vraag {textQuestionIndex + 1}:{' '}
+            <Text style={styles.questionText}>
+              {questions[textQuestionIndex][0]}
+            </Text>
+          </Text>
+        </View>
+        <TextInput
+          style={[
+            styles.diaryEntryFieldTextInput,
+            // @ts-ignore
+            { outlineStyle: 'none' },
+          ]}
+          textAlignVertical='top'
+          value={textValues.get(textQuestionIndex) ?? ''}
+          onChangeText={(value) => addTextValue(textQuestionIndex, value)}
+          multiline={true}
+          placeholder={questions[textQuestionIndex][1]}
+          placeholderTextColor='gray'
+        ></TextInput>
+      </View>
+
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginVertical: 20,
+        }}
+      >
+        <Pressable
+          onPress={() => handlePrevious()}
+          disabled={textQuestionIndex == 0 ? true : false}
+          style={textQuestionIndex == 0 ? { opacity: 0.4 } : {}}
+        >
+          <MaterialCommunityIcons
+            name='chevron-left-circle-outline'
+            size={30}
+            color='black'
+          />
+        </Pressable>
+
+        <View style={{ display: 'flex', flexDirection: 'row', columnGap: 7 }}>
+          {Array.from({ length: 4 }).map((_, index) => {
+            return (
+              <View
+                key={index}
+                style={{
+                  width: 9,
+                  height: 9,
+                  backgroundColor:
+                    index === textQuestionIndex ? '#829c7a' : '#E4E1E1',
+                  borderRadius: 99,
+                }}
+              ></View>
+            );
+          })}
+        </View>
+
+        <Pressable
+          onPress={() => handleNext()}
+          disabled={textQuestionIndex == questions.length - 1 ? true : false}
+          style={
+            textQuestionIndex == questions.length - 1 ? { opacity: 0.4 } : {}
+          }
+        >
+          <MaterialCommunityIcons
+            name='chevron-right-circle-outline'
+            size={30}
+            color='black'
+          />
+        </Pressable>
+      </View>
+
+      {textQuestionIndex == questions.length - 1 && (
+        <Pressable onPress={() => handleNext()} style={styles.finishButton}>
+          <Text style={styles.finishButtonText}>Opslaan en afsluiten</Text>
+        </Pressable>
+      )}
     </View>
   );
 };
@@ -165,57 +240,59 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 100,
     width: windowWidth - 2 * 25,
-    borderWidth: 2,
     borderRadius: 30,
     borderColor: 'black',
     paddingHorizontal: 25,
+    backgroundColor: 'white',
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   closeButton: {
-    alignSelf: 'flex-end',
-    marginTop: 20,
+    position: 'absolute',
+    top: 25,
+    right: 20,
+    zIndex: 1,
   },
+  headingContainer: {
+    marginTop: 30,
+  },
+  headingText: {
+    ...Fonts.poppinsMedium[Platform.OS],
+    fontSize: 18,
+  } as TextStyle,
   questionContainer: {
     paddingVertical: 20,
   },
-  questionText: {
-    left: 5,
+  questionLabel: {
     ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 18,
+  } as TextStyle,
+  questionText: {
+    ...Fonts.poppinsRegular[Platform.OS],
   } as TextStyle,
   diaryEntryFieldTextInput: {
     fontSize: 14,
     height: 200,
-    ...Fonts.poppinsItalic[Platform.OS],
-    borderWidth: 2,
-    borderRadius: 30,
+    ...Fonts.poppinsRegular[Platform.OS],
+    borderRadius: 10,
     borderColor: 'black',
-    paddingTop: 20,
-    paddingLeft: 20,
-  } as TextStyle,
-  button: {
-    width: 130,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderRadius: 30,
-    borderColor: 'black',
-    paddingVertical: 4,
-    marginVertical: 30,
-  },
-  buttonText: {
-    ...Fonts.poppinsItalic[Platform.OS],
-    fontStyle: 'italic',
+    paddingTop: 15,
+    paddingHorizontal: 15,
+    backgroundColor: '#F6F7F8',
   } as TextStyle,
   modalWrapper: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   modalContainer: {
-    borderWidth: 2,
     borderRadius: 30,
-    height: 300,
-    width: windowWidth - 2 * 10,
+    height: 270,
+    width: windowWidth - 2 * 15,
     backgroundColor: 'white',
     paddingHorizontal: 25,
     paddingVertical: 25,
@@ -224,11 +301,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   modalTitleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.poppinsMedium[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   modalDescriptionText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.poppinsRegular[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   saveAndCloseButton: {
@@ -240,7 +317,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#A9C1A1',
   },
   dontSaveAndCloseButton: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 30,
     alignSelf: 'flex-start',
     alignItems: 'center',
@@ -249,16 +326,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   saveAndCloseText: {
-    ...Fonts.poppinsItalic[Platform.OS],
-    fontStyle: 'italic',
+    ...Fonts.poppinsMedium[Platform.OS],
     color: 'white',
   } as TextStyle,
   dontSaveAndCloseText: {
-    ...Fonts.poppinsItalic[Platform.OS],
-    fontStyle: 'italic',
+    ...Fonts.poppinsMedium[Platform.OS],
   } as TextStyle,
   cancelButton: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 30,
     alignItems: 'center',
     width: 150,
@@ -266,7 +341,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   cancelButtonText: {
-    ...Fonts.poppinsItalic[Platform.OS],
-    fontStyle: 'italic',
+    ...Fonts.poppinsMedium[Platform.OS],
+  } as TextStyle,
+  finishButton: {
+    width: 170,
+    alignSelf: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderColor: 'black',
+    paddingVertical: 12,
+    marginVertical: 20,
+    backgroundColor: '#5c6b57',
+  },
+  finishButtonText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    color: 'white',
   } as TextStyle,
 });

@@ -58,6 +58,7 @@ export const DashboardScreen: React.FC = () => {
       <StatusBar />
       <Header title={title} />
       <ScrollView
+        bounces={false}
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
@@ -70,12 +71,12 @@ export const DashboardScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F9F9F9',
   },
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'space-around',
-    backgroundColor: '#ffffff',
+    justifyContent: 'space-evenly',
+    backgroundColor: '#F9F9F9',
   },
 });
