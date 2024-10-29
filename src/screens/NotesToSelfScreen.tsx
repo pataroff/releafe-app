@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   StyleSheet,
@@ -29,37 +29,17 @@ export const NotesToSelfScreen: React.FC = ({ route }) => {
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
-        {/* Title + Description */}
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-            paddingHorizontal: 30,
-            marginTop: 20,
-            rowGap: 10,
-          }}
-        >
-          <Text
-            style={{
-              ...(Fonts.poppinsBold[Platform.OS] as TextStyle),
-              fontSize: 20,
-              alignSelf: 'flex-start',
-            }}
-          >
-            Notes-to-self
+        <View style={styles.headersContainer}>
+          <Text style={styles.headersTitleText}>Berichten aan jezelf</Text>
+          <Text style={styles.headersDescriptionText}>
+            Onder de 'berichten aan jezelf' kun je notities voor jezelf opslaan
+            die je op elk gewenst moment kunt bekijken. Deze berichten kun je
+            volledig naar wens personaliseren.
           </Text>
-
-          <Text
-            style={{
-              ...(Fonts.poppinsRegular[Platform.OS] as TextStyle),
-              alignSelf: 'flex-start',
-            }}
-          >
-            Onder de notes-to-self kun je berichten aan jezelf opslaan die je op
-            elk gewenst moment kunt bekijken. Deze berichten kun je volledig
-            naar wens personaliseren.
+          <Text style={styles.headersHeadingText}>Mijn berichten</Text>
+          <Text style={styles.headersDescriptionText}>
+            Bekijk hier de berichten aan jezelf, of voeg een bericht aan jezelf
+            toe.
           </Text>
         </View>
 
@@ -89,6 +69,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#ffffff',
   },
+  headersContainer: {
+    width: windowWidth,
+    paddingHorizontal: 30,
+    marginTop: 25,
+  },
+  headersTitleText: {
+    ...Fonts.poppinsBold[Platform.OS],
+    fontSize: 22,
+    color: '#5c6b57',
+  } as TextStyle,
+  headersHeadingText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 18,
+    marginTop: 20,
+  } as TextStyle,
+  headersDescriptionText: {
+    ...Fonts.poppinsRegular[Platform.OS],
+    marginTop: 5,
+  } as TextStyle,
   addButton: {
     position: 'absolute',
     borderRadius: 20,

@@ -1,25 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { StatusBar } from 'expo-status-bar';
 import {
-  StyleSheet,
-  Text,
   View,
+  Text,
+  StyleSheet,
   Image,
   Pressable,
-  Dimensions,
-  Platform,
+  ScrollView,
   TextStyle,
+  Platform,
+  Dimensions,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-
 import { Fonts } from '../styles';
-import Entypo from '@expo/vector-icons/Entypo';
 
-import { WorryListModal } from './WorryListModal';
-import { WorryListItemAddModal } from './WorryListItemAddModal';
-import { WorryListItemAddedModal } from './WorryListItemAddedModal';
-import { ReframingModal } from './ReframingModal';
-import { ReframingSuccessModal } from './ReframingSucessModal';
+import { ReframingModal } from '../components/ReframingModal';
+import { ReframingSuccessModal } from '../components/ReframingSucessModal';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -93,150 +91,133 @@ const reframingSteps = [
   },
 ];
 
+const reframingOptionsData = [
+  [
+    'Reframen van een bestaande zorg',
+    'Wanneer je een eerder aangemaakte zorg reframed, leer je op een nieuwe manier naar deze zorg of negatieve gedachte te kijken.',
+  ],
+  [
+    'Reframen van een nieuwe zorg',
+    'Heb je een zorg die je nog niet aan je zorgenbakje hebt toegevoegd, maar die je direct wilt reframen? Begin dan meteen.',
+  ],
+];
+
 // @TODO Correct the `route` type annotation!
-export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
+export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [modalWorryListVisible, setModalWorryListVisible] =
-    useState<boolean>(false);
-  const [modalAddWorryListItemVisible, setModalAddWorryListItemVisible] =
-    useState<boolean>(false);
-  const [modalAddedWorryListItemVisible, setModalAddedWorryListItemVisible] =
-    useState<boolean>(false);
   const [modalReframingVisible, setModalReframingVisible] =
     useState<boolean>(false);
   const [modalReframingSuccessVisible, setModalReframingSuccessVisible] =
     useState<boolean>(false);
   const [reframingModalIndex, setReframingModalIndex] = useState<number>(0);
 
-  const handleDrawer = () => {
-    if (!isDrawerOpen) {
-      setIsDrawerOpen(!isDrawerOpen);
-      setTimeout(() => {
-        setModalWorryListVisible(!modalWorryListVisible);
-      }, 500);
-    } else {
-      setModalWorryListVisible(!modalWorryListVisible);
-      setTimeout(() => {
-        setIsDrawerOpen(!isDrawerOpen);
-      }, 500);
-    }
-  };
+  useEffect(() => {
+    navigation.setOptions({ headerTitle: 'Zorgenbakje' });
+  }, [navigation]);
 
   return (
     <>
-      {/* Worry List Modal */}
-      <WorryListModal
-        modalWorryListVisible={modalWorryListVisible}
-        setModalWorryListVisible={setModalWorryListVisible}
-        modalAddWorryListItemVisible={modalAddWorryListItemVisible}
-        setModalAddWorryListItemVisible={setModalAddWorryListItemVisible}
-        modalReframingVisible={modalReframingVisible}
-        setModalReframingVisible={setModalReframingVisible}
-        handleDrawer={handleDrawer}
-      />
-
-      {/* Add Worry List Item Modal */}
-      <WorryListItemAddModal
-        modalAddWorryListItemVisible={modalAddWorryListItemVisible}
-        setModalAddWorryListItemVisible={setModalAddWorryListItemVisible}
-        modalAddedWorryListItemVisible={modalAddedWorryListItemVisible}
-        setModalAddedWorryListItemVisible={setModalAddedWorryListItemVisible}
-      />
-
-      {/* Added Worry List Item Modal */}
-      <WorryListItemAddedModal
-        modalAddedWorryListItemVisible={modalAddedWorryListItemVisible}
-        setModalAddedWorryListItemVisible={setModalAddedWorryListItemVisible}
-      />
-
-      {/* Reframing Modal */}
       <ReframingModal
+        // @TODO: Correct `route` type annotation!
         route={route}
         reframingModalIndex={reframingModalIndex}
         setReframingModalIndex={setReframingModalIndex}
         reframingSteps={reframingSteps}
         modalReframingVisible={modalReframingVisible}
         setModalReframingVisible={setModalReframingVisible}
-        modalWorryListVisible={modalWorryListVisible}
-        setModalWorryListVisible={setModalWorryListVisible}
         modalReframingSuccessVisible={modalReframingSuccessVisible}
         setModalReframingSuccessVisible={setModalReframingSuccessVisible}
       />
 
       {/* Reframing Sucess Modal */}
       <ReframingSuccessModal
+        // @TODO: Correct `route` type annotation!
         route={route}
         reframingModalIndex={reframingModalIndex}
         setReframingModalIndex={setReframingModalIndex}
         modalReframingSuccessVisible={modalReframingSuccessVisible}
         setModalReframingSuccessVisible={setModalReframingSuccessVisible}
-        modalWorryListVisible={modalWorryListVisible}
-        setModalWorryListVisible={setModalWorryListVisible}
         modalReframingVisible={modalReframingVisible}
         setModalReframingVisible={setModalReframingVisible}
       />
 
-      {/* Headers */}
-      <View style={styles.headersContainer}>
-        <Text style={styles.headersTitleText}>Zorgenbakje</Text>
-        <Text style={styles.headersDescriptionText}>
-          Het Zorgenbakje biedt je een veilige ruimte om je zorgen en angsten
-          van je af te schrijven en even op te bergen. Wat helpt bij het
-          loslaten van zorgen is het visueel en symbolisch opbergen van deze
-          zorgen.
-        </Text>
-        <Text style={styles.headersHeadingText}>Mijn zorgen</Text>
-        <Text style={styles.headersDescriptionText}>
-          Druk op de lade hieronder om je opgeborgen zorgen te kunnen bekijken,
-          of voeg een nieuwe zorg toe.
-        </Text>
+      <StatusBar />
+      <ScrollView
+        bounces={false}
+        style={styles.container}
+        contentContainerStyle={styles.contentContainerStyles}
+      >
+        <View style={styles.headersContainer}>
+          <Text style={styles.headersTitleText}>Reframing</Text>
+          <Text style={styles.headersDescriptionText}>
+            Reframing is het bekijken van een situatie, gedachte of gevoel
+            vanuit een andere invalshoek.{'\n\n'}Door een situatie of
+            (negatieve) gedachte te herformuleren, kun je patronen doorbreken en
+            jezelf helpen gezonder te voelen en meer controle te krijgen over je
+            eigen gedachten.
+          </Text>
+          <Text style={styles.headersHeadingText}>Proces starten</Text>
+          <Text style={styles.headersDescriptionText}>
+            Het toepassen van reframen kan op twee manieren.
+          </Text>
+        </View>
 
-        {/* Drawer */}
         <View
           style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: 100,
-            marginTop: 40,
+            width: windowWidth,
+            paddingHorizontal: 30,
+            marginBottom: 110,
           }}
         >
-          {isDrawerOpen ? (
-            <Pressable onPress={() => handleDrawer()}>
-              <Image
-                resizeMode='contain'
-                style={{ width: 340, height: 150 }}
-                source={require('../../assets/images/drawer_open.png')}
-              />
-            </Pressable>
-          ) : (
-            <Pressable onPress={() => handleDrawer()}>
-              <Image
-                resizeMode='contain'
-                style={{ width: 380, height: 150 }}
-                source={require('../../assets/images/drawer_closed.png')}
-              />
-            </Pressable>
-          )}
+          {reframingOptionsData.map((option, index) => (
+            <View key={index} style={styles.optionContainer}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  columnGap: 7,
+                }}
+              >
+                <Image
+                  style={{ width: 28, height: 28 }}
+                  source={require('../../assets/images/custom_icons/reframing_icon.png')}
+                />
+                <Text style={styles.h3Text}>{option[0]}</Text>
+              </View>
+              <Text style={styles.bodyText}>{option[1]}</Text>
+              <Pressable
+                style={styles.ctaButton}
+                onPress={() =>
+                  index == 0
+                    ? navigation.navigate('WorryBox')
+                    : setModalReframingVisible(!modalReframingVisible)
+                }
+              >
+                <Text style={styles.ctaButtonText}>
+                  {index == 0 ? 'Ga naar mijn zorgen' : 'Start met reframen'}
+                </Text>
+              </Pressable>
+            </View>
+          ))}
         </View>
-      </View>
-
-      {/* Add Button */}
-      <Pressable
-        style={styles.addButton}
-        onPress={() =>
-          setModalAddWorryListItemVisible(!modalAddWorryListItemVisible)
-        }
-      >
-        <Entypo name='plus' size={32} color='#5C6B57' />
-      </Pressable>
+      </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9F9F9',
+  },
+  contentContainerStyles: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F9F9F9',
+  },
   headersContainer: {
     width: windowWidth,
     paddingHorizontal: 30,
@@ -252,19 +233,44 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 20,
   } as TextStyle,
+  optionContainer: {
+    marginTop: 20,
+    borderRadius: 20,
+    width: '100%',
+    height: 180,
+    padding: 15,
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
   headersDescriptionText: {
     ...Fonts.poppinsRegular[Platform.OS],
     marginTop: 5,
   } as TextStyle,
-  addButton: {
-    position: 'absolute',
-    borderRadius: 20,
-    height: 60,
-    width: 60,
-    backgroundColor: '#E5F1E3',
+  h3Text: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 14,
+  } as TextStyle,
+  bodyText: {
+    ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 13,
+  } as TextStyle,
+  ctaButton: {
+    width: 160,
     alignItems: 'center',
-    justifyContent: 'center',
-    bottom: 100,
-    right: 30,
+    borderRadius: 10,
+    borderColor: 'black',
+    paddingVertical: 13,
+    backgroundColor: '#A9C1A1',
   },
+  ctaButtonText: {
+    ...Fonts.poppinsBold[Platform.OS],
+    color: 'white',
+    fontSize: 12,
+  } as TextStyle,
 });

@@ -533,14 +533,14 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 const styles = StyleSheet.create({
   modalWrapper: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   modalContainer: {
-    borderWidth: 2,
-    borderRadius: 30,
-    height: windowHeight <= 667 ? '90%' : '85%',
-    width: windowWidth - 2 * 10,
+    borderRadius: 15,
+    height: '90%',
+    width: windowWidth,
     backgroundColor: 'white',
     paddingHorizontal: 25,
     paddingVertical: 25,

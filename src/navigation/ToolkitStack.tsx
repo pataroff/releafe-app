@@ -4,6 +4,7 @@ import { Header } from '../components/Header';
 
 import { ToolkitScreen } from '../screens/ToolkitScreen';
 import { WorryBoxScreen } from '../screens/WorryBoxScreen';
+import { ReframingScreen } from '../screens/ReframingScreen';
 import { NotesToSelfStack } from './NotesToSelfStack';
 
 const Stack = createNativeStackNavigator();
@@ -27,6 +28,11 @@ export const ToolkitStack: React.FC = () => {
       <Stack.Screen
         name='WorryBox'
         component={WorryBoxScreen}
+        initialParams={{ toolkitStackScreen: true }}
+      />
+      <Stack.Screen
+        name='Reframing'
+        component={ReframingScreen}
         initialParams={{ toolkitStackScreen: true }}
       />
       <Stack.Screen

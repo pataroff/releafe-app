@@ -15,103 +15,45 @@ import {
 
 import { Fonts } from '../styles';
 
-import { ReframingModal } from '../components/ReframingModal';
-import { ReframingSuccessModal } from '../components/ReframingSucessModal';
-
 import { useNavigation } from '@react-navigation/native';
 
 const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get('window').width;
 
 const tools = [
-  ['Persoonlijke doelen', 'Stel persoonlijke doelen en volg jouw groeiproces.'],
+  [
+    'Persoonlijke doelen',
+    'Stel persoonlijke doelen op en volg jouw gehele groeiproces.',
+  ],
   [
     'Zorgenbakje',
-    'Schrijf je zorgen van je af en berg ze op in het Zorgenbakje.',
+    'Schrijf je zorgen van je af en berg ze tijdelijk op in het zorgenbakje.',
   ],
-  ['Reframen', 'Leer anders naar je negatieve gedachten kijken.'],
-  ['Notes-to-self', 'Leg berichten aan jezelf vast en bekijk ze later terug.'],
-  ['Ontspanning', 'Doe hier oefeningen die je helpen ontspannen.'],
+  [
+    'Reframing',
+    'Leer anders naar je negatieve gedachten te kijken door ze te reframen.',
+  ],
+  [
+    'Berichten aan jezelf',
+    'Noteer berichten voor jezelf en bekijk ze later wanneer je maar wilt.',
+  ],
+  [
+    'Ontspanning',
+    'Voer hier oefeningen uit die je helpen ontspannen of om in beweging te komen.',
+  ],
 ];
 
-const reframingSteps = [
-  {
-    title: 'Reframing: Situatieomschrijving',
-    description:
-      'De situatie is automatisch overgenomen vanuit je zorg. Je kan deze hier eventueel nog aanpassen. Het resultaat van deze methode is een Note-to-Self. Als je deze niet wilt koppelen aan je bestaande zorg, kan je dit uitschakelen.',
-    instruction: 'Laten we beginnen!',
-  },
-  {
-    title: 'Reframing: Gevoelsomschrijving',
-    description:
-      'Omschrijf hier hoe je je voelt door deze situatie, zodat we er mee aan de slag kunnen.',
-    placeholder: 'Ik voel me...',
-    instruction:
-      'Het opschrijven van je gevoelens helpt om je emoties te verhelderen en te begrijpen, wat kan leiden tot meer zelfinzicht en een betere emotionele verwerking.',
-  },
-  {
-    title: 'Reframing: Vraag 1',
-    description:
-      'Noteer feiten en observaties die jouw gedachte ondersteunen. Dit helpt om te zien of er objectief bewijs is dat jouw zorgen bevestigt.',
-    question: 'Welk bewijs heb ik dat deze gedachte echt waar is?',
-    placeholder: 'Welk bewijs heb ik dat deze gedachte echt waar is?',
-    instruction:
-      'Deze vraag helpt om objectieve feiten te verzamelen die je gedachte ondersteunen, waardoor je inzicht krijgt in de realiteit van je zorgen. Het voorkomt dat je uitsluitend op gevoelens en aannames baseert.',
-  },
-  {
-    title: 'Reframing: Vraag 2',
-    description:
-      'Denk aan tegenvoorbeelden en feiten die jouw gedachte weerleggen. Dit helpt om een evenwichtiger beeld te krijgen en je gedachten te relativeren.',
-    question: 'Welk bewijs heb ik dat deze gedachte niet waar is?',
-    placeholder: 'Welk bewijs heb ik dat deze gedachte niet waar is?',
-    instruction:
-      'Door tegenbewijs te overwegen, kun je irrationele gedachten uitdagen en relativeren. Het helpt je een evenwichtiger en realistischer beeld te vormen.',
-  },
-  {
-    title: 'Reframing: Vraag 3',
-    description:
-      'Bedenk welk advies of welke troostende woorden je een vriend zou geven in dezelfde situatie. Dit perspectief helpt om milder en realistischer naar je eigen gedachten te kijken.',
-    question:
-      'Wat zou ik tegen een vriend (in) zeggen die deze gedachte heeft?',
-    placeholder:
-      'Wat zou ik tegen een vriend (in) zeggen die deze gedachte heeft?',
-    instruction:
-      'Deze vraag stimuleert empathie en zelfcompassie. door je aan te moedigen jezelf dezelfde steun te geven als aan een vriend. Het kan leiden tot mildere en constructievere zelfreflectie.',
-  },
-  {
-    title: 'Reframing: Advies',
-  },
-  {
-    title: 'Reframing: Vraag 4',
-    description:
-      'Gebruik een schaal van 1 tot 5 om de waarschijnlijkheid van je negatieve gedachte in te schatten. Dit helpt om de reële kans op het scenario te evalueren en irrationele angsten te verminderen.',
-    question:
-      'Hoe groot denk je dat de kans nu is dat de omschreven, negatieve gedachte realiteit wordt?',
-    placeholder: 'Waarom?',
-    instruction:
-      'Door de waarschijnlijkheid van je zorgen te beoordelen, kun je irrationele angsten verminderen en een realistisch perspectief ontwikkelen. Het helpt om onnodige piekergedachten te relativeren.',
-  },
-  {
-    title: 'Reframing: Vraag 5',
-    description:
-      'Zoek naar andere verklaringen of interpretaties van de situatie die realistischer en minder negatiet zin. Dit helpt om je perspectief te verschuiven naar een meer evenwichtige en constructieve mindset.',
-    question:
-      'Wat is een alternatieve, realistische verklaring die ik bij deze situatie heb?',
-    placeholder:
-      'Wat is een alternatieve, realistische verklaring die ik bij deze situatie heb?',
-    instruction:
-      'Deze vraag moedigt je aan om bredere en positievere interpretaties van de situatie te overwegen. Het helpt om starre, negatieve denkpatronen te doorbreken en een evenwichtiger perspectief te krijgen.',
-  },
+const toolsIcons = [
+  require('../../assets/images/custom_icons/persoonlijke_doelen_icon.png'),
+  require('../../assets/images/custom_icons/zorgenbakje_icon.png'),
+  require('../../assets/images/custom_icons/reframing_icon.png'),
+  require('../../assets/images/custom_icons/berichten_aan_jezelf_icon.png'),
+  require('../../assets/images/custom_icons/oefeningen_icon.png'),
 ];
 
 // @TODO Correct the `route` type annotation!
 export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
-
-  const [modalReframingVisible, setModalReframingVisible] =
-    useState<boolean>(false);
-  const [modalReframingSuccessVisible, setModalReframingSuccessVisible] =
-    useState<boolean>(false);
-  const [reframingModalIndex, setReframingModalIndex] = useState<number>(0);
 
   useEffect(() => {
     navigation.setOptions({
@@ -128,7 +70,7 @@ export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
         navigation.navigate('WorryBox');
         break;
       case 2:
-        setModalReframingVisible(!modalReframingVisible);
+        navigation.navigate('Reframing');
         break;
       case 3:
         navigation.navigate('NotesToSelf');
@@ -143,34 +85,9 @@ export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
 
   return (
     <>
-      <ReframingModal
-        // @TODO: Correct `route` type annotation!
-        route={route}
-        reframingModalIndex={reframingModalIndex}
-        setReframingModalIndex={setReframingModalIndex}
-        reframingSteps={reframingSteps}
-        modalReframingVisible={modalReframingVisible}
-        setModalReframingVisible={setModalReframingVisible}
-        modalReframingSuccessVisible={modalReframingSuccessVisible}
-        setModalReframingSuccessVisible={setModalReframingSuccessVisible}
-      />
-
-      {/* Reframing Sucess Modal */}
-      <ReframingSuccessModal
-        // @TODO: Correct `route` type annotation!
-        route={route}
-        reframingModalIndex={reframingModalIndex}
-        setReframingModalIndex={setReframingModalIndex}
-        modalReframingSuccessVisible={modalReframingSuccessVisible}
-        setModalReframingSuccessVisible={setModalReframingSuccessVisible}
-        modalReframingVisible={modalReframingVisible}
-        setModalReframingVisible={setModalReframingVisible}
-      />
-
       <StatusBar />
       <ScrollView
         bounces={false}
-        showsVerticalScrollIndicator={false}
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
@@ -184,20 +101,37 @@ export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
           }}
           source={require('../../assets/images/circle_background.png')}
         />
-
+        {/* Headers */}
+        <View style={styles.headersContainer}>
+          <Text style={styles.headersTitleText}>Toolkit</Text>
+          <Text style={styles.headersDescriptionText}>
+            Kies met welke tool jij vandaag aan de slag wilt.
+          </Text>
+        </View>
         {/* Toolkit Tools Container */}
         <View style={styles.toolkitToolsContainer}>
           {tools.map((tool, index) => (
-            <View key={index} style={styles.toolkitToolComponent}>
-              <Text style={styles.h3Text}>{tool[0]}</Text>
-              <Text style={styles.bodyText}>{tool[1]}</Text>
-              <Pressable
-                style={styles.toolkitComponentButton}
-                onPress={() => handleToolSelect(index)}
+            <Pressable
+              key={index}
+              style={styles.toolkitToolComponent}
+              onPress={() => handleToolSelect(index)}
+            >
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  columnGap: 7,
+                }}
               >
-                <Text style={styles.toolkitComponentButtonText}>Lees meer</Text>
-              </Pressable>
-            </View>
+                <Image
+                  style={{ width: 28, height: 28 }}
+                  source={toolsIcons[index]}
+                />
+                <Text style={styles.h3Text}>{tool[0]}</Text>
+              </View>
+              <Text style={styles.bodyText}>{tool[1]}</Text>
+            </Pressable>
           ))}
         </View>
       </ScrollView>
@@ -216,31 +150,49 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#F9F9F9',
   },
+  headersContainer: {
+    width: windowWidth,
+    paddingHorizontal: 30,
+    marginTop: 25,
+  },
+  headersTitleText: {
+    ...Fonts.poppinsBold[Platform.OS],
+    fontSize: 22,
+  } as TextStyle,
+  headersDescriptionText: {
+    ...Fonts.poppinsRegular[Platform.OS],
+    marginTop: 5,
+  } as TextStyle,
   h3Text: {
     ...Fonts.poppinsSemiBold[Platform.OS],
-    fontSize: 13,
+    fontSize: 14,
   } as TextStyle,
   bodyText: {
-    fontSize: 13,
     ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 13,
   } as TextStyle,
   toolkitToolsContainer: {
+    width: windowWidth,
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    paddingHorizontal: windowHeight <= 667 ? 20 : 25,
+    paddingHorizontal: 25,
     marginBottom: 100,
   },
   toolkitToolComponent: {
     marginTop: 20,
     borderRadius: 20,
-    width: 160,
-    height: 180,
-    paddingVertical: 20,
-    paddingHorizontal: 15,
+    width: '100%',
+    height: 105,
+    padding: 15,
     justifyContent: 'space-between',
-    backgroundColor: '#E5F1E3',
+    backgroundColor: 'white',
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   toolkitComponentButton: {
     borderRadius: 5,

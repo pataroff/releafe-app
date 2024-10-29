@@ -60,7 +60,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                   <Pressable onPress={() => navigation.goBack()}>
                     <MaterialCommunityIcons
                       name='chevron-left-circle-outline'
-                      size={28}
+                      size={30}
                       color='white'
                     />
                   </Pressable>
@@ -70,8 +70,8 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
               ) : (
                 <Image
                   style={{
-                    height: 80,
-                    width: 80,
+                    height: 90,
+                    width: 90,
                   }}
                   resizeMode='contain'
                   source={require('../../assets/images/logo_releafe_white.png')}
@@ -87,7 +87,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                   borderColor: 'white',
                 }}
                 color='white'
-                size={56}
+                size={60}
                 label={user?.firstName[0] + user?.lastName[0]}
               />
             </Pressable>
@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
     borderTopWidth: 0,
     borderBottomStartRadius: 30,
     borderBottomEndRadius: 30,
@@ -120,8 +121,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   headerTitle: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
-    fontSize: 22,
+    ...Fonts.poppinsBold[Platform.OS],
+    fontSize: 24,
     color: 'white',
     textAlign: 'left',
   } as TextStyle,

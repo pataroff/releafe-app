@@ -268,6 +268,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
         }}
         date={getFormattedDate(selectedDate)}
       >
+        {/* https://github.com/wix/react-native-calendars/issues/1937 */}
         <ExpandableCalendar
           calendarWidth={windowWidth - 2 * 20}
           style={{ borderRadius: 30, overflow: 'hidden' }}
@@ -522,7 +523,12 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
           <Pressable
             style={styles.editButton}
             onPress={() =>
-              navigation.navigate('Diary2', { date: selectedDate })
+              navigation.navigate('Diary', {
+                screen: 'Diary2',
+                params: {
+                  date: selectedDate,
+                },
+              })
             }
           >
             <Text style={styles.editButtonText}>Pas gegevens aan</Text>
@@ -575,8 +581,11 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
           <Pressable
             style={styles.diaryButton}
             onPress={() =>
-              navigation.navigate('Diary2', {
-                date: selectedDate,
+              navigation.navigate('Diary', {
+                screen: 'Diary2',
+                params: {
+                  date: selectedDate,
+                },
               })
             }
           >

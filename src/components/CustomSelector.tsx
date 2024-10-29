@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 30,
     borderRadius: 5,
-    marginVertical: 20,
     marginHorizontal: 40,
     backgroundColor: '#f6f6f6',
   },

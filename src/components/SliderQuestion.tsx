@@ -80,12 +80,14 @@ export const SliderQuestion: React.FC<{
   };
 
   const handleSaveAndClose = () => {
+    setModalVisible(!modalVisible);
     setSliderQuestionIndex(0);
     setProgressValue(0);
     navigation.navigate('Diary1');
   };
 
   const handleDontSaveAndClose = () => {
+    setModalVisible(!modalVisible);
     setSliderQuestionIndex(0);
     setProgressValue(0);
     resetSliderValues();

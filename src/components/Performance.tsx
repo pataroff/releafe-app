@@ -55,26 +55,26 @@ export const Performance: React.FC = () => {
               selected === 0 ? (
                 <Image
                   resizeMode='contain'
-                  style={{ width: '100%', height: 350 }}
+                  style={{ width: '100%', height: 300 }}
                   source={require('../../assets/images/chart_week.png')}
                 />
               ) : selected === 1 ? (
                 <Image
                   resizeMode='contain'
-                  style={{ width: '100%', height: 350 }}
+                  style={{ width: '100%', height: 300 }}
                   source={require('../../assets/images/chart_maand.png')}
                 />
               ) : (
                 <Image
                   resizeMode='contain'
-                  style={{ width: '100%', height: 350 }}
+                  style={{ width: '100%', height: 300 }}
                   source={require('../../assets/images/chart_jaar.png')}
                 />
               )
             ) : (
               <Image
                 resizeMode='contain'
-                style={{ width: '100%', height: 350 }}
+                style={{ width: '100%', height: 300 }}
                 source={require('../../assets/images/chart_empty.png')}
               />
             )}
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginTop: 20,
     borderRadius: 30,
-    maxHeight: 400,
+    height: 360,
     // Shadow Test
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
