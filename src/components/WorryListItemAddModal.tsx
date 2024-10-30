@@ -98,197 +98,202 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
-          {/* Title + Close Button */}
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={styles.modalTitleText}>Zorg toevoegen</Text>
-            <Pressable
-              style={{ position: 'absolute', right: 0 }}
-              onPress={() => handleClose()}
+          <View style={styles.headersContainer}>
+            {/* Title + Close Button */}
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
             >
-              <Feather name='x-circle' size={24} color='black' />
-            </Pressable>
-          </View>
+              <Text style={styles.headersTitleText}>Nieuwe zorg toevoegen</Text>
+              <Pressable
+                style={{ position: 'absolute', right: 0 }}
+                onPress={() => handleClose()}
+              >
+                <Feather name='x-circle' size={24} color='gray' />
+              </Pressable>
+            </View>
 
-          {/* Instructions */}
-          <Text style={{ textAlign: 'center' }}>
-            [Uitleg over het invullen van zorgen]
-          </Text>
+            {/* Instructions */}
+            <Text style={[styles.headersDescriptionText, { fontSize: 14 }]}>
+              Omschrijf hier jouw zorg
+            </Text>
+          </View>
 
           {/* Main Content Wrapper */}
           <View
             style={{
-              display: 'flex',
-              flexDirection: 'column',
               flex: 1,
-              justifyContent: 'space-between',
             }}
           >
-            {/* Dropdown + Title + Description + Priority [1] */}
+            {/* Dropdown + Title */}
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginTop: 20,
+                marginHorizontal: 20,
+                borderRadius: 30,
+                padding: 20,
+                backgroundColor: 'white',
+              }}
+            >
+              <DropdownComponent
+                category={category}
+                setCategory={setCategory}
+              />
+              <TextInput
+                style={
+                  {
+                    ...Fonts.poppinsRegular[Platform.OS],
+                    backgroundColor: '#f6f7f8',
+                    borderRadius: 10,
+                    height: 40,
+                    width: '67%',
+                    paddingLeft: 10,
+                  } as TextStyle
+                }
+                placeholder='Voeg een titel toe...'
+                placeholderTextColor='#00000080'
+                value={title}
+                onChangeText={(value) => setTitle(value)}
+              />
+            </View>
+
+            {/* Description + Priority [1] */}
             <View
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                rowGap: 10,
                 marginTop: 20,
+                marginHorizontal: 20,
+                padding: 25,
+                backgroundColor: 'white',
+                borderRadius: 30,
+                rowGap: 10,
               }}
             >
-              {/* Dropdown + Title */}
+              <View>
+                <Text style={styles.headersHeadingText}>
+                  Situatieomschrijving
+                </Text>
+                <Text style={styles.headersDescriptionText}>
+                  Omschrijf hier wat de situatie is van jouw zorg.
+                </Text>
+              </View>
+
               <View
                 style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: '100%',
+                  position: 'relative',
                 }}
               >
-                <DropdownComponent
-                  category={category}
-                  setCategory={setCategory}
-                />
+                {/* Description */}
                 <TextInput
                   style={
                     {
-                      ...Fonts.poppinsItalic[Platform.OS],
-                      fontStyle: 'italic',
-                      borderWidth: 1,
-                      borderColor: '#dedede',
-                      borderRadius: 5,
-                      height: 30,
-                      width: '67%',
-                      paddingLeft: 5,
+                      ...Fonts.poppinsRegular[Platform.OS],
+                      padding: 10,
+                      borderRadius: 10,
+                      backgroundColor: '#f6f7f8',
+                      height: 180,
                     } as TextStyle
                   }
-                  placeholder='Titel'
-                  placeholderTextColor='#dedede'
-                  value={title}
-                  onChangeText={(value) => setTitle(value)}
+                  placeholder='Schrij hier je zorg op...'
+                  placeholderTextColor='#00000080'
+                  multiline
+                  value={description}
+                  onChangeText={(value) => setDescription(value)}
                 />
+
+                {/* Priority Button(s)*/}
+                {showPriorityButtons ? (
+                  <>
+                    {/* TODO: Is there a better way of doing this? */}
+                    <Pressable
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 0,
+                        borderRadius: 99,
+                        backgroundColor: '#dedede',
+                        padding: 5,
+                      }}
+                      onPress={() => handlePriority(Priority.None)}
+                    >
+                      <Feather name='flag' size={18} color='gray' />
+                    </Pressable>
+
+                    <Pressable
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 35,
+                        borderRadius: 99,
+                        backgroundColor: '#dedede',
+                        padding: 5,
+                      }}
+                      onPress={() => handlePriority(Priority.Low)}
+                    >
+                      <Feather name='flag' size={18} color='green' />
+                    </Pressable>
+
+                    <Pressable
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 70,
+                        borderRadius: 99,
+                        backgroundColor: '#dedede',
+                        padding: 5,
+                      }}
+                      onPress={() => handlePriority(Priority.Medium)}
+                    >
+                      <Feather name='flag' size={18} color='orange' />
+                    </Pressable>
+
+                    <Pressable
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 105,
+                        borderRadius: 99,
+                        backgroundColor: '#dedede',
+                        padding: 5,
+                      }}
+                      onPress={() => handlePriority(Priority.High)}
+                    >
+                      <Feather name='flag' size={18} color='red' />
+                    </Pressable>
+                  </>
+                ) : (
+                  <Pressable
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      bottom: 0,
+                      padding: 5,
+                    }}
+                    onPress={() => setShowPriorityButtons(!showPriorityButtons)}
+                  >
+                    <Feather
+                      name='flag'
+                      size={18}
+                      color={getPriorityColor(priority)}
+                    />
+                  </Pressable>
+                )}
               </View>
-              {/* Description */}
-              <TextInput
-                style={
-                  {
-                    ...Fonts.poppinsItalic[Platform.OS],
-                    fontStyle: 'italic',
-                    position: 'relative',
-                    padding: 10,
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    borderColor: '#dedede',
-                    height: 200,
-                  } as TextStyle
-                }
-                placeholder='Omschrijving'
-                placeholderTextColor='#dedede'
-                multiline
-                value={description}
-                onChangeText={(value) => setDescription(value)}
-              />
-
-              {/* Priority Button(s)*/}
-              {showPriorityButtons ? (
-                <>
-                  {/* TODO: Is there a better way of doing this? */}
-                  <Pressable
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      bottom: -35,
-                      borderRadius: 99,
-                      backgroundColor: '#dedede',
-                      padding: 5,
-                    }}
-                    onPress={() => handlePriority(Priority.None)}
-                  >
-                    <Feather name='flag' size={20} color='gray' />
-                  </Pressable>
-
-                  <Pressable
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      bottom: 5,
-                      borderRadius: 99,
-                      backgroundColor: '#dedede',
-                      padding: 5,
-                    }}
-                    onPress={() => handlePriority(Priority.Low)}
-                  >
-                    <Feather name='flag' size={20} color='green' />
-                  </Pressable>
-
-                  <Pressable
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      bottom: 45,
-                      borderRadius: 99,
-                      backgroundColor: '#dedede',
-                      padding: 5,
-                    }}
-                    onPress={() => handlePriority(Priority.Medium)}
-                  >
-                    <Feather name='flag' size={20} color='orange' />
-                  </Pressable>
-
-                  <Pressable
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      bottom: 85,
-                      borderRadius: 99,
-                      backgroundColor: '#dedede',
-                      padding: 5,
-                    }}
-                    onPress={() => handlePriority(Priority.High)}
-                  >
-                    <Feather name='flag' size={20} color='red' />
-                  </Pressable>
-                </>
-              ) : (
-                <Pressable
-                  style={{
-                    position: 'absolute',
-                    right: 0,
-                    bottom: -35,
-                    padding: 5,
-                  }}
-                  onPress={() => setShowPriorityButtons(!showPriorityButtons)}
-                >
-                  <Feather
-                    name='flag'
-                    size={20}
-                    color={getPriorityColor(priority)}
-                  />
-                </Pressable>
-              )}
-            </View>
-
-            {/* Store Button [2] */}
-            <View
-              style={{
-                alignSelf: 'center',
-                width: 200,
-                height: 40,
-              }}
-            >
-              <Pressable onPress={() => handleStore()}>
-                <Image
-                  resizeMode='contain'
-                  style={{
-                    width: '100%',
-                    height: 45,
-                  }}
-                  source={require('../../assets/images/opbergen_in_zorgenbakje_button.png')}
-                />
+              <Pressable
+                style={styles.storeButton}
+                onPress={() => handleStore()}
+              >
+                <Text style={styles.storeButtonText}>
+                  Zorg opslaan in zorgenbakje
+                </Text>
               </Pressable>
             </View>
           </View>
@@ -301,23 +306,56 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
 const styles = StyleSheet.create({
   modalWrapper: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   modalContainer: {
-    borderWidth: 2,
-    borderRadius: 30,
-    height: windowHeight <= 667 ? '65%' : '50%',
-    width: windowWidth - 2 * 10,
-    backgroundColor: 'white',
-    paddingHorizontal: 25,
-    paddingVertical: 25,
+    borderRadius: 15,
+    height: '90%',
+    width: windowWidth,
+    backgroundColor: '#E5F1E3',
     display: 'flex',
     flexDirection: 'column',
   },
-  modalTitleText: {
-    textAlign: 'center',
+  headersContainer: {
+    width: '100%',
+    padding: 25,
+    borderRadius: 15,
+    backgroundColor: 'white',
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  headersTitleText: {
+    ...Fonts.poppinsBold[Platform.OS],
+    fontSize: 20,
+  } as TextStyle,
+  headersHeadingText: {
     ...Fonts.poppinsSemiBold[Platform.OS],
-    fontSize: 18,
+    fontSize: 16,
+  } as TextStyle,
+  headersDescriptionText: {
+    ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 13,
+    marginTop: 5,
+  } as TextStyle,
+  storeButton: {
+    width: 200,
+    alignItems: 'center',
+    borderRadius: 10,
+    borderColor: 'black',
+    paddingVertical: 13,
+    marginTop: 10,
+    backgroundColor: '#A9C1A1',
+    alignSelf: 'center',
+  },
+  storeButtonText: {
+    ...Fonts.poppinsBold[Platform.OS],
+    color: 'white',
+    fontSize: 12,
   } as TextStyle,
 });

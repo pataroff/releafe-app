@@ -116,8 +116,6 @@ export const HomeScreen: React.FC = ({ route }) => {
   const [author, setAuthor] = useState<string>('');
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const [progressBarValue1, setProgressValue1] = useState(0.48);
-  const [progressBarValue2, setProgressValue2] = useState(0.75);
 
   const goalData = useMemo(
     () => goalsData[selectedIndex] || [],
@@ -172,22 +170,11 @@ export const HomeScreen: React.FC = ({ route }) => {
           <Text style={styles.greetingHeadingText}>
             Hallo, {user?.firstName}!
           </Text>
-          <Text style={styles.greetingBodyText}>Welkom terug</Text>
-        </View>
-
-        {/* Well-being Overview Container */}
-        <View style={styles.wellbeingOverviewContainer}>
-          <Text style={styles.wellbeingOverviewHeadingText}>
-            Jouw welzijnsoverzicht deze week
-          </Text>
-
-          {/* Date Container */}
-          <View>
-            <Text style={styles.wellbeingOverviewDateHeadingText}>
-              Het is vandaag
-            </Text>
-
-            <Text style={styles.wellbeingOverviewDateBodyText}>
+          <Text style={styles.greetingBodyText}>Welkom terug,</Text>
+          <Text style={styles.dateHeadingText}>
+            Het is vandaag
+            <Text style={styles.dateBodyText}>
+              {' '}
               {new Date().toLocaleString('nl-NL', {
                 weekday: 'long',
                 day: 'numeric',
@@ -195,58 +182,12 @@ export const HomeScreen: React.FC = ({ route }) => {
                 year: 'numeric',
               })}
             </Text>
-          </View>
-
-          {/* Statistics Overview Container  */}
-          <View style={styles.statisticsOverviewContainer}>
-            {/* Mood Overview Container */}
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                columnGap: 10,
-              }}
-            >
-              {/* TODO: Make the icon change dynamically based on user data! */}
-              <FontAwesome6 name='smile' size={17} color='black' />
-              <Text style={styles.statisticsOverviewText}>
-                Deze week voel jij je{' '}
-                <Text
-                  style={{ ...Fonts.poppinsSemiBold[Platform.OS] } as TextStyle}
-                >
-                  goed
-                </Text>
-              </Text>
-            </View>
-
-            {/* Activities Overview Container */}
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                columnGap: 14.7,
-              }}
-            >
-              <FontAwesome6 name='person-walking' size={19} color='black' />
-              <Text>
-                Deze week heb jij{' '}
-                <Text
-                  style={{ ...Fonts.poppinsSemiBold[Platform.OS] } as TextStyle}
-                >
-                  zes
-                </Text>{' '}
-                activiteiten uitgevoerd
-              </Text>
-            </View>
-          </View>
+          </Text>
         </View>
 
         {/* Quote of the Day Container */}
         <View style={styles.quoteContainer}>
           <Text style={styles.quoteHeadingText}>Quote van de dag</Text>
-
           <View
             style={{
               rowGap: 10,
@@ -258,7 +199,8 @@ export const HomeScreen: React.FC = ({ route }) => {
         </View>
 
         {/* Nudging Container */}
-
+        {/* TODO: Does this need a wrapper? */}
+        <Text style={styles.nudgingTitleText}>Geadviseerde stappen</Text>
         <ScrollView
           horizontal={true}
           decelerationRate={'fast'}
@@ -548,7 +490,7 @@ const styles = StyleSheet.create({
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    // justifyContent: 'space-around',
+    justifyContent: 'space-around',
     backgroundColor: '#f9f9f9',
   },
   greetingContainer: {
@@ -575,17 +517,13 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     backgroundColor: 'white',
   },
-  wellbeingOverviewHeadingText: {
+  dateHeadingText: {
     ...Fonts.poppinsRegular[Platform.OS],
-    fontSize: 16,
+    fontSize: 15,
   } as TextStyle,
-  wellbeingOverviewDateHeadingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
-    fontSize: 13,
-  } as TextStyle,
-  wellbeingOverviewDateBodyText: {
+  dateBodyText: {
     ...Fonts.poppinsSemiBold[Platform.OS],
-    fontSize: 18,
+    fontSize: 15,
   } as TextStyle,
   statisticsOverviewContainer: {
     rowGap: 10,
@@ -626,6 +564,13 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 20,
   },
+  nudgingTitleText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 18,
+    marginTop: 20,
+    alignSelf: 'flex-start',
+    marginLeft: 30,
+  } as TextStyle,
   nudgingHeadingText: {
     ...Fonts.poppinsSemiBold[Platform.OS],
     fontSize: 16,

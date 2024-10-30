@@ -187,11 +187,25 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
           loslaten van zorgen is het visueel en symbolisch opbergen van deze
           zorgen.
         </Text>
-        <Text style={styles.headersHeadingText}>Mijn zorgen</Text>
-        <Text style={styles.headersDescriptionText}>
-          Druk op de lade hieronder om je opgeborgen zorgen te kunnen bekijken,
-          of voeg een nieuwe zorg toe.
-        </Text>
+        {/* Headers Inner Container */}
+        <View style={styles.headersInnerContainer}>
+          <View style={{ width: '80%' }}>
+            <Text style={styles.headersHeadingText}>Mijn zorgen</Text>
+            <Text style={styles.headersDescriptionText}>
+              Druk op de lade hieronder om je opgeborgen zorgen te kunnen
+              bekijken, of voeg een nieuwe zorg toe.
+            </Text>
+          </View>
+          {/* Add Button */}
+          <Pressable
+            style={styles.addButton}
+            onPress={() =>
+              setModalAddWorryListItemVisible(!modalAddWorryListItemVisible)
+            }
+          >
+            <Entypo name='plus' size={32} color='#5C6B57' />
+          </Pressable>
+        </View>
 
         {/* Drawer */}
         <View
@@ -222,16 +236,6 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
           )}
         </View>
       </View>
-
-      {/* Add Button */}
-      <Pressable
-        style={styles.addButton}
-        onPress={() =>
-          setModalAddWorryListItemVisible(!modalAddWorryListItemVisible)
-        }
-      >
-        <Entypo name='plus' size={32} color='#5C6B57' />
-      </Pressable>
     </>
   );
 };
@@ -242,6 +246,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     marginTop: 25,
   },
+  headersInnerContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
   headersTitleText: {
     ...Fonts.poppinsBold[Platform.OS],
     fontSize: 22,
@@ -250,21 +261,17 @@ const styles = StyleSheet.create({
   headersHeadingText: {
     ...Fonts.poppinsSemiBold[Platform.OS],
     fontSize: 18,
-    marginTop: 20,
   } as TextStyle,
   headersDescriptionText: {
     ...Fonts.poppinsRegular[Platform.OS],
     marginTop: 5,
   } as TextStyle,
   addButton: {
-    position: 'absolute',
-    borderRadius: 20,
-    height: 60,
-    width: 60,
+    borderRadius: 15,
+    height: 50,
+    width: 50,
     backgroundColor: '#E5F1E3',
     alignItems: 'center',
     justifyContent: 'center',
-    bottom: 100,
-    right: 30,
   },
 });
