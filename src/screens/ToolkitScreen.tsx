@@ -17,7 +17,6 @@ import { Fonts } from '../styles';
 
 import { useNavigation } from '@react-navigation/native';
 
-const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
 const tools = [
@@ -64,7 +63,7 @@ export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
   const handleToolSelect = (index: number) => {
     switch (index) {
       case 0:
-        console.log('Persoonlijke doelen button pressed!');
+        navigation.navigate('PersonalGoals');
         break;
       case 1:
         navigation.navigate('WorryBox');

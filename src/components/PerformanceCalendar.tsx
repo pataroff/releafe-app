@@ -16,11 +16,8 @@ import { Divider } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { IDiaryEntry } from '../types';
 
-import {
-  CalendarProvider,
-  ExpandableCalendar,
-  LocaleConfig,
-} from 'react-native-calendars';
+import '../utils/localeConfig';
+import { CalendarProvider, ExpandableCalendar } from 'react-native-calendars';
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
@@ -28,50 +25,6 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import Slider from '@react-native-community/slider';
 import { DiaryContext } from '../context/DiaryContext';
-
-LocaleConfig.locales['nl'] = {
-  monthNames: [
-    'Januari',
-    'Februari',
-    'Maart',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Augustus',
-    'September',
-    'Oktober',
-    'November',
-    'December',
-  ],
-  monthNamesShort: [
-    'Jan',
-    'Feb',
-    'Mrt',
-    'Apr',
-    'Mei',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Okt',
-    'Nov',
-    'Dec',
-  ],
-  dayNames: [
-    'Zondag',
-    'Maandag',
-    'Dinsdag',
-    'Woensdag',
-    'Donderdag',
-    'Vrijdag',
-    'Zaterdag',
-  ],
-  dayNamesShort: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
-  today: 'Vandaag',
-};
-
-LocaleConfig.defaultLocale = 'nl';
 
 const windowWidth = Dimensions.get('window').width;
 

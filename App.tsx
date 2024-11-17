@@ -8,6 +8,7 @@ import { DiaryProvider } from './src/context/DiaryContext';
 import { AuthProvider } from './src/context/AuthContext';
 import { WorryProvider } from './src/context/WorryContext';
 import { NoteProvider } from './src/context/NoteContext';
+import { GoalProvider } from './src/context/GoalContext';
 
 import AppNav from './src/navigation/AppNav';
 
@@ -35,7 +36,9 @@ export default function App() {
           <DiaryProvider>
             <WorryProvider>
               <NoteProvider>
-                <AppNav />
+                <GoalProvider>
+                  <AppNav />
+                </GoalProvider>
               </NoteProvider>
             </WorryProvider>
           </DiaryProvider>

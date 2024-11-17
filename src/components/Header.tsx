@@ -57,7 +57,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
             >
               {route?.params?.toolkitStackScreen &&
                 route?.name !== 'Toolkit1' && (
-                  <Pressable onPress={() => navigation.goBack()}>
+                  <Pressable onPress={() => navigation.navigate('Toolkit1')}>
                     <MaterialCommunityIcons
                       name='chevron-left-circle-outline'
                       size={30}

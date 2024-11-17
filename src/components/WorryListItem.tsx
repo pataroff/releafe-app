@@ -112,7 +112,7 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
             ? [
                 styles.worryListItemContainer,
                 {
-                  height: 220, // TODO: Is this gonna be a hard-coded value?
+                  height: 250, // TODO: Is this gonna be a hard-coded value?
                 },
               ]
             : styles.worryListItemContainer
@@ -122,12 +122,12 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
         <View
           style={{
             position: 'absolute',
-            borderTopLeftRadius: 25,
-            borderBottomLeftRadius: 25,
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
             borderTopRightRadius: 0,
             borderBottomRightRadius: 0,
             backgroundColor: getPriority(priority),
-            width: 12.5,
+            width: 65,
             height: '100%',
           }}
         ></View>
@@ -136,40 +136,55 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
         <View
           style={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             justifyContent: 'space-between',
-            paddingVertical: 15,
+            alignItems: 'center',
+            width: '100%',
             height: '100%',
           }}
         >
-          {/* Category + Title + Icon [1] */}
+          {/* Category + Title + Reframe Icon */}
           <View
             style={{
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'space-between',
+              alignItems: 'center',
+              columnGap: 10,
+              height: '100%',
               width: '100%',
             }}
           >
-            {/* Category + Title */}
+            {/* Category Container */}
             <View
               style={{
                 display: 'flex',
-                flexDirection: 'row',
+                justifyContent:
+                  expandedItems[uuid] == true ? 'flex-start' : 'center',
                 alignItems: 'center',
-                columnGap: 10,
+                backgroundColor: '#EDF8E9',
+                height: '100%',
+                width: 65,
+                borderRadius: 10,
+                paddingTop: expandedItems[uuid] == true ? 18 : 0,
               }}
             >
-              <View />
-              {/* Category */}
               {getCategory(category)}
-              {/* Title + Date Container */}
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
+            </View>
+            {/* Title + Date + Description + Reframe + Details Container */}
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent:
+                  expandedItems[uuid] == true ? 'space-between' : 'center',
+                height: '100%',
+                width: expandedItems[uuid] == true ? '73%' : '60%',
+                paddingVertical: 10,
+              }}
+            >
+              {/* Title + Date */}
+              <View>
                 {/* Title */}
                 <Text style={styles.worryListItemText}>{title}</Text>
                 {/* Date */}
@@ -192,121 +207,132 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
                   </Text>
                 )}
               </View>
+              {expandedItems[uuid] == true && (
+                <>
+                  {/* Description [2] */}
+                  <Text
+                    style={
+                      {
+                        fontSize: 12,
+                        ...Fonts.poppinsRegular[Platform.OS],
+                      } as TextStyle
+                    }
+                  >
+                    {description}
+                  </Text>
+
+                  {/* Reframe + Details [3]  */}
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {/* Reframe Button */}
+                    <Pressable
+                      style={{ width: 160 }}
+                      onPress={() => handleReframing()}
+                    >
+                      {reframed ? (
+                        <Image
+                          resizeMode='contain'
+                          style={{ width: '100%', height: 30 }}
+                          source={require('../../assets/images/reframe_again_button.png')}
+                        />
+                      ) : (
+                        <Image
+                          resizeMode='contain'
+                          style={{ width: '100%', height: 30 }}
+                          source={require('../../assets/images/reframe_now_button.png')}
+                        />
+                      )}
+                    </Pressable>
+
+                    {/* Details Button */}
+                    {showOptionButtons ? (
+                      <>
+                        <Pressable
+                          style={{ position: 'absolute', right: 0 }}
+                          onPress={() =>
+                            setShowOptionButtons(!showOptionButtons)
+                          }
+                        >
+                          <FontAwesome
+                            name='caret-down'
+                            size={24}
+                            color='#A5B79F'
+                          />
+                        </Pressable>
+
+                        <Pressable
+                          style={[styles.optionButton, { bottom: 120 }]}
+                          onPress={() => handleEdit()}
+                        >
+                          <Feather name='edit' size={20} color='white' />
+                          <Text style={styles.optionButtonText}>Bewerken</Text>
+                        </Pressable>
+
+                        <Pressable
+                          style={[styles.optionButton, { bottom: 75 }]}
+                          onPress={() => console.log('Option 2 pressed!')}
+                        >
+                          <Feather name='archive' size={20} color='white' />
+                          <Text style={styles.optionButtonText}>
+                            Archiveren
+                          </Text>
+                        </Pressable>
+
+                        <Pressable
+                          style={[styles.optionButton, { bottom: 30 }]}
+                          onPress={() => handleDelete()}
+                        >
+                          <FontAwesome6
+                            name='trash-alt'
+                            size={22}
+                            color='white'
+                          />
+                          <Text style={styles.optionButtonText}>
+                            Verwijderen
+                          </Text>
+                        </Pressable>
+                      </>
+                    ) : (
+                      <Pressable
+                        style={{ position: 'absolute', right: 0 }}
+                        onPress={() => setShowOptionButtons(!showOptionButtons)}
+                      >
+                        <FontAwesome6
+                          name='ellipsis-vertical'
+                          size={24}
+                          color='gray'
+                        />
+                      </Pressable>
+                    )}
+                  </View>
+                </>
+              )}
             </View>
 
             {/* Reframe Icon */}
-            <View style={{ width: 30 }}>
-              {reframed ? (
-                <Image
-                  resizeMode='contain'
-                  style={{ width: '100%', height: 30 }}
-                  source={require('../../assets/images/reframe_reframed_icon.png')}
-                />
-              ) : (
-                <Image
-                  resizeMode='contain'
-                  style={{ width: '100%', height: 30 }}
-                  source={require('../../assets/images/reframe_not_reframed_icon.png')}
-                />
-              )}
-            </View>
-          </View>
-
-          {/* Description [2] */}
-          <View>
-            {expandedItems[uuid] == true && (
-              <Text
-                style={
-                  {
-                    fontSize: 12,
-                    ...Fonts.poppinsRegular[Platform.OS],
-                  } as TextStyle
-                }
-              >
-                {description}
-              </Text>
-            )}
-          </View>
-
-          {/* Reframe + Details [3]  */}
-          {expandedItems[item.uuid] == true && (
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                width: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              {/* Reframe Button */}
-              <Pressable
-                style={{ width: 160 }}
-                onPress={() => handleReframing()}
-              >
+            {expandedItems[uuid] !== true && (
+              <View style={{ width: 30 }}>
                 {reframed ? (
                   <Image
                     resizeMode='contain'
                     style={{ width: '100%', height: 30 }}
-                    source={require('../../assets/images/reframe_again_button.png')}
+                    source={require('../../assets/images/reframe_reframed_icon.png')}
                   />
                 ) : (
                   <Image
                     resizeMode='contain'
                     style={{ width: '100%', height: 30 }}
-                    source={require('../../assets/images/reframe_now_button.png')}
+                    source={require('../../assets/images/reframe_not_reframed_icon.png')}
                   />
                 )}
-              </Pressable>
-
-              {/* Details Button */}
-              {showOptionButtons ? (
-                <>
-                  <Pressable
-                    style={{ position: 'absolute', right: 0 }}
-                    onPress={() => setShowOptionButtons(!showOptionButtons)}
-                  >
-                    <FontAwesome name='caret-down' size={24} color='#A5B79F' />
-                  </Pressable>
-
-                  <Pressable
-                    style={[styles.optionButton, { bottom: 120 }]}
-                    onPress={() => handleEdit()}
-                  >
-                    <Feather name='edit' size={20} color='white' />
-                    <Text style={styles.optionButtonText}>Bewerken</Text>
-                  </Pressable>
-
-                  <Pressable
-                    style={[styles.optionButton, { bottom: 75 }]}
-                    onPress={() => console.log('Option 2 pressed!')}
-                  >
-                    <Feather name='archive' size={20} color='white' />
-                    <Text style={styles.optionButtonText}>Archiveren</Text>
-                  </Pressable>
-
-                  <Pressable
-                    style={[styles.optionButton, { bottom: 30 }]}
-                    onPress={() => handleDelete()}
-                  >
-                    <FontAwesome6 name='trash-alt' size={22} color='white' />
-                    <Text style={styles.optionButtonText}>Verwijderen</Text>
-                  </Pressable>
-                </>
-              ) : (
-                <Pressable
-                  style={{ position: 'absolute', right: 0 }}
-                  onPress={() => setShowOptionButtons(!showOptionButtons)}
-                >
-                  <FontAwesome6
-                    name='ellipsis-vertical'
-                    size={24}
-                    color='gray'
-                  />
-                </Pressable>
-              )}
-            </View>
-          )}
+              </View>
+            )}
+          </View>
         </View>
       </View>
     </Pressable>
@@ -319,15 +345,21 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#dedede',
     borderRadius: 20,
+    backgroundColor: 'white',
     height: 60,
     width: '100%',
-    paddingHorizontal: 20,
+    paddingLeft: 12,
+    paddingRight: 15,
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 2,
   },
   worryListItemText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.poppinsSemiBold[Platform.OS],
   } as TextStyle,
   optionButton: {
     position: 'absolute',

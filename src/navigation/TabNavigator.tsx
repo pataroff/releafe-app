@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { View, Image } from 'react-native';
 
-import { IWorryListItem, INoteEntry } from '../types';
+import { IWorryListItem, INoteEntry, IGoalEntry } from '../types';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -15,6 +15,7 @@ import { DashboardScreen } from '../screens/DashboardScreen';
 import { AuthContext } from '../context/AuthContext';
 import { WorryContext } from '../context/WorryContext';
 import { NoteContext } from '../context/NoteContext';
+import { GoalContext } from '../context/GoalContext';
 
 import pb from '../lib/pocketbase';
 
@@ -24,6 +25,7 @@ export const TabNavigator = () => {
   const { user } = useContext(AuthContext);
   const { worryEntries, setWorryEntries } = useContext(WorryContext);
   const { setNoteEntries } = useContext(NoteContext);
+  const { setGoalEntries } = useContext(GoalContext);
 
   // TODO: Is this the right place to fetch the data?
   useEffect(() => {
@@ -123,8 +125,53 @@ export const TabNavigator = () => {
       }
     };
 
+    const fetchGoalEntries = async () => {
+      if (user) {
+        try {
+          const goalEntriesList = await pb
+            .collection('goal_entries')
+            .getList(1, 50, {
+              filter: `user.id='${user.id}'`,
+              sort: '-created',
+              expand: 'user',
+            });
+
+          const modifiedGoalEntriesList: IGoalEntry[] =
+            goalEntriesList.items.map((item) => {
+              const {
+                id,
+                uuid,
+                category,
+                title,
+                description,
+                timeframe,
+                targetFrequency,
+                startDate,
+                endDate,
+              } = item;
+              return {
+                id,
+                uuid,
+                category,
+                title,
+                description,
+                timeframe,
+                targetFrequency,
+                startDate,
+                endDate,
+              };
+            });
+
+          setGoalEntries(modifiedGoalEntriesList);
+        } catch (error) {
+          console.error('Error fetching goal entries:', error);
+        }
+      }
+    };
+
     fetchWorryEntries();
     fetchNoteEntries();
+    fetchGoalEntries();
   }, [user]);
 
   const CustomTabIcon = () => {
@@ -213,7 +260,7 @@ export const TabNavigator = () => {
       />
 
       {/* Custom Tab Bar Icon */}
-      <Tab.Screen
+      {/* <Tab.Screen
         name='AI'
         component={AIScreen}
         options={{
@@ -221,7 +268,7 @@ export const TabNavigator = () => {
             return <CustomTabIcon />;
           },
         }}
-      />
+      /> */}
 
       <Tab.Screen
         name='WellbeingOverview'

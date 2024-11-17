@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, ScrollView } from 'react-native';
@@ -10,10 +10,6 @@ import { WorryDrawer } from '../components/WorryDrawer';
 // @TODO Correct the `route` type annotation!
 export const WorryBoxScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
-
-  useEffect(() => {
-    navigation.setOptions({ headerTitle: 'Zorgenbakje' });
-  }, [navigation]);
 
   return (
     <>

@@ -61,14 +61,27 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
+              position: 'relative',
             }}
           >
-            <Text style={styles.modalTitleText}>Mijn zorgen</Text>
+            {/* Modal Headers Wrapper */}
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                rowGap: 5,
+              }}
+            >
+              <Text style={styles.modalTitleText}>Mijn zorgen</Text>
+              <Text style={styles.modalDescriptionText}>
+                Klik op een zorg om deze volledig te bekijken
+              </Text>
+            </View>
             <Pressable
-              style={{ position: 'absolute', right: 0 }}
+              style={{ position: 'absolute', top: 0, right: 0 }}
               onPress={() => handleDrawer()}
             >
-              <Feather name='x-circle' size={24} color='black' />
+              <Feather name='x-circle' size={24} color='gray' />
             </Pressable>
           </View>
           {/* Worry List */}
@@ -107,21 +120,6 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
               </>
             )}
           </ScrollView>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Pressable style={styles.backButton} onPress={() => handleDrawer()}>
-              <Text style={styles.backButtonText}>Terug</Text>
-            </Pressable>
-            <Pressable onPress={() => console.log('Sliders button pressed!')}>
-              <FontAwesome6 name='sliders' size={24} color='black' />
-            </Pressable>
-          </View>
         </View>
       </View>
     </Modal>
@@ -133,13 +131,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   modalContainer: {
-    borderWidth: 2,
     borderRadius: 30,
     height: windowHeight - 2 * 100,
     width: windowWidth - 2 * 10,
-    backgroundColor: 'white',
+    backgroundColor: '#f6f7f8',
     paddingHorizontal: 25,
     paddingVertical: 25,
     display: 'flex',
@@ -151,28 +149,20 @@ const styles = StyleSheet.create({
     ...Fonts.poppinsSemiBold[Platform.OS],
     fontSize: 18,
   } as TextStyle,
-  backButton: {
-    borderRadius: 30,
-    alignItems: 'center',
-    width: 100,
-    paddingVertical: 6,
-    backgroundColor: '#dedede',
-  },
-  backButtonText: {
-    ...Fonts.poppinsItalic[Platform.OS],
-    fontStyle: 'italic',
+  modalDescriptionText: {
+    textAlign: 'center',
+    ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 13,
   } as TextStyle,
   worryListContainer: {
     marginVertical: 20,
     flex: 1,
-    backgroundColor: '#ffffff',
   },
   worryListContentContainer: {
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#ffffff',
-    rowGap: 5,
+    rowGap: 10,
   },
   noDataContainer: {
     flex: 1,

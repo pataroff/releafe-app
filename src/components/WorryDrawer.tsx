@@ -17,7 +17,6 @@ import Entypo from '@expo/vector-icons/Entypo';
 
 import { WorryListModal } from './WorryListModal';
 import { WorryListItemAddModal } from './WorryListItemAddModal';
-import { WorryListItemAddedModal } from './WorryListItemAddedModal';
 import { ReframingModal } from './ReframingModal';
 import { ReframingSuccessModal } from './ReframingSucessModal';
 
@@ -102,8 +101,6 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
     useState<boolean>(false);
   const [modalAddWorryListItemVisible, setModalAddWorryListItemVisible] =
     useState<boolean>(false);
-  const [modalAddedWorryListItemVisible, setModalAddedWorryListItemVisible] =
-    useState<boolean>(false);
   const [modalReframingVisible, setModalReframingVisible] =
     useState<boolean>(false);
   const [modalReframingSuccessVisible, setModalReframingSuccessVisible] =
@@ -141,14 +138,8 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
       <WorryListItemAddModal
         modalAddWorryListItemVisible={modalAddWorryListItemVisible}
         setModalAddWorryListItemVisible={setModalAddWorryListItemVisible}
-        modalAddedWorryListItemVisible={modalAddedWorryListItemVisible}
-        setModalAddedWorryListItemVisible={setModalAddedWorryListItemVisible}
-      />
-
-      {/* Added Worry List Item Modal */}
-      <WorryListItemAddedModal
-        modalAddedWorryListItemVisible={modalAddedWorryListItemVisible}
-        setModalAddedWorryListItemVisible={setModalAddedWorryListItemVisible}
+        modalReframingVisible={modalReframingVisible}
+        setModalReframingVisible={setModalReframingVisible}
       />
 
       {/* Reframing Modal */}

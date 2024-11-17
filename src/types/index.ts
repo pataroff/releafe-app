@@ -4,6 +4,7 @@ import {
 } from '@react-navigation/native-stack';
 
 import { AuthModel } from 'pocketbase';
+import { SetStateAction } from 'react';
 
 export interface IDiaryEntry {
   id: string;
@@ -81,10 +82,55 @@ export enum Priority {
 }
 
 export enum GoalCategory {
+  Releafe = 'RELEAFE',
   Bewegen = 'BEWEGEN',
-  Ontspanning = 'ONTSPANNING',
-  Voeding = 'VOEDING',
   Slapen = 'SLAPEN',
+  Voeding = 'VOEDING',
+  AlcoholDrugsCafeine = 'ALCOHOL_DRUGS_CAFEINE',
+  Ontspanning = 'ONTSPANNING',
+  ErvaringenDelen = 'ERVARINGEN_DELEN',
+  Ondernemen = 'ONDERNEMEN',
+}
+
+export enum Timeframe {
+  Daily = 'DAILY',
+  Weekly = 'WEEKLY',
+  Monthly = 'MONTHLY',
+}
+
+export interface IGoalEntry {
+  id: string;
+  uuid: string;
+  category: GoalCategory;
+  title: string;
+  description: string;
+  timeframe: Timeframe;
+  targetFrequency: number;
+  startDate?: Date | null;
+  endDate?: Date | null;
+}
+
+export interface IGoalContext {
+  goalEntries: IGoalEntry[];
+  uuid: string;
+  category: GoalCategory;
+  title: string;
+  description: string;
+  timeframe: Timeframe;
+  targetFrequency: number;
+  startDate: Date | null;
+  endDate: Date | null;
+  setGoalEntries: React.Dispatch<React.SetStateAction<IGoalEntry[]>>;
+  setUuid: React.Dispatch<React.SetStateAction<string>>;
+  setCategory: React.Dispatch<React.SetStateAction<GoalCategory>>;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  setDescription: React.Dispatch<React.SetStateAction<string>>;
+  setTimeframe: React.Dispatch<React.SetStateAction<Timeframe>>;
+  setTargetFrequency: React.Dispatch<React.SetStateAction<number>>;
+  setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  createGoalEntry: () => void;
+  resetGoalEntryFields: () => void;
 }
 
 export interface IIcon {
