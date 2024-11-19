@@ -4,7 +4,6 @@ import {
 } from '@react-navigation/native-stack';
 
 import { AuthModel } from 'pocketbase';
-import { SetStateAction } from 'react';
 
 export interface IDiaryEntry {
   id: string;
@@ -104,10 +103,13 @@ export interface IGoalEntry {
   category: GoalCategory;
   title: string;
   description: string;
+  sentence: string;
   timeframe: Timeframe;
   targetFrequency: number;
   startDate?: Date | null;
   endDate?: Date | null;
+  completedTimeframe: number;
+  completedPeriod: number;
 }
 
 export interface IGoalContext {
@@ -116,20 +118,27 @@ export interface IGoalContext {
   category: GoalCategory;
   title: string;
   description: string;
+  sentence: string;
   timeframe: Timeframe;
   targetFrequency: number;
   startDate: Date | null;
   endDate: Date | null;
+  completedTimeframe: number;
+  completedPeriod: number;
   setGoalEntries: React.Dispatch<React.SetStateAction<IGoalEntry[]>>;
   setUuid: React.Dispatch<React.SetStateAction<string>>;
   setCategory: React.Dispatch<React.SetStateAction<GoalCategory>>;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
+  setSentence: React.Dispatch<React.SetStateAction<string>>;
   setTimeframe: React.Dispatch<React.SetStateAction<Timeframe>>;
   setTargetFrequency: React.Dispatch<React.SetStateAction<number>>;
+  setCompletedTimeframe: React.Dispatch<React.SetStateAction<number>>;
+  setCompletedPeriod: React.Dispatch<React.SetStateAction<number>>;
   setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
   createGoalEntry: () => void;
+  deleteGoalEntry: (uuid: string) => void;
   resetGoalEntryFields: () => void;
 }
 

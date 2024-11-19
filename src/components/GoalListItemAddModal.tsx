@@ -18,9 +18,11 @@ import { Dropdown } from 'react-native-element-dropdown';
 import '../utils/localeConfig';
 import { Calendar } from 'react-native-calendars';
 
-import { GoalCategory, Timeframe } from '../types';
+import { Timeframe } from '../types';
 import { GoalContext } from '../context/GoalContext';
 import {
+  categories,
+  categoryGoals,
   categoryIcons,
   getDescription,
   getGoalCategory,
@@ -33,296 +35,11 @@ import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
 
+import { CloseModal } from './CloseModal';
+
 const windowWidth = Dimensions.get('window').width;
 
-const categories = [
-  [
-    'Releafe',
-    'Bepaal doelen voor het gebruik van de functies in de Releafe-app',
-  ],
-  ['Bewegen', 'Stel doelen om actiever bezig te zijn met fysieke beweging'],
-  ['Slapen', 'Stel doelen om bewuster om te gaan met je slaapkwaliteit'],
-  ['Voeding', 'Stel doelen om je voedingsgewoonten actief te verbeteren'],
-  [
-    'Alcohol, drugs en cafeïne',
-    'Stel doelen om bewust om te gaan met je gebruik van alcohol, drugs en cafeine',
-  ],
-  [
-    'Ontspanning',
-    'Stel doelen om regelmatig tijd voor ontspanning in te plannen',
-  ],
-  [
-    'Ervaringen delen',
-    'Stel doelen om je ervaringen regelmatig te delen met anderen',
-  ],
-  [
-    'Ondernemen',
-    'Stel doelen om actief nieuwe ondernemingskansen te verkennen',
-  ],
-];
-
-const categoryGoals = new Map<GoalCategory, string[][]>([
-  [
-    // Releafe.
-    GoalCategory.Releafe,
-    [
-      [
-        'Releafe',
-        'Reflecteren in dagboek',
-        'Het regelmatig bijhouden van het dagboek bevordert zelfinzicht en emotionele verwerking. Dit draagt bij aan betere mentale gezondheid.',
-        'mijn dagboek in Releafe invullen.',
-      ],
-      [
-        'Releafe',
-        'Ontspannen',
-        'Ontspanningsoefeningen helpen bij het verbeteren van concentratie, het verlagen van stress en het verhogen van algemeen welzijn.',
-        'een ontspannende oefening doen in Releafe.',
-      ],
-      [
-        'Releafe',
-        'Ervaringen delen in de Community',
-        'Het delen van je eigen (positieve en minder positieve) ervaringen en het lezen van ervaringen van anderen helpt je te realiseren dat je hier niet alleen in staat en zorgt ervoor dat je de mogelijkheid hebt om te relativeren waardoor je gevoelens dragelijker worden.  ',
-        'een persoonlijke ervaring delen in de Community.',
-      ],
-      [
-        'Releafe',
-        'Cognitief reframen',
-        'Het reframen van een situatie of (negatieve) gedachte kan je helpen om patronen te doorbreken. Hierdoor voel je je gezonder en meer ‘in control’ over je eigen gedachtes.',
-        'een zorg van mij Reframen in Releafe.',
-      ],
-    ],
-  ],
-  // Bewegen
-  [
-    GoalCategory.Bewegen,
-    [
-      [
-        'Bewegen',
-        'Regelmatig bewegen',
-        'Regelmatige lichaamsbeweging verbetert de fysieke gezondheid. Dit heeft direct invloed op het mentale welzijn doordat het symptomen van depressie en angst vermindert.',
-        'bewegen.',
-      ],
-      [
-        'Bewegen',
-        'Krachttraining',
-        'Krachttraining kan helpen bij het verbeteren van het zelfbeeld en hoe je je in je eigen lichaam voelt. Ook maakt het endorfines vrij die je humeur verbeteren.',
-        'krachttraining uitvoeren.',
-      ],
-      [
-        'Bewegen',
-        'Actief transport',
-        'Het gebruik van actief transport zoals wandelen of fietsen kan de dagelijkse fysieke activiteit verhogen en dit vermindert stress en verbetert de mentale helderheid.',
-        'op een actieve manier naar een plaats van bestemming.',
-      ],
-      [
-        'Bewegen',
-        'Interval training',
-        'Intervaltraining kan helpen bij het effectief managen van stress en het verbeteren van de algehele energieniveaus. Daarnaast kan het helpen je hart gezond te houden en calorieën efficiënt te verbranden.',
-        'aan intervaltraining doen.',
-      ],
-      [
-        'Bewegen',
-        'Stappendoel',
-        'Het stellen van een dagelijks stappendoel helpt bij het verhogen van fysieke activiteit. Dit is belangrijk voor zowel je fysieke als mentale gezondheid. Regelmatig wandelen kan stress verminderen, je humeur verbeteren en je algehele energieniveau verhogen.',
-        'per dag zetten.',
-      ],
-    ],
-  ],
-  // Slapen
-  [
-    GoalCategory.Slapen,
-    [
-      [
-        'Slapen',
-        'Consistente slaaptijden',
-        'Het handhaven van een regelmatig slaapschema helpt de interne klok te stabiliseren. Dit leidt tot betere slaapkwaliteit en een verbeterd humeur.',
-        'op dezelfde tijd naar bed gaan en opstaan.',
-      ],
-      [
-        'Slapen',
-        'Kwaliteit van slaap',
-        'Het verbeteren van de slaapkwaliteit door ontspanningsoefeningen kan de algehele gezondheid verbeteren en symptomen van depressie en angst verminderen.',
-        'iets ontspannends doen voor het slapen gaan.',
-      ],
-      [
-        'Slapen',
-        'Voldoende slaap',
-        'Voldoende slaap krijgen is essentieel voor de cognitieve functie en emotionele regulatie.',
-        '7 tot 9 uren slapen.',
-      ],
-      [
-        'Slapen',
-        'Geen of minder middagdutjes',
-        'Beperking van middagdutjes kan nachtelijke slaapkwaliteit verbeteren. Dit is cruciaal voor emotioneel en fysiek herstel.',
-        'geen middagdutje doen.',
-      ],
-    ],
-  ],
-  // Voeding
-  [
-    GoalCategory.Voeding,
-    [
-      [
-        'Voeding',
-        'Groente en fruit boost',
-        'Een dieet rijk aan groenten en fruit kan het energieniveau verhogen en bijdragen aan een beter humeur door de aanvoer van essentiële vitaminen en mineralen. Eet minimaal 250 gram groenten en 2 stuks fruit.',
-        '250 gram groente en twee stuks fruit eten.',
-      ],
-      [
-        'Voeding',
-        'Volkoren voorkeur',
-        'Volkorenproducten bevatten meer voedingsstoffen en vezels. Deze helpen bij het reguleren van de bloedsuikerspiegel en het verbeteren van de hersenfunctie.',
-        'een volkoren maaltijd eten.',
-      ],
-      [
-        'Voeding',
-        'Noten noodzaak',
-        'Ongezouten noten bieden gezonde vetten en eiwitten die bijdragen aan hersengezondheid en stemmingstabilisatie.',
-        'een handvol ongezouten noten eten.',
-      ],
-      [
-        'Voeding',
-        'Minder rood vlees',
-        'Het verminderen van de consumptie van rood vlees kan het risico op fysieke gezondheidsproblemen verlagen, wat indirect bijdraagt aan een beter mentaal welzijn.',
-        'geen rood vlees eten.',
-      ],
-      [
-        'Voeding',
-        'Minder suikerhoudende dranken',
-        'Het vermijden van suikerhoudende dranken helpt bij het stabiliseren van energieniveaus en het voorkomen van stemmingswisselingen.',
-        'suikerhoudende dranken drinken.',
-      ],
-    ],
-  ],
-  // Alcohol, drugs en cafeïne
-  [
-    GoalCategory.AlcoholDrugsCafeine,
-    [
-      [
-        'Alcohol, drugs en cafeïne',
-        'Alcoholvrije dagen',
-        'Het verminderen van alcoholgebruik kan leiden tot betere slaapkwaliteit en verminderde angst en depressie.',
-        'geen alcohol drinken.',
-      ],
-      [
-        'Alcohol, drugs en cafeïne',
-        'Cafeïne controle',
-        'Het beperken van cafeïne helpt bij het verminderen van angst, slaapproblemen en rusteloosheid.',
-        'koffie drinken.',
-      ],
-      [
-        'Alcohol, drugs en cafeïne',
-        'Stoppen met roken',
-        'Stoppen met roken verbetert de fysieke gezondheid. Dit is essentieel voor je mentale welzijn.',
-        'sigaret roken.',
-      ],
-      [
-        'Alcohol, drugs en cafeïne',
-        'Minder drugs',
-        "Verminderen van (recreatief) druggebruik vermindert risico's van stemmingsstoornissen en cognitieve beperkingen.",
-        'drugs gebruiken',
-      ],
-      [
-        'Alcohol, drugs en cafeïne',
-        'Verminder energie dranken',
-        'Vermijden van energiedranken vermindert overstimulatie en bevordert een stabieler energieniveau en mentaal evenwicht.',
-        'energiedranken drinken.',
-      ],
-    ],
-  ],
-  // Ontspanning
-  [
-    GoalCategory.Ontspanning,
-    [
-      [
-        'Ontspanning',
-        'Mediteren',
-        'Regelmatige meditatie bevordert mindfulness. Dit helpt bij het managen van stress en het verbeteren van emotionele veerkracht.',
-        'een meditatieoefening doen.',
-      ],
-      [
-        'Ontspanning',
-        'Yoga',
-        'Yoga ondersteunt zowel fysieke als mentale gezondheid door het verbeteren van flexibiliteit, kracht, en stressverlichting.',
-        'een yoga sessie doen.',
-      ],
-      [
-        'Ontspanning',
-        'Ademhalingsbeheersing',
-        'Regelmatige ademhalingsoefeningen kunnen helpen bij het reguleren van de reactie van het lichaam op stress.',
-        'een ademhalingsoefening doen.',
-      ],
-      [
-        'Ontspanning',
-        'Stress management',
-        'Het toepassen van stressmanagementtechnieken helpt bij het verminderen van algehele stressniveaus en het bevorderen van mentale gezondheid.',
-        'een stressmanagementoefening.',
-      ],
-      [
-        'Ontspanning',
-        'Mindfulness routine',
-        'Het integreren van mindfulness in het dagelijks leven helpt bij het verbeteren van concentratie, het verlagen van stress en het verhogen van algemeen welzijn.',
-        'een mindfulnessoefening doen.',
-      ],
-    ],
-  ],
-  // Ervaringen
-  [
-    GoalCategory.ErvaringenDelen,
-    [
-      [
-        'Ervaringen delen',
-        'Deel je ervaringen en zorgen',
-        'Het delen van ervaringen biedt emotionele ondersteuning en helpt bij het verminderen van het gevoel van isolatie.',
-        'mijn ervaringen met iemand delen.',
-      ],
-      [
-        'Ervaringen delen',
-        'Groepsondersteuning',
-        'Deelnemen aan steungroepen biedt gemeenschappelijke ondersteuning en vermindert gevoelens van eenzaamheid en isolatie.',
-        'deelnemen aan een steun- of lotgenoten groep.',
-      ],
-      [
-        'Ervaringen delen',
-        'Familie en vrienden betrekken',
-        'Het betrekken van naasten bij het persoonlijke proces bevordert openheid en begrip, wat leidt tot betere relaties en emotionele steun.',
-        'mijn ervaringen delen met een vriend of familie.',
-      ],
-    ],
-  ],
-  // Ondernemen
-  [
-    GoalCategory.Ondernemen,
-    [
-      [
-        'Ondernemen',
-        'Vermijding overwinnen',
-        'Het aangaan van uitdagingen helpt je om angsten te confronteren en vermijdingsgedrag te verminderen. Dit leidt tot grotere zelfverzekerdheid en controle over je leven.',
-        'een uitdaging aangaan.',
-      ],
-      [
-        'Ondernemen',
-        "Tijd nemen voor hobby's",
-        "Het onderhouden van hobby's zorgt voor noodzakelijke ontspanning en afleiding van dagelijkse stress. Dit bevordert emotioneel evenwicht.",
-        'besteden aan een hobby.',
-      ],
-      [
-        'Ondernemen',
-        'Sociale contacten onderhouden',
-        'Meer sociale contacten bevorderen het gevoel van verbondenheid en steun. Dit is cruciaal voor je emotionele gezondheid en het verminderen van gevoelens van isolatie.',
-        'een sociale interactie hebben.',
-      ],
-      [
-        'Ondernemen',
-        'Deelnemen aan sociale activiteiten',
-        'Regelmatig deelnemen aan sociale activiteiten bevordert verbinding en verminderen gevoelens van isolatie. Ze helpen bij het opbouwen van sociale vaardigheden en zelfvertrouwen. Dit is essentieel voor mentaal welzijn en emotionele stabiliteit.',
-        'een sociale activiteit ondernemen.',
-      ],
-    ],
-  ],
-]);
-
-const dropdownData = [
+const timeframeDropdownData = [
   { label: 'Dagelijks', value: Timeframe.Daily },
   { label: 'Wekelijks', value: Timeframe.Weekly },
   { label: 'Maandelijks', value: Timeframe.Monthly },
@@ -348,6 +65,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setCategory,
     setTitle,
     setDescription,
+    setSentence,
     setTimeframe,
     setTargetFrequency,
     setStartDate,
@@ -356,17 +74,27 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     resetGoalEntryFields,
   } = useContext(GoalContext);
 
-  // @TODO Change this to `goalSentence` and add it to the `GoalContext`!
-  const [goalEndText, setGoalEndText] = useState<string>('');
-
   const [goalListItemAddModalIndex, setGoalListItemAddModalIndex] =
     useState<number>(0);
-  const [dropdownValue, setDropdownValue] = useState<Timeframe>(
-    Timeframe.Daily
-  );
-  const [isFocus, setIsFocus] = useState<boolean>(false);
+
+  const [goalEndText, setGoalEndText] = useState<string>('');
+  const [goalSpecialDropdownOptions, setGoalSpecialDropdownOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+
+  const [timeframeDropdownValue, setTimeframeDropdownValue] =
+    useState<Timeframe>(Timeframe.Daily);
   const [textInputValue, setTextInputValue] = useState<string>('');
+  const [specialDropdownValue, setSpecialDropdownValue] = useState<string>('');
+
+  const [timeframeDropdownIsFocus, setTimeframeDropdownIsFocus] =
+    useState<boolean>(false);
+  const [specialDropdownIsFocus, setSpecialDropdownIsFocus] =
+    useState<boolean>(false);
+
   const [markedDates, setMarkedDates] = useState<{}>({});
+
+  const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
   const handleCalendarPeriodSelect = (day: string) => {
     // Helper function to get all dates between two dates
@@ -439,11 +167,29 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   const handleGoalSelect = (
     title: string,
     description: string,
-    text: string
+    endText: string,
+    dropdownOptions?: { label: string; value: string }[]
   ) => {
     setTitle(title);
     setDescription(description);
-    setGoalEndText(text);
+    setGoalEndText(endText);
+    setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
+
+    if (dropdownOptions) {
+      setGoalSpecialDropdownOptions(dropdownOptions);
+    } else {
+      setGoalSpecialDropdownOptions([]);
+    }
+  };
+
+  const handleGoalSentence = () => {
+    setSentence(
+      `Ik wil ${
+        timeframe !== Timeframe.Daily
+          ? `${getTimeframeString(timeframe)} ${targetFrequency}x`
+          : ` ${getTimeframeString(timeframe)} `
+      }${specialDropdownValue} ${goalEndText}`
+    );
     setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
   };
 
@@ -456,6 +202,42 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   const handleFinish = () => {
     createGoalEntry();
     resetGoalEntryFields();
+    resetLocalState();
+  };
+
+  const handleClose = () => {
+    resetGoalEntryFields();
+    resetLocalState();
+    setModalAddGoalListItemVisible(!modalAddGoalListItemVisible);
+  };
+
+  const getNextWeek = () => {
+    const today = new Date();
+    const nextSunday = new Date(today);
+    const dayOfWeek = today.getDay();
+
+    const daysUntilSunday = ((7 - dayOfWeek) % 7) + 1;
+    nextSunday.setDate(today.getDate() + daysUntilSunday);
+    nextSunday.setHours(0, 0, 0, 0);
+
+    return nextSunday.toISOString().split('T')[0];
+  };
+
+  const getNextMonth = () => {
+    const today = new Date();
+    const nextMonth = new Date(today);
+
+    nextMonth.setMonth(today.getMonth() + 1);
+    nextMonth.setDate(2);
+    nextMonth.setHours(0, 0, 0, 0);
+
+    return nextMonth.toISOString().split('T')[0];
+  };
+
+  const resetLocalState = () => {
+    setTimeframeDropdownValue(Timeframe.Daily);
+    setTextInputValue('');
+    setSpecialDropdownValue('');
     setMarkedDates({});
     setGoalListItemAddModalIndex(0);
     setModalAddGoalListItemVisible(!modalAddGoalListItemVisible);
@@ -470,6 +252,17 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
         setModalAddGoalListItemVisible(!modalAddGoalListItemVisible)
       }
     >
+      <CloseModal
+        closeModalVisible={closeModalVisible}
+        setCloseModalVisible={setCloseModalVisible}
+        parentModalVisible={modalAddGoalListItemVisible}
+        setParentModalVisible={setModalAddGoalListItemVisible}
+        title={'Stoppen met doel toevoegen'}
+        description={
+          'Je staat op het punt te stoppen met het aanmaken van dit persoonlijk doel. Weet je het zeker?'
+        }
+        handleClose={handleClose}
+      />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
           <View style={styles.headersContainer}>
@@ -484,9 +277,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
               <Text style={styles.headersTitleText}>Nieuwe doel toevoegen</Text>
               <Pressable
                 style={{ position: 'absolute', right: 0 }}
-                onPress={() =>
-                  setModalAddGoalListItemVisible(!modalAddGoalListItemVisible)
-                }
+                onPress={() => setCloseModalVisible(!closeModalVisible)}
               >
                 <Feather name='x-circle' size={24} color='gray' />
               </Pressable>
@@ -604,7 +395,12 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       key={index}
                       style={styles.goalComponent}
                       onPress={() =>
-                        handleGoalSelect(goal[1], goal[2], goal[3])
+                        handleGoalSelect(
+                          goal.title,
+                          goal.description,
+                          goal.endText,
+                          goal.dropdownOptions
+                        )
                       }
                     >
                       {/* Icon + Category + Title */}
@@ -630,13 +426,13 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                           }}
                         >
                           {/* Category */}
-                          <Text style={styles.h2Text}>{goal[0]}</Text>
+                          <Text style={styles.h2Text}>{goal.category}</Text>
                           {/* Title */}
-                          <Text style={styles.h3Text}>{goal[1]}</Text>
+                          <Text style={styles.h3Text}>{goal.title}</Text>
                         </View>
                       </View>
                       {/* Description */}
-                      <Text style={styles.bodyText}>{goal[2]}</Text>
+                      <Text style={styles.bodyText}>{goal.description}</Text>
                     </Pressable>
                   ))}
                 </View>
@@ -661,21 +457,26 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       selectedTextStyle={styles.selectedTextStyle}
                       itemTextStyle={styles.itemTextStyle}
                       itemContainerStyle={styles.itemContainerStyle}
-                      data={dropdownData}
+                      data={timeframeDropdownData}
                       labelField='label'
                       valueField='value'
                       placeholder='Kies een tijdsbestek'
                       placeholderStyle={styles.placeholderStyle}
-                      value={dropdownValue}
+                      value={timeframeDropdownValue}
                       onChange={(item) => {
-                        setDropdownValue(item.value);
+                        setTimeframeDropdownValue(item.value);
                         setTimeframe(item.value);
+                        setMarkedDates({});
                       }}
-                      onFocus={() => setIsFocus(true)}
-                      onBlur={() => setIsFocus(false)}
+                      onFocus={() => setTimeframeDropdownIsFocus(true)}
+                      onBlur={() => setTimeframeDropdownIsFocus(false)}
                       renderRightIcon={() => (
                         <Feather
-                          name={`${isFocus ? 'chevron-up' : 'chevron-down'}`}
+                          name={`${
+                            timeframeDropdownIsFocus
+                              ? 'chevron-up'
+                              : 'chevron-down'
+                          }`}
                           size={24}
                         />
                       )}
@@ -683,40 +484,93 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                   </View>
 
                   {/* Target Frequency Menu */}
-                  <View style={styles.menuComponent}>
-                    <Text style={styles.h2Text}>Mijn doel</Text>
-                    <Text style={styles.h3Text}>{title}</Text>
-                    <Text style={styles.bodyText}>
-                      Hoe vaak wil je je doel behalen binnen het gekozen
-                      tijdsbestek?
-                    </Text>
-                    <Text style={styles.bodyText}>
-                      Selecteer een aantal tussen:{'\n'}Wekelijks: 1 - 7 keer.
-                      {'\n'}
-                      Maandelijks: 1 - 30 keer.
-                    </Text>
-                    {/* Text Input */}
-                    <TextInput
-                      value={textInputValue}
-                      onChangeText={(text) =>
-                        validateTextInput(
-                          text,
-                          timeframe === Timeframe.Weekly ? 7 : 30
-                        )
-                      }
-                      inputMode='numeric'
-                      style={styles.textInputStyle}
-                      placeholder='Maak een keuze...'
-                    />
-                  </View>
+                  {timeframe !== Timeframe.Daily && (
+                    <View style={styles.menuComponent}>
+                      <Text style={styles.h2Text}>Mijn doel</Text>
+                      <Text style={styles.h3Text}>{title}</Text>
+                      <Text style={styles.bodyText}>
+                        Hoe vaak wil je je doel behalen binnen het gekozen
+                        tijdsbestek?
+                      </Text>
+                      <Text style={styles.bodyText}>
+                        Selecteer een aantal tussen:{'\n'}Wekelijks: 1 - 7 keer.
+                        {'\n'}
+                        Maandelijks: 1 - 30 keer.
+                      </Text>
+                      {/* Text Input */}
+                      <TextInput
+                        value={textInputValue}
+                        onChangeText={(text) =>
+                          validateTextInput(
+                            text,
+                            timeframe === Timeframe.Weekly ? 7 : 30
+                          )
+                        }
+                        inputMode='numeric'
+                        style={styles.textInputStyle}
+                        placeholder='Maak een keuze...'
+                      />
+                    </View>
+                  )}
+
+                  {/* Special Dropdown Menu */}
+                  {goalSpecialDropdownOptions.length > 0 && (
+                    <View style={styles.menuComponent}>
+                      <Text style={styles.h2Text}>Mijn doel</Text>
+                      <Text style={styles.h3Text}>{title}</Text>
+                      <Text style={styles.bodyText}>
+                        Binnen welk tijdsbestek wil jij je doel opstellen en
+                        evalueren?
+                      </Text>
+
+                      {/* Dropdown */}
+                      <Dropdown
+                        style={styles.dropdown}
+                        containerStyle={styles.dropdownContainer}
+                        iconColor='black'
+                        iconStyle={styles.icon}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        itemTextStyle={styles.itemTextStyle}
+                        itemContainerStyle={styles.itemContainerStyle}
+                        data={goalSpecialDropdownOptions}
+                        labelField='label'
+                        valueField='value'
+                        placeholder='Selecteer een aantal'
+                        placeholderStyle={styles.placeholderStyle}
+                        value={specialDropdownValue}
+                        onChange={(item) => {
+                          setSpecialDropdownValue(item.value);
+                        }}
+                        onFocus={() => setSpecialDropdownIsFocus(true)}
+                        onBlur={() => setSpecialDropdownIsFocus(false)}
+                        renderRightIcon={() => (
+                          <Feather
+                            name={`${
+                              specialDropdownIsFocus
+                                ? 'chevron-up'
+                                : 'chevron-down'
+                            }`}
+                            size={24}
+                          />
+                        )}
+                      />
+                    </View>
+                  )}
 
                   <View style={styles.menuComponent}>
                     <Text style={[styles.h2Text, { textAlign: 'center' }]}>
-                      Start-en einddatum (optioneel)
+                      Start- en einddatum
                     </Text>
 
                     {/* Calendar */}
                     <Calendar
+                      minDate={
+                        timeframe !== Timeframe.Daily
+                          ? timeframe === Timeframe.Weekly
+                            ? getNextWeek()
+                            : getNextMonth()
+                          : new Date().toISOString().split('T')[0]
+                      }
                       onDayPress={(day) =>
                         handleCalendarPeriodSelect(day.dateString)
                       }
@@ -741,11 +595,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       }
                     />
                     <Pressable
-                      onPress={() =>
-                        setGoalListItemAddModalIndex(
-                          goalListItemAddModalIndex + 1
-                        )
-                      }
+                      onPress={() => handleGoalSentence()}
                       style={styles.viewButton}
                     >
                       <Text style={styles.buttonText}>Doel bekijken</Text>
@@ -797,9 +647,14 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                             } as TextStyle
                           }
                         >
-                          {getTimeframeString(timeframe)} {targetFrequency}x
-                        </Text>{' '}
-                        {goalEndText}
+                          {timeframe !== Timeframe.Daily
+                            ? `${getTimeframeString(
+                                timeframe
+                              )} ${targetFrequency}x`
+                            : ` ${getTimeframeString(timeframe)} `}
+                          {specialDropdownValue}
+                        </Text>
+                        {` ${goalEndText}`}
                       </Text>
 
                       <Text style={styles.h3Text}>

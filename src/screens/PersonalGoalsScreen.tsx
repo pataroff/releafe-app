@@ -18,10 +18,10 @@ import { useNavigation } from '@react-navigation/native';
 import { GoalListItemAddModal } from '../components/GoalListItemAddModal';
 
 import { Fonts } from '../styles';
-import { getGoalCategoryIcon, getGoalCategoryString } from '../utils/goal';
 import Entypo from '@expo/vector-icons/Entypo';
 
 import { GoalContext } from '../context/GoalContext';
+import GoalListItem from '../components/GoalListItem';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -84,38 +84,8 @@ export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
           >
             {goalEntries.length > 0 ? (
               <View style={styles.goalsContainer}>
-                {goalEntries.map((goal, index) => {
-                  return (
-                    <View key={index} style={styles.goalComponent}>
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          width: '100%',
-                          columnGap: 10,
-                        }}
-                      >
-                        <Image
-                          style={{ width: 40, height: 40 }}
-                          source={getGoalCategoryIcon(goal.category)}
-                        />
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            width: '100%',
-                          }}
-                        >
-                          <Text style={styles.h2Text}>
-                            {getGoalCategoryString(goal.category)}
-                          </Text>
-                          <Text style={styles.h3Text}>{goal.title}</Text>
-                        </View>
-                      </View>
-                    </View>
-                  );
+                {goalEntries.map((item) => {
+                  return <GoalListItem key={item.uuid} item={item} />;
                 })}
               </View>
             ) : (
@@ -197,35 +167,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     marginBottom: 170,
   },
-  goalComponent: {
-    flex: 1,
-    rowGap: 10,
-    marginTop: 20,
-    borderRadius: 20,
-    width: '100%',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    // Shadow Test
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  h2Text: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
-    fontSize: 16,
-  } as TextStyle,
-  h3Text: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
-    fontSize: 14,
-  } as TextStyle,
-  bodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
-    fontSize: 13,
-  } as TextStyle,
   noDataContainer: {
     flex: 1,
     justifyContent: 'flex-start',

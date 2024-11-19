@@ -14,20 +14,27 @@ export const GoalContext = createContext<IGoalContext>({
   category: GoalCategory.Releafe,
   title: '',
   description: '',
+  sentence: '',
   timeframe: Timeframe.Daily,
   targetFrequency: 0,
   startDate: new Date(),
   endDate: new Date(),
+  completedTimeframe: 0,
+  completedPeriod: 0,
   setGoalEntries: () => {},
   setUuid: () => {},
   setCategory: () => {},
   setTitle: () => {},
   setDescription: () => {},
+  setSentence: () => {},
   setTimeframe: () => {},
   setTargetFrequency: () => {},
   setStartDate: () => {},
   setEndDate: () => {},
+  setCompletedTimeframe: () => {},
+  setCompletedPeriod: () => {},
   createGoalEntry: () => {},
+  deleteGoalEntry: () => {},
   resetGoalEntryFields: () => {},
 });
 
@@ -40,10 +47,13 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
   const [category, setCategory] = useState<GoalCategory>(GoalCategory.Bewegen);
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
+  const [sentence, setSentence] = useState<string>('');
   const [timeframe, setTimeframe] = useState<Timeframe>(Timeframe.Daily);
   const [targetFrequency, setTargetFrequency] = useState<number>(1);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [completedTimeframe, setCompletedTimeframe] = useState<number>(0);
+  const [completedPeriod, setCompletedPeriod] = useState<number>(0);
 
   const { user } = useContext(AuthContext);
 
@@ -56,10 +66,14 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       category,
       title,
       description,
+      sentence,
       timeframe,
       targetFrequency,
       startDate,
       endDate,
+      // @TODO: Are these necessary on goal creation or only on update?
+      completedTimeframe,
+      completedPeriod,
     };
 
     const newGoalEntryDatabase = {
@@ -70,10 +84,14 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       category,
       title,
       description,
+      sentence,
       timeframe,
       targetFrequency,
       startDate,
       endDate,
+      // @TODO: Are these necessary on goal creation or only on update?
+      completedTimeframe,
+      completedPeriod,
     };
 
     if (matchedGoalEntry) {
@@ -108,11 +126,28 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
+  const deleteGoalEntry = async (uuid: string) => {
+    setGoalEntries((prev) => prev.filter((entry) => entry.uuid != uuid));
+
+    try {
+      // Get the corresponding entry from the database
+      const matchedGoalEntryDatabase = await pb
+        .collection('goal_entries')
+        .getFirstListItem(`uuid="${uuid}"`);
+
+      // Delete the existing entry from the database
+      await pb.collection('goal_entries').delete(matchedGoalEntryDatabase.id);
+    } catch (error) {
+      console.error('Error deleting goal entry:', error);
+    }
+  };
+
   const resetGoalEntryFields = () => {
     setUuid('');
     setCategory(GoalCategory.Bewegen);
     setTitle('');
     setDescription('');
+    setSentence('');
     setTimeframe(Timeframe.Daily);
     setTargetFrequency(0);
     setStartDate(null);
@@ -127,20 +162,27 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         category,
         title,
         description,
+        sentence,
         timeframe,
         targetFrequency,
         startDate,
         endDate,
+        completedTimeframe,
+        completedPeriod,
         setGoalEntries,
         setUuid,
         setCategory,
         setTitle,
         setDescription,
+        setSentence,
         setTimeframe,
         setTargetFrequency,
         setStartDate,
         setEndDate,
+        setCompletedTimeframe,
+        setCompletedPeriod,
         createGoalEntry,
+        deleteGoalEntry,
         resetGoalEntryFields,
       }}
     >

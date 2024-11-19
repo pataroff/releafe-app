@@ -144,10 +144,13 @@ export const TabNavigator = () => {
                 category,
                 title,
                 description,
+                sentence,
                 timeframe,
                 targetFrequency,
                 startDate,
                 endDate,
+                completedTimeframe,
+                completedPeriod,
               } = item;
               return {
                 id,
@@ -155,10 +158,13 @@ export const TabNavigator = () => {
                 category,
                 title,
                 description,
+                sentence,
                 timeframe,
                 targetFrequency,
                 startDate,
                 endDate,
+                completedTimeframe,
+                completedPeriod,
               };
             });
 
