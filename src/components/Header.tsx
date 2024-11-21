@@ -1,3 +1,4 @@
+import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
@@ -13,14 +14,11 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
-import { Fonts } from '../styles';
-
-import { Avatar } from 'react-native-paper';
-
-import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Fonts } from '../styles';
+import { Avatar } from 'react-native-paper';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -30,7 +28,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const { user, signOut } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   return (
     <>
@@ -78,8 +76,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                 />
               )}
             </View>
-            {/* TODO: Change this to a <View> component after testing phase! */}
-            <Pressable onPress={() => signOut()}>
+            <Pressable onPress={() => navigation.openDrawer()}>
               <Avatar.Text
                 style={{
                   backgroundColor: '#C1D6BA',

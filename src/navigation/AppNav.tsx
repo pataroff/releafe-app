@@ -1,14 +1,10 @@
 import { useContext } from 'react';
 import { View } from 'react-native';
-import { ActivityIndicator, MD2Colors } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-const Stack = createNativeStackNavigator();
-
 import AuthStack from './AuthStack';
-import { TabNavigator } from './TabNavigator';
+import AppStack from './AppStack';
 
 import { AuthContext } from '../context/AuthContext';
 
@@ -26,7 +22,7 @@ const AppNav = () => {
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? <TabNavigator /> : <AuthStack />}
+      {isLoggedIn ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };
