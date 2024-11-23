@@ -100,13 +100,19 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   const handleCalendarPeriodSelect = (day: string) => {
     // Helper function to get all dates between two dates
     const getDatesInRange = (start: Date, end: Date) => {
-      let dates = [];
+      const dates: string[] = [];
       let currentDate = new Date(start);
-      while (currentDate <= end) {
-        dates.push(new Date(currentDate));
+
+      while (currentDate < end) {
+        // Stop before the end date
+        dates.push(currentDate.toISOString().split('T')[0]);
         currentDate.setDate(currentDate.getDate() + 1);
       }
-      return dates.map((date) => date.toISOString().split('T')[0]); // Return date in 'YYYY-MM-DD' format
+
+      // Add the end date explicitly to ensure it's included
+      dates.push(end.toISOString().split('T')[0]);
+
+      return dates;
     };
 
     if (startDate === null) {

@@ -39,7 +39,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
     setTimeout(() => {
       // @ts-ignore
       handleClose();
-    }, 500);
+    }, 100);
   };
 
   const handleParentModalClose = () => {
@@ -47,7 +47,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
     // 👇🏻 This fixes the app freezing!
     setTimeout(() => {
       setParentModalVisible(!parentModalVisible);
-    }, 500);
+    }, 100);
   };
 
   return (
