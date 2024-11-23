@@ -34,14 +34,20 @@ export const CloseModal: React.FC<CloseModalProps> = ({
   handleClose,
 }) => {
   const handleCloseModal = () => {
-    // @ts-ignore
-    handleClose();
     setCloseModalVisible(!closeModalVisible);
+    // 👇🏻 This fixes the app freezing!
+    setTimeout(() => {
+      // @ts-ignore
+      handleClose();
+    }, 500);
   };
 
   const handleParentModalClose = () => {
     setCloseModalVisible(!closeModalVisible);
-    setParentModalVisible(!parentModalVisible);
+    // 👇🏻 This fixes the app freezing!
+    setTimeout(() => {
+      setParentModalVisible(!parentModalVisible);
+    }, 500);
   };
 
   return (

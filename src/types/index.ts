@@ -106,8 +106,8 @@ export interface IGoalEntry {
   sentence: string;
   timeframe: Timeframe;
   targetFrequency: number;
-  startDate?: Date | null;
-  endDate?: Date | null;
+  startDate: Date | null;
+  endDate: Date | null;
   completedTimeframe: number;
   completedPeriod: number;
 }

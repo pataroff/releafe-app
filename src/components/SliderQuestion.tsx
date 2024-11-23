@@ -97,7 +97,7 @@ export const SliderQuestion: React.FC<{
   const handlePrevious = () => {
     if (sliderQuestionIndex > 0) {
       setSliderQuestionIndex(sliderQuestionIndex - 1);
-      setProgressValue(progressValue - 0.125);
+      setProgressValue(progressValue - 0.08);
       setSliderValue(5);
     }
   };
@@ -119,7 +119,7 @@ export const SliderQuestion: React.FC<{
     }
     if (sliderQuestionIndex < questions.length - 1) {
       setSliderQuestionIndex(sliderQuestionIndex + 1);
-      setProgressValue(progressValue + 0.125);
+      setProgressValue(progressValue + 0.08);
       setSliderValue(5);
     } else {
       setSliderValue(5);
@@ -255,7 +255,10 @@ export const SliderQuestion: React.FC<{
         <View style={styles.progressBarContainer}>
           <Text style={styles.progressBarText}>{progressValue * 100}%</Text>
           <ProgressBar
-            progress={progressValue}
+            // @TODO: https://github.com/callstack/react-native-paper/issues/4544
+            // Using `animatedValue` instead of `progress`, stops the app crashing,
+            // however, it renders instead a very long number that is not rounded!
+            animatedValue={progressValue}
             color='#A9C1A1'
             style={styles.progressBar}
           />

@@ -149,7 +149,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     setDescription('');
     setSentence('');
     setTimeframe(Timeframe.Daily);
-    setTargetFrequency(0);
+    setTargetFrequency(1);
     setStartDate(null);
     setEndDate(null);
   };

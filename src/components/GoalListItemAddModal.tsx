@@ -58,6 +58,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     category,
     title,
     description,
+    sentence,
     timeframe,
     targetFrequency,
     startDate,
@@ -184,11 +185,9 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
 
   const handleGoalSentence = () => {
     setSentence(
-      `Ik wil ${
-        timeframe !== Timeframe.Daily
-          ? `${getTimeframeString(timeframe)} ${targetFrequency}x`
-          : ` ${getTimeframeString(timeframe)} `
-      }${specialDropdownValue} ${goalEndText}`
+      `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
+        specialDropdownValue ? ` ${specialDropdownValue}` : ``
+      } ${goalEndText}`
     );
     setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
   };
@@ -241,6 +240,37 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setMarkedDates({});
     setGoalListItemAddModalIndex(0);
     setModalAddGoalListItemVisible(!modalAddGoalListItemVisible);
+  };
+
+  // @TODO: Move this into `utils/goal.ts`!
+  const highlightFrequency = (sentence: string) => {
+    const keywords = ['dagelijks', 'wekelijks', 'maandelijks'];
+    const words = sentence.split(' ');
+
+    let modifiedWords: React.ReactNode[] = [];
+    let shouldBoldNext = false;
+
+    words.forEach((word, index) => {
+      if (shouldBoldNext) {
+        modifiedWords.push(
+          <Text key={index} style={styles.boldText}>
+            {word + ' '}
+          </Text>
+        );
+        shouldBoldNext = false;
+      } else if (keywords.some((keyword) => word.startsWith(keyword))) {
+        modifiedWords.push(
+          <Text key={index} style={styles.boldText}>
+            {word + ' '}
+          </Text>
+        );
+        shouldBoldNext = true;
+      } else {
+        modifiedWords.push(<Text key={index}>{word + ' '}</Text>);
+      }
+    });
+
+    return modifiedWords;
   };
 
   return (
@@ -639,24 +669,8 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                         </View>
                       </View>
                       <Text style={styles.bodyText}>
-                        Ik wil{' '}
-                        <Text
-                          style={
-                            {
-                              ...Fonts.poppinsSemiBold[Platform.OS],
-                            } as TextStyle
-                          }
-                        >
-                          {timeframe !== Timeframe.Daily
-                            ? `${getTimeframeString(
-                                timeframe
-                              )} ${targetFrequency}x`
-                            : ` ${getTimeframeString(timeframe)} `}
-                          {specialDropdownValue}
-                        </Text>
-                        {` ${goalEndText}`}
+                        {highlightFrequency(sentence)}
                       </Text>
-
                       <Text style={styles.h3Text}>
                         Startdatum:{' '}
                         <Text style={styles.bodyText}>
@@ -919,6 +933,9 @@ const styles = StyleSheet.create({
   bodyText: {
     ...Fonts.poppinsRegular[Platform.OS],
     fontSize: 13,
+  } as TextStyle,
+  boldText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
   } as TextStyle,
   progressContainer: {
     width: '100%',

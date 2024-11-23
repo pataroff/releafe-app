@@ -1,3 +1,5 @@
+import './gesture-handler';
+
 import { useFonts } from 'expo-font';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';

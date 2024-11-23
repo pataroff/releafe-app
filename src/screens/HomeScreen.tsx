@@ -112,8 +112,10 @@ export const HomeScreen: React.FC = ({ route }) => {
   const title = 'Home';
   const { user } = useContext(AuthContext);
 
-  const [quote, setQuote] = useState<string>('');
-  const [author, setAuthor] = useState<string>('');
+  const [quote, setQuote] = useState<string>(
+    'Wherever you are, be there totally.'
+  );
+  const [author, setAuthor] = useState<string>('Eckhart Tolle');
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
 

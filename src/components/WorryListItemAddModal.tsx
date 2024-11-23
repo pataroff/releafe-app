@@ -15,6 +15,7 @@ import {
 
 import { Priority } from '../types';
 import { DropdownComponent } from './DropdownComponent';
+import { CloseModal } from './CloseModal';
 
 import { WorryContext } from '../context/WorryContext';
 
@@ -70,6 +71,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     useState<number>(0);
   const [showPriorityButtons, setShowPriorityButtons] =
     useState<boolean>(false);
+  const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
   const handleStore = () => {
     createWorryEntry();
@@ -101,6 +103,17 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
       visible={modalAddWorryListItemVisible}
       onRequestClose={() => handleClose()}
     >
+      <CloseModal
+        closeModalVisible={closeModalVisible}
+        setCloseModalVisible={setCloseModalVisible}
+        parentModalVisible={modalAddWorryListItemVisible}
+        setParentModalVisible={setModalAddWorryListItemVisible}
+        title={'Stoppen met zorg toevoegen'}
+        description={
+          'Je staat op het punt te stoppen met het toevoegen van jouw zorg. Weet je het zeker?'
+        }
+        handleClose={handleClose}
+      />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
           <View style={styles.headersContainer}>
@@ -115,7 +128,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
               <Text style={styles.headersTitleText}>Nieuwe zorg toevoegen</Text>
               <Pressable
                 style={{ position: 'absolute', right: 0 }}
-                onPress={() => handleClose()}
+                onPress={() => setCloseModalVisible(!closeModalVisible)}
               >
                 <Feather name='x-circle' size={24} color='gray' />
               </Pressable>

@@ -48,19 +48,95 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     useState<number>(completedPeriod);
 
   const getDaysBetweenDates = (
-    startDate: Date | null | undefined,
-    endDate: Date | null | undefined
+    startDate: Date | null,
+    endDate: Date | null
   ): number => {
     if (!startDate || !endDate) {
       console.error('startDate and endDate must not be null or undefined');
       return 0;
     }
 
-    const timeDifference = Math.abs(
-      new Date(endDate).getTime() - new Date(startDate).getTime()
-    );
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const timeDifference = Math.abs(end.getTime() - start.getTime());
     const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
     return daysDifference;
+  };
+
+  const getWeeksBetweenDates = (
+    startDate: Date | null,
+    endDate: Date | null
+  ): number => {
+    const daysDifference = getDaysBetweenDates(startDate, endDate);
+
+    const weeksDifference = Math.round(daysDifference / 7);
+    return weeksDifference;
+  };
+
+  const getMonthsBetweenDates = (
+    startDate: Date | null,
+    endDate: Date | null
+  ): number => {
+    if (!startDate || !endDate) {
+      console.error('startDate and endDate must not be null or undefined');
+      return 0;
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const yearsDifference = end.getFullYear() - start.getFullYear();
+    const monthsDifference = end.getMonth() - start.getMonth();
+
+    const totalMonths = yearsDifference * 12 + monthsDifference;
+    return totalMonths;
+  };
+
+  const calculatePeriod = (
+    timeframe: Timeframe,
+    startDate: Date,
+    endDate: Date
+  ): number => {
+    switch (timeframe) {
+      case Timeframe.Daily:
+        return getDaysBetweenDates(startDate, endDate);
+      case Timeframe.Weekly:
+        return getWeeksBetweenDates(startDate, endDate);
+      case Timeframe.Monthly:
+        return getMonthsBetweenDates(startDate, endDate);
+    }
+  };
+
+  // @TODO: Move this into `utils/goal.ts`!
+  const highlightFrequency = (sentence: string) => {
+    const keywords = ['dagelijks', 'wekelijks', 'maandelijks'];
+    const words = sentence.split(' ');
+
+    let modifiedWords: React.ReactNode[] = [];
+    let shouldBoldNext = false;
+
+    words.forEach((word, index) => {
+      if (shouldBoldNext) {
+        modifiedWords.push(
+          <Text key={index} style={styles.boldText}>
+            {word + ' '}
+          </Text>
+        );
+        shouldBoldNext = false;
+      } else if (keywords.some((keyword) => word.startsWith(keyword))) {
+        modifiedWords.push(
+          <Text key={index} style={styles.boldText}>
+            {word + ' '}
+          </Text>
+        );
+        shouldBoldNext = true;
+      } else {
+        modifiedWords.push(<Text key={index}>{word + ' '}</Text>);
+      }
+    });
+
+    return modifiedWords;
   };
 
   return (
@@ -113,7 +189,9 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                 marginTop: 10,
               }}
             >
-              <Text style={styles.bodyText}>{sentence}</Text>
+              <Text style={styles.bodyText}>
+                {highlightFrequency(sentence)}
+              </Text>
 
               <View
                 style={{
@@ -171,7 +249,9 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
               {/* Sentence Container */}
               <View style={{ rowGap: 5 }}>
                 <Text style={styles.h2Text}>Mijn persoonlijke doel</Text>
-                <Text style={styles.bodyText}>{sentence}</Text>
+                <Text style={styles.bodyText}>
+                  {highlightFrequency(sentence)}
+                </Text>
               </View>
 
               <Text style={styles.h3Text}>Statistieken</Text>
@@ -201,8 +281,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                     {completedTimeframe}/
                     {timeframe !== Timeframe.Daily
                       ? targetFrequency
-                      : // @ts-ignore
-                        getDaysBetweenDates(startDate, endDate)}
+                      : getDaysBetweenDates(startDate, endDate)}
                   </Text>
                 </View>
                 <ProgressBar
@@ -238,10 +317,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
 
                   <Text style={styles.completedTimeframeText}>
                     {completedTimeframe}/
-                    {timeframe !== Timeframe.Daily
-                      ? targetFrequency
-                      : // @ts-ignore
-                        getDaysBetweenDates(startDate, endDate)}
+                    {calculatePeriod(timeframe, startDate, endDate)}
                   </Text>
                 </View>
 
@@ -311,12 +387,17 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                       year: 'numeric',
                     })}
                   </Text>
+                  {/* Completed Timeframe */}
                   <Text style={styles.statisticsDataBodyText}>
-                    {/* @TODO Is `Math.round` the best solution here? What about incrementing by 1? */}
-                    {Math.round(getDaysBetweenDates(startDate, new Date()))}
+                    {new Date(startDate as Date) > new Date()
+                      ? 0
+                      : Math.floor(getDaysBetweenDates(startDate, new Date()))}
                   </Text>
+                  {/* Completed Period */}
                   <Text style={styles.statisticsDataBodyText}>
-                    {Math.floor(getDaysBetweenDates(new Date(), endDate))}
+                    {new Date(startDate as Date) > new Date()
+                      ? Math.floor(getDaysBetweenDates(startDate, endDate))
+                      : Math.floor(getDaysBetweenDates(new Date(), endDate))}
                   </Text>
                 </View>
               </View>
@@ -423,4 +504,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: '#5c6b57',
   },
+  boldText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+  } as TextStyle,
 });
