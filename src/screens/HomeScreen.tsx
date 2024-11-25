@@ -18,7 +18,6 @@ import { Fonts } from '../styles';
 
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -34,25 +33,25 @@ const nudgingItems = [
   [
     <Feather name='book' size={24} color='black' />,
     'Dagboek invullen',
-    'Je hebt je dagboek nog niet ingevuld. Vergeet deze niet in te vullen om je voortgang bij te houden!',
+    'Zou je vandaag iets aan je dagboek willen toevoegen? Zo kun jij je proces goed bijhouden.',
     'Vul dagboek in',
   ],
   [
     <FontAwesome6 name='heart' size={24} color='black' />,
     'Voortgang bekijken',
-    'Bekijk de voortgang van je doelen deze week en ontdek wat de volgende stappen zijn!',
+    'Dit is een goed moment om je voortgang van deze week te bekijken.',
     'Bekijk voortgang',
   ],
   [
     <FontAwesome6 name='heart' size={24} color='black' />,
     'Tijd voor een oefening',
-    'Het is tijd voor een ontspanningsoefening. Bekijk deze oefening in de toolkit.',
+    'De beste manier om met zorgen om te gaan, is om ze anders te benaderen – probeer het eens!',
     'Bekijk toolkit',
   ],
   [
-    <AntDesign name='warning' size={24} color='black' />,
+    <MaterialCommunityIcons name='arm-flex-outline' size={24} color='black' />,
     'Blijf actief!',
-    'Er is gedurende meer dan drie dagen geen fysieke activiteit in het dagboek geregistreerd.',
+    'Wat dacht je van wat lichaamsbeweging vandaag? Er is vast een oefening die bij je past!',
     'Bekijk dagboek',
   ],
 ];
@@ -565,12 +564,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 25,
     padding: 20,
-    // Shadow Test
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
-    elevation: 2,
   },
   nudgingTitleText: {
     ...Fonts.poppinsSemiBold[Platform.OS],

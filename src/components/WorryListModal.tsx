@@ -14,7 +14,6 @@ import {
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import { WorryListItem } from './WorryListItem';
 
@@ -77,6 +76,7 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
                 Klik op een zorg om deze volledig te bekijken
               </Text>
             </View>
+            {/* Close Button */}
             <Pressable
               style={{ position: 'absolute', top: 0, right: 0 }}
               onPress={() => handleDrawer()}
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     borderRadius: 30,
-    height: windowHeight - 2 * 100,
+    maxHeight: windowHeight - 2 * 100,
     width: windowWidth - 2 * 10,
     backgroundColor: '#f6f7f8',
     paddingHorizontal: 25,
@@ -156,12 +156,9 @@ const styles = StyleSheet.create({
   } as TextStyle,
   worryListContainer: {
     marginVertical: 20,
-    flex: 1,
   },
   worryListContentContainer: {
     flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
     rowGap: 10,
   },
   noDataContainer: {

@@ -89,7 +89,14 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     const yearsDifference = end.getFullYear() - start.getFullYear();
     const monthsDifference = end.getMonth() - start.getMonth();
 
-    const totalMonths = yearsDifference * 12 + monthsDifference;
+    // Calculate total months
+    let totalMonths = yearsDifference * 12 + monthsDifference;
+
+    // Include partial month if the end date's day is later than the start date's day
+    if (end.getDate() >= start.getDate()) {
+      totalMonths += 1; // Consider partial months
+    }
+
     return totalMonths;
   };
 

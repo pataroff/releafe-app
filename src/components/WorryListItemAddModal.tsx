@@ -18,26 +18,12 @@ import { DropdownComponent } from './DropdownComponent';
 import { CloseModal } from './CloseModal';
 
 import { WorryContext } from '../context/WorryContext';
+import { getPriorityColor } from '../utils/worry';
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 
 const windowWidth = Dimensions.get('window').width;
-
-const getPriorityColor = (priority: Priority): string => {
-  switch (priority) {
-    case Priority.None:
-      return 'gray';
-    case Priority.Low:
-      return 'green';
-    case Priority.Medium:
-      return 'orange';
-    case Priority.High:
-      return 'red';
-    default:
-      return 'gray';
-  }
-};
 
 interface WorryListItemAddModalProps {
   modalAddWorryListItemVisible: boolean;
@@ -88,7 +74,9 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     // resetWorryEntryFields(); // TODO: Where should the reset happen?
     setWorryListItemAddModalIndex(0);
     setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
-    setModalReframingVisible(!modalReframingVisible);
+    setTimeout(() => {
+      setModalReframingVisible(!modalReframingVisible);
+    }, 300);
   };
 
   const handlePriority = (priority: Priority) => {
@@ -108,10 +96,8 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
         setCloseModalVisible={setCloseModalVisible}
         parentModalVisible={modalAddWorryListItemVisible}
         setParentModalVisible={setModalAddWorryListItemVisible}
-        title={'Stoppen met zorg toevoegen'}
-        description={
-          'Je staat op het punt te stoppen met het toevoegen van jouw zorg. Weet je het zeker?'
-        }
+        title='Stoppen met zorg toevoegen'
+        description='Je staat op het punt te stoppen met het toevoegen van jouw zorg. Weet je het zeker?'
         handleClose={handleClose}
       />
       <View style={styles.modalWrapper}>
@@ -291,7 +277,11 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                           }}
                           onPress={() => handlePriority(Priority.Low)}
                         >
-                          <Feather name='flag' size={18} color='green' />
+                          <Feather
+                            name='flag'
+                            size={18}
+                            color={getPriorityColor(Priority.Low)}
+                          />
                         </Pressable>
 
                         <Pressable
@@ -305,7 +295,11 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                           }}
                           onPress={() => handlePriority(Priority.Medium)}
                         >
-                          <Feather name='flag' size={18} color='orange' />
+                          <Feather
+                            name='flag'
+                            size={18}
+                            color={getPriorityColor(Priority.Medium)}
+                          />
                         </Pressable>
 
                         <Pressable
@@ -319,7 +313,11 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                           }}
                           onPress={() => handlePriority(Priority.High)}
                         >
-                          <Feather name='flag' size={18} color='red' />
+                          <Feather
+                            name='flag'
+                            size={18}
+                            color={getPriorityColor(Priority.High)}
+                          />
                         </Pressable>
                       </>
                     ) : (

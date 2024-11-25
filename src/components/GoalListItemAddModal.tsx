@@ -98,13 +98,23 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
   const handleCalendarPeriodSelect = (day: string) => {
+    type MarkedDatesType = Record<
+      string,
+      {
+        selected?: boolean;
+        startingDay?: boolean;
+        endingDay?: boolean;
+        color: string;
+      }
+    >;
+
     // Helper function to get all dates between two dates
     const getDatesInRange = (start: Date, end: Date) => {
       const dates: string[] = [];
       let currentDate = new Date(start);
 
       while (currentDate < end) {
-        // Stop before the end date
+        // Stop before the end date to avoid rounding errors
         dates.push(currentDate.toISOString().split('T')[0]);
         currentDate.setDate(currentDate.getDate() + 1);
       }
@@ -133,16 +143,23 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
       const datesInRange = getDatesInRange(startDate, selectedEndDate);
 
       setMarkedDates((prevMarkedDates) => {
-        const rangeMarkedDates = datesInRange.reduce((acc, date, index) => {
-          if (index === 0) {
-            acc[date] = { selected: true, startingDay: true, color: '#90A38A' };
-          } else if (index === datesInRange.length - 1) {
-            acc[date] = { selected: true, endingDay: true, color: '#5C6B57' };
-          } else {
-            acc[date] = { color: '#E5F1E3' }; // Mark all days in the range with green
-          }
-          return acc;
-        }, {});
+        const rangeMarkedDates = datesInRange.reduce<MarkedDatesType>(
+          (acc, date, index) => {
+            if (index === 0) {
+              acc[date] = {
+                selected: true,
+                startingDay: true,
+                color: '#90A38A',
+              };
+            } else if (index === datesInRange.length - 1) {
+              acc[date] = { selected: true, endingDay: true, color: '#5C6B57' };
+            } else {
+              acc[date] = { color: '#E5F1E3' }; // Mark all days in the range with green
+            }
+            return acc;
+          },
+          {}
+        );
 
         return { ...prevMarkedDates, ...rangeMarkedDates };
       });
@@ -293,10 +310,8 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
         setCloseModalVisible={setCloseModalVisible}
         parentModalVisible={modalAddGoalListItemVisible}
         setParentModalVisible={setModalAddGoalListItemVisible}
-        title={'Stoppen met doel toevoegen'}
-        description={
-          'Je staat op het punt te stoppen met het aanmaken van dit persoonlijk doel. Weet je het zeker?'
-        }
+        title='Stoppen met doel toevoegen'
+        description='Je staat op het punt te stoppen met het aanmaken van dit persoonlijk doel. Weet je het zeker?'
         handleClose={handleClose}
       />
       <View style={styles.modalWrapper}>
@@ -365,117 +380,183 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
           </View>
 
           {/* Main Content Wrapper */}
-          <View
-            style={{
-              flex: 1,
-            }}
+          <ScrollView
+            bounces={false}
+            showsVerticalScrollIndicator={false}
+            style={styles.goalContainer}
+            contentContainerStyle={styles.goalContentContainerStyles}
           >
-            <ScrollView
-              bounces={false}
-              showsVerticalScrollIndicator={false}
-              style={styles.goalContainer}
-              contentContainerStyle={styles.goalContentContainerStyles}
-            >
-              {goalListItemAddModalIndex === 0 && (
-                <View style={styles.categoriesContainer}>
-                  {categories.map((category, index) => (
-                    <Pressable
-                      key={index}
-                      style={styles.categoryComponent}
-                      onPress={() => handleCategorySelect(index)}
+            {goalListItemAddModalIndex === 0 && (
+              <View style={styles.categoriesContainer}>
+                {categories.map((category, index) => (
+                  <Pressable
+                    key={index}
+                    style={styles.categoryComponent}
+                    onPress={() => handleCategorySelect(index)}
+                  >
+                    {/* Icon + Title + Description */}
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        height: '100%',
+                        columnGap: 5,
+                      }}
                     >
-                      {/* Icon + Title + Description */}
+                      <Image
+                        style={{ width: 50, height: 50 }}
+                        source={categoryIcons[index]}
+                      />
                       <View
                         style={{
                           display: 'flex',
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
                           height: '100%',
-                          columnGap: 5,
+                          width: '73%',
                         }}
                       >
-                        <Image
-                          style={{ width: 50, height: 50 }}
-                          source={categoryIcons[index]}
-                        />
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            height: '100%',
-                            width: '73%',
-                          }}
-                        >
-                          <Text style={styles.h3Text}>{category[0]}</Text>
-                          <Text style={styles.bodyText}>{category[1]}</Text>
-                        </View>
-
-                        {/* Chevron Right Icon */}
-                        <Entypo
-                          name='chevron-right'
-                          size={34}
-                          color='#5C6B57'
-                        />
+                        <Text style={styles.h3Text}>{category[0]}</Text>
+                        <Text style={styles.bodyText}>{category[1]}</Text>
                       </View>
-                    </Pressable>
-                  ))}
+
+                      {/* Chevron Right Icon */}
+                      <Entypo name='chevron-right' size={34} color='#5C6B57' />
+                    </View>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+            {goalListItemAddModalIndex === 1 && (
+              <View style={styles.goalsContainer}>
+                {/* @ts-ignore */}
+                {categoryGoals.get(category).map((goal, index) => (
+                  <Pressable
+                    key={index}
+                    style={styles.goalComponent}
+                    onPress={() =>
+                      handleGoalSelect(
+                        goal.title,
+                        goal.description,
+                        goal.endText,
+                        goal.dropdownOptions
+                      )
+                    }
+                  >
+                    {/* Icon + Category + Title */}
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        width: '100%',
+                        columnGap: 5,
+                      }}
+                    >
+                      <Image
+                        style={{ width: 40, height: 40 }}
+                        source={getGoalCategoryIcon(category)}
+                      />
+                      <View
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          width: '100%',
+                        }}
+                      >
+                        {/* Category */}
+                        <Text style={styles.h2Text}>{goal.category}</Text>
+                        {/* Title */}
+                        <Text style={styles.h3Text}>{goal.title}</Text>
+                      </View>
+                    </View>
+                    {/* Description */}
+                    <Text style={styles.bodyText}>{goal.description}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+            {goalListItemAddModalIndex === 2 && (
+              <View style={styles.selectionMenusContainer}>
+                {/* Timeframe Menu */}
+                <View style={styles.menuComponent}>
+                  <Text style={styles.h2Text}>Mijn doel</Text>
+                  <Text style={styles.h3Text}>{title}</Text>
+                  <Text style={styles.bodyText}>
+                    Binnen welk tijdsbestek wil jij je doel opstellen en
+                    evalueren?
+                  </Text>
+
+                  {/* Dropdown */}
+                  <Dropdown
+                    style={styles.dropdown}
+                    containerStyle={styles.dropdownContainer}
+                    iconColor='black'
+                    iconStyle={styles.icon}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    itemTextStyle={styles.itemTextStyle}
+                    itemContainerStyle={styles.itemContainerStyle}
+                    data={timeframeDropdownData}
+                    labelField='label'
+                    valueField='value'
+                    placeholder='Kies een tijdsbestek'
+                    placeholderStyle={styles.placeholderStyle}
+                    value={timeframeDropdownValue}
+                    onChange={(item) => {
+                      setTimeframeDropdownValue(item.value);
+                      setTimeframe(item.value);
+                      setMarkedDates({});
+                    }}
+                    onFocus={() => setTimeframeDropdownIsFocus(true)}
+                    onBlur={() => setTimeframeDropdownIsFocus(false)}
+                    renderRightIcon={() => (
+                      <Feather
+                        name={`${
+                          timeframeDropdownIsFocus
+                            ? 'chevron-up'
+                            : 'chevron-down'
+                        }`}
+                        size={24}
+                      />
+                    )}
+                  />
                 </View>
-              )}
-              {goalListItemAddModalIndex === 1 && (
-                <View style={styles.goalsContainer}>
-                  {/* @ts-ignore */}
-                  {categoryGoals.get(category).map((goal, index) => (
-                    <Pressable
-                      key={index}
-                      style={styles.goalComponent}
-                      onPress={() =>
-                        handleGoalSelect(
-                          goal.title,
-                          goal.description,
-                          goal.endText,
-                          goal.dropdownOptions
+
+                {/* Target Frequency Menu */}
+                {timeframe !== Timeframe.Daily && (
+                  <View style={styles.menuComponent}>
+                    <Text style={styles.h2Text}>Mijn doel</Text>
+                    <Text style={styles.h3Text}>{title}</Text>
+                    <Text style={styles.bodyText}>
+                      Hoe vaak wil je je doel behalen binnen het gekozen
+                      tijdsbestek?
+                    </Text>
+                    <Text style={styles.bodyText}>
+                      Selecteer een aantal tussen:{'\n'}Wekelijks: 1 - 7 keer.
+                      {'\n'}
+                      Maandelijks: 1 - 30 keer.
+                    </Text>
+                    {/* Text Input */}
+                    <TextInput
+                      value={textInputValue}
+                      onChangeText={(text) =>
+                        validateTextInput(
+                          text,
+                          timeframe === Timeframe.Weekly ? 7 : 30
                         )
                       }
-                    >
-                      {/* Icon + Category + Title */}
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          width: '100%',
-                          columnGap: 5,
-                        }}
-                      >
-                        <Image
-                          style={{ width: 40, height: 40 }}
-                          source={getGoalCategoryIcon(category)}
-                        />
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            width: '100%',
-                          }}
-                        >
-                          {/* Category */}
-                          <Text style={styles.h2Text}>{goal.category}</Text>
-                          {/* Title */}
-                          <Text style={styles.h3Text}>{goal.title}</Text>
-                        </View>
-                      </View>
-                      {/* Description */}
-                      <Text style={styles.bodyText}>{goal.description}</Text>
-                    </Pressable>
-                  ))}
-                </View>
-              )}
-              {goalListItemAddModalIndex === 2 && (
-                <View style={styles.selectionMenusContainer}>
-                  {/* Timeframe Menu */}
+                      inputMode='numeric'
+                      style={styles.textInputStyle}
+                      placeholder='Maak een keuze...'
+                    />
+                  </View>
+                )}
+
+                {/* Special Dropdown Menu */}
+                {goalSpecialDropdownOptions.length > 0 && (
                   <View style={styles.menuComponent}>
                     <Text style={styles.h2Text}>Mijn doel</Text>
                     <Text style={styles.h3Text}>{title}</Text>
@@ -493,23 +574,21 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       selectedTextStyle={styles.selectedTextStyle}
                       itemTextStyle={styles.itemTextStyle}
                       itemContainerStyle={styles.itemContainerStyle}
-                      data={timeframeDropdownData}
+                      data={goalSpecialDropdownOptions}
                       labelField='label'
                       valueField='value'
-                      placeholder='Kies een tijdsbestek'
+                      placeholder='Selecteer een aantal'
                       placeholderStyle={styles.placeholderStyle}
-                      value={timeframeDropdownValue}
+                      value={specialDropdownValue}
                       onChange={(item) => {
-                        setTimeframeDropdownValue(item.value);
-                        setTimeframe(item.value);
-                        setMarkedDates({});
+                        setSpecialDropdownValue(item.value);
                       }}
-                      onFocus={() => setTimeframeDropdownIsFocus(true)}
-                      onBlur={() => setTimeframeDropdownIsFocus(false)}
+                      onFocus={() => setSpecialDropdownIsFocus(true)}
+                      onBlur={() => setSpecialDropdownIsFocus(false)}
                       renderRightIcon={() => (
                         <Feather
                           name={`${
-                            timeframeDropdownIsFocus
+                            specialDropdownIsFocus
                               ? 'chevron-up'
                               : 'chevron-down'
                           }`}
@@ -518,262 +597,186 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       )}
                     />
                   </View>
+                )}
 
-                  {/* Target Frequency Menu */}
-                  {timeframe !== Timeframe.Daily && (
-                    <View style={styles.menuComponent}>
-                      <Text style={styles.h2Text}>Mijn doel</Text>
-                      <Text style={styles.h3Text}>{title}</Text>
-                      <Text style={styles.bodyText}>
-                        Hoe vaak wil je je doel behalen binnen het gekozen
-                        tijdsbestek?
-                      </Text>
-                      <Text style={styles.bodyText}>
-                        Selecteer een aantal tussen:{'\n'}Wekelijks: 1 - 7 keer.
-                        {'\n'}
-                        Maandelijks: 1 - 30 keer.
-                      </Text>
-                      {/* Text Input */}
-                      <TextInput
-                        value={textInputValue}
-                        onChangeText={(text) =>
-                          validateTextInput(
-                            text,
-                            timeframe === Timeframe.Weekly ? 7 : 30
-                          )
-                        }
-                        inputMode='numeric'
-                        style={styles.textInputStyle}
-                        placeholder='Maak een keuze...'
-                      />
-                    </View>
-                  )}
+                <View style={styles.menuComponent}>
+                  <Text style={[styles.h2Text, { textAlign: 'center' }]}>
+                    Start- en einddatum
+                  </Text>
 
-                  {/* Special Dropdown Menu */}
-                  {goalSpecialDropdownOptions.length > 0 && (
-                    <View style={styles.menuComponent}>
-                      <Text style={styles.h2Text}>Mijn doel</Text>
-                      <Text style={styles.h3Text}>{title}</Text>
-                      <Text style={styles.bodyText}>
-                        Binnen welk tijdsbestek wil jij je doel opstellen en
-                        evalueren?
-                      </Text>
-
-                      {/* Dropdown */}
-                      <Dropdown
-                        style={styles.dropdown}
-                        containerStyle={styles.dropdownContainer}
-                        iconColor='black'
-                        iconStyle={styles.icon}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        itemTextStyle={styles.itemTextStyle}
-                        itemContainerStyle={styles.itemContainerStyle}
-                        data={goalSpecialDropdownOptions}
-                        labelField='label'
-                        valueField='value'
-                        placeholder='Selecteer een aantal'
-                        placeholderStyle={styles.placeholderStyle}
-                        value={specialDropdownValue}
-                        onChange={(item) => {
-                          setSpecialDropdownValue(item.value);
-                        }}
-                        onFocus={() => setSpecialDropdownIsFocus(true)}
-                        onBlur={() => setSpecialDropdownIsFocus(false)}
-                        renderRightIcon={() => (
-                          <Feather
-                            name={`${
-                              specialDropdownIsFocus
-                                ? 'chevron-up'
-                                : 'chevron-down'
-                            }`}
-                            size={24}
-                          />
-                        )}
-                      />
-                    </View>
-                  )}
-
-                  <View style={styles.menuComponent}>
-                    <Text style={[styles.h2Text, { textAlign: 'center' }]}>
-                      Start- en einddatum
-                    </Text>
-
-                    {/* Calendar */}
-                    <Calendar
-                      minDate={
-                        timeframe !== Timeframe.Daily
-                          ? timeframe === Timeframe.Weekly
-                            ? getNextWeek()
-                            : getNextMonth()
-                          : new Date().toISOString().split('T')[0]
-                      }
-                      onDayPress={(day) =>
-                        handleCalendarPeriodSelect(day.dateString)
-                      }
-                      markingType={'period'}
-                      markedDates={markedDates}
-                      renderArrow={(direction) =>
-                        direction === 'left' ? (
-                          <Feather
-                            name='chevron-left'
-                            size={24}
-                            color='black'
-                            style={{ marginLeft: 40 }}
-                          />
-                        ) : (
-                          <Feather
-                            name='chevron-right'
-                            size={24}
-                            color='black'
-                            style={{ marginRight: 40 }}
-                          />
-                        )
-                      }
-                    />
-                    <Pressable
-                      onPress={() => handleGoalSentence()}
-                      style={styles.viewButton}
-                    >
-                      <Text style={styles.buttonText}>Doel bekijken</Text>
-                    </Pressable>
-                  </View>
+                  {/* Calendar */}
+                  <Calendar
+                    minDate={
+                      timeframe !== Timeframe.Daily
+                        ? timeframe === Timeframe.Weekly
+                          ? getNextWeek()
+                          : getNextMonth()
+                        : new Date().toISOString().split('T')[0]
+                    }
+                    onDayPress={(day) =>
+                      handleCalendarPeriodSelect(day.dateString)
+                    }
+                    markingType={'period'}
+                    markedDates={markedDates}
+                    renderArrow={(direction) =>
+                      direction === 'left' ? (
+                        <Feather
+                          name='chevron-left'
+                          size={24}
+                          color='black'
+                          style={{ marginLeft: 40 }}
+                        />
+                      ) : (
+                        <Feather
+                          name='chevron-right'
+                          size={24}
+                          color='black'
+                          style={{ marginRight: 40 }}
+                        />
+                      )
+                    }
+                  />
+                  <Pressable
+                    onPress={() => handleGoalSentence()}
+                    style={styles.viewButton}
+                  >
+                    <Text style={styles.buttonText}>Doel bekijken</Text>
+                  </Pressable>
                 </View>
-              )}
-              {goalListItemAddModalIndex === 3 && (
-                <View style={styles.selectedGoalContainer}>
-                  <View style={styles.selectedGoalComponent}>
+              </View>
+            )}
+            {goalListItemAddModalIndex === 3 && (
+              <View style={styles.selectedGoalContainer}>
+                <View style={styles.selectedGoalComponent}>
+                  <View
+                    style={{
+                      rowGap: 10,
+                    }}
+                  >
                     <View
                       style={{
-                        rowGap: 10,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        width: '100%',
+                        columnGap: 5,
                       }}
                     >
+                      <Image
+                        style={{ width: 40, height: 40 }}
+                        source={getGoalCategoryIcon(category)}
+                      />
                       <View
                         style={{
                           display: 'flex',
-                          flexDirection: 'row',
-                          alignItems: 'center',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
                           width: '100%',
-                          columnGap: 5,
                         }}
                       >
-                        <Image
-                          style={{ width: 40, height: 40 }}
-                          source={getGoalCategoryIcon(category)}
-                        />
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            width: '100%',
-                          }}
-                        >
-                          <Text style={styles.h2Text}>
-                            {getGoalCategoryString(category)}
-                          </Text>
-                          <Text style={styles.h3Text}>{title}</Text>
-                        </View>
+                        <Text style={styles.h2Text}>
+                          {getGoalCategoryString(category)}
+                        </Text>
+                        <Text style={styles.h3Text}>{title}</Text>
                       </View>
-                      <Text style={styles.bodyText}>
-                        {highlightFrequency(sentence)}
-                      </Text>
-                      <Text style={styles.h3Text}>
-                        Startdatum:{' '}
-                        <Text style={styles.bodyText}>
-                          {startDate?.toLocaleDateString('nl-NL', {
-                            day: '2-digit',
-                            month: 'long',
-                            year: 'numeric',
-                          })}
-                        </Text>
-                      </Text>
-                      <Text style={styles.h3Text}>
-                        Einddatum:{' '}
-                        <Text style={styles.bodyText}>
-                          {endDate?.toLocaleDateString('nl-NL', {
-                            day: '2-digit',
-                            month: 'long',
-                            year: 'numeric',
-                          })}
-                        </Text>
-                      </Text>
                     </View>
+                    <Text style={styles.bodyText}>
+                      {highlightFrequency(sentence)}
+                    </Text>
+                    <Text style={styles.h3Text}>
+                      Startdatum:{' '}
+                      <Text style={styles.bodyText}>
+                        {startDate?.toLocaleDateString('nl-NL', {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </Text>
+                    </Text>
+                    <Text style={styles.h3Text}>
+                      Einddatum:{' '}
+                      <Text style={styles.bodyText}>
+                        {endDate?.toLocaleDateString('nl-NL', {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </Text>
+                    </Text>
                   </View>
                 </View>
-              )}
-            </ScrollView>
-            {/* TODO: Is there a way to achieve this layout without a wrapper? */}
-            {/* Progress Wrapper */}
-            <View
-              style={{
-                position: 'absolute',
-                bottom: 40,
-                width: '100%',
-                alignSelf: 'center',
-                paddingHorizontal: 15,
-              }}
-            >
-              {/* Progress Container */}
-              <View style={styles.progressContainer}>
-                {/* Buttons Container */}
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
+              </View>
+            )}
+          </ScrollView>
+          {/* TODO: Is there a way to achieve this layout without a wrapper? */}
+          {/* Progress Wrapper */}
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 40,
+              width: '100%',
+              alignSelf: 'center',
+              paddingHorizontal: 15,
+            }}
+          >
+            {/* Progress Container */}
+            <View style={styles.progressContainer}>
+              {/* Buttons Container */}
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                {/* Go Back Button */}
+                <Pressable
+                  onPress={() => handleBack()}
+                  disabled={goalListItemAddModalIndex == 0 ? true : false}
+                  style={
+                    goalListItemAddModalIndex == 0
+                      ? [styles.backButton, { opacity: 0.4 }]
+                      : styles.backButton
+                  }
                 >
-                  {/* Go Back Button */}
+                  <Text style={styles.buttonText}>Ga terug</Text>
+                </Pressable>
+                {/* Finish Button */}
+                {goalListItemAddModalIndex === 3 && (
                   <Pressable
-                    onPress={() => handleBack()}
-                    disabled={goalListItemAddModalIndex == 0 ? true : false}
-                    style={
-                      goalListItemAddModalIndex == 0
-                        ? [styles.backButton, { opacity: 0.4 }]
-                        : styles.backButton
-                    }
+                    onPress={() => handleFinish()}
+                    style={styles.finishButton}
                   >
-                    <Text style={styles.buttonText}>Ga terug</Text>
+                    <Text style={styles.buttonText}>Opslaan en afsluiten</Text>
                   </Pressable>
-                  {/* Finish Button */}
-                  {goalListItemAddModalIndex === 3 && (
-                    <Pressable
-                      onPress={() => handleFinish()}
-                      style={styles.finishButton}
-                    >
-                      <Text style={styles.buttonText}>
-                        Opslaan en afsluiten
-                      </Text>
-                    </Pressable>
-                  )}
-                </View>
-                {/* Progress Dots Container */}
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignSelf: 'center',
-                    columnGap: 7,
-                  }}
-                >
-                  {Array.from({ length: 4 }).map((_, index) => {
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          width: 8,
-                          height: 8,
-                          backgroundColor:
-                            index === goalListItemAddModalIndex
-                              ? '#829c7a'
-                              : '#E4E1E1',
-                          borderRadius: 99,
-                        }}
-                      ></View>
-                    );
-                  })}
-                </View>
+                )}
+              </View>
+              {/* Progress Dots Container */}
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignSelf: 'center',
+                  columnGap: 7,
+                }}
+              >
+                {Array.from({ length: 4 }).map((_, index) => {
+                  return (
+                    <View
+                      key={index}
+                      style={{
+                        width: 8,
+                        height: 8,
+                        backgroundColor:
+                          index === goalListItemAddModalIndex
+                            ? '#829c7a'
+                            : '#E4E1E1',
+                        borderRadius: 99,
+                      }}
+                    ></View>
+                  );
+                })}
               </View>
             </View>
           </View>

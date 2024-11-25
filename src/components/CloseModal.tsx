@@ -66,17 +66,17 @@ export const CloseModal: React.FC<CloseModalProps> = ({
           <View style={{ rowGap: 15 }}>
             <Pressable
               style={styles.closeButton}
-              onPress={() =>
-                handleClose !== undefined
-                  ? handleCloseModal()
-                  : handleParentModalClose()
-              }
+              onPress={() => setCloseModalVisible(!closeModalVisible)}
             >
               <Text style={styles.closeButtonText}>Annuleren</Text>
             </Pressable>
             <Pressable
               style={styles.cancelButton}
-              onPress={() => setCloseModalVisible(!closeModalVisible)}
+              onPress={() =>
+                handleClose !== undefined
+                  ? handleCloseModal()
+                  : handleParentModalClose()
+              }
             >
               <Text style={styles.cancelButtonText}>Afsluiten</Text>
             </Pressable>
