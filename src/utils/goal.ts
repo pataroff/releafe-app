@@ -5,6 +5,7 @@ interface Goal {
   title: string;
   description: string;
   endText: string;
+  dropdownText?: string;
   dropdownOptions?: { label: string; value: string }[];
 }
 
@@ -79,6 +80,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Regelmatige lichaamsbeweging verbetert de fysieke gezondheid. Dit heeft direct invloed op het mentale welzijn doordat het symptomen van depressie en angst vermindert.',
         endText: 'bewegen.',
+        dropdownText: 'Hoelang wil je per keer bewegen?',
         dropdownOptions: [
           { label: '10 minuten', value: '10 minuten' },
           { label: '20 minuten', value: '20 minuten' },
@@ -94,6 +96,8 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Krachttraining kan helpen bij het verbeteren van het zelfbeeld en hoe je je in je eigen lichaam voelt. Ook maakt het endorfines vrij die je humeur verbeteren.',
         endText: 'krachttraining uitvoeren.',
+        dropdownText:
+          'Hoeveel minuten wil je per keer aan krachttraining doen?',
         dropdownOptions: [
           { label: '10 minuten', value: '10 minuten' },
           { label: '20 minuten', value: '20 minuten' },
@@ -116,6 +120,8 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Intervaltraining kan helpen bij het effectief managen van stress en het verbeteren van de algehele energieniveaus. Daarnaast kan het helpen je hart gezond te houden en calorieën efficiënt te verbranden.',
         endText: 'aan intervaltraining doen.',
+        dropdownText:
+          'Hoeveel minuten wil je per keer aan intervaltraining doen?',
         dropdownOptions: [
           { label: '10 minuten', value: '10 minuten' },
           { label: '20 minuten', value: '20 minuten' },
@@ -131,6 +137,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Het stellen van een dagelijks stappendoel helpt bij het verhogen van fysieke activiteit. Dit is belangrijk voor zowel je fysieke als mentale gezondheid. Regelmatig wandelen kan stress verminderen, je humeur verbeteren en je algehele energieniveau verhogen.',
         endText: 'per dag zetten.',
+        dropdownText: 'Hoeveel stappen wil je per keer zetten?',
         dropdownOptions: [
           { label: '2.000 stappen', value: '2.000 stappen' },
           { label: '4.000 stappen', value: '4.000 stappen' },
@@ -212,12 +219,14 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         title: 'Minder suikerhoudende dranken',
         description:
           'Het vermijden van suikerhoudende dranken helpt bij het stabiliseren van energieniveaus en het voorkomen van stemmingswisselingen.',
-        endText: 'suikerhoudende dranken drinken.',
+        endText: 'suikerhoudende dranken drinken per dag.',
+        dropdownText:
+          'Hoeveel suikerhoudende dranken wil je maximaal drinken per dag?',
         dropdownOptions: [
           { label: '0', value: '0' },
-          { label: 'niet meer dan 1x', value: 'niet meer dan 1x' },
-          { label: 'niet meer dan 2x', value: 'niet meer dan 2x' },
-          { label: 'niet meer dan 3x', value: 'niet meer dan 3x' },
+          { label: 'niet meer dan 1', value: 'niet meer dan 1' },
+          { label: 'niet meer dan 2', value: 'niet meer dan 2' },
+          { label: 'niet meer dan 3', value: 'niet meer dan 3' },
         ],
       },
     ],
@@ -238,12 +247,14 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         title: 'Cafeïne controle',
         description:
           'Het beperken van cafeïne helpt bij het verminderen van angst, slaapproblemen en rusteloosheid.',
-        endText: 'koffie drinken.',
+        endText: 'kopjes koffie drinken per dag.',
+        dropdownText: 'Hoeveel kopjes koffie wil je maximaal drinken per dag?',
         dropdownOptions: [
           { label: '0', value: '0' },
-          { label: 'niet meer dan 1x', value: 'niet meer dan 1x' },
-          { label: 'niet meer dan 2x', value: 'niet meer dan 2x' },
-          { label: 'niet meer dan 3x', value: 'niet meer dan 3x' },
+          { label: 'niet meer dan 1', value: 'niet meer dan 1' },
+          { label: 'niet meer dan 2', value: 'niet meer dan 2' },
+          { label: 'niet meer dan 3', value: 'niet meer dan 3' },
+          { label: 'niet meer dan 4', value: 'niet meer dan 4' },
         ],
       },
       {
@@ -251,12 +262,15 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         title: 'Stoppen met roken',
         description:
           'Stoppen met roken verbetert de fysieke gezondheid. Dit is essentieel voor je mentale welzijn.',
-        endText: 'sigaret roken.',
+        endText: 'een sigaret roken per dag.',
+        dropdownText: 'Hoeveel sigaretten wil je maximaal roken per dag?',
         dropdownOptions: [
-          { label: '0', value: '0' },
-          { label: 'niet meer dan 1x', value: 'niet meer dan 1x' },
-          { label: 'niet meer dan 2x', value: 'niet meer dan 2x' },
-          { label: 'niet meer dan 3x', value: 'niet meer dan 3x' },
+          { label: '0 keer', value: '0 keer' },
+          { label: 'niet meer dan 1 keer', value: 'niet meer dan 1x' },
+          { label: 'niet meer dan 2 keer', value: 'niet meer dan 2x' },
+          { label: 'niet meer dan 3 keer', value: 'niet meer dan 3x' },
+          { label: 'niet meer dan 4 keer', value: 'niet meer dan 4x' },
+          { label: 'niet meer dan 5 keer', value: 'niet meer dan 5x' },
         ],
       },
       {
@@ -264,12 +278,13 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         title: 'Minder drugs',
         description:
           "Verminderen van (recreatief) druggebruik vermindert risico's van stemmingsstoornissen en cognitieve beperkingen.",
-        endText: 'drugs gebruiken',
+        endText: 'drugs gebruiken per dag.',
+        dropdownText: 'Hoevaak wil je maximaal drugs gebruiken per dag?',
         dropdownOptions: [
-          { label: '0', value: '0' },
-          { label: 'niet meer dan 1x', value: 'niet meer dan 1x' },
-          { label: 'niet meer dan 2x', value: 'niet meer dan 2x' },
-          { label: 'niet meer dan 3x', value: 'niet meer dan 3x' },
+          { label: '0 keer', value: '0 keer' },
+          { label: 'niet meer dan 1 keer', value: 'niet meer dan 1 keer' },
+          { label: 'niet meer dan 2 keer', value: 'niet meer dan 2 keer' },
+          { label: 'niet meer dan 3 keer', value: 'niet meer dan 3 keer' },
         ],
       },
       {
@@ -277,12 +292,13 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         title: 'Verminder energie dranken',
         description:
           'Vermijden van energiedranken vermindert overstimulatie en bevordert een stabieler energieniveau en mentaal evenwicht.',
-        endText: 'energiedranken drinken.',
+        endText: 'energiedranken drinken per dag.',
+        dropdownText: 'Hoeveel energiedranken wil je maximaal drinken per dag?',
         dropdownOptions: [
-          { label: '0', value: '0' },
-          { label: 'niet meer dan 1x', value: 'niet meer dan 1x' },
-          { label: 'niet meer dan 2x', value: 'niet meer dan 2x' },
-          { label: 'niet meer dan 3x', value: 'niet meer dan 3x' },
+          { label: '0 keer', value: '0 keer' },
+          { label: 'niet meer dan 1 keer', value: 'niet meer dan 1' },
+          { label: 'niet meer dan 2 keer', value: 'niet meer dan 2' },
+          { label: 'niet meer dan 3 keer', value: 'niet meer dan 3' },
         ],
       },
     ],
@@ -372,6 +388,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           "Het onderhouden van hobby's zorgt voor noodzakelijke ontspanning en afleiding van dagelijkse stress. Dit bevordert emotioneel evenwicht.",
         endText: 'besteden aan een hobby.',
+        dropdownText: 'Hoeveel tijd wil je per keer aan een hobby besteden?',
         dropdownOptions: [
           { label: '15 minuten', value: '15 minuten' },
           { label: '30 minuten', value: '30 minuten' },

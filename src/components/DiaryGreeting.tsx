@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Image,
   Pressable,
+  Modal,
   Dimensions,
   Platform,
   TextStyle,
@@ -17,62 +18,73 @@ import { useNavigation } from '@react-navigation/native';
 
 import { AuthContext } from '../context/AuthContext';
 
+import { DiaryModal } from './DiaryModal';
+
 const windowWidth = Dimensions.get('window').width;
 
 export const DiaryGreeting = () => {
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
 
+  const [modalDiaryVisible, setModalDiaryVisible] = useState<boolean>(false);
+
   return (
-    <View style={styles.container}>
-      {/* Header Container */}
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          rowGap: 20,
-          marginTop: 10,
-        }}
-      >
-        <FontAwesome name='heart' size={36} color='#5C6B57' />
-        <Text style={styles.greetingText}>
-          Hi {user?.firstName}, wat goed dat je er weer bent. Laten we gelijk
-          beginnen.
-        </Text>
-      </View>
-      {/* Body Container */}
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          rowGap: 20,
-          marginTop: 20,
-        }}
-      >
-        <Text style={styles.diaryDescriptionText}>
-          Door dagelijks je dagboek bij te houden, volg je zorgvuldig jouw
-          groeiproces.
-        </Text>
-        <Text style={styles.dateLabel}>
-          Het is vandaag:{' '}
-          <Text style={styles.dateText}>
-            {new Date().toLocaleDateString('nl-NL', {
-              month: 'long',
-              year: 'numeric',
-              day: 'numeric',
-              weekday: 'long',
-            })}
+    <>
+      <DiaryModal
+        modalDiaryVisible={modalDiaryVisible}
+        setModalDiaryVisible={setModalDiaryVisible}
+      />
+
+      <View style={styles.container}>
+        {/* Header Container */}
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            rowGap: 20,
+            marginTop: 10,
+          }}
+        >
+          <FontAwesome name='heart' size={36} color='#5C6B57' />
+          <Text style={styles.greetingText}>
+            Hi {user?.firstName}, wat goed dat je er weer bent. Laten we gelijk
+            beginnen.
           </Text>
-        </Text>
+        </View>
+        {/* Body Container */}
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            rowGap: 20,
+            marginTop: 20,
+          }}
+        >
+          <Text style={styles.diaryDescriptionText}>
+            Door dagelijks je dagboek bij te houden, volg je zorgvuldig jouw
+            groeiproces.
+          </Text>
+          <Text style={styles.dateLabel}>
+            Het is vandaag:{' '}
+            <Text style={styles.dateText}>
+              {new Date().toLocaleDateString('nl-NL', {
+                month: 'long',
+                year: 'numeric',
+                day: 'numeric',
+                weekday: 'long',
+              })}
+            </Text>
+          </Text>
+        </View>
+        <Pressable
+          onPress={() => setModalDiaryVisible(!modalDiaryVisible)}
+          style={styles.startButton}
+        >
+          <Text style={styles.startButtonText}>Start met dagboek</Text>
+        </Pressable>
       </View>
-      <Pressable
-        onPress={() => navigation.navigate('Diary2')}
-        style={styles.startButton}
-      >
-        <Text style={styles.startButtonText}>Start met dagboek</Text>
-      </Pressable>
-    </View>
+    </>
   );
 };
 

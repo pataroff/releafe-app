@@ -253,7 +253,9 @@ export const SliderQuestion: React.FC<{
           </Pressable>
         </View>
         <View style={styles.progressBarContainer}>
-          <Text style={styles.progressBarText}>{progressValue * 100}%</Text>
+          <Text style={styles.progressBarText}>
+            {Math.floor(progressValue * 100)}%
+          </Text>
           <ProgressBar
             // @TODO: https://github.com/callstack/react-native-paper/issues/4544
             // Using `animatedValue` instead of `progress`, stops the app crashing,

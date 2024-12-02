@@ -85,6 +85,13 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState<number>(0);
   const [textQuestionIndex, setTextQuestionIndex] = useState<number>(0);
 
+  const sliderValuesLength = Object.keys(
+    selectedDiaryEntry?.sliderValues ?? {}
+  ).length;
+  const textValuesLength = Object.keys(
+    selectedDiaryEntry?.textValues ?? {}
+  ).length;
+
   useFocusEffect(
     useCallback(() => {
       initializeCalendar();
@@ -132,7 +139,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
   const handleNextSlider = () => {
     // @ts-ignore
-    if (sliderQuestionIndex === selectedDiaryEntry?.sliderValues.size - 1) {
+    if (sliderQuestionIndex === sliderValuesLength - 1) {
       setSliderQuestionIndex(0);
     } else {
       setSliderQuestionIndex(sliderQuestionIndex + 1);
@@ -147,7 +154,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
   const handleNextText = () => {
     // @ts-ignore
-    if (textQuestionIndex === selectedDiaryEntry?.textValues.size - 1) {
+    if (textQuestionIndex === textValuesLength - 1) {
       setTextQuestionIndex(0);
     } else {
       setTextQuestionIndex(textQuestionIndex + 1);
@@ -179,7 +186,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
       const formattedDate = getFormattedDate(entry.date);
       markedDates[formattedDate] = {
         marked: true,
-        dotColor: getDotColor(entry.sliderValues.get(0)),
+        dotColor: getDotColor(entry.sliderValues[0]),
       };
     });
 
@@ -322,7 +329,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             <Slider
               disabled={true}
               style={{ width: '100%', height: 40 }}
-              value={selectedDiaryEntry?.sliderValues.get(sliderQuestionIndex)}
+              value={selectedDiaryEntry?.sliderValues[sliderQuestionIndex]}
               minimumValue={1}
               maximumValue={10}
               thumbTintColor='#A5B79F'
@@ -357,7 +364,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             <View
               style={{ display: 'flex', flexDirection: 'row', columnGap: 7 }}
             >
-              {Array.from({ length: 6 }).map((_, index) => {
+              {Array.from({ length: sliderValuesLength }).map((_, index) => {
                 return (
                   <View
                     key={index}
@@ -376,12 +383,10 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             <Pressable
               onPress={() => handleNextSlider()}
               disabled={
-                sliderQuestionIndex == selectedDiaryEntry.sliderValues.size - 1
-                  ? true
-                  : false
+                sliderQuestionIndex == sliderValuesLength - 1 ? true : false
               }
               style={
-                sliderQuestionIndex == selectedDiaryEntry.sliderValues.size - 1
+                sliderQuestionIndex == sliderValuesLength - 1
                   ? { opacity: 0.4 }
                   : {}
               }
@@ -403,7 +408,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             </Text>
             <TextInput
               editable={false}
-              value={selectedDiaryEntry.textValues.get(textQuestionIndex)}
+              value={selectedDiaryEntry.textValues[textQuestionIndex]}
               style={styles.dataTextInputContainer}
               multiline={true}
             ></TextInput>
@@ -435,7 +440,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             <View
               style={{ display: 'flex', flexDirection: 'row', columnGap: 7 }}
             >
-              {Array.from({ length: 4 }).map((_, index) => {
+              {Array.from({ length: textValuesLength }).map((_, index) => {
                 return (
                   <View
                     key={index}
@@ -454,12 +459,10 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             <Pressable
               onPress={() => handleNextText()}
               disabled={
-                textQuestionIndex == selectedDiaryEntry.textValues.size - 1
-                  ? true
-                  : false
+                textQuestionIndex == textValuesLength - 1 ? true : false
               }
               style={
-                textQuestionIndex == selectedDiaryEntry.textValues.size - 1
+                textQuestionIndex == textValuesLength - 1
                   ? { opacity: 0.4 }
                   : {}
               }
@@ -472,6 +475,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             </Pressable>
           </View>
 
+          {/* TODO: Adjust the editing to the new diary flow! */}
           {/* Edit Button */}
           <Pressable
             style={styles.editButton}

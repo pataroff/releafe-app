@@ -86,6 +86,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   const [timeframeDropdownValue, setTimeframeDropdownValue] =
     useState<Timeframe>(Timeframe.Daily);
   const [textInputValue, setTextInputValue] = useState<string>('');
+  const [specialDropdownText, setSpecialDropdownText] = useState<string>('');
   const [specialDropdownValue, setSpecialDropdownValue] = useState<string>('');
 
   const [timeframeDropdownIsFocus, setTimeframeDropdownIsFocus] =
@@ -192,18 +193,16 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     title: string,
     description: string,
     endText: string,
+    dropdownText?: string,
     dropdownOptions?: { label: string; value: string }[]
   ) => {
     setTitle(title);
     setDescription(description);
     setGoalEndText(endText);
     setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
-
-    if (dropdownOptions) {
-      setGoalSpecialDropdownOptions(dropdownOptions);
-    } else {
-      setGoalSpecialDropdownOptions([]);
-    }
+    // Handle optional params
+    setSpecialDropdownText(dropdownText || '');
+    setGoalSpecialDropdownOptions(dropdownOptions || []);
   };
 
   const handleGoalSentence = () => {
@@ -441,6 +440,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                         goal.title,
                         goal.description,
                         goal.endText,
+                        goal.dropdownText,
                         goal.dropdownOptions
                       )
                     }
@@ -560,10 +560,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                   <View style={styles.menuComponent}>
                     <Text style={styles.h2Text}>Mijn doel</Text>
                     <Text style={styles.h3Text}>{title}</Text>
-                    <Text style={styles.bodyText}>
-                      Binnen welk tijdsbestek wil jij je doel opstellen en
-                      evalueren?
-                    </Text>
+                    <Text style={styles.bodyText}>{specialDropdownText}</Text>
 
                     {/* Dropdown */}
                     <Dropdown
@@ -606,13 +603,16 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
 
                   {/* Calendar */}
                   <Calendar
-                    minDate={
-                      timeframe !== Timeframe.Daily
-                        ? timeframe === Timeframe.Weekly
-                          ? getNextWeek()
-                          : getNextMonth()
-                        : new Date().toISOString().split('T')[0]
-                    }
+                    // Old functionality
+                    // minDate={
+                    //   timeframe !== Timeframe.Daily
+                    //     ? timeframe === Timeframe.Weekly
+                    //       ? getNextWeek()
+                    //       : getNextMonth()
+                    //     : new Date().toISOString().split('T')[0]
+                    // }
+
+                    minDate={new Date().toISOString().split('T')[0]}
                     onDayPress={(day) =>
                       handleCalendarPeriodSelect(day.dateString)
                     }

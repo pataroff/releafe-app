@@ -16,7 +16,7 @@ export const DashboardScreen: React.FC = () => {
   const title = 'Welzijnsoverzicht';
 
   const { user } = useContext(AuthContext);
-  const { setDiaryEntries, jsonToMap } = useContext(DiaryContext);
+  const { setDiaryEntries, deserializeRecord } = useContext(DiaryContext);
 
   useEffect(() => {
     const fetchDiaryEntries = async () => {
@@ -38,8 +38,8 @@ export const DashboardScreen: React.FC = () => {
                 id,
                 uuid,
                 date: new Date(date),
-                sliderValues: jsonToMap(sliderValues),
-                textValues: jsonToMap(textValues),
+                sliderValues: deserializeRecord(sliderValues),
+                textValues: deserializeRecord(textValues),
               };
             });
 

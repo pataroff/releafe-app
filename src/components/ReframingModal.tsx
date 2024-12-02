@@ -230,7 +230,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                 style={{ position: 'absolute', right: 0 }}
                 onPress={() => setCloseModalVisible(!closeModalVisible)}
               >
-                <Feather name='x-circle' size={24} color='black' />
+                <Feather name='x-circle' size={24} color='gray' />
               </Pressable>
             </View>
 

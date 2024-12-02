@@ -42,10 +42,12 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
   const { deleteGoalEntry } = useContext(GoalContext);
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [timeframeProgressValue, setTimeframeProgressValue] =
-    useState<number>(completedTimeframe);
-  const [periodProgressValue, setPeriodProgressValue] =
-    useState<number>(completedPeriod);
+  const [timeframeProgressValue, setTimeframeProgressValue] = useState<number>(
+    completedTimeframe / 10
+  );
+  const [periodProgressValue, setPeriodProgressValue] = useState<number>(
+    completedPeriod / 10
+  );
 
   const getDaysBetweenDates = (
     startDate: Date | null,
@@ -102,8 +104,8 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
 
   const calculatePeriod = (
     timeframe: Timeframe,
-    startDate: Date,
-    endDate: Date
+    startDate: Date | null,
+    endDate: Date | null
   ): number => {
     switch (timeframe) {
       case Timeframe.Daily:
@@ -323,7 +325,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   </Text>
 
                   <Text style={styles.completedTimeframeText}>
-                    {completedTimeframe}/
+                    {completedPeriod}/
                     {calculatePeriod(timeframe, startDate, endDate)}
                   </Text>
                 </View>

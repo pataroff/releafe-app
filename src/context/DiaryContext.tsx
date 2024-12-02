@@ -10,66 +10,63 @@ import { AuthContext } from './AuthContext';
 // Create context
 export const DiaryContext = createContext<IDiaryContext>({
   diaryEntries: [],
-  sliderValues: new Map<number, number>(),
-  sliderQuestionIndex: 0,
-  progressValue: 0,
-  textValues: new Map<number, string>(),
-  hasData: false,
+  sliderValues: {},
+  textValues: {},
   date: new Date(),
+  hasData: false,
   setDiaryEntries: () => {},
   setTextValues: () => {},
   addTextValue: () => {},
-  setHasData: () => {},
   setDate: () => {},
-  setProgressValue: () => {},
-  setSliderQuestionIndex: () => {},
+  setHasData: () => {},
   addSliderValue: () => {},
   resetSliderValues: () => {},
   resetTextValues: () => {},
   createDiaryEntry: () => {},
-  jsonToMap: (data: { [key: string]: number | string }) =>
-    new Map<number, number | string>(),
+  serializeRecord: (record: Record<number, number | string>) => {
+    return JSON.stringify(record);
+  },
+  deserializeRecord: (data: {
+    [key: string]: number | string;
+  }): Record<number, number | string> => {
+    return Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [Number(key), value])
+    );
+  },
 });
 
 // Provider component
 export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
-  const [diaryEntries, setDiaryEntries] = useState<IDiaryEntry[]>([]);
-  const [sliderQuestionIndex, setSliderQuestionIndex] = useState(0);
-  const [progressValue, setProgressValue] = useState(0.125);
-  const [sliderValues, setSliderValues] = useState<Map<number, number>>(
-    new Map()
-  );
-  const [textValues, setTextValues] = useState<Map<number, string>>(new Map());
-  const [hasData, setHasData] = useState(false); // Wizard of Oz Method
-  const [date, setDate] = useState<Date>(new Date());
-
   const { user } = useContext(AuthContext);
 
-  // @TODO Is there a better way of doing this?
+  const [diaryEntries, setDiaryEntries] = useState<IDiaryEntry[]>([]);
+  const [sliderValues, setSliderValues] = useState<Record<number, number>>({});
+  const [textValues, setTextValues] = useState<Record<number, string>>({});
+  const [date, setDate] = useState<Date>(new Date());
+  const [hasData, setHasData] = useState(false); // Wizard of Oz Method
+
   const addSliderValue = (questionIndex: number, value: number) => {
-    setSliderValues((prev) => {
-      const newSliderValues = new Map<number, number>(prev); // Copy previous map
-      newSliderValues.set(questionIndex, value); // Update new map
-      return newSliderValues; // Return updated map
-    });
+    setSliderValues((prev) => ({
+      ...prev,
+      [questionIndex]: value,
+    }));
   };
 
   const addTextValue = (questionIndex: number, value: string) => {
-    setTextValues((prev) => {
-      const newTextValues = new Map(prev);
-      newTextValues.set(questionIndex, value);
-      return newTextValues;
-    });
+    setTextValues((prev) => ({
+      ...prev,
+      [questionIndex]: value,
+    }));
   };
 
   const resetSliderValues = () => {
-    setSliderValues(new Map());
+    setSliderValues({});
   };
 
   const resetTextValues = () => {
-    setTextValues(new Map());
+    setTextValues({});
   };
 
   const createDiaryEntry = async () => {
@@ -95,8 +92,8 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
       // @ts-ignore 'user' is possibly 'null'
       user: user?.id,
       date: newDiaryEntry.date,
-      sliderValues: mapToJson(newDiaryEntry.sliderValues),
-      textValues: mapToJson(newDiaryEntry.textValues),
+      sliderValues: serializeRecord(newDiaryEntry.sliderValues),
+      textValues: serializeRecord(newDiaryEntry.textValues),
     };
 
     if (matchedDiaryEntry) {
@@ -131,14 +128,14 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     return date.toISOString().slice(0, 10);
   };
 
-  const mapToJson = (map: Map<number, number | string>) => {
-    return JSON.stringify(Object.fromEntries(map));
+  const serializeRecord = (record: Record<number, number | string>) => {
+    return JSON.stringify(record);
   };
 
-  const jsonToMap = (data: {
+  const deserializeRecord = (data: {
     [key: string]: number | string;
-  }): Map<number, number | string> => {
-    return new Map<number, number | string>(
+  }): Record<number, number | string> => {
+    return Object.fromEntries(
       Object.entries(data).map(([key, value]) => [Number(key), value])
     );
   };
@@ -148,8 +145,6 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
       value={{
         diaryEntries,
         sliderValues,
-        sliderQuestionIndex,
-        progressValue,
         textValues,
         hasData,
         date,
@@ -158,13 +153,12 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
         addTextValue,
         setHasData,
         setDate,
-        setProgressValue,
-        setSliderQuestionIndex,
         addSliderValue,
         resetSliderValues,
         resetTextValues,
         createDiaryEntry,
-        jsonToMap,
+        serializeRecord,
+        deserializeRecord,
       }}
     >
       {children}

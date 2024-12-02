@@ -9,32 +9,29 @@ export interface IDiaryEntry {
   id: string;
   uuid: string;
   date: Date;
-  sliderValues: Map<number, number>;
-  textValues: Map<number, string>;
+  sliderValues: Record<number, number>;
+  textValues: Record<number, string>;
 }
 
 export interface IDiaryContext {
   diaryEntries: IDiaryEntry[];
-  sliderValues: Map<number, number>;
-  sliderQuestionIndex: number;
-  progressValue: number;
-  textValues: Map<number, string>;
+  sliderValues: Record<number, number>;
+  textValues: Record<number, string>;
   hasData: boolean;
   date: Date;
   setDiaryEntries: React.Dispatch<React.SetStateAction<IDiaryEntry[]>>;
-  setTextValues: React.Dispatch<React.SetStateAction<Map<number, string>>>;
+  setTextValues: React.Dispatch<React.SetStateAction<Record<number, string>>>;
   addTextValue: (questionIndex: number, value: string) => void;
   setHasData: React.Dispatch<React.SetStateAction<boolean>>;
   setDate: React.Dispatch<React.SetStateAction<Date>>;
-  setProgressValue: React.Dispatch<React.SetStateAction<number>>;
-  setSliderQuestionIndex: React.Dispatch<React.SetStateAction<number>>;
   addSliderValue: (questionIndex: number, value: number) => void;
   resetSliderValues: () => void;
   resetTextValues: () => void;
   createDiaryEntry: () => void;
-  jsonToMap: (data: {
+  serializeRecord: (record: Record<number, number | string>) => string;
+  deserializeRecord: (data: {
     [key: string]: number | string;
-  }) => Map<number, number | string>;
+  }) => Record<number, number | string>;
 }
 
 export type RootStackParamList = {
@@ -138,6 +135,7 @@ export interface IGoalContext {
   setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
   createGoalEntry: () => void;
+  updateGoalEntry: (uuid: string) => void;
   deleteGoalEntry: (uuid: string) => void;
   resetGoalEntryFields: () => void;
 }

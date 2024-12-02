@@ -98,8 +98,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     rowGap: 10,
-    paddingHorizontal: 25,
-    paddingVertical: 25,
+    padding: 25,
     backgroundColor: 'white',
     // Shadow Test
     shadowColor: '#000',
@@ -139,7 +138,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 12,
     marginTop: 20,
-    backgroundColor: '#A9C1A1',
+    backgroundColor: '#90A38A',
   },
   dashboardButtonText: {
     ...Fonts.poppinsSemiBold[Platform.OS],
@@ -150,9 +149,9 @@ const styles = StyleSheet.create({
     width: 125,
     alignItems: 'center',
     borderRadius: 10,
-    paddingVertical: 6,
+    paddingVertical: 8,
     marginTop: 10,
-    borderWidth: 1,
+    borderWidth: 0.5,
   },
   closeButtonText: {
     ...Fonts.poppinsSemiBold[Platform.OS],

@@ -34,6 +34,7 @@ export const GoalContext = createContext<IGoalContext>({
   setCompletedTimeframe: () => {},
   setCompletedPeriod: () => {},
   createGoalEntry: () => {},
+  updateGoalEntry: () => {},
   deleteGoalEntry: () => {},
   resetGoalEntryFields: () => {},
 });
@@ -126,6 +127,55 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
+  const updateGoalEntry = async (uuid: string) => {
+    const matchedGoalEntry = goalEntries.find((entry) => entry.uuid == uuid);
+
+    // Declare a variable to hold the updated entry
+    let updatedEntry: IGoalEntry;
+
+    // Update locally
+    if (matchedGoalEntry) {
+      // Get the index of the matching entry
+      const index = goalEntries.indexOf(matchedGoalEntry);
+
+      // Create the updated entry
+      updatedEntry = { ...matchedGoalEntry };
+      updatedEntry.completedTimeframe += 1;
+
+      if (updatedEntry.completedTimeframe >= updatedEntry.targetFrequency) {
+        updatedEntry.completedPeriod += 1;
+        updatedEntry.completedTimeframe = 0;
+      }
+
+      // Update the existing entry at the found index
+      setGoalEntries((prev) => {
+        const updatedEntries = [...prev];
+        updatedEntries[index] = updatedEntry;
+        return updatedEntries;
+      });
+
+      // Update in database
+      try {
+        // Get the existing entry from the database
+        const matchedGoalEntryDatabase = await pb
+          .collection('goal_entries')
+          .getFirstListItem(`uuid="${matchedGoalEntry.uuid}"`, {
+            requestKey: null, // prevents auto-cancelling duplicate pending requests
+          });
+
+        // Update the existing entry in the database
+        await pb.collection('goal_entries').update(matchedGoalEntry.id, {
+          completedTimeframe: updatedEntry.completedTimeframe,
+          completedPeriod: updatedEntry.completedPeriod,
+        });
+      } catch (error) {
+        console.error('Error updating goal entry:', error);
+      }
+    } else {
+      return;
+    }
+  };
+
   const deleteGoalEntry = async (uuid: string) => {
     setGoalEntries((prev) => prev.filter((entry) => entry.uuid != uuid));
 
@@ -182,6 +232,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         setCompletedTimeframe,
         setCompletedPeriod,
         createGoalEntry,
+        updateGoalEntry,
         deleteGoalEntry,
         resetGoalEntryFields,
       }}

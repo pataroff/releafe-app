@@ -68,7 +68,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
               style={styles.closeButton}
               onPress={() => setCloseModalVisible(!closeModalVisible)}
             >
-              <Text style={styles.closeButtonText}>Annuleren</Text>
+              <Text style={styles.closeButtonText}>Nee, ik wil doorgaan</Text>
             </Pressable>
             <Pressable
               style={styles.cancelButton}
@@ -78,7 +78,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
                   : handleParentModalClose()
               }
             >
-              <Text style={styles.cancelButtonText}>Afsluiten</Text>
+              <Text style={styles.cancelButtonText}>Ja, ik wil afsluiten</Text>
             </Pressable>
           </View>
         </View>
