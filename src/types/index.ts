@@ -101,6 +101,7 @@ export interface IGoalEntry {
   title: string;
   description: string;
   sentence: string;
+  diarySentence: string;
   timeframe: Timeframe;
   targetFrequency: number;
   startDate: Date | null;
@@ -116,6 +117,7 @@ export interface IGoalContext {
   title: string;
   description: string;
   sentence: string;
+  diarySentence: string;
   timeframe: Timeframe;
   targetFrequency: number;
   startDate: Date | null;
@@ -128,6 +130,7 @@ export interface IGoalContext {
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
   setSentence: React.Dispatch<React.SetStateAction<string>>;
+  setDiarySentence: React.Dispatch<React.SetStateAction<string>>;
   setTimeframe: React.Dispatch<React.SetStateAction<Timeframe>>;
   setTargetFrequency: React.Dispatch<React.SetStateAction<number>>;
   setCompletedTimeframe: React.Dispatch<React.SetStateAction<number>>;

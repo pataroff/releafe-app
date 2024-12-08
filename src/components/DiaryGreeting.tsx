@@ -22,7 +22,7 @@ import { DiaryModal } from './DiaryModal';
 
 const windowWidth = Dimensions.get('window').width;
 
-export const DiaryGreeting = () => {
+export const DiaryGreeting = ({ route }) => {
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
 
@@ -33,6 +33,7 @@ export const DiaryGreeting = () => {
       <DiaryModal
         modalDiaryVisible={modalDiaryVisible}
         setModalDiaryVisible={setModalDiaryVisible}
+        route={route}
       />
 
       <View style={styles.container}>

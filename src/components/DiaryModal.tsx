@@ -41,6 +41,7 @@ interface GoalsChecklistItemProps {
 interface DiaryModalProps {
   modalDiaryVisible: boolean;
   setModalDiaryVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  route: any;
 }
 
 const GoalsChecklistItem: React.FC<GoalsChecklistItemProps> = ({
@@ -48,20 +49,7 @@ const GoalsChecklistItem: React.FC<GoalsChecklistItemProps> = ({
   checked,
   setCheckedGoals,
 }) => {
-  const { uuid, sentence } = goal;
-
-  const modifySentence = (sentence: string): string => {
-    const keywords = ['dagelijks', 'wekelijks', 'maandelijks'];
-    const words = sentence.split(' ');
-    const keywordIndex = words.findIndex((word) => keywords.includes(word));
-
-    if (keywordIndex === -1) {
-      return sentence;
-    }
-
-    const modifiedSentence = words.slice(keywordIndex + 2).join(' ');
-    return `Ik heb vandaag ${modifiedSentence}`;
-  };
+  const { uuid, diarySentence } = goal;
 
   const handleCheckbox = () => {
     const newChecked = !checked;
@@ -92,7 +80,7 @@ const GoalsChecklistItem: React.FC<GoalsChecklistItemProps> = ({
         uncheckedColor='#E5F1E3'
         checkedColor='#C1DEBE'
       />
-      <Text style={styles.bodyText}>{modifySentence(sentence)}</Text>
+      <Text style={styles.bodyText}>{diarySentence}</Text>
     </View>
   );
 };
@@ -100,6 +88,7 @@ const GoalsChecklistItem: React.FC<GoalsChecklistItemProps> = ({
 export const DiaryModal: React.FC<DiaryModalProps> = ({
   modalDiaryVisible,
   setModalDiaryVisible,
+  route,
 }) => {
   const {
     addSliderValue,
@@ -215,16 +204,17 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     navigation.navigate('Diary2');
   };
 
-  const handleClose = () => {
+  const handleClose = (index?: number) => {
     // Close modal
     setModalDiaryVisible(!modalDiaryVisible);
 
-    // Reset local state
-    resetLocalState();
-
-    // Reset context state
-    resetSliderValues();
-    resetTextValues();
+    if (index !== 0) {
+      // Reset local state
+      resetLocalState();
+      // Reset context state
+      resetSliderValues();
+      resetTextValues();
+    }
   };
 
   const handleTextChange = (questionIndex: number, value: string) => {
@@ -247,6 +237,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
         title='Stoppen met invullen dagboek'
         description='Je staat op het punt te stoppen met het invullen van je dagboek. Weet je het zeker?'
         handleClose={handleClose}
+        route={route}
       />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>

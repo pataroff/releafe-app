@@ -7,6 +7,7 @@ interface Goal {
   endText: string;
   dropdownText?: string;
   dropdownOptions?: { label: string; value: string }[];
+  diarySentence?: string;
 }
 
 export const categories = [
@@ -46,6 +47,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Het regelmatig bijhouden van het dagboek bevordert zelfinzicht en emotionele verwerking. Dit draagt bij aan betere mentale gezondheid.',
         endText: 'mijn dagboek in Releafe invullen.',
+        diarySentence: 'Ik heb vandaag mijn dagboek in Releafe ingevuld.',
       },
       {
         category: 'Releafe',
@@ -53,13 +55,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Ontspanningsoefeningen helpen bij het verbeteren van concentratie, het verlagen van stress en het verhogen van algemeen welzijn.',
         endText: 'een ontspannende oefening doen in Releafe.',
-      },
-      {
-        category: 'Releafe',
-        title: 'Ervaringen delen in de Community',
-        description:
-          'Het delen van je eigen (positieve en minder positieve) ervaringen en het lezen van ervaringen van anderen helpt je te realiseren dat je hier niet alleen in staat en zorgt ervoor dat je de mogelijkheid hebt om te relativeren waardoor je gevoelens dragelijker worden.',
-        endText: 'een persoonlijke ervaring delen in de Community.',
+        diarySentence: 'Ik heb vandaag een ontspanningsoefening gedaan.',
       },
       {
         category: 'Releafe',
@@ -67,6 +63,8 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Het reframen van een situatie of (negatieve) gedachte kan je helpen om patronen te doorbreken. Hierdoor voel je je gezonder en meer ‘in control’ over je eigen gedachtes.',
         endText: 'een zorg van mij Reframen in Releafe.',
+        diarySentence:
+          'Ik heb vandaag een zorg of gedachte van mij in Releafe gereframed.',
       },
     ],
   ],
@@ -89,6 +87,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: '50 minuten', value: '50 minuten' },
           { label: '60 minuten', value: '60 minuten' },
         ],
+        diarySentence: 'Ik heb vandaag X aan beweging gehad.',
       },
       {
         category: 'Bewegen',
@@ -106,6 +105,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: '50 minuten', value: '50 minuten' },
           { label: '60 minuten', value: '60 minuten' },
         ],
+        diarySentence: 'Ik heb vandaag X aan krachttraining uitgevoerd.',
       },
       {
         category: 'Bewegen',
@@ -113,6 +113,8 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Het gebruik van actief transport zoals wandelen of fietsen kan de dagelijkse fysieke activiteit verhogen en dit vermindert stress en verbetert de mentale helderheid.',
         endText: 'op een actieve manier naar een plaats van bestemming.',
+        diarySentence:
+          'Ik ben vandaag op een actieve manier naar een plaats van bestemming gegaan.',
       },
       {
         category: 'Bewegen',
@@ -130,6 +132,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: '50 minuten', value: '50 minuten' },
           { label: '60 minuten', value: '60 minuten' },
         ],
+        diarySentence: 'Ik heb vandaag X aan intervaltraining gedaan.',
       },
       {
         category: 'Bewegen',
@@ -145,6 +148,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: '8.000 stappen', value: '8.000 stappen' },
           { label: '10.000 stappen', value: '10.000 stappen' },
         ],
+        diarySentence: 'Ik heb vandaag X gezet.',
       },
     ],
   ],
@@ -157,7 +161,8 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         title: 'Consistente slaaptijden',
         description:
           'Het handhaven van een regelmatig slaapschema helpt de interne klok te stabiliseren. Dit leidt tot betere slaapkwaliteit en een verbeterd humeur.',
-        endText: 'op dezelfde tijd naar bed gaan en opstaan.',
+        endText: 'op een vaste tijd naar bed gaan en opstaan.',
+        diarySentence: 'Ik ben op een vaste tijd naar bed gegaan en opgestaan',
       },
       {
         category: 'Slapen',
@@ -165,6 +170,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Het verbeteren van de slaapkwaliteit door ontspanningsoefeningen kan de algehele gezondheid verbeteren en symptomen van depressie en angst verminderen.',
         endText: 'iets ontspannends doen voor het slapen gaan.',
+        diarySentence: 'Ik heb iets ontspannends gedaan voor het slapen gaan.',
       },
       {
         category: 'Slapen',
@@ -172,6 +178,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Voldoende slaap krijgen is essentieel voor de cognitieve functie en emotionele regulatie.',
         endText: '7 tot 9 uren slapen.',
+        diarySentence: 'Ik heb afgelopen nacht 7 tot 9 uren geslapen.',
       },
       {
         category: 'Slapen',
@@ -179,6 +186,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Beperking van middagdutjes kan nachtelijke slaapkwaliteit verbeteren. Dit is cruciaal voor emotioneel en fysiek herstel.',
         endText: 'geen middagdutje doen.',
+        diarySentence: 'Ik heb vandaag geen middagdutje gedaan.',
       },
     ],
   ],
@@ -192,6 +200,8 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Een dieet rijk aan groenten en fruit kan het energieniveau verhogen en bijdragen aan een beter humeur door de aanvoer van essentiële vitaminen en mineralen. Eet minimaal 250 gram groenten en 2 stuks fruit.',
         endText: '250 gram groente en twee stuks fruit eten.',
+        diarySentence:
+          'Ik heb vandaag 250 gram groenten en 2 stuks fruit gegeten.',
       },
       {
         category: 'Voeding',
@@ -199,6 +209,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Volkorenproducten bevatten meer voedingsstoffen en vezels. Deze helpen bij het reguleren van de bloedsuikerspiegel en het verbeteren van de hersenfunctie.',
         endText: 'een volkoren maaltijd eten.',
+        diarySentence: 'Ik heb vandaag een volkoren maaltijd gegeten.',
       },
       {
         category: 'Voeding',
@@ -206,6 +217,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Ongezouten noten bieden gezonde vetten en eiwitten die bijdragen aan hersengezondheid en stemmingstabilisatie.',
         endText: 'een handvol ongezouten noten eten.',
+        diarySentence: 'Ik heb vandaag een handvol ongezouten noten gegeten.',
       },
       {
         category: 'Voeding',
@@ -213,6 +225,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Het verminderen van de consumptie van rood vlees kan het risico op fysieke gezondheidsproblemen verlagen, wat indirect bijdraagt aan een beter mentaal welzijn.',
         endText: 'geen rood vlees eten.',
+        diarySentence: 'Ik heb vandaag geen rood vlees gegeten.',
       },
       {
         category: 'Voeding',
@@ -228,6 +241,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: 'niet meer dan 2', value: 'niet meer dan 2' },
           { label: 'niet meer dan 3', value: 'niet meer dan 3' },
         ],
+        diarySentence: 'Ik heb vandaag X suikerhoudende dranken gedronken.',
       },
     ],
   ],
@@ -241,6 +255,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Het verminderen van alcoholgebruik kan leiden tot betere slaapkwaliteit en verminderde angst en depressie.',
         endText: 'geen alcohol drinken.',
+        diarySentence: 'Ik heb vandaag geen alcohol gedronken.',
       },
       {
         category: 'Alcohol, drugs en cafeïne',
@@ -256,6 +271,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: 'niet meer dan 3', value: 'niet meer dan 3' },
           { label: 'niet meer dan 4', value: 'niet meer dan 4' },
         ],
+        diarySentence: 'Ik heb vandaag X kopjes koffie gedronken.',
       },
       {
         category: 'Alcohol, drugs en cafeïne',
@@ -272,6 +288,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: 'niet meer dan 4 keer', value: 'niet meer dan 4x' },
           { label: 'niet meer dan 5 keer', value: 'niet meer dan 5x' },
         ],
+        diarySentence: 'Ik heb vandaag X sigaretten gerookt.',
       },
       {
         category: 'Alcohol, drugs en cafeïne',
@@ -286,6 +303,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: 'niet meer dan 2 keer', value: 'niet meer dan 2 keer' },
           { label: 'niet meer dan 3 keer', value: 'niet meer dan 3 keer' },
         ],
+        diarySentence: 'Ik heb vandaag geen drugs gebruikt.',
       },
       {
         category: 'Alcohol, drugs en cafeïne',
@@ -300,6 +318,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: 'niet meer dan 2 keer', value: 'niet meer dan 2' },
           { label: 'niet meer dan 3 keer', value: 'niet meer dan 3' },
         ],
+        diarySentence: 'Ik heb vandaag X energiedranken gedronken.',
       },
     ],
   ],
@@ -313,6 +332,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Regelmatige meditatie bevordert mindfulness. Dit helpt bij het managen van stress en het verbeteren van emotionele veerkracht.',
         endText: 'een meditatieoefening doen.',
+        diarySentence: 'Ik heb vandaag een meditatieoefening gedaan.',
       },
       {
         category: 'Ontspanning',
@@ -320,6 +340,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Yoga ondersteunt zowel fysieke als mentale gezondheid door het verbeteren van flexibiliteit, kracht, en stressverlichting.',
         endText: 'een yoga sessie doen.',
+        diarySentence: 'Ik heb vandaag een yogasessie gedaan.',
       },
       {
         category: 'Ontspanning',
@@ -327,6 +348,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Regelmatige ademhalingsoefeningen kunnen helpen bij het reguleren van de reactie van het lichaam op stress.',
         endText: 'een ademhalingsoefening doen.',
+        diarySentence: 'Ik heb vandaag een ademhalingsoefening gedaan.',
       },
       {
         category: 'Ontspanning',
@@ -334,6 +356,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Het toepassen van stressmanagementtechnieken helpt bij het verminderen van algehele stressniveaus en het bevorderen van mentale gezondheid.',
         endText: 'een stressmanagementoefening.',
+        diarySentence: 'Ik heb vandaag een stressmanagementoefening gedaan.',
       },
       {
         category: 'Ontspanning',
@@ -341,6 +364,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Het integreren van mindfulness in het dagelijks leven helpt om bewuster te leven en stressvolle situaties beter aan te kunnen.',
         endText: 'een mindful moment nemen.',
+        diarySentence: 'Ik heb vandaag een mindfulnessoefening gedaan.',
       },
     ],
   ],
@@ -353,7 +377,9 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         title: 'Deel je ervaringen en zorgen',
         description:
           'Het delen van ervaringen biedt emotionele ondersteuning en helpt bij het verminderen van het gevoel van isolatie.',
-        endText: 'mijn ervaringen met iemand delen.',
+        endText: 'mijn ervaringen of zorgen met iemand delen.',
+        diarySentence:
+          'Ik heb vandaag mijn ervaringen of zorgen met iemand gedeeld.',
       },
       {
         category: 'Ervaringen delen',
@@ -361,13 +387,18 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Deelnemen aan steungroepen biedt gemeenschappelijke ondersteuning en vermindert gevoelens van eenzaamheid en isolatie.',
         endText: 'deelnemen aan een steun- of lotgenoten groep.',
+        diarySentence:
+          'Ik heb vandaag deelgenomen aan een steun- of lotgenotengroep.',
       },
       {
         category: 'Ervaringen delen',
         title: 'Familie en vrienden betrekken',
         description:
           'Het betrekken van naasten bij het persoonlijke proces bevordert openheid en begrip, wat leidt tot betere relaties en emotionele steun.',
-        endText: 'mijn ervaringen delen met een vriend of familie.',
+        endText:
+          'mijn persoonlijke proces met een vriend of familie bespreken.',
+        diarySentence:
+          'Ik heb vandaag mijn persoonlijke proces met een vriend of familielid besproken.',
       },
     ],
   ],
@@ -381,6 +412,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Het aangaan van uitdagingen helpt je om angsten te confronteren en vermijdingsgedrag te verminderen. Dit leidt tot grotere zelfverzekerdheid en controle over je leven.',
         endText: 'een uitdaging aangaan.',
+        diarySentence: 'Ik ben vandaag een uitdaging aangegaan.',
       },
       {
         category: 'Ondernemen',
@@ -395,6 +427,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: '45 minuten', value: '45 minuten' },
           { label: '60 minuten', value: '60 minuten' },
         ],
+        diarySentence: 'Ik heb vandaag X besteed aan een hobby.',
       },
       {
         category: 'Ondernemen',
@@ -402,6 +435,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Meer sociale contacten bevorderen het gevoel van verbondenheid en steun. Dit is cruciaal voor je emotionele gezondheid en het verminderen van gevoelens van isolatie.',
         endText: 'een sociale interactie hebben.',
+        diarySentence: 'Ik heb vandaag een sociaal contact gehad.',
       },
       {
         category: 'Ondernemen',
@@ -409,6 +443,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         description:
           'Regelmatig deelnemen aan sociale activiteiten bevordert verbinding en verminderen gevoelens van isolatie. Ze helpen bij het opbouwen van sociale vaardigheden en zelfvertrouwen. Dit is essentieel voor mentaal welzijn en emotionele stabiliteit.',
         endText: 'een sociale activiteit ondernemen.',
+        diarySentence: 'Ik heb vandaag een sociale activiteit ondernomen.',
       },
     ],
   ],

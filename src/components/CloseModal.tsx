@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
+import Feather from '@expo/vector-icons/Feather';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -21,7 +22,8 @@ interface CloseModalProps {
   setParentModalVisible: React.Dispatch<SetStateAction<boolean>>;
   title: string;
   description: string;
-  handleClose?: () => void;
+  handleClose?: (index?: number) => void;
+  route?: any;
 }
 
 export const CloseModal: React.FC<CloseModalProps> = ({
@@ -32,6 +34,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
   title,
   description,
   handleClose,
+  route,
 }) => {
   const handleCloseModal = () => {
     setCloseModalVisible(!closeModalVisible);
@@ -42,11 +45,19 @@ export const CloseModal: React.FC<CloseModalProps> = ({
     }, 100);
   };
 
-  const handleParentModalClose = () => {
+  const handleParentCloseModal = () => {
     setCloseModalVisible(!closeModalVisible);
     // 👇🏻 This fixes the app freezing!
     setTimeout(() => {
       setParentModalVisible(!parentModalVisible);
+    }, 100);
+  };
+
+  const handleDiaryCloseModal = (index: number) => {
+    setCloseModalVisible(!closeModalVisible);
+    setTimeout(() => {
+      // @ts-ignore
+      handleClose(index);
     }, 100);
   };
 
@@ -59,26 +70,62 @@ export const CloseModal: React.FC<CloseModalProps> = ({
     >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
-          <View style={{ rowGap: 20 }}>
-            <Text style={styles.modalTitleText}>{title}</Text>
-            <Text style={styles.modalDescriptionText}>{description}</Text>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
+            <View style={{ rowGap: 20 }}>
+              <Text style={styles.modalTitleText}>{title}</Text>
+              <Text style={styles.modalDescriptionText}>{description}</Text>
+            </View>
+
+            {route?.name == 'Diary1' && (
+              <Pressable
+                onPress={() =>
+                  // @TODO: This could b made less explicit!
+                  route?.name === 'Diary1'
+                    ? handleDiaryCloseModal(1) // Don't Save and Close
+                    : setCloseModalVisible(!closeModalVisible)
+                }
+              >
+                <Feather name='x-circle' size={24} color='gray' />
+              </Pressable>
+            )}
           </View>
+
           <View style={{ rowGap: 15 }}>
             <Pressable
               style={styles.closeButton}
-              onPress={() => setCloseModalVisible(!closeModalVisible)}
+              onPress={() =>
+                route?.name === 'Diary1'
+                  ? handleDiaryCloseModal(0) // Save and Close
+                  : setCloseModalVisible(!closeModalVisible)
+              }
             >
-              <Text style={styles.closeButtonText}>Nee, ik wil doorgaan</Text>
+              <Text style={styles.closeButtonText}>
+                {route?.name == 'Diary1'
+                  ? 'Opslaan en afsluiten'
+                  : 'Nee, ik wil doorgaan'}
+              </Text>
             </Pressable>
             <Pressable
               style={styles.cancelButton}
               onPress={() =>
                 handleClose !== undefined
-                  ? handleCloseModal()
-                  : handleParentModalClose()
+                  ? route?.name === 'Diary1'
+                    ? handleDiaryCloseModal(1) // Don't Save and Close
+                    : handleCloseModal()
+                  : handleParentCloseModal()
               }
             >
-              <Text style={styles.cancelButtonText}>Ja, ik wil afsluiten</Text>
+              <Text style={styles.cancelButtonText}>
+                {route?.name == 'Diary1'
+                  ? 'Niet opslaan en afsluiten'
+                  : 'Ja, ik wil afsluiten'}
+              </Text>
             </Pressable>
           </View>
         </View>

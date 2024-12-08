@@ -15,6 +15,7 @@ export const GoalContext = createContext<IGoalContext>({
   title: '',
   description: '',
   sentence: '',
+  diarySentence: '',
   timeframe: Timeframe.Daily,
   targetFrequency: 0,
   startDate: new Date(),
@@ -27,6 +28,7 @@ export const GoalContext = createContext<IGoalContext>({
   setTitle: () => {},
   setDescription: () => {},
   setSentence: () => {},
+  setDiarySentence: () => {},
   setTimeframe: () => {},
   setTargetFrequency: () => {},
   setStartDate: () => {},
@@ -49,6 +51,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [sentence, setSentence] = useState<string>('');
+  const [diarySentence, setDiarySentence] = useState<string>('');
   const [timeframe, setTimeframe] = useState<Timeframe>(Timeframe.Daily);
   const [targetFrequency, setTargetFrequency] = useState<number>(1);
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -67,6 +70,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       category,
       title,
       description,
+      diarySentence,
       sentence,
       timeframe,
       targetFrequency,
@@ -86,6 +90,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       title,
       description,
       sentence,
+      diarySentence,
       timeframe,
       targetFrequency,
       startDate,
@@ -144,7 +149,10 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
 
       if (updatedEntry.completedTimeframe >= updatedEntry.targetFrequency) {
         updatedEntry.completedPeriod += 1;
-        updatedEntry.completedTimeframe = 0;
+        // Don't reset `completedTimeframe' if `updatedEntry.timeframe` equals `Timeframe.Daily`
+        if (updatedEntry.timeframe !== Timeframe.Daily) {
+          updatedEntry.completedTimeframe = 0;
+        }
       }
 
       // Update the existing entry at the found index
@@ -164,10 +172,12 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
           });
 
         // Update the existing entry in the database
-        await pb.collection('goal_entries').update(matchedGoalEntry.id, {
-          completedTimeframe: updatedEntry.completedTimeframe,
-          completedPeriod: updatedEntry.completedPeriod,
-        });
+        await pb
+          .collection('goal_entries')
+          .update(matchedGoalEntryDatabase.id, {
+            completedTimeframe: updatedEntry.completedTimeframe,
+            completedPeriod: updatedEntry.completedPeriod,
+          });
       } catch (error) {
         console.error('Error updating goal entry:', error);
       }
@@ -198,6 +208,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     setTitle('');
     setDescription('');
     setSentence('');
+    setDiarySentence('');
     setTimeframe(Timeframe.Daily);
     setTargetFrequency(1);
     setStartDate(null);
@@ -213,6 +224,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         title,
         description,
         sentence,
+        diarySentence,
         timeframe,
         targetFrequency,
         startDate,
@@ -225,6 +237,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         setTitle,
         setDescription,
         setSentence,
+        setDiarySentence,
         setTimeframe,
         setTargetFrequency,
         setStartDate,

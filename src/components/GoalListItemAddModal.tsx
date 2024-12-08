@@ -16,7 +16,7 @@ import {
 
 import { Dropdown } from 'react-native-element-dropdown';
 import '../utils/localeConfig';
-import { Calendar } from 'react-native-calendars';
+import { Calendar, DateData } from 'react-native-calendars';
 
 import { Timeframe } from '../types';
 import { GoalContext } from '../context/GoalContext';
@@ -59,6 +59,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     title,
     description,
     sentence,
+    diarySentence,
     timeframe,
     targetFrequency,
     startDate,
@@ -67,6 +68,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setTitle,
     setDescription,
     setSentence,
+    setDiarySentence,
     setTimeframe,
     setTargetFrequency,
     setStartDate,
@@ -194,23 +196,36 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     description: string,
     endText: string,
     dropdownText?: string,
-    dropdownOptions?: { label: string; value: string }[]
+    dropdownOptions?: { label: string; value: string }[],
+    diarySentence?: string
   ) => {
     setTitle(title);
     setDescription(description);
     setGoalEndText(endText);
     setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
+    setDiarySentence(diarySentence || '');
     // Handle optional params
     setSpecialDropdownText(dropdownText || '');
     setGoalSpecialDropdownOptions(dropdownOptions || []);
   };
 
-  const handleGoalSentence = () => {
+  const modifyDiarySentence = (
+    sentence: string,
+    specialDropdownValue: string
+  ) => {
+    if (sentence.includes('X')) {
+      return sentence.replace(/X/g, specialDropdownValue);
+    }
+    return sentence;
+  };
+
+  const handleGoalSentences = () => {
     setSentence(
       `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
         specialDropdownValue ? ` ${specialDropdownValue}` : ``
       } ${goalEndText}`
     );
+    setDiarySentence(modifyDiarySentence(diarySentence, specialDropdownValue));
     setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
   };
 
@@ -441,7 +456,8 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                         goal.description,
                         goal.endText,
                         goal.dropdownText,
-                        goal.dropdownOptions
+                        goal.dropdownOptions,
+                        goal.diarySentence
                       )
                     }
                   >
@@ -613,7 +629,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                     // }
 
                     minDate={new Date().toISOString().split('T')[0]}
-                    onDayPress={(day) =>
+                    onDayPress={(day: DateData) =>
                       handleCalendarPeriodSelect(day.dateString)
                     }
                     markingType={'period'}
@@ -637,7 +653,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                     }
                   />
                   <Pressable
-                    onPress={() => handleGoalSentence()}
+                    onPress={() => handleGoalSentences()}
                     style={styles.viewButton}
                   >
                     <Text style={styles.buttonText}>Doel bekijken</Text>
