@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
   StyleSheet,
@@ -18,6 +18,10 @@ import {
   getGoalCategoryIcon,
   getGoalCategoryString,
   getTimeframeString,
+  getDaysBetweenDates,
+  calculatePeriod,
+  formatDateString,
+  highlightFrequency,
 } from '../utils/goal';
 
 import Entypo from '@expo/vector-icons/Entypo';
@@ -49,104 +53,10 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     completedPeriod / 10
   );
 
-  const getDaysBetweenDates = (
-    startDate: Date | null,
-    endDate: Date | null
-  ): number => {
-    if (!startDate || !endDate) {
-      console.error('startDate and endDate must not be null or undefined');
-      return 0;
-    }
-
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    const timeDifference = Math.abs(end.getTime() - start.getTime());
-    const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
-    return daysDifference;
-  };
-
-  const getWeeksBetweenDates = (
-    startDate: Date | null,
-    endDate: Date | null
-  ): number => {
-    const daysDifference = getDaysBetweenDates(startDate, endDate);
-
-    const weeksDifference = Math.round(daysDifference / 7);
-    return weeksDifference;
-  };
-
-  const getMonthsBetweenDates = (
-    startDate: Date | null,
-    endDate: Date | null
-  ): number => {
-    if (!startDate || !endDate) {
-      console.error('startDate and endDate must not be null or undefined');
-      return 0;
-    }
-
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    const yearsDifference = end.getFullYear() - start.getFullYear();
-    const monthsDifference = end.getMonth() - start.getMonth();
-
-    // Calculate total months
-    let totalMonths = yearsDifference * 12 + monthsDifference;
-
-    // Include partial month if the end date's day is later than the start date's day
-    if (end.getDate() >= start.getDate()) {
-      totalMonths += 1; // Consider partial months
-    }
-
-    return totalMonths;
-  };
-
-  const calculatePeriod = (
-    timeframe: Timeframe,
-    startDate: Date | null,
-    endDate: Date | null
-  ): number => {
-    switch (timeframe) {
-      case Timeframe.Daily:
-        return getDaysBetweenDates(startDate, endDate);
-      case Timeframe.Weekly:
-        return getWeeksBetweenDates(startDate, endDate);
-      case Timeframe.Monthly:
-        return getMonthsBetweenDates(startDate, endDate);
-    }
-  };
-
-  // @TODO: Move this into `utils/goal.ts`!
-  const highlightFrequency = (sentence: string) => {
-    const keywords = ['dagelijks', 'wekelijks', 'maandelijks'];
-    const words = sentence.split(' ');
-
-    let modifiedWords: React.ReactNode[] = [];
-    let shouldBoldNext = false;
-
-    words.forEach((word, index) => {
-      if (shouldBoldNext) {
-        modifiedWords.push(
-          <Text key={index} style={styles.boldText}>
-            {word + ' '}
-          </Text>
-        );
-        shouldBoldNext = false;
-      } else if (keywords.some((keyword) => word.startsWith(keyword))) {
-        modifiedWords.push(
-          <Text key={index} style={styles.boldText}>
-            {word + ' '}
-          </Text>
-        );
-        shouldBoldNext = true;
-      } else {
-        modifiedWords.push(<Text key={index}>{word + ' '}</Text>);
-      }
-    });
-
-    return modifiedWords;
-  };
+  useEffect(() => {
+    setTimeframeProgressValue(completedTimeframe / 10);
+    setPeriodProgressValue(completedPeriod / 10);
+  }, [completedTimeframe, completedPeriod]);
 
   return (
     <View style={styles.goalComponent}>
@@ -383,18 +293,10 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   }}
                 >
                   <Text style={styles.statisticsDataBodyText}>
-                    {new Date(startDate as Date).toLocaleDateString('nl-NL', {
-                      day: '2-digit',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    {formatDateString(startDate as Date)}
                   </Text>
                   <Text style={styles.statisticsDataBodyText}>
-                    {new Date(endDate as Date).toLocaleDateString('nl-NL', {
-                      day: '2-digit',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    {formatDateString(endDate as Date)}
                   </Text>
                   {/* Completed Timeframe */}
                   <Text style={styles.statisticsDataBodyText}>
@@ -513,7 +415,4 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: '#5c6b57',
   },
-  boldText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
-  } as TextStyle,
 });

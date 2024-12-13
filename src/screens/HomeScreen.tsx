@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import axios from 'axios';
 
 import { StatusBar } from 'expo-status-bar';
@@ -12,117 +12,99 @@ import {
   Platform,
   TextStyle,
   Dimensions,
+  Animated,
 } from 'react-native';
 
 import { Fonts } from '../styles';
 
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
-import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
-import { ProgressBar } from 'react-native-paper';
 
 import { Header } from '../components/Header';
 
 import { AuthContext } from '../context/AuthContext';
+import { GoalContext } from '../context/GoalContext';
+import { GoalsOverview } from '../components/GoalsOverview';
 
 const windowWidth = Dimensions.get('window').width;
 
 const nudgingItems = [
-  [
-    <Feather name='book' size={24} color='black' />,
-    'Dagboek invullen',
-    'Zou je vandaag iets aan je dagboek willen toevoegen? Zo kun jij je proces goed bijhouden.',
-    'Vul dagboek in',
-  ],
-  [
-    <FontAwesome6 name='heart' size={24} color='black' />,
-    'Voortgang bekijken',
-    'Dit is een goed moment om je voortgang van deze week te bekijken.',
-    'Bekijk voortgang',
-  ],
-  [
-    <FontAwesome6 name='heart' size={24} color='black' />,
-    'Tijd voor een oefening',
-    'De beste manier om met zorgen om te gaan, is om ze anders te benaderen – probeer het eens!',
-    'Bekijk toolkit',
-  ],
-  [
-    <MaterialCommunityIcons name='arm-flex-outline' size={24} color='black' />,
-    'Blijf actief!',
-    'Wat dacht je van wat lichaamsbeweging vandaag? Er is vast een oefening die bij je past!',
-    'Bekijk dagboek',
-  ],
+  {
+    icon: <Feather name='book' size={24} color='black' />,
+    title: 'Dagboek invullen',
+    description:
+      'Zou je vandaag iets aan je dagboek willen toevoegen? Zo kun jij je proces goed bijhouden.',
+    buttonText: 'Vul dagboek in',
+  },
+  {
+    icon: <FontAwesome6 name='heart' size={24} color='black' />,
+    title: 'Voortgang bekijken',
+    description:
+      'Dit is een goed moment om je voortgang van deze week te bekijken.',
+    buttonText: 'Bekijk voortgang',
+  },
+  {
+    icon: <FontAwesome6 name='heart' size={24} color='black' />,
+    title: 'Tijd voor een oefening',
+    description:
+      'De beste manier om met zorgen om te gaan, is om ze anders te benaderen – probeer het eens!',
+    buttonText: 'Bekijk toolkit',
+  },
+  {
+    icon: (
+      <MaterialCommunityIcons name='arm-flex-outline' size={24} color='black' />
+    ),
+    title: 'Blijf actief!',
+    description:
+      'Wat dacht je van wat lichaamsbeweging vandaag? Er is vast een oefening die bij je past!',
+    buttonText: 'Bekijk dagboek',
+  },
 ];
 
-const goalsData = [
-  [
-    <FontAwesome6 name='person-walking' size={18} color='black' />,
-    'Bewegen',
-    'Ik wil ',
-    'wekelijks 4x',
-    'op een actieve manier naar een plaats van bestemming gaan.',
-    '8 juni 2024',
-    '8 juni 2025',
-    '175',
-    '190',
-    '25/52',
-    0.48,
-    '48%',
-    '3/4',
-    0.75,
-    '75%',
-  ],
-  [
-    <MaterialCommunityIcons name='meditation' size={22} color='black' />,
-    'Ontspanning',
-    'Ik wil voor een halfjaar ',
-    'dagelijks 1x ',
-    'een meditatie oefening doen.',
-    '17 mei 2024',
-    '17 nov 2025',
-    '24',
-    '159',
-    '24/183',
-    0.13,
-    '13%',
-  ],
-  [
-    <MaterialCommunityIcons name='silverware' size={20} color='black' />,
-    'Voeding',
-    'Ik wil ',
-    'wekelijks 5x ',
-    'niet meer dan twee suikerhoudende dranken drinken.',
-    '10 juni 2024',
-    '10 juni 2025',
-    '4',
-    '361',
-    '0/52',
-    0,
-    '0%',
-    '0/52',
-    0,
-    '0%',
-  ],
-];
-
-export const HomeScreen: React.FC = ({ route }) => {
+export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
   const title = 'Home';
   const { user } = useContext(AuthContext);
+  const { goalEntries } = useContext(GoalContext);
 
   const [quote, setQuote] = useState<string>(
     'Wherever you are, be there totally.'
   );
   const [author, setAuthor] = useState<string>('Eckhart Tolle');
 
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const goalData = useMemo(
-    () => goalsData[selectedIndex] || [],
-    [selectedIndex]
-  );
+  // Animation values
+  const animatedValues = useRef(
+    // Array of Animated.Values for each item
+    nudgingItems.map(() => new Animated.Value(0))
+  ).current;
 
+  const handleScroll = (event: any) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const newIndex = Math.round(offsetX / (windowWidth - 40)); // 40 = padding * 2
+    if (newIndex !== activeIndex) setActiveIndex(newIndex);
+  };
+
+  useEffect(() => {
+    // Trigger animation when activeIndex changes
+    animatedValues.forEach((animatedValue, index) => {
+      const toValue =
+        index === activeIndex // Current item
+          ? 0
+          : index === activeIndex - 1 || index === activeIndex + 1 // Adjacent item
+          ? 1
+          : 0;
+
+      Animated.timing(animatedValue, {
+        toValue,
+        duration: 500, // Smooth transition
+        useNativeDriver: false, // Native driver doesn't support colors
+      }).start();
+    });
+  }, [activeIndex]);
+
+  // QUOTES API
   // useEffect(() => {
   //   const fetchQuote = async () => {
   //     const res = await axios.get(process.env.API_NINJAS_API_URL as string, {
@@ -139,22 +121,6 @@ export const HomeScreen: React.FC = ({ route }) => {
 
   //   fetchQuote();
   // }, []);
-
-  const handlePrevious = () => {
-    if (selectedIndex == 0) {
-      setSelectedIndex(2);
-    } else {
-      setSelectedIndex(selectedIndex - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (selectedIndex == 2) {
-      setSelectedIndex(0);
-    } else {
-      setSelectedIndex(selectedIndex + 1);
-    }
-  };
 
   return (
     <>
@@ -200,7 +166,6 @@ export const HomeScreen: React.FC = ({ route }) => {
         </View>
 
         {/* Nudging Container */}
-        {/* TODO: Does this need a wrapper? */}
         <Text style={styles.nudgingTitleText}>Geadviseerde stappen</Text>
         <ScrollView
           horizontal={true}
@@ -215,11 +180,28 @@ export const HomeScreen: React.FC = ({ route }) => {
             paddingHorizontal: 30,
             columnGap: 20,
           }}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
         >
           {/* Nudging Item Container  */}
           {nudgingItems.map((item, index) => {
+            const { icon, title, description, buttonText } = item;
+
+            const backgroundColor = animatedValues[index].interpolate({
+              inputRange: [0, 1],
+              outputRange: ['#FFFFFF', '#C1DEBE'],
+            });
+
             return (
-              <View key={index} style={styles.nudgingItemContainer}>
+              <Animated.View
+                key={index}
+                style={[
+                  styles.nudgingItemContainer,
+                  {
+                    backgroundColor,
+                  },
+                ]}
+              >
                 <View
                   style={{
                     display: 'flex',
@@ -228,162 +210,20 @@ export const HomeScreen: React.FC = ({ route }) => {
                     columnGap: 10,
                   }}
                 >
-                  {item[0]}
-                  <Text style={styles.nudgingHeadingText}>{item[1]}</Text>
+                  {icon}
+                  <Text style={styles.nudgingHeadingText}>{title}</Text>
                 </View>
-                <Text style={styles.nudgingBodyText}>{item[2]}</Text>
+                <Text style={styles.nudgingBodyText}>{description}</Text>
                 <Pressable style={styles.nudgingButton}>
-                  <Text style={styles.nudgingButtonText}> {item[3]}</Text>
+                  <Text style={styles.nudgingButtonText}> {buttonText}</Text>
                 </Pressable>
-              </View>
+              </Animated.View>
             );
           })}
         </ScrollView>
 
         {/* Overviw Goals Container */}
-        <View
-          style={
-            selectedIndex != 1
-              ? styles.overviewGoalsContainer
-              : [styles.overviewGoalsContainer, { height: 485 }]
-          }
-        >
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              columnGap: 10,
-            }}
-          >
-            <Text style={styles.overviewGoalsHeadingText}>
-              Overzicht doelen
-            </Text>
-            <FontAwesome6 name='question-circle' size={18} color='black' />
-          </View>
-
-          {/* Custom Picker Container */}
-          <View style={styles.customPickerContainer}>
-            <Pressable onPress={() => handlePrevious()}>
-              <Entypo name='chevron-left' size={28} color='black' />
-            </Pressable>
-
-            {/* Custom Picker Selection */}
-            <View style={styles.customPickerSelection}>
-              {goalData[0]}
-              <Text style={styles.customPickerText}>{goalData[1]}</Text>
-            </View>
-
-            <Pressable onPress={() => handleNext()}>
-              <Entypo name='chevron-right' size={28} color='black' />
-            </Pressable>
-          </View>
-
-          {/* Goal Container */}
-          <View
-            style={{
-              marginTop: 20,
-              display: 'flex',
-              flexDirection: 'row',
-              columnGap: 10,
-              paddingRight: 30,
-            }}
-          >
-            <Text style={styles.goalHeadingText}>Doel:</Text>
-            <Text style={styles.goalBodyText}>
-              {goalData[2]}
-              <Text
-                style={{ ...Fonts.poppinsSemiBold[Platform.OS] } as TextStyle}
-              >
-                {goalData[3]}
-              </Text>{' '}
-              {goalData[4]}
-            </Text>
-          </View>
-
-          {/* Statistics Container */}
-          <View style={{ marginTop: 10 }}>
-            <Text style={styles.statisticsHeadingText}>Statistieken:</Text>
-            {/* Statistics Data Container */}
-            <View style={styles.statisticsDataContainer}>
-              <View style={styles.statisticsDataTextContainer}>
-                <Text style={styles.statisticsDataHeadingText}>Startdatum</Text>
-                <Text style={styles.statisticsDataBodyText}>{goalData[5]}</Text>
-              </View>
-
-              <View style={styles.statisticsDataTextContainer}>
-                <Text style={styles.statisticsDataHeadingText}>Einddatum</Text>
-                <Text style={styles.statisticsDataBodyText}>{goalData[6]}</Text>
-              </View>
-
-              <View style={styles.statisticsDataTextContainer}>
-                <Text style={styles.statisticsDataHeadingText}>
-                  Dagen actief
-                </Text>
-                <Text style={styles.statisticsDataBodyText}>{goalData[7]}</Text>
-              </View>
-
-              <View style={styles.statisticsDataTextContainer}>
-                <Text style={styles.statisticsDataHeadingText}>
-                  Dagen tot {'\n'}einddatum
-                </Text>
-                <Text style={styles.statisticsDataBodyText}>{goalData[8]}</Text>
-              </View>
-            </View>
-
-            {/* Progress Bar Container 1 */}
-            <View style={styles.progressBarContainer}>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text style={styles.progressBarHeadingText}>
-                  Statistieken voor gehele looptijd
-                </Text>
-                <Text style={styles.progressBarBodyText}>{goalData[9]}</Text>
-              </View>
-              <ProgressBar
-                progress={goalData[10] as number}
-                color='#A9C1A1'
-                style={styles.progressBar}
-              />
-              <Text style={styles.progressBarPercentageText}>
-                {goalData[11]}
-              </Text>
-            </View>
-
-            {/* Progress Bar Container 2 */}
-            {selectedIndex != 1 && (
-              <View style={styles.progressBarContainer}>
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Text style={styles.progressBarHeadingText}>
-                    Statistieken voor tijdsframe (wekelijks)
-                  </Text>
-                  <Text style={styles.progressBarBodyText}>{goalData[12]}</Text>
-                </View>
-                <ProgressBar
-                  progress={goalData[13] as number}
-                  color='#A9C1A1'
-                  style={styles.progressBar}
-                />
-                <Text style={styles.progressBarPercentageText}>
-                  {goalData[14]}
-                </Text>
-              </View>
-            )}
-          </View>
-        </View>
+        {goalEntries.length > 0 && <GoalsOverview />}
 
         {/* Performance Container */}
         <View style={styles.performanceContainer}>
@@ -566,7 +406,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   nudgingTitleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.poppinsBold[Platform.OS],
     fontSize: 18,
     marginTop: 20,
     alignSelf: 'flex-start',
@@ -591,93 +431,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     ...Fonts.poppinsSemiBold[Platform.OS],
     textTransform: 'uppercase',
-  } as TextStyle,
-  overviewGoalsContainer: {
-    height: 610,
-    width: 325,
-    backgroundColor: 'white',
-    borderRadius: 25,
-    padding: 20,
-  },
-  overviewGoalsHeadingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
-    fontSize: 16,
-  } as TextStyle,
-  customPickerContainer: {
-    marginTop: 20,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  customPickerSelection: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    columnGap: 10,
-    width: 200,
-    height: 30,
-    backgroundColor: '#829B7A',
-    borderRadius: 10,
-  },
-  customPickerText: {
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 14,
-  } as TextStyle,
-  goalHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
-  } as TextStyle,
-  goalBodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
-  } as TextStyle,
-  statisticsHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
-  } as TextStyle,
-  statisticsDataContainer: {
-    width: 220,
-    height: 155,
-    backgroundColor: '#E5F1E3',
-    borderRadius: 20,
-    alignSelf: 'center',
-    marginTop: 20,
-    padding: 20,
-    rowGap: 10,
-  },
-  statisticsDataTextContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  statisticsDataHeadingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
-    fontSize: 13,
-  } as TextStyle,
-  statisticsDataBodyText: {
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 13,
-  } as TextStyle,
-  progressBarContainer: {
-    marginTop: 20,
-    rowGap: 10,
-  },
-  progressBarHeadingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
-    fontSize: 13,
-  } as TextStyle,
-  progressBarBodyText: {
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 13,
-  } as TextStyle,
-  progressBar: {
-    backgroundColor: '#dedede',
-    borderRadius: 15,
-    height: 12,
-  },
-  progressBarPercentageText: {
-    ...Fonts.poppinsMedium[Platform.OS],
-    fontSize: 22,
   } as TextStyle,
   performanceContainer: {
     height: 330,

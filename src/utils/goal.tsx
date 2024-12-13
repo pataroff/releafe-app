@@ -1,3 +1,5 @@
+import { Text, StyleSheet, Platform, TextStyle } from 'react-native';
+import { Fonts } from '../styles';
 import { GoalCategory, Timeframe } from '../types';
 
 interface Goal {
@@ -550,3 +552,115 @@ export const getTimeframeString = (timeframe: Timeframe): string => {
       return 'maandelijks';
   }
 };
+
+export const getDaysBetweenDates = (
+  startDate: Date | null,
+  endDate: Date | null
+): number => {
+  if (!startDate || !endDate) {
+    console.error('startDate and endDate must not be null or undefined');
+    return 0;
+  }
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const timeDifference = Math.abs(end.getTime() - start.getTime());
+  const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+  return daysDifference;
+};
+
+export const getWeeksBetweenDates = (
+  startDate: Date | null,
+  endDate: Date | null
+): number => {
+  const daysDifference = getDaysBetweenDates(startDate, endDate);
+
+  const weeksDifference = Math.round(daysDifference / 7);
+  return weeksDifference;
+};
+
+export const getMonthsBetweenDates = (
+  startDate: Date | null,
+  endDate: Date | null
+): number => {
+  if (!startDate || !endDate) {
+    console.error('startDate and endDate must not be null or undefined');
+    return 0;
+  }
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const yearsDifference = end.getFullYear() - start.getFullYear();
+  const monthsDifference = end.getMonth() - start.getMonth();
+
+  // Calculate total months
+  let totalMonths = yearsDifference * 12 + monthsDifference;
+
+  // Include partial month if the end date's day is later than the start date's day
+  if (end.getDate() >= start.getDate()) {
+    totalMonths += 1; // Consider partial months
+  }
+
+  return totalMonths;
+};
+
+export const calculatePeriod = (
+  timeframe: Timeframe,
+  startDate: Date | null,
+  endDate: Date | null
+): number => {
+  switch (timeframe) {
+    case Timeframe.Daily:
+      return getDaysBetweenDates(startDate, endDate);
+    case Timeframe.Weekly:
+      return getWeeksBetweenDates(startDate, endDate);
+    case Timeframe.Monthly:
+      return getMonthsBetweenDates(startDate, endDate);
+  }
+};
+
+export const formatDateString = (date: Date): string => {
+  return new Date(date).toLocaleDateString('nl-NL', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+
+export const highlightFrequency = (sentence: string) => {
+  const keywords = ['dagelijks', 'wekelijks', 'maandelijks'];
+  const words = sentence.split(' ');
+
+  let modifiedWords: React.ReactNode[] = [];
+  let shouldBoldNext = false;
+
+  words.forEach((word, index) => {
+    if (shouldBoldNext) {
+      modifiedWords.push(
+        <Text key={index} style={styles.boldText}>
+          {word + ' '}
+        </Text>
+      );
+      shouldBoldNext = false;
+    } else if (keywords.some((keyword) => word.startsWith(keyword))) {
+      modifiedWords.push(
+        <Text key={index} style={styles.boldText}>
+          {word + ' '}
+        </Text>
+      );
+      shouldBoldNext = true;
+    } else {
+      modifiedWords.push(<Text key={index}>{word + ' '}</Text>);
+    }
+  });
+
+  return modifiedWords;
+};
+
+const styles = StyleSheet.create({
+  boldText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+  } as TextStyle,
+});
