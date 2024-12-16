@@ -184,7 +184,8 @@ export interface IWorryContext {
     category: Category,
     priority: Priority,
     title: string,
-    description: string
+    description: string,
+    reframed?: boolean
   ) => void;
   resetWorryEntryFields: () => void;
 }
@@ -194,6 +195,7 @@ export interface INoteEntry {
   id: string;
   uuid: string;
   category: Category;
+  priority: Priority;
   title: string;
   description: string;
   feelingDescription: string;
@@ -208,7 +210,6 @@ export interface INoteEntry {
 
 export interface INoteContext {
   noteEntries: INoteEntry[];
-  isChecked: boolean;
   uuid: string;
   feelingDescription: string;
   thoughtLikelihoodSliderOne: number;
@@ -219,7 +220,6 @@ export interface INoteContext {
   thoughtLikelihood: string;
   alternativePerspective: string;
   setNoteEntries: React.Dispatch<React.SetStateAction<INoteEntry[]>>;
-  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
   setUuid: React.Dispatch<React.SetStateAction<string>>;
   setFeelingDescription: React.Dispatch<React.SetStateAction<string>>;
   setThoughtLikelihoodSliderOne: React.Dispatch<React.SetStateAction<number>>;
@@ -230,5 +230,17 @@ export interface INoteContext {
   setThoughtLikelihood: React.Dispatch<React.SetStateAction<string>>;
   setAlternativePerspective: React.Dispatch<React.SetStateAction<string>>;
   createNoteEntry: (worryEntryUuid?: string) => void;
+  deleteNoteEntry: (uuid: string) => void;
+  updateNoteEntryFields: (
+    uuid: string,
+    feelingDescription: string,
+    thoughtLikelihoodSliderOne: number,
+    forThoughtEvidence: string,
+    againstThoughtEvidence: string,
+    friendAdvice: string,
+    thoughtLikelihoodSliderTwo: number,
+    thoughtLikelihood: string,
+    alternativePerspective: string
+  ) => void;
   resetNoteEntryFields: () => void;
 }

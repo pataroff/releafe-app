@@ -55,7 +55,14 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
   };
 
   const handleEdit = () => {
-    updateWorryEntryFields(uuid, category, priority, title, description);
+    updateWorryEntryFields(
+      uuid,
+      category,
+      priority,
+      title,
+      description,
+      reframed
+    );
     setModalWorryListVisible(!modalWorryListVisible);
     setTimeout(() => {
       setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
@@ -68,7 +75,14 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
   };
 
   const handleReframing = () => {
-    updateWorryEntryFields(uuid, category, priority, title, description);
+    updateWorryEntryFields(
+      uuid,
+      category,
+      priority,
+      title,
+      description,
+      reframed
+    );
     setModalWorryListVisible(!modalWorryListVisible);
     // 👇🏻 This fixes the app freezing!
     setTimeout(() => {
@@ -209,7 +223,7 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
                       <Image
                         resizeMode='contain'
                         style={{ width: 43, height: 46 }}
-                        source={require('../../assets/images/worry_item_delete_icon.png')}
+                        source={require('../../assets/images/delete_icon.png')}
                       />
                     </Pressable>
                   </View>

@@ -110,7 +110,7 @@ export const GoalsOverview = () => {
           }}
         >
           <Text style={styles.h1Text}>{getGoalCategoryString(category)}</Text>
-          <Text style={styles.h2Text}>{title}</Text>
+          <Text style={styles.h3Text}>{title}</Text>
         </View>
       </View>
 
@@ -343,6 +343,10 @@ const styles = StyleSheet.create({
   h2Text: {
     ...Fonts.poppinsSemiBold[Platform.OS],
     fontSize: 15,
+  } as TextStyle,
+  h3Text: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 13,
   } as TextStyle,
   bodyText: {
     ...Fonts.poppinsRegular[Platform.OS],

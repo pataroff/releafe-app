@@ -15,7 +15,7 @@ import { NoteContext } from '../context/NoteContext';
 
 import { NoteListItem } from './NoteListItem';
 
-export const NoteList = () => {
+export const NoteList: React.FC<{ route: any }> = ({ route }) => {
   const { noteEntries } = useContext(NoteContext);
 
   return (
@@ -26,7 +26,7 @@ export const NoteList = () => {
     >
       {noteEntries.length > 0 ? (
         noteEntries.map((item) => {
-          return <NoteListItem key={item.uuid} item={item} />;
+          return <NoteListItem route={route} key={item.uuid} item={item} />;
         })
       ) : (
         <>

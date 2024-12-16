@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 import Checkbox from 'expo-checkbox';
-import Slider from '@react-native-community/slider';
+import { Slider } from '@rneui/themed';
 import { MarkerProps } from '@react-native-community/slider';
 
 import { Fonts } from '../styles';
@@ -52,7 +52,7 @@ interface ReframingModalProps {
   setModalReframingVisible: React.Dispatch<React.SetStateAction<boolean>>;
   modalWorryListVisible?: boolean;
   setModalWorryListVisible?: React.Dispatch<React.SetStateAction<boolean>>;
-  isDrawerOpen: boolean;
+  isDrawerOpen?: boolean;
 }
 
 export const ReframingModal: React.FC<ReframingModalProps> = ({
@@ -66,6 +66,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
   isDrawerOpen,
 }) => {
   const {
+    uuid,
     category,
     priority,
     title,
@@ -78,7 +79,6 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     resetWorryEntryFields,
   } = useContext(WorryContext);
   const {
-    isChecked,
     feelingDescription,
     thoughtLikelihoodSliderOne,
     forThoughtEvidence,
@@ -87,7 +87,6 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     thoughtLikelihoodSliderTwo,
     thoughtLikelihood,
     alternativePerspective,
-    setIsChecked,
     setThoughtLikelihoodSliderOne,
     setFeelingDescription,
     setForThoughtEvidence,
@@ -169,12 +168,15 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     if (reframingModalIndex < reframingSteps.length - 1) {
       setReframingModalIndex(reframingModalIndex + 1);
     } else {
-      // @TODO: Conditional logic based on `route.name` is missing!
       setReframed(true);
       setReframingModalIndex(0);
       setModalReframingVisible(!modalReframingVisible);
-      createNoteEntry();
+
+      // Store the assosciated worry id
+      createNoteEntry(uuid);
+
       resetNoteEntryFields();
+      resetWorryEntryFields();
     }
   };
 
@@ -529,7 +531,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                       )}
                     </View>
 
-                    {reframingModalIndex == 0 && route.name === 'WorryBox' && (
+                    {/* Checkbox Functionality */}
+                    {/* {reframingModalIndex == 0 && route.name === 'WorryBox' && (
                       <View style={{ rowGap: 15 }}>
                         <View
                           style={{
@@ -571,7 +574,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                           jezelf en automatisch uit het zorgenbakje verwijderd.
                         </Text>
                       </View>
-                    )}
+                    )} */}
                   </View>
                 </>
               )}
@@ -634,7 +637,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         onChangeText={(value) =>
                           reframingModalTextState
                             .get(reframingModalIndex)
-                            ?.setter(value)
+                            ?.setter(value.trim())
                         }
                       />
                       {/* Dynamic Slider Component  */}
@@ -662,10 +665,15 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                           )}
                           <View>
                             <Slider
-                              style={{ width: '100%', height: 60 }}
+                              style={{ width: '100%' }}
+                              trackStyle={{ height: 15, borderRadius: 30 }}
+                              thumbStyle={{
+                                width: 28,
+                                height: 28,
+                              }}
+                              thumbTintColor='#C1DEBE'
                               minimumValue={0}
-                              maximumValue={4}
-                              thumbTintColor='#A5B79F'
+                              maximumValue={10}
                               value={
                                 reframingModalIndex === 1
                                   ? reframingModalSliderState.get(1)?.value
@@ -675,10 +683,10 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                                 reframingModalIndex === 1
                                   ? reframingModalSliderState
                                       .get(1)
-                                      ?.setter(value)
+                                      ?.setter(Math.round(value))
                                   : reframingModalSliderState
                                       .get(2)
-                                      ?.setter(value)
+                                      ?.setter(Math.round(value))
                               }
                               minimumTrackTintColor='#E4E1E1'
                               maximumTrackTintColor='#E4E1E1'

@@ -18,7 +18,6 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { WorryListModal } from './WorryListModal';
 import { WorryListItemAddModal } from './WorryListItemAddModal';
 import { ReframingModal } from './ReframingModal';
-import { ReframingSuccessModal } from './ReframingSucessModal';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -94,8 +93,6 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
     useState<boolean>(false);
   const [modalReframingVisible, setModalReframingVisible] =
     useState<boolean>(false);
-  const [modalReframingSuccessVisible, setModalReframingSuccessVisible] =
-    useState<boolean>(false);
   const [reframingModalIndex, setReframingModalIndex] = useState<number>(0);
 
   const handleDrawer = () => {
@@ -142,22 +139,7 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
         setModalReframingVisible={setModalReframingVisible}
         modalWorryListVisible={modalWorryListVisible}
         setModalWorryListVisible={setModalWorryListVisible}
-        modalReframingSuccessVisible={modalReframingSuccessVisible}
-        setModalReframingSuccessVisible={setModalReframingSuccessVisible}
         isDrawerOpen={isDrawerOpen}
-      />
-
-      {/* Reframing Sucess Modal */}
-      <ReframingSuccessModal
-        route={route}
-        reframingModalIndex={reframingModalIndex}
-        setReframingModalIndex={setReframingModalIndex}
-        modalReframingSuccessVisible={modalReframingSuccessVisible}
-        setModalReframingSuccessVisible={setModalReframingSuccessVisible}
-        modalWorryListVisible={modalWorryListVisible}
-        setModalWorryListVisible={setModalWorryListVisible}
-        modalReframingVisible={modalReframingVisible}
-        setModalReframingVisible={setModalReframingVisible}
       />
 
       {/* Headers */}

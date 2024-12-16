@@ -6,6 +6,7 @@ import { Category, Priority, IWorryListItem, IWorryContext } from '../types';
 
 import pb from '../lib/pocketbase';
 import { AuthContext } from './AuthContext';
+import { NoteContext } from './NoteContext';
 
 // Create context
 export const WorryContext = createContext<IWorryContext>({
@@ -45,8 +46,15 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
   const [reframed, setReframed] = useState<boolean>(false);
 
   const { user } = useContext(AuthContext);
+  const { updateNoteEntryFields } = useContext(NoteContext);
 
-  const createWorryEntry = async () => {
+  const createWorryEntry = async (noteEntryUuid?: string) => {
+    let noteEntry = null;
+
+    if (noteEntryUuid) {
+      noteEntry = await getNoteEntryId(noteEntryUuid);
+    }
+
     const matchedWorryEntry = worryEntries.find((entry) => entry.uuid == uuid);
 
     const newWorryEntry = {
@@ -65,6 +73,7 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
       uuid: newWorryEntry.uuid,
       // @ts-ignore 'user' is possibly 'null'!
       user: user.id,
+      note: noteEntry?.id,
       category,
       priority,
       date,
@@ -121,18 +130,82 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
-  const updateWorryEntryFields = (
+  // Helper functions
+  const getNoteEntryId = async (worryEntryUuid: string) => {
+    try {
+      // Fetch the worry entry by UUID
+      const matchedWorryEntryDatabase = await pb
+        .collection('worry_entries')
+        .getFirstListItem(`uuid="${worryEntryUuid}"`);
+
+      if (!matchedWorryEntryDatabase) {
+        console.error('No worry entry found with the provided UUID.');
+        return null;
+      }
+
+      // Fetch the note entry using the worry entry ID
+      const matchedNoteEntryDatabase = await pb
+        .collection('note_entries')
+        .getFirstListItem(`worry="${matchedWorryEntryDatabase.id}"`);
+
+      if (!matchedNoteEntryDatabase) {
+        console.error('No note entry found for the provided worry entry.');
+        return null;
+      }
+
+      console.log(matchedNoteEntryDatabase);
+      // Return the matched note entry
+      return matchedNoteEntryDatabase;
+    } catch (error) {
+      console.error('Error fetching note entry: ', error);
+      return null;
+    }
+  };
+
+  const updateWorryEntryFields = async (
     uuid: string,
     category: Category,
     priority: Priority,
     title: string,
-    description: string
+    description: string,
+    reframed?: boolean
   ) => {
     setUuid(uuid);
     setCategory(category);
     setPriority(priority);
     setTitle(title);
     setDescription(description);
+
+    // If a `worry_entry` is `reframed`, then a corresponding note should exist, get that note and it's values
+    if (reframed) {
+      const noteEntry = await getNoteEntryId(uuid);
+
+      if (noteEntry) {
+        const {
+          uuid,
+          feelingDescription,
+          thoughtLikelihoodSliderOne,
+          forThoughtEvidence,
+          againstThoughtEvidence,
+          friendAdvice,
+          thoughtLikelihoodSliderTwo,
+          thoughtLikelihood,
+          alternativePerspective,
+        } = noteEntry;
+
+        updateNoteEntryFields(
+          uuid, // noteEntry.uuid
+          feelingDescription,
+          thoughtLikelihoodSliderOne,
+          forThoughtEvidence,
+          againstThoughtEvidence,
+          friendAdvice,
+          thoughtLikelihoodSliderTwo,
+          thoughtLikelihood,
+          alternativePerspective
+        );
+      }
+    }
   };
 
   const resetWorryEntryFields = () => {

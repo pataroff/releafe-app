@@ -6,7 +6,8 @@ import { ToolkitScreen } from '../screens/ToolkitScreen';
 import { PersonalGoalsScreen } from '../screens/PersonalGoalsScreen';
 import { WorryBoxScreen } from '../screens/WorryBoxScreen';
 import { ReframingScreen } from '../screens/ReframingScreen';
-import { NotesToSelfStack } from './NotesToSelfStack';
+import { NotesToSelfScreen } from '../screens/NotesToSelfScreen';
+import { ExercisesScreen } from '../screens/ExercisesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,7 +44,12 @@ export const ToolkitStack: React.FC = () => {
       />
       <Stack.Screen
         name='NotesToSelf'
-        component={NotesToSelfStack}
+        component={NotesToSelfScreen}
+        initialParams={{ toolkitStackScreen: true }}
+      />
+      <Stack.Screen
+        name='Exercises'
+        component={ExercisesScreen}
         initialParams={{ toolkitStackScreen: true }}
       />
     </Stack.Navigator>

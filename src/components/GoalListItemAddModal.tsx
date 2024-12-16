@@ -239,6 +239,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     createGoalEntry();
     resetGoalEntryFields();
     resetLocalState();
+    setModalAddGoalListItemVisible(!modalAddGoalListItemVisible);
   };
 
   const handleClose = () => {
@@ -276,7 +277,6 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setSpecialDropdownValue('');
     setMarkedDates({});
     setGoalListItemAddModalIndex(0);
-    setModalAddGoalListItemVisible(!modalAddGoalListItemVisible);
   };
 
   // @TODO: Move this into `utils/goal.ts`!

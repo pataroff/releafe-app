@@ -280,7 +280,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                 <View style={{ marginTop: 20 }}>
                   <Slider
                     value={sliderValue}
-                    onValueChange={(value) => setSliderValue(value)}
+                    onValueChange={(value) => setSliderValue(Math.round(value))}
                     style={{ width: '100%' }}
                     trackStyle={{ height: 15, borderRadius: 30 }}
                     thumbStyle={{

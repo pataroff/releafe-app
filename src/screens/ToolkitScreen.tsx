@@ -75,7 +75,7 @@ export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
         navigation.navigate('NotesToSelf');
         break;
       case 4:
-        console.log('Ontspanning button pressed!');
+        navigation.navigate('Exercises');
         break;
       default:
         break;

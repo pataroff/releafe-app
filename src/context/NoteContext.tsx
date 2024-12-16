@@ -2,7 +2,7 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
 import React, { createContext, useState, useContext } from 'react';
-import { INoteContext, Category, INoteEntry } from '../types';
+import { INoteContext, Priority, INoteEntry } from '../types';
 
 import pb from '../lib/pocketbase';
 import { AuthContext } from './AuthContext';
@@ -11,18 +11,16 @@ import { WorryContext } from './WorryContext';
 // Create context
 export const NoteContext = createContext<INoteContext>({
   noteEntries: [],
-  isChecked: false,
   uuid: '',
   feelingDescription: '',
-  thoughtLikelihoodSliderOne: 1,
+  thoughtLikelihoodSliderOne: 5,
   forThoughtEvidence: '',
   againstThoughtEvidence: '',
   friendAdvice: '',
-  thoughtLikelihoodSliderTwo: 1,
+  thoughtLikelihoodSliderTwo: 5,
   thoughtLikelihood: '',
   alternativePerspective: '',
   setNoteEntries: () => {},
-  setIsChecked: () => {},
   setUuid: () => {},
   setFeelingDescription: () => {},
   setThoughtLikelihoodSliderOne: () => {},
@@ -33,6 +31,8 @@ export const NoteContext = createContext<INoteContext>({
   setThoughtLikelihood: () => {},
   setAlternativePerspective: () => {},
   createNoteEntry: () => {},
+  deleteNoteEntry: () => {},
+  updateNoteEntryFields: () => {},
   resetNoteEntryFields: () => {},
 });
 
@@ -40,25 +40,23 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
   const [noteEntries, setNoteEntries] = useState<INoteEntry[]>([]);
-  const [isChecked, setIsChecked] = useState<boolean>(true);
 
   const [uuid, setUuid] = useState<string>('');
-  // @TODO Isn't there a better way of doing this? For example a `reframingTextValues`and `reframingSlidersValues` mappings?
   const [feelingDescription, setFeelingDescription] = useState<string>('');
   const [thoughtLikelihoodSliderOne, setThoughtLikelihoodSliderOne] =
-    useState<number>(2);
+    useState<number>(5);
   const [forThoughtEvidence, setForThoughtEvidence] = useState<string>('');
   const [againstThoughtEvidence, setAgainstThoughtEvidence] =
     useState<string>('');
   const [friendAdvice, setFriendAdvice] = useState<string>('');
   const [thoughtLikelihoodSliderTwo, setThoughtLikelihoodSliderTwo] =
-    useState<number>(2);
+    useState<number>(5);
   const [thoughtLikelihood, setThoughtLikelihood] = useState<string>('');
   const [alternativePerspective, setAlternativePerspective] =
     useState<string>('');
 
   const { user } = useContext(AuthContext);
-  const { category, title, description } = useContext(WorryContext);
+  const { category, priority, title, description } = useContext(WorryContext);
 
   const createNoteEntry = async (worryEntryUuid?: string) => {
     let worryEntry = null;
@@ -74,6 +72,7 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
       id: '',
       uuid: uuidv4(),
       category,
+      priority,
       title,
       description,
       feelingDescription,
@@ -93,6 +92,7 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
       user: user.id,
       worry: worryEntry?.id,
       category,
+      priority,
       title,
       description,
       feelingDescription,
@@ -131,19 +131,56 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
+  const deleteNoteEntry = async (uuid: string) => {
+    setNoteEntries((prev) => prev.filter((entry) => entry.uuid != uuid));
+
+    try {
+      // Get the corresponding entry from the database
+      const matchedNoteEntryDatabase = await pb
+        .collection('note_entries')
+        .getFirstListItem(`uuid="${uuid}"`);
+
+      // Delete the existing entry from the database
+      await pb.collection('note_entries').delete(matchedNoteEntryDatabase.id);
+    } catch (error) {
+      console.error('Error deleting worry entry:', error);
+    }
+  };
+
   const resetNoteEntryFields = () => {
-    setIsChecked(true);
+    setUuid('');
     setFeelingDescription('');
-    setThoughtLikelihoodSliderOne(2);
+    setThoughtLikelihoodSliderOne(5);
     setForThoughtEvidence('');
     setAgainstThoughtEvidence('');
     setFriendAdvice('');
-    setThoughtLikelihoodSliderTwo(2);
+    setThoughtLikelihoodSliderTwo(5);
     setThoughtLikelihood('');
     setAlternativePerspective('');
   };
 
-  // @TODO Is this the right place for this to happen? Does it need to be moved to `WorryContext`?
+  const updateNoteEntryFields = (
+    uuid: string,
+    feelingDescription: string,
+    thoughtLikelihoodSliderOne: number,
+    forThoughtEvidence: string,
+    againstThoughtEvidence: string,
+    friendAdvice: string,
+    thoughtLikelihoodSliderTwo: number,
+    thoughtLikelihood: string,
+    alternativePerspective: string
+  ) => {
+    setUuid(uuid);
+    setFeelingDescription(feelingDescription);
+    setThoughtLikelihoodSliderOne(thoughtLikelihoodSliderOne);
+    setForThoughtEvidence(forThoughtEvidence);
+    setAgainstThoughtEvidence(againstThoughtEvidence);
+    setFriendAdvice(friendAdvice);
+    setThoughtLikelihoodSliderTwo(thoughtLikelihoodSliderTwo);
+    setThoughtLikelihood(thoughtLikelihood);
+    setAlternativePerspective(alternativePerspective);
+  };
+
   const getWorryEntryId = async (worryEntryUuid: string) => {
     try {
       const matchedWorryEntryDatabase = await pb
@@ -160,7 +197,6 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     <NoteContext.Provider
       value={{
         noteEntries,
-        isChecked,
         uuid,
         feelingDescription,
         thoughtLikelihoodSliderOne,
@@ -171,7 +207,6 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
         thoughtLikelihood,
         alternativePerspective,
         setNoteEntries,
-        setIsChecked,
         setUuid,
         setFeelingDescription,
         setThoughtLikelihoodSliderOne,
@@ -182,6 +217,8 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
         setThoughtLikelihood,
         setAlternativePerspective,
         createNoteEntry,
+        deleteNoteEntry,
+        updateNoteEntryFields,
         resetNoteEntryFields,
       }}
     >

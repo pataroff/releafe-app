@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   StyleSheet,
@@ -10,20 +10,25 @@ import {
   TextStyle,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 import { Fonts } from '../styles';
 import Entypo from '@expo/vector-icons/Entypo';
 
 import { NoteList } from '../components/NoteList';
+import { NoteListItemAddModal } from '../components/NoteListItemAddModal';
 
 const windowWidth = Dimensions.get('window').width;
 
-export const NotesToSelfScreen: React.FC = ({ route }) => {
-  const navigation = useNavigation();
+export const NotesToSelfScreen: React.FC<{ route: any }> = ({ route }) => {
+  const [modalAddNoteListItemVisible, setModalAddNoteListItemVisible] =
+    useState<boolean>(false);
 
   return (
     <>
+      <NoteListItemAddModal
+        modalAddNoteListItemVisible={modalAddNoteListItemVisible}
+        setModalAddNoteListItemVisible={setModalAddNoteListItemVisible}
+      />
       <ScrollView
         bounces={false}
         style={styles.container}
@@ -49,7 +54,9 @@ export const NotesToSelfScreen: React.FC = ({ route }) => {
             {/* Add Button */}
             <Pressable
               style={styles.addButton}
-              onPress={() => navigation.navigate('NotesToSelf2')}
+              onPress={() =>
+                setModalAddNoteListItemVisible(!modalAddNoteListItemVisible)
+              }
             >
               <Entypo name='plus' size={32} color='#5C6B57' />
             </Pressable>
@@ -57,7 +64,7 @@ export const NotesToSelfScreen: React.FC = ({ route }) => {
         </View>
 
         {/* Note List */}
-        <NoteList />
+        <NoteList route={route} />
       </ScrollView>
     </>
   );
