@@ -3,7 +3,15 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
+import { ImageSourcePropType } from 'react-native';
+
 import { AuthModel } from 'pocketbase';
+
+export interface ISettingsContext {
+  favouriteExercises: string[];
+  setFavouriteExercises: React.Dispatch<React.SetStateAction<string[]>>;
+  updateFavouritesInDatabase: (favouriteExercises: string[]) => void;
+}
 
 export interface IDiaryEntry {
   id: string;
@@ -86,6 +94,23 @@ export enum GoalCategory {
   Ontspanning = 'ONTSPANNING',
   ErvaringenDelen = 'ERVARINGEN_DELEN',
   Ondernemen = 'ONDERNEMEN',
+}
+
+export enum ExerciseCategory {
+  Mindfulness = 'MINDFULNESS',
+  Meditatie = 'MEDITATIE',
+  Ontspanning = 'ONTSPANNING',
+  Lichaamsbeweging = 'LICHAAMSBEWEGING',
+  Ademhaling = 'ADEMHALING',
+}
+
+export interface Exercise {
+  id: string;
+  icon: ImageSourcePropType;
+  title: string;
+  description: string;
+  duration: string;
+  link: string;
 }
 
 export enum Timeframe {

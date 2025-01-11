@@ -7,7 +7,7 @@ import { PersonalGoalsScreen } from '../screens/PersonalGoalsScreen';
 import { WorryBoxScreen } from '../screens/WorryBoxScreen';
 import { ReframingScreen } from '../screens/ReframingScreen';
 import { NotesToSelfScreen } from '../screens/NotesToSelfScreen';
-import { ExercisesScreen } from '../screens/ExercisesScreen';
+import { ExercisesStack } from './ExercisesStack';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,7 +49,7 @@ export const ToolkitStack: React.FC = () => {
       />
       <Stack.Screen
         name='Exercises'
-        component={ExercisesScreen}
+        component={ExercisesStack}
         initialParams={{ toolkitStackScreen: true }}
       />
     </Stack.Navigator>

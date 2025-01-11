@@ -6,8 +6,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { PaperProvider } from 'react-native-paper';
 
-import { DiaryProvider } from './src/context/DiaryContext';
 import { AuthProvider } from './src/context/AuthContext';
+import { SettingsProvider } from './src/context/SettingsContext';
+import { DiaryProvider } from './src/context/DiaryContext';
 import { WorryProvider } from './src/context/WorryContext';
 import { NoteProvider } from './src/context/NoteContext';
 import { GoalProvider } from './src/context/GoalContext';
@@ -35,15 +36,17 @@ export default function App() {
     <SafeAreaProvider>
       <PaperProvider>
         <AuthProvider>
-          <DiaryProvider>
-            <NoteProvider>
-              <WorryProvider>
-                <GoalProvider>
-                  <AppNav />
-                </GoalProvider>
-              </WorryProvider>
-            </NoteProvider>
-          </DiaryProvider>
+          <SettingsProvider>
+            <DiaryProvider>
+              <NoteProvider>
+                <WorryProvider>
+                  <GoalProvider>
+                    <AppNav />
+                  </GoalProvider>
+                </WorryProvider>
+              </NoteProvider>
+            </DiaryProvider>
+          </SettingsProvider>
         </AuthProvider>
       </PaperProvider>
     </SafeAreaProvider>

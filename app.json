@@ -38,7 +38,22 @@
             "./assets/fonts/Poppins-Bold.ttf"
           ]
         }
-      ]
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Releafe to access your camera",
+          "microphonePermission": "Allow Releafe to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ],
+      "expo-audio"
     ],
     "newArchEnabled": true
   }

@@ -11,15 +11,29 @@ import {
 import { Fonts } from '../styles';
 import Entypo from '@expo/vector-icons/Entypo';
 
+import { useNavigation } from '@react-navigation/native';
+
+import { getExerciseCategoryIcon } from '../utils/exercises';
+
 export const ExercisesCategoriesListItem: React.FC<{
-  item;
+  categoryItem: { title: string; description: string };
   index: number;
-}> = ({ item, index }) => {
-  const { icon, title } = item;
+}> = ({ categoryItem, index }) => {
+  const navigation = useNavigation();
+
+  const { title, description } = categoryItem;
+
+  const handleExercisesCategorySelection = () => {
+    //@ts-expect-error
+    navigation.navigate('Exercises2', {
+      category: title,
+      description: description,
+    });
+  };
 
   return (
     <Pressable
-      onPress={() => console.log(`${title} category pressed!`)}
+      onPress={() => handleExercisesCategorySelection()}
       style={
         index == 0
           ? [styles.container, { backgroundColor: '#C1D6BA' }]
@@ -34,10 +48,10 @@ export const ExercisesCategoriesListItem: React.FC<{
           columnGap: 15,
         }}
       >
-        {icon !== null && (
+        {index !== 0 && (
           <Image
-            source={icon}
-            style={{ width: 40, height: 40 }}
+            source={getExerciseCategoryIcon(index)}
+            style={{ width: 35, height: 35 }}
             resizeMode='contain'
           />
         )}

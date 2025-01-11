@@ -47,13 +47,13 @@ export const ExercisesScreen: React.FC<{ route: any }> = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f9f9f9',
   },
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f9f9f9',
   },
   headersContainer: {
     width: windowWidth,
