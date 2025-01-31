@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 
 import {
   StyleSheet,
@@ -6,24 +6,40 @@ import {
   View,
   Image,
   Pressable,
+  TouchableWithoutFeedback,
   TextInput,
   Modal,
   Platform,
   TextStyle,
   Dimensions,
+  Keyboard,
 } from 'react-native';
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { WorryContext } from '../context/WorryContext';
 import { NoteContext } from '../context/NoteContext';
 
 import { DropdownComponent } from '../components/DropdownComponent';
+import { MemoItem } from './MemoItem';
 import { CloseModal } from './CloseModal';
 
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import {
+  Camera,
+  CameraView,
+  CameraType,
+  FlashMode,
+  useCameraPermissions,
+} from 'expo-camera';
+import { Audio, Video, ResizeMode } from 'expo-av';
+
+import * as MediaLibrary from 'expo-media-library';
 import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
+import * as VideoThumbnails from 'expo-video-thumbnails';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -33,6 +49,8 @@ const mediaAddIcons = [
   require('../../assets/images/media_add/media_add_voice_memo.png'),
   require('../../assets/images/media_add/media_add_file.png'),
 ];
+
+const imageExtensions = ['.jpg', '.jpeg', '.png', '.pdf'];
 
 interface NoteListModalProps {
   modalAddNoteListItemVisible: boolean;
@@ -45,12 +63,29 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
 }) => {
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
-  // Media Add Buttons State
-  const [facing, setFacing] = useState<CameraType>('back');
+  // Media Add State
+
   const [permission, requestPermission] = useCameraPermissions();
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
 
+  // Picture State
+  const [facing, setFacing] = useState<CameraType>('back');
+  const [flash, setFlash] = useState<FlashMode>('off');
   const [image, setImage] = useState<string | null>(null);
+
+  // Video State
+  const [isVideoRecording, setIsVideoRecording] = useState<boolean>(false);
+  const [video, setVideo] = useState<string | null>(null);
+  const [videoThumbnailUri, setVideoThumbnailUri] = useState<string | null>(
+    null
+  );
+
+  // Audio State
+  const [isAudioRecording, setIsAudioRecording] = useState<boolean>(false);
+  const [audio, setAudio] = useState<Audio.Recording | null>(null);
+  const [audioUri, setAudioUri] = useState<string>('');
+
+  const cameraRef = useRef(null);
 
   const {
     category,
@@ -62,7 +97,15 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     resetWorryEntryFields,
   } = useContext(WorryContext);
 
-  const { createNoteEntry, resetNoteEntryFields } = useContext(NoteContext);
+  const {
+    uuid,
+    mediaFile,
+    audioMetering,
+    setMediaFile,
+    setAudioMetering,
+    createNoteEntry,
+    resetNoteEntryFields,
+  } = useContext(NoteContext);
 
   const handleStore = () => {
     createNoteEntry();
@@ -80,59 +123,375 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
   const handleMediaButton = (index: number) => {
     switch (index) {
       case 0:
-        setIsCameraOpen(!isCameraOpen);
+        handleCamera();
+        break;
       case 1:
         handlePickImage();
+        break;
+      case 2:
+        handleAudio(index);
+        break;
+      case 3:
+        handlePickDocument();
+        break;
     }
   };
 
-  function handleToggleCameraFacing() {
+  const handleMediaFileDelete = () => {
+    setMediaFile({ uri: '', type: '', name: '' });
+  };
+
+  // Camera
+  const handleCamera = async () => {
+    Camera.requestCameraPermissionsAsync();
+    Camera.requestMicrophonePermissionsAsync();
+    // @TODO What if the user denies permissions?
+
+    if (permission?.status !== 'granted') {
+      await requestPermission();
+    }
+
+    setIsCameraOpen(!isCameraOpen);
+  };
+
+  const handleToggleCameraFacing = () => {
     setFacing((current) => (current === 'back' ? 'front' : 'back'));
-  }
+  };
+
+  const handleToggleCameraFlash = () => {
+    setFlash((current) => (current === 'off' ? 'on' : 'off'));
+  };
+
+  const takePicture = async () => {
+    if (cameraRef) {
+      try {
+        // @ts-expect-error
+        const data = await cameraRef.current.takePictureAsync();
+        setImage(data.uri);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const generateVideoThumbnail = async (videoUri: string) => {
+    try {
+      const { uri } = await VideoThumbnails.getThumbnailAsync(videoUri, {
+        time: 15000,
+      });
+      setVideoThumbnailUri(uri);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const recordVideo = async () => {
+    if (cameraRef) {
+      try {
+        setIsVideoRecording(true);
+
+        let options = {
+          quality: '1080p',
+          maxDuration: 60,
+          mute: false,
+        };
+
+        //@ts-expect-error
+        const data = await cameraRef.current.recordAsync(options);
+        generateVideoThumbnail(data.uri);
+        setVideo(data.uri);
+      } catch (error) {
+        setIsVideoRecording(false);
+        console.error(error);
+      }
+    }
+  };
+
+  const saveVideo = async () => {
+    MediaLibrary.requestPermissionsAsync();
+    // @TODO What if the user denies permissions?
+
+    if (video) {
+      try {
+        await MediaLibrary.createAssetAsync(video);
+
+        let fileData = {
+          uri: video,
+          type: 'video/*',
+          name: video.split('/').pop() as string,
+        };
+
+        setMediaFile(fileData);
+        setVideo(null);
+        setIsCameraOpen(!isCameraOpen);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const stopVideoRecording = () => {
+    setIsVideoRecording(false);
+    //@ts-expect-error
+    cameraRef.current.stopRecording();
+  };
+
+  const saveImage = async () => {
+    MediaLibrary.requestPermissionsAsync();
+    // @TODO What if the user denies permissions?
+
+    if (image) {
+      try {
+        await MediaLibrary.createAssetAsync(image);
+
+        let fileData = {
+          uri: image,
+          type: 'image/*',
+          name: image.split('/').pop() as string,
+        };
+
+        setMediaFile(fileData);
+        setImage(null);
+        setIsCameraOpen(!isCameraOpen);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   // ImagePicker
   const handlePickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images', 'videos'],
+      mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const imageUri = result.assets[0].uri;
+
+      let fileData = {
+        uri: imageUri,
+        type: 'image/*',
+        name: imageUri.split('/').pop() as string,
+      };
+
+      setMediaFile(fileData);
     }
   };
 
-  // Camera
-  if (!permission) {
-    // Camera permissions are still loading.
-    return <View />;
-  }
+  // Audio
+  const handleAudio = (index: number) => {
+    // @TODO: Is there a better way of doing this?
+    if (index !== 2) {
+      return;
+    }
 
-  if (!permission.granted) {
-    // Camera permissions are not granted yet.
-    return (
-      <View style={styles.container}>
-        <Text style={styles.message}>
-          We need your permission to show the camera
-        </Text>
-        <Pressable onPress={requestPermission}>
-          <Text>Grant permission</Text>
-        </Pressable>
-      </View>
-    );
-  }
+    setIsAudioRecording(true);
+    recordAudio();
+  };
+
+  const recordAudio = async () => {
+    try {
+      setAudioMetering([]);
+
+      const permission = await Audio.requestPermissionsAsync();
+      if (permission.status === 'granted') {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+
+        const { recording } = await Audio.Recording.createAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
+        );
+
+        setAudio(recording);
+        console.log('Recording started...');
+
+        recording.setOnRecordingStatusUpdate((status) => {
+          if (status.metering) {
+            setAudioMetering((curVal) => [...curVal, status.metering || -100]);
+          }
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const stopAudioRecording = async (index: number) => {
+    if (index !== 2) {
+      return;
+    }
+
+    if (!audio) {
+      return;
+    }
+
+    console.log('Stopping recording...');
+    setAudio(null);
+    await audio.stopAndUnloadAsync();
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      staysActiveInBackground: true,
+    });
+    const audioUri = audio.getURI();
+    console.log('Recording stopped and stored at', audioUri);
+
+    if (audioUri) {
+      setAudioUri(audioUri);
+
+      let fileData = {
+        uri: audioUri,
+        type: 'audio/*',
+        name: audioUri.split('/').pop() as string,
+      };
+
+      setMediaFile(fileData);
+    }
+  };
+
+  // DocumentPicker
+  const handlePickDocument = async () => {
+    let result = await DocumentPicker.getDocumentAsync();
+
+    if (!result.canceled) {
+      const documentUri = result.assets[0].uri;
+
+      let fileData = {
+        uri: documentUri,
+        type: 'application/*',
+        name: documentUri.split('/').pop() as string,
+      };
+
+      setMediaFile(fileData);
+    }
+  };
 
   return (
     <>
       {isCameraOpen ? (
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <CameraView style={styles.camera} facing={facing}></CameraView>
-        </View>
+        <Modal visible={isCameraOpen} style={{ flex: 1 }}>
+          {!image && !video ? (
+            <CameraView
+              style={styles.camera}
+              facing={facing}
+              flash={flash}
+              ref={cameraRef}
+              mode={'video'}
+            >
+              <View style={styles.cameraButtonsWrapper}>
+                {/* Top Row */}
+                <View style={styles.cameraButtonsContainer}>
+                  <Pressable onPress={() => setIsCameraOpen(false)}>
+                    <MaterialCommunityIcons
+                      name='window-close'
+                      size={30}
+                      color='white'
+                    />
+                  </Pressable>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      columnGap: 15,
+                    }}
+                  >
+                    <Pressable onPress={handleToggleCameraFacing}>
+                      <FontAwesome6
+                        name='camera-rotate'
+                        size={30}
+                        color='white'
+                      />
+                    </Pressable>
+
+                    <Pressable onPress={handleToggleCameraFlash}>
+                      <MaterialCommunityIcons
+                        name={flash === 'off' ? 'flash-off' : 'flash'}
+                        size={30}
+                        color='white'
+                      />
+                    </Pressable>
+                  </View>
+                </View>
+
+                {/* Bottom Row */}
+                <View style={styles.cameraButtonsContainer}>
+                  <Pressable onPress={() => takePicture()}>
+                    <Text style={styles.text}>Take Picture</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      isVideoRecording ? stopVideoRecording() : recordVideo();
+                    }}
+                  >
+                    <Text style={styles.text}>
+                      {isVideoRecording ? 'Stop Recording' : 'Record Video'}
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+            </CameraView>
+          ) : (
+            <>
+              {image ? (
+                <>
+                  <Image source={{ uri: image }} style={styles.camera} />
+                  <View
+                    style={[
+                      {
+                        position: 'absolute',
+                        bottom: 60,
+                        left: 0,
+                        right: 0,
+                      },
+                      styles.cameraButtonsContainer,
+                    ]}
+                  >
+                    <Pressable onPress={() => setImage('')}>
+                      <Text style={styles.text}>Re-take</Text>
+                    </Pressable>
+                    <Pressable onPress={() => saveImage()}>
+                      <Text style={styles.text}>Save</Text>
+                    </Pressable>
+                  </View>
+                </>
+              ) : (
+                <>
+                  <Video
+                    source={{ uri: video as string }}
+                    style={styles.video}
+                    resizeMode={ResizeMode.CONTAIN}
+                    shouldPlay={true}
+                    useNativeControls
+                    isLooping
+                  />
+                  <View
+                    style={[
+                      {
+                        position: 'absolute',
+                        bottom: 80,
+                        left: 0,
+                        right: 0,
+                      },
+                      styles.cameraButtonsContainer,
+                    ]}
+                  >
+                    <Pressable onPress={() => setVideo('')}>
+                      <Text style={styles.text}>Re-take</Text>
+                    </Pressable>
+                    <Pressable onPress={() => saveVideo()}>
+                      <Text style={styles.text}>Save</Text>
+                    </Pressable>
+                  </View>
+                </>
+              )}
+            </>
+          )}
+        </Modal>
       ) : (
         <Modal
           animationType='none'
@@ -180,141 +539,208 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                 </Text>
               </View>
 
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  rowGap: 15,
-                  marginTop: 20,
-                  marginHorizontal: 20,
-                }}
-              >
-                {/* Dropdown + Title */}
+              {/* @TODO: Apply this to other TextInput components within the app! */}
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View
                   style={{
-                    backgroundColor: 'white',
-                    borderRadius: 25,
-                    height: 115,
                     display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    width: '100%',
-                    paddingHorizontal: 20,
+                    flexDirection: 'column',
+                    rowGap: 15,
+                    marginTop: 20,
+                    marginHorizontal: 20,
                   }}
                 >
-                  <DropdownComponent
-                    category={category}
-                    setCategory={setCategory}
-                  />
-                  <TextInput
-                    style={
-                      {
-                        ...Fonts.poppinsItalic[Platform.OS],
-                        backgroundColor: '#F6F7F8',
-                        fontStyle: 'italic',
-                        borderRadius: 10,
-                        height: 50,
-                        width: '65%',
-                        paddingLeft: 10,
-                      } as TextStyle
-                    }
-                    placeholder='Voeg een titel toe...'
-                    placeholderTextColor='#dedede'
-                    value={title}
-                    onChangeText={(value) => setTitle(value)}
-                  />
-                </View>
-
-                {/* Description + Media Add Buttons + Note Add Button */}
-                <View
-                  style={{
-                    height: 340,
-                    backgroundColor: 'white',
-                    borderRadius: 25,
-                    paddingHorizontal: 20,
-                    paddingTop: 20,
-                    marginBottom: 100,
-                  }}
-                >
-                  <TextInput
-                    style={
-                      {
-                        ...Fonts.poppinsItalic[Platform.OS],
-                        backgroundColor: '#F6F7F8',
-                        fontStyle: 'italic',
-                        position: 'relative',
-                        padding: 10,
-                        borderRadius: 10,
-                        height: 150,
-                      } as TextStyle
-                    }
-                    placeholder='Schrijf hier je note-to-self...'
-                    placeholderTextColor='#dedede'
-                    multiline
-                    value={description}
-                    onChangeText={(value) => setDescription(value)}
-                  />
-
-                  <Text
-                    style={{
-                      ...(Fonts.poppinsMedium[Platform.OS] as TextStyle),
-                      marginTop: 20,
-                    }}
-                  >
-                    Media toevoegen
-                  </Text>
-
-                  {/* Media Add Buttons Container */}
+                  {/* Dropdown + Title */}
                   <View
                     style={{
+                      backgroundColor: 'white',
+                      borderRadius: 25,
+                      height: 115,
                       display: 'flex',
                       flexDirection: 'row',
-                      columnGap: 10,
-                      marginTop: 10,
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%',
+                      paddingHorizontal: 20,
                     }}
                   >
-                    {mediaAddIcons.map((icon, index) => {
-                      return (
-                        <Pressable
-                          key={index}
-                          onPress={() => handleMediaButton(index)}
-                        >
-                          <Image
-                            resizeMode='contain'
-                            style={{ height: 35, width: 35 }}
-                            source={icon}
-                          ></Image>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
+                    <DropdownComponent
+                      category={category}
+                      setCategory={setCategory}
+                    />
 
-                  <Pressable
-                    onPress={() => handleStore()}
-                    style={{
-                      marginTop: 25,
-                      alignSelf: 'center',
-                      width: 215,
-                      borderRadius: 10,
-                      backgroundColor: '#A9C1A1',
-                      paddingVertical: 12,
-                    }}
-                  >
-                    <Text
+                    <TextInput
                       style={
                         {
-                          ...Fonts.poppinsSemiBold[Platform.OS],
-                          color: 'white',
-                          textAlign: 'center',
+                          ...Fonts.poppinsItalic[Platform.OS],
+                          backgroundColor: '#F6F7F8',
+                          fontStyle: 'italic',
+                          borderRadius: 10,
+                          height: 50,
+                          width: '65%',
+                          paddingLeft: 10,
                         } as TextStyle
                       }
+                      placeholder='Voeg een titel toe...'
+                      placeholderTextColor='#dedede'
+                      value={title}
+                      onChangeText={(value) => setTitle(value)}
+                    />
+                  </View>
+
+                  {/* Description + Media Add Buttons + Note Add Button */}
+                  <View
+                    style={{
+                      flexGrow: 1,
+                      backgroundColor: 'white',
+                      borderRadius: 25,
+                      paddingHorizontal: 20,
+                      paddingTop: 20,
+                    }}
+                  >
+                    <TextInput
+                      style={
+                        {
+                          ...Fonts.poppinsItalic[Platform.OS],
+                          backgroundColor: '#F6F7F8',
+                          fontStyle: 'italic',
+                          position: 'relative',
+                          padding: 10,
+                          borderRadius: 10,
+                          height: 150,
+                        } as TextStyle
+                      }
+                      placeholder='Schrijf hier je note-to-self...'
+                      placeholderTextColor='#dedede'
+                      multiline
+                      value={description}
+                      onChangeText={(value) => setDescription(value)}
+                    />
+
+                    <Text
+                      style={{
+                        ...(Fonts.poppinsMedium[Platform.OS] as TextStyle),
+                        marginTop: 20,
+                      }}
                     >
-                      Bericht aan jezelf opslaan
+                      Media toevoegen
                     </Text>
-                  </Pressable>
+
+                    {/* Media Add Buttons Container */}
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        columnGap: 10,
+                        marginTop: 10,
+                      }}
+                    >
+                      {mediaAddIcons.map((icon, index) => {
+                        return (
+                          <Pressable
+                            key={index}
+                            onPress={() => handleMediaButton(index)}
+                            onLongPress={() => handleAudio(index)}
+                            onPressOut={() => stopAudioRecording(index)}
+                          >
+                            <Image
+                              resizeMode='contain'
+                              style={{ height: 35, width: 35 }}
+                              source={icon}
+                            ></Image>
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+
+                    {/* Uploaded Media Container */}
+                    {mediaFile.uri && mediaFile.name && (
+                      <View
+                        style={{
+                          marginTop: 20,
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        {/* @TODO: Is there a better way of differentiating between the different media types? */}
+                        {mediaFile.name.startsWith('recording') ? (
+                          <MemoItem
+                            uri={audioUri}
+                            metering={audioMetering}
+                            containerStyle={{ width: '80%' }}
+                          />
+                        ) : (
+                          <View
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              height: 50,
+                              width: '80%',
+                              backgroundColor: '#EEF1EC',
+                              borderRadius: 10,
+                            }}
+                          >
+                            <Image
+                              style={{
+                                borderRadius: 10,
+                                height: 50,
+                                width: 50,
+                                marginRight: 8,
+                              }}
+                              // @ts-expect-error
+                              source={{
+                                uri: imageExtensions.some((ext) =>
+                                  mediaFile.uri.endsWith(ext)
+                                )
+                                  ? mediaFile.uri
+                                  : videoThumbnailUri,
+                              }}
+                            />
+                            <Text style={styles.mediaFileNameText}>
+                              {mediaFile.name}
+                            </Text>
+                          </View>
+                        )}
+                        <Pressable onPress={() => handleMediaFileDelete()}>
+                          <Image
+                            resizeMode='contain'
+                            style={{ width: 43, height: 46 }}
+                            source={require('../../assets/images/delete_icon.png')}
+                          />
+                        </Pressable>
+                      </View>
+                    )}
+
+                    <Pressable
+                      onPress={() => handleStore()}
+                      style={{
+                        marginVertical: 20,
+                        alignSelf: 'center',
+                        width: 215,
+                        borderRadius: 10,
+                        backgroundColor: '#A9C1A1',
+                        paddingVertical: 12,
+                      }}
+                    >
+                      <Text
+                        style={
+                          {
+                            ...Fonts.poppinsSemiBold[Platform.OS],
+                            color: 'white',
+                            textAlign: 'center',
+                          } as TextStyle
+                        }
+                      >
+                        Bericht aan jezelf opslaan
+                      </Text>
+                    </Pressable>
+                  </View>
                 </View>
-              </View>
+              </TouchableWithoutFeedback>
             </View>
           </View>
         </Modal>
@@ -363,6 +789,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 5,
   } as TextStyle,
+  bodyText: {
+    ...Fonts.poppinsRegular[Platform.OS],
+    fontSize: 13,
+  } as TextStyle,
   addButton: {
     position: 'absolute',
     borderRadius: 20,
@@ -379,10 +809,43 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   camera: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  video: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  cameraButtonsWrapper: {
     flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    paddingVertical: 60,
+  },
+  cameraButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 30,
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
   },
   message: {
     textAlign: 'center',
     paddingBottom: 10,
   },
+  mediaFileNameText: {
+    ...Fonts.poppinsSemiBold[Platform.OS],
+    fontSize: 13,
+    flexShrink: 1,
+    flexWrap: 'wrap',
+  } as TextStyle,
 });

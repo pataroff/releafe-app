@@ -5,7 +5,7 @@ import {
 
 import { ImageSourcePropType } from 'react-native';
 
-import { AuthModel } from 'pocketbase';
+import { AuthModel, RecordModel } from 'pocketbase';
 
 export interface ISettingsContext {
   favouriteExercises: string[];
@@ -215,6 +215,12 @@ export interface IWorryContext {
   resetWorryEntryFields: () => void;
 }
 
+export type MediaFile = {
+  uri: string;
+  type: string;
+  name: string;
+};
+
 // @TODO: What about the slider values?
 export interface INoteEntry {
   id: string;
@@ -231,6 +237,8 @@ export interface INoteEntry {
   thoughtLikelihoodSliderTwo: number;
   thoughtLikelihood: string;
   alternativePerspective: string;
+  mediaFile: MediaFile;
+  audioMetering: number[];
 }
 
 export interface INoteContext {
@@ -244,6 +252,8 @@ export interface INoteContext {
   thoughtLikelihoodSliderTwo: number;
   thoughtLikelihood: string;
   alternativePerspective: string;
+  mediaFile: MediaFile;
+  audioMetering: number[];
   setNoteEntries: React.Dispatch<React.SetStateAction<INoteEntry[]>>;
   setUuid: React.Dispatch<React.SetStateAction<string>>;
   setFeelingDescription: React.Dispatch<React.SetStateAction<string>>;
@@ -254,6 +264,8 @@ export interface INoteContext {
   setThoughtLikelihoodSliderTwo: React.Dispatch<React.SetStateAction<number>>;
   setThoughtLikelihood: React.Dispatch<React.SetStateAction<string>>;
   setAlternativePerspective: React.Dispatch<React.SetStateAction<string>>;
+  setMediaFile: React.Dispatch<React.SetStateAction<MediaFile>>;
+  setAudioMetering: React.Dispatch<React.SetStateAction<number[]>>;
   createNoteEntry: (worryEntryUuid?: string) => void;
   deleteNoteEntry: (uuid: string) => void;
   updateNoteEntryFields: (
@@ -265,7 +277,8 @@ export interface INoteContext {
     friendAdvice: string,
     thoughtLikelihoodSliderTwo: number,
     thoughtLikelihood: string,
-    alternativePerspective: string
+    alternativePerspective: string,
+    mediaFile: MediaFile
   ) => void;
   resetNoteEntryFields: () => void;
 }

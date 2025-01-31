@@ -13,18 +13,19 @@ import {
   Dimensions,
 } from 'react-native';
 
-import { Slider } from '@rneui/themed';
-
 import { Fonts } from '../styles';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
 
-import { Category, INoteEntry, Priority } from '../types';
+import { Category, INoteEntry } from '../types';
 
 import { NoteContext } from '../context/NoteContext';
 import { WorryContext } from '../context/WorryContext';
+
+import { Video, ResizeMode } from 'expo-av';
+import { MemoItem } from './MemoItem';
 
 const getCategory = (category: Category): React.ReactElement => {
   switch (category) {
@@ -63,6 +64,7 @@ export const NoteListItemExpandedModal: React.FC<
   const { updateWorryEntryFields } = useContext(WorryContext);
 
   const {
+    id,
     uuid,
     category,
     priority,
@@ -76,6 +78,8 @@ export const NoteListItemExpandedModal: React.FC<
     thoughtLikelihoodSliderTwo,
     thoughtLikelihood,
     alternativePerspective,
+    mediaFile,
+    audioMetering,
   } = item;
 
   const reframedData = [
@@ -112,7 +116,8 @@ export const NoteListItemExpandedModal: React.FC<
       friendAdvice,
       thoughtLikelihoodSliderTwo,
       thoughtLikelihood,
-      alternativePerspective
+      alternativePerspective,
+      mediaFile
     );
     setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible);
     setModalReframingVisible(!modalReframingVisible);
@@ -188,7 +193,48 @@ export const NoteListItemExpandedModal: React.FC<
             style={styles.mainContainer}
             contentContainerStyle={styles.mainContentContainer}
           >
-            {feelingDescription !== '' && (
+            {mediaFile ? (
+              <>
+                <Text style={styles.bodyText}>{description}</Text>
+                {
+                  // @ts-expect-error Property 'endsWith' does not exist on type 'MediaFile'.
+                  mediaFile.endsWith('.jpg') || mediaFile.endsWith('.pdf') ? (
+                    <Image
+                      style={{ width: '100%', height: 400, marginVertical: 20 }}
+                      source={{
+                        // PB_URL ends with a slash, therefore no slash before 'api'!
+                        uri: `${process.env.PB_URL}api/files/note_entries/${id}/${mediaFile}`,
+                      }}
+                    />
+                  ) : // @ts-expect-error Property 'endsWith' does not exist on type 'MediaFile'.
+                  mediaFile.startsWith('recording') ? (
+                    <View style={{ marginVertical: 20 }}>
+                      <MemoItem
+                        uri={`${process.env.PB_URL}api/files/note_entries/${id}/${mediaFile}`}
+                        metering={audioMetering}
+                      />
+                    </View>
+                  ) : (
+                    <>
+                      <Video
+                        source={{
+                          // PB_URL ends with a slash, therefore no slash before 'api'!
+                          uri: `${process.env.PB_URL}api/files/note_entries/${id}/${mediaFile}`,
+                        }}
+                        style={{
+                          width: '100%',
+                          height: 400,
+                          marginVertical: 20,
+                        }}
+                        resizeMode={ResizeMode.COVER}
+                        useNativeControls
+                        isLooping
+                      />
+                    </>
+                  )
+                }
+              </>
+            ) : (
               <>
                 {/* Reframed Data Container */}
                 <View style={{ rowGap: 20 }}>
@@ -265,7 +311,10 @@ export const NoteListItemExpandedModal: React.FC<
                 </Pressable>
               )}
 
-              <Pressable onPress={() => handleDelete()}>
+              <Pressable
+                style={{ position: 'absolute', right: 0 }}
+                onPress={() => handleDelete()}
+              >
                 <Image
                   resizeMode='contain'
                   style={{ width: 43, height: 46 }}
@@ -311,15 +360,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
   } as TextStyle,
   mainContainer: {
-    flex: 1,
     borderRadius: 25,
     marginTop: 20,
-    marginBottom: 125, // @TODO Does this need to be a greater value?
     marginHorizontal: 20,
+    marginBottom: 125,
     backgroundColor: '#ffffff',
   },
   mainContentContainer: {
-    flexGrow: 1,
     backgroundColor: '#ffffff',
     padding: 25,
   },

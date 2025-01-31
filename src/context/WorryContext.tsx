@@ -82,6 +82,9 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
       reframed,
     };
 
+    // @TODO We need the uuid set if the user wants to reframe immediately after the creation of a worry!
+    setUuid(newWorryEntry.uuid);
+
     if (matchedWorryEntry) {
       // Get the index of the matching entry
       const index = worryEntries.indexOf(matchedWorryEntry);
@@ -152,8 +155,6 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
         console.error('No note entry found for the provided worry entry.');
         return null;
       }
-
-      console.log(matchedNoteEntryDatabase);
       // Return the matched note entry
       return matchedNoteEntryDatabase;
     } catch (error) {
@@ -191,6 +192,7 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
           thoughtLikelihoodSliderTwo,
           thoughtLikelihood,
           alternativePerspective,
+          mediaFile,
         } = noteEntry;
 
         updateNoteEntryFields(
@@ -202,7 +204,8 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
           friendAdvice,
           thoughtLikelihoodSliderTwo,
           thoughtLikelihood,
-          alternativePerspective
+          alternativePerspective,
+          mediaFile
         );
       }
     }

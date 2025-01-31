@@ -2,7 +2,7 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
 import React, { createContext, useState, useContext } from 'react';
-import { INoteContext, Priority, INoteEntry } from '../types';
+import { MediaFile, INoteContext, INoteEntry } from '../types';
 
 import pb from '../lib/pocketbase';
 import { AuthContext } from './AuthContext';
@@ -20,6 +20,8 @@ export const NoteContext = createContext<INoteContext>({
   thoughtLikelihoodSliderTwo: 5,
   thoughtLikelihood: '',
   alternativePerspective: '',
+  mediaFile: { uri: '', type: '', name: '' },
+  audioMetering: [],
   setNoteEntries: () => {},
   setUuid: () => {},
   setFeelingDescription: () => {},
@@ -30,6 +32,8 @@ export const NoteContext = createContext<INoteContext>({
   setThoughtLikelihoodSliderTwo: () => {},
   setThoughtLikelihood: () => {},
   setAlternativePerspective: () => {},
+  setMediaFile: () => {},
+  setAudioMetering: () => {},
   createNoteEntry: () => {},
   deleteNoteEntry: () => {},
   updateNoteEntryFields: () => {},
@@ -54,6 +58,12 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
   const [thoughtLikelihood, setThoughtLikelihood] = useState<string>('');
   const [alternativePerspective, setAlternativePerspective] =
     useState<string>('');
+  const [mediaFile, setMediaFile] = useState<MediaFile>({
+    uri: '',
+    type: '',
+    name: '',
+  });
+  const [audioMetering, setAudioMetering] = useState<number[]>([]);
 
   const { user } = useContext(AuthContext);
   const { category, priority, title, description } = useContext(WorryContext);
@@ -65,12 +75,12 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
       worryEntry = await getWorryEntryId(worryEntryUuid);
     }
 
-    // @TODO Set `uuid` prior to calling `createNoteEntry`, otherwise it points to an empty string!
     const matchedNoteEntry = noteEntries.find((entry) => entry.uuid == uuid);
 
+    // Create the base newNoteEntry object (same for both update and create)
     const newNoteEntry = {
-      id: '',
-      uuid: uuidv4(),
+      id: matchedNoteEntry?.id || '',
+      uuid: matchedNoteEntry?.uuid || uuidv4(),
       category,
       priority,
       title,
@@ -83,51 +93,91 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
       thoughtLikelihoodSliderTwo,
       thoughtLikelihood,
       alternativePerspective,
+      mediaFile,
+      audioMetering,
     };
 
-    const newNoteEntryDatabase = {
-      id: '',
-      uuid: newNoteEntry.uuid,
-      // @ts-ignore 'user' is possibly 'null'!
-      user: user.id,
-      worry: worryEntry?.id,
-      category,
-      priority,
-      title,
-      description,
-      feelingDescription,
-      thoughtLikelihoodSliderOne,
-      forThoughtEvidence,
-      againstThoughtEvidence,
-      friendAdvice,
-      thoughtLikelihoodSliderTwo,
-      thoughtLikelihood,
-      alternativePerspective,
-    };
+    // @TODO I believe the logic can be separated here into branches depending on `mediaFile` and if it is present or not!
+    // Simply said going for the formData approach only if the `mediaFile` is present!
+
+    // Prepare FormData for uploading the media file and other fields
+    const formData = new FormData();
+
+    // Append other fields, converting numbers to strings where necessary
+    formData.append('uuid', newNoteEntry.uuid);
+    formData.append('user', user?.id || '');
+    formData.append('worry', worryEntry?.id || '');
+
+    formData.append('category', category);
+    formData.append('priority', priority);
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('feelingDescription', feelingDescription);
+    formData.append(
+      'thoughtLikelihoodSliderOne',
+      thoughtLikelihoodSliderOne.toString()
+    );
+    formData.append('forThoughtEvidence', forThoughtEvidence);
+    formData.append('againstThoughtEvidence', againstThoughtEvidence);
+    formData.append('friendAdvice', friendAdvice);
+    formData.append(
+      'thoughtLikelihoodSliderTwo',
+      thoughtLikelihoodSliderTwo.toString()
+    );
+    formData.append('thoughtLikelihood', thoughtLikelihood);
+    formData.append('alternativePerspective', alternativePerspective);
+
+    // @TODO Is there a better way of doing this? It is required otherwise, the app crashes! See line 96!
+    if (mediaFile.uri && mediaFile.type && mediaFile.name) {
+      // @ts-expect-error
+      formData.append('mediaFile', mediaFile);
+
+      if (mediaFile.name.startsWith('recording')) {
+        formData.append('audioMetering', JSON.stringify(audioMetering));
+      }
+    }
 
     if (matchedNoteEntry) {
-      const index = noteEntries.indexOf(matchedNoteEntry);
-
-      setNoteEntries((prev) => {
-        const updatedEntries = [...prev];
-        updatedEntries[index] = newNoteEntry;
-        return updatedEntries;
-      });
-
       try {
-        const matchedNoteEntryDatabase = await pb
+        // Update existing note entry in the database
+        const updatedNoteEntry = await pb
           .collection('note_entries')
-          .getFirstListItem(`uuid="${matchedNoteEntry.uuid}"`);
+          .update(matchedNoteEntry.id, formData);
 
-        await pb
-          .collection('note_entries')
-          .update(matchedNoteEntryDatabase.id, newNoteEntryDatabase);
+        // Update the local state with the updated note entry
+        setNoteEntries((prev) =>
+          prev.map((entry) =>
+            entry.uuid === matchedNoteEntry.uuid
+              ? {
+                  ...newNoteEntry,
+                  id: updatedNoteEntry.id,
+                  mediaFile: updatedNoteEntry.mediaFile,
+                }
+              : entry
+          )
+        );
       } catch (error) {
         console.error('Error updating note entry: ', error);
       }
     } else {
-      setNoteEntries((prev) => [newNoteEntry, ...prev]);
-      pb.collection('note_entries').create(newNoteEntryDatabase);
+      try {
+        // Create a new record in the database
+        const createdNoteEntry = await pb
+          .collection('note_entries')
+          .create(formData);
+
+        // Create the newNoteEntry in local state
+        setNoteEntries((prev) => [
+          {
+            ...newNoteEntry,
+            id: createdNoteEntry.id,
+            mediaFile: createdNoteEntry.mediaFile,
+          },
+          ...prev,
+        ]);
+      } catch (error) {
+        console.error('Error creating note entry: ', error);
+      }
     }
   };
 
@@ -157,6 +207,7 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     setThoughtLikelihoodSliderTwo(5);
     setThoughtLikelihood('');
     setAlternativePerspective('');
+    setMediaFile({ uri: '', type: '', name: '' });
   };
 
   const updateNoteEntryFields = (
@@ -168,7 +219,8 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     friendAdvice: string,
     thoughtLikelihoodSliderTwo: number,
     thoughtLikelihood: string,
-    alternativePerspective: string
+    alternativePerspective: string,
+    mediaFile: MediaFile
   ) => {
     setUuid(uuid);
     setFeelingDescription(feelingDescription);
@@ -179,6 +231,7 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     setThoughtLikelihoodSliderTwo(thoughtLikelihoodSliderTwo);
     setThoughtLikelihood(thoughtLikelihood);
     setAlternativePerspective(alternativePerspective);
+    setMediaFile(mediaFile);
   };
 
   const getWorryEntryId = async (worryEntryUuid: string) => {
@@ -206,6 +259,8 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
         thoughtLikelihoodSliderTwo,
         thoughtLikelihood,
         alternativePerspective,
+        mediaFile,
+        audioMetering,
         setNoteEntries,
         setUuid,
         setFeelingDescription,
@@ -216,6 +271,8 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
         setThoughtLikelihoodSliderTwo,
         setThoughtLikelihood,
         setAlternativePerspective,
+        setMediaFile,
+        setAudioMetering,
         createNoteEntry,
         deleteNoteEntry,
         updateNoteEntryFields,

@@ -38,13 +38,13 @@ export default function App() {
         <AuthProvider>
           <SettingsProvider>
             <DiaryProvider>
-              <NoteProvider>
-                <WorryProvider>
+              <WorryProvider>
+                <NoteProvider>
                   <GoalProvider>
                     <AppNav />
                   </GoalProvider>
-                </WorryProvider>
-              </NoteProvider>
+                </NoteProvider>
+              </WorryProvider>
             </DiaryProvider>
           </SettingsProvider>
         </AuthProvider>

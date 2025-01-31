@@ -48,12 +48,24 @@
         }
       ],
       [
+        "expo-av",
+        {
+          "microphonePermission": "Allow Releafe to access your microphone."
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
-      "expo-audio"
+      "expo-audio",
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ]
     ],
     "newArchEnabled": true
   }

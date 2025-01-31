@@ -100,6 +100,8 @@ export const TabNavigator = () => {
                 thoughtLikelihoodSliderTwo,
                 thoughtLikelihood,
                 alternativePerspective,
+                mediaFile,
+                audioMetering,
               } = item;
               return {
                 id,
@@ -117,6 +119,8 @@ export const TabNavigator = () => {
                 thoughtLikelihoodSliderTwo,
                 thoughtLikelihood,
                 alternativePerspective,
+                mediaFile,
+                audioMetering,
               };
             });
 

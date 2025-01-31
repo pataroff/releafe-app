@@ -168,12 +168,15 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     if (reframingModalIndex < reframingSteps.length - 1) {
       setReframingModalIndex(reframingModalIndex + 1);
     } else {
-      setReframed(true);
+      setReframed(true); // @TODO This is part of the worry and it is not being updated in the database here, so why are we doing this?
       setReframingModalIndex(0);
       setModalReframingVisible(!modalReframingVisible);
 
-      // Store the assosciated worry id
-      createNoteEntry(uuid);
+      if (route.name === 'WorryBox') {
+        createNoteEntry(uuid);
+      } else {
+        createNoteEntry();
+      }
 
       resetNoteEntryFields();
       resetWorryEntryFields();
