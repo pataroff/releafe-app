@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   Platform,
   TextStyle,
@@ -11,28 +10,33 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
-import { IDiaryEntry, SelectOptions } from '../types';
+import { IDiaryEntry, ChartTimeframe } from '../types';
 
-import { CustomSelector } from './CustomSelector';
-import { CustomMultiPicker } from './CustomMultiPicker';
+import { ChartTimeframeSelector } from './ChartTimeFrameSelector';
 import { PerformanceCalendar } from './PerformanceCalendar';
 
 import { PerformanceChart } from './PerformanceChart';
-import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
-import { version } from 'canvaskit-wasm/package.json';
+import MultiSelectDropdown from './MultiSelectDropdown';
 
 const windowWidth = Dimensions.get('window').width;
 
-export const Performance: React.FC = () => {
+export const Performance: React.FC<{ diaryData: IDiaryEntry[] }> = ({
+  diaryData,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<SelectOptions>(0);
+  const [chartTimeframe, setChartTimeframe] = useState<ChartTimeframe>(
+    ChartTimeframe.Weekly
+  );
+  const [selectedFields, setSelectedFields] = useState<string[]>([
+    'slaap',
+    'energie',
+    'stress',
+  ]);
 
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
     useState<IDiaryEntry | null>(null);
 
-  const handleSelect = (option: SelectOptions) => {
-    setSelected(option);
-  };
+  const sliderData = diaryData.map((entry) => entry.sliderValues);
 
   return (
     <>
@@ -49,9 +53,22 @@ export const Performance: React.FC = () => {
         </View>
 
         <View style={styles.performanceContainer}>
-          <CustomSelector selected={selected} handleSelect={handleSelect} />
+          <ChartTimeframeSelector
+            chartTimeframe={chartTimeframe}
+            setChartTimeframe={setChartTimeframe}
+          />
+          <MultiSelectDropdown
+            selectedFields={selectedFields}
+            setSelectedFields={setSelectedFields}
+          />
+
           <View style={styles.performanceImageContainer}>
-            {selectedDiaryEntry != null ? (
+            <PerformanceChart
+              rawChartData={sliderData}
+              displayData={selectedFields}
+              chartTimeframe={chartTimeframe}
+            />
+            {/* {selectedDiaryEntry != null ? (
               selected === 0 ? (
                 <Image
                   resizeMode='contain'
@@ -77,7 +94,7 @@ export const Performance: React.FC = () => {
                 style={{ width: '100%', height: 300 }}
                 source={require('../../assets/images/chart_empty.png')}
               />
-            )}
+            )} */}
           </View>
         </View>
 
@@ -90,19 +107,6 @@ export const Performance: React.FC = () => {
       </View>
 
       {/* The Actual Chart */}
-      {/* {Platform.OS == 'web' ? (
-          <WithSkiaWeb
-            opts={{
-              locateFile: (file) =>
-                `https://cdn.jsdelivr.net/npm/canvaskit-wasm@${version}/bin/full/${file}`,
-            }}
-            //@ts-ignore
-            getComponent={() => import('./PerformanceChart')}
-            fallback={<Text>Loading Skia...</Text>}
-          />
-        ) : (
-          <PerformanceChart />
-        )} */}
     </>
   );
 };
@@ -126,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginTop: 20,
     borderRadius: 30,
-    height: 360,
+    flexGrow: 1,
     // Shadow Test
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -136,7 +140,6 @@ const styles = StyleSheet.create({
   },
   performanceImageContainer: {
     width: '100%',
-    paddingHorizontal: 15,
   },
   performanceTitleText: {
     ...Fonts.poppinsBold[Platform.OS],

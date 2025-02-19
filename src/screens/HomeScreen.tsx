@@ -27,6 +27,8 @@ import { AuthContext } from '../context/AuthContext';
 import { GoalContext } from '../context/GoalContext';
 import { GoalsOverview } from '../components/GoalsOverview';
 
+import { useNavigation } from '@react-navigation/native';
+
 const windowWidth = Dimensions.get('window').width;
 
 const nudgingItems = [
@@ -46,10 +48,10 @@ const nudgingItems = [
   },
   {
     icon: <FontAwesome6 name='heart' size={24} color='black' />,
-    title: 'Tijd voor een oefening',
+    title: 'Zorgen reframen',
     description:
       'De beste manier om met zorgen om te gaan, is om ze anders te benaderen – probeer het eens!',
-    buttonText: 'Bekijk toolkit',
+    buttonText: 'Ga naar Reframing',
   },
   {
     icon: (
@@ -58,11 +60,13 @@ const nudgingItems = [
     title: 'Blijf actief!',
     description:
       'Wat dacht je van wat lichaamsbeweging vandaag? Er is vast een oefening die bij je past!',
-    buttonText: 'Bekijk dagboek',
+    buttonText: 'Bekijk oefeningen',
   },
 ];
 
 export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
+  const navigation = useNavigation();
+
   const title = 'Home';
   const { user } = useContext(AuthContext);
   const { goalEntries } = useContext(GoalContext);
@@ -84,6 +88,22 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const newIndex = Math.round(offsetX / (windowWidth - 40)); // 40 = padding * 2
     if (newIndex !== activeIndex) setActiveIndex(newIndex);
+  };
+
+  const handleNudging = (index: number) => {
+    switch (index) {
+      case 0:
+        navigation.navigate('Diary');
+        break;
+      case 1:
+        navigation.navigate('WellbeingOverview');
+        break;
+      case 2:
+        navigation.navigate('Toolkit', { screen: 'Reframing' });
+        break;
+      case 3:
+        navigation.navigate('Toolkit', { screen: 'Exercises' });
+    }
   };
 
   useEffect(() => {
@@ -214,8 +234,11 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
                   <Text style={styles.nudgingHeadingText}>{title}</Text>
                 </View>
                 <Text style={styles.nudgingBodyText}>{description}</Text>
-                <Pressable style={styles.nudgingButton}>
-                  <Text style={styles.nudgingButtonText}> {buttonText}</Text>
+                <Pressable
+                  onPress={() => handleNudging(index)}
+                  style={styles.nudgingButton}
+                >
+                  <Text style={styles.nudgingButtonText}>{buttonText}</Text>
                 </Pressable>
               </Animated.View>
             );
@@ -421,7 +444,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   nudgingButton: {
     borderRadius: 15,
-    width: 180,
+    width: 200,
     paddingVertical: 7,
     backgroundColor: '#A5B79F',
   },

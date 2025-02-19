@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import {
   StyleSheet,
@@ -16,7 +16,9 @@ import {
 import { DiaryContext } from '../context/DiaryContext';
 import { GoalContext } from '../context/GoalContext';
 
-import { Slider } from '@rneui/themed';
+import { useSharedValue } from 'react-native-reanimated';
+import { Slider } from 'react-native-awesome-slider';
+
 import { CheckBox } from '@rneui/themed';
 import { ProgressBar } from 'react-native-paper';
 
@@ -43,6 +45,19 @@ interface DiaryModalProps {
   setModalDiaryVisible: React.Dispatch<React.SetStateAction<boolean>>;
   route: any;
 }
+
+const CustomThumb: React.FC<{}> = () => {
+  return (
+    <View
+      style={{
+        backgroundColor: '#C1DEBE',
+        height: 28,
+        width: 28,
+        borderRadius: 99,
+      }}
+    ></View>
+  );
+};
 
 const GoalsChecklistItem: React.FC<GoalsChecklistItemProps> = ({
   goal,
@@ -93,10 +108,18 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const {
     addSliderValue,
     addTextValue,
+    setDate,
     resetSliderValues,
     resetTextValues,
     createDiaryEntry,
   } = useContext(DiaryContext);
+
+  useEffect(() => {
+    if (route?.params?.date) {
+      setDate(route.params.date);
+      setModalDiaryVisible(true);
+    }
+  });
 
   const navigation = useNavigation();
 
@@ -112,7 +135,10 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const [diaryModalIndex, setDiaryModalIndex] = useState<number>(0);
   const [progressValue, setProgressValue] = useState(progressStep);
 
-  const [sliderValue, setSliderValue] = useState<number>(5);
+  const min = useSharedValue(1);
+  const max = useSharedValue(10);
+  const sliderValue = useSharedValue(5.5);
+
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState<number>(0);
   const [textValue, setTextValue] = useState<string>('');
   const [textQuestionIndex, setTextQuestionIndex] = useState<number>(0);
@@ -123,7 +149,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const handlePrevious = () => {
     // Update slider values (0 to 5, including)
     if (diaryModalIndex != 0 && diaryModalIndex <= sliderSteps.length - 1) {
-      setSliderValue(5);
+      sliderValue.value = 5;
       setSliderQuestionIndex((prev) => --prev);
     }
 
@@ -145,8 +171,8 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const handleNext = () => {
     // Update slider values (0 to 5, excluding)
     if (diaryModalIndex < sliderSteps.length) {
-      addSliderValue(sliderQuestionIndex, Math.round(sliderValue));
-      setSliderValue(5);
+      addSliderValue(sliderQuestionIndex, Math.round(sliderValue.value));
+      sliderValue.value = 5;
       // Skip slider question index increment, if on last step
       if (diaryModalIndex !== sliderSteps.length - 1) {
         setSliderQuestionIndex((prev) => ++prev);
@@ -174,7 +200,10 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     setDiaryModalIndex(0);
     setProgressValue(progressStep);
     setSliderQuestionIndex(0);
-    setSliderValue(5);
+    sliderValue.value = 5;
+    setDate(new Date()); // Is this needed?
+    // Clears the passed params for editing
+    navigation.setParams({ date: null });
     setCheckedGoals([]);
     setTextQuestionIndex(0);
   };
@@ -276,32 +305,33 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                 <Text style={styles.headingText}>
                   {sliderSteps[sliderQuestionIndex].question}
                 </Text>
-                {/* REACT-NATIVE-ELEMENTS/SLIDER */}
-                <View style={{ marginTop: 20 }}>
+                <View style={{ marginVertical: 25 }}>
                   <Slider
-                    value={sliderValue}
-                    onValueChange={(value) => setSliderValue(Math.round(value))}
-                    style={{ width: '100%' }}
-                    trackStyle={{ height: 15, borderRadius: 30 }}
-                    thumbStyle={{
-                      width: 28,
-                      height: 28,
+                    progress={sliderValue}
+                    onValueChange={(value) => (sliderValue.value = value)}
+                    minimumValue={min}
+                    maximumValue={max}
+                    disableTrackPress={true}
+                    disableTapEvent={true}
+                    containerStyle={{ borderRadius: 30 }}
+                    sliderHeight={15}
+                    thumbWidth={25}
+                    theme={{
+                      minimumTrackTintColor: '#E4E1E1',
+                      maximumTrackTintColor: '#E4E1E1',
+                      bubbleBackgroundColor: '#C1DEBE',
                     }}
-                    thumbTintColor='#C1DEBE'
-                    minimumValue={1}
-                    maximumValue={10}
-                    minimumTrackTintColor='#E4E1E1'
-                    maximumTrackTintColor='#E4E1E1'
+                    renderThumb={() => <CustomThumb />}
                   />
-                  {/* Slider Options Container */}
-                  <View style={styles.optionsContainer}>
-                    <Text style={styles.optionsText}>
-                      {sliderSteps[sliderQuestionIndex].options[0]}
-                    </Text>
-                    <Text style={styles.optionsText}>
-                      {sliderSteps[sliderQuestionIndex].options[1]}
-                    </Text>
-                  </View>
+                </View>
+                {/* Slider Options Container */}
+                <View style={styles.optionsContainer}>
+                  <Text style={styles.optionsText}>
+                    {sliderSteps[sliderQuestionIndex].options[0]}
+                  </Text>
+                  <Text style={styles.optionsText}>
+                    {sliderSteps[sliderQuestionIndex].options[1]}
+                  </Text>
                 </View>
               </View>
             )}
@@ -361,7 +391,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                   style={
                     {
                       ...Fonts.poppinsRegular[Platform.OS],
-                      marginTop: 10,
+                      marginTop: 20,
                       padding: 10,
                       borderRadius: 10,
                       backgroundColor: '#f6f7f8',
@@ -429,11 +459,11 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
               {/* Progress Bar Container */}
               <View style={styles.progressBarContainer}>
                 <Text style={styles.progressBarText}>
-                  {progressValue * 100}%
+                  {Math.round(progressValue * 100)}%
                 </Text>
                 <ProgressBar
-                  // @TODO: https://github.com/callstack/react-native-paper/issues/4544
-                  animatedValue={progressValue}
+                  // Jan prefers switching to the steps to keep the design more consistent!
+                  progress={progressValue}
                   color='#A9C1A1'
                   style={styles.progressBar}
                 />
@@ -490,7 +520,6 @@ const styles = StyleSheet.create({
     padding: 25,
     backgroundColor: 'white',
     borderRadius: 30,
-    rowGap: 10,
     // Shadow Test
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },

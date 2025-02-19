@@ -15,6 +15,8 @@ import { GoalProvider } from './src/context/GoalContext';
 
 import AppNav from './src/navigation/AppNav';
 
+import Toast from 'react-native-toast-message';
+
 // import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
 
 export default function App() {
@@ -33,22 +35,25 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider>
-      <PaperProvider>
-        <AuthProvider>
-          <SettingsProvider>
-            <DiaryProvider>
-              <WorryProvider>
-                <NoteProvider>
-                  <GoalProvider>
-                    <AppNav />
-                  </GoalProvider>
-                </NoteProvider>
-              </WorryProvider>
-            </DiaryProvider>
-          </SettingsProvider>
-        </AuthProvider>
-      </PaperProvider>
-    </SafeAreaProvider>
+    <>
+      <SafeAreaProvider>
+        <PaperProvider>
+          <AuthProvider>
+            <SettingsProvider>
+              <DiaryProvider>
+                <WorryProvider>
+                  <NoteProvider>
+                    <GoalProvider>
+                      <AppNav />
+                    </GoalProvider>
+                  </NoteProvider>
+                </WorryProvider>
+              </DiaryProvider>
+            </SettingsProvider>
+          </AuthProvider>
+        </PaperProvider>
+      </SafeAreaProvider>
+      <Toast />
+    </>
   );
 }

@@ -4,6 +4,8 @@ import pb from '../lib/pocketbase';
 import { AuthModel } from 'pocketbase';
 import { IUserData, IAuthContext } from '../types';
 
+import Toast from 'react-native-toast-message';
+
 // TODO: Make usage of the `pb_auth` item in local storage!
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -35,6 +37,19 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
     checkAuthStatus();
   }, []);
 
+  const showToast = (
+    type: 'error' | 'success' | 'info',
+    title: string,
+    message: string
+  ) => {
+    Toast.show({
+      topOffset: 80,
+      type,
+      text1: title,
+      text2: message,
+    });
+  };
+
   const signIn = async (email: string, password: string) => {
     try {
       setIsLoading(true);
@@ -46,6 +61,17 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
       setIsLoading(false);
     } catch (error) {
       console.error('Error: ', error);
+      setIsLoading(false);
+
+      if (error.response?.code === 400) {
+        showToast('error', 'Sign In Failed', 'This account does not exist.');
+      } else {
+        showToast(
+          'error',
+          'Unexpected Error',
+          'Something went wrong, try again.'
+        );
+      }
     }
   };
 
@@ -76,8 +102,11 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
         firstName: firstName.trim() ?? '',
         lastName: lastName.trim() ?? '',
       });
+
+      showToast('success', 'Account Created', 'You can now log in.');
     } catch (error) {
       console.error('Error: ', error);
+      showToast('error', 'Sign Up Failed', 'Could not create account.');
     }
   };
 

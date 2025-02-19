@@ -16,21 +16,28 @@ export const DashboardScreen: React.FC = () => {
   const title = 'Welzijnsoverzicht';
 
   const { user } = useContext(AuthContext);
-  const { setDiaryEntries, deserializeRecord } = useContext(DiaryContext);
+  const { diaryEntries, setDiaryEntries, deserializeRecord } =
+    useContext(DiaryContext);
 
   useEffect(() => {
     const fetchDiaryEntries = async () => {
       if (user) {
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
         try {
-          // TODO: Consider subscribing to the `diary_entries` collection!
           const diaryEntriesList = await pb
             .collection('diary_entries')
-            .getList(1, 50, {
-              filter: `user.id='${user.id}'`,
-              sort: '-date', // desc order
+            // @TODO A year of data from Date.now() should be readily available on `DashboardScreen` mounted! ✅
+            .getList(1, 365, {
+              filter: `user.id='${
+                user.id
+              }' && date >='${oneYearAgo.toISOString()}'`,
+              sort: 'date', // asc order. but used to be in desc order
               expand: 'user',
             });
 
+          // @ts-expect-error
           const modifiedDiaryEntriesList: IDiaryEntry[] =
             diaryEntriesList.items.map((item) => {
               const { id, uuid, date, sliderValues, textValues } = item;
@@ -62,7 +69,7 @@ export const DashboardScreen: React.FC = () => {
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
-        <Performance />
+        <Performance diaryData={diaryEntries} />
       </ScrollView>
     </>
   );

@@ -33,6 +33,11 @@ export const MemoItem = ({
   const [status, setStatus] = useState<AVPlaybackStatus>();
 
   const loadSound = async () => {
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: true,
+      playsInSilentModeIOS: true,
+    });
+
     console.log('Loading Sound...');
 
     const { sound } = await Audio.Sound.createAsync(

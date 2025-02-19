@@ -7,53 +7,67 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Fonts } from '../styles';
+import { ChartTimeframe } from '../types';
 
-enum SelectOptions {
-  Week,
-  Maand,
-  Jaar,
-}
-export const CustomSelector: React.FC<{
-  selected: SelectOptions;
-  handleSelect: (option: SelectOptions) => void;
-}> = ({ selected, handleSelect }) => {
+export const ChartTimeframeSelector: React.FC<{
+  chartTimeframe: ChartTimeframe;
+  setChartTimeframe: (option: ChartTimeframe) => void;
+}> = ({ chartTimeframe, setChartTimeframe }) => {
   return (
     <View>
       <View style={styles.container}>
         <Pressable
           style={[
-            selected === 0 ? styles.selectedButton : styles.unselectedButton,
+            chartTimeframe === ChartTimeframe.Weekly
+              ? styles.selectedButton
+              : styles.unselectedButton,
             styles.leftButton,
           ]}
-          onPress={() => handleSelect(SelectOptions.Week)}
+          onPress={() => setChartTimeframe(ChartTimeframe.Weekly)}
         >
           <Text
-            style={selected === 0 ? styles.selectedText : styles.unselectedText}
+            style={
+              chartTimeframe === ChartTimeframe.Weekly
+                ? styles.selectedText
+                : styles.unselectedText
+            }
           >
             Week
           </Text>
         </Pressable>
         <Pressable
           style={
-            selected === 1 ? styles.selectedButton : styles.unselectedButton
+            chartTimeframe === ChartTimeframe.Monthly
+              ? styles.selectedButton
+              : styles.unselectedButton
           }
-          onPress={() => handleSelect(SelectOptions.Maand)}
+          onPress={() => setChartTimeframe(ChartTimeframe.Monthly)}
         >
           <Text
-            style={selected === 1 ? styles.selectedText : styles.unselectedText}
+            style={
+              chartTimeframe === ChartTimeframe.Monthly
+                ? styles.selectedText
+                : styles.unselectedText
+            }
           >
             Maand
           </Text>
         </Pressable>
         <Pressable
           style={[
-            selected === 2 ? styles.selectedButton : styles.unselectedButton,
+            chartTimeframe === ChartTimeframe.Yearly
+              ? styles.selectedButton
+              : styles.unselectedButton,
             styles.rightButton,
           ]}
-          onPress={() => handleSelect(SelectOptions.Jaar)}
+          onPress={() => setChartTimeframe(ChartTimeframe.Yearly)}
         >
           <Text
-            style={selected === 2 ? styles.selectedText : styles.unselectedText}
+            style={
+              chartTimeframe === ChartTimeframe.Yearly
+                ? styles.selectedText
+                : styles.unselectedText
+            }
           >
             Jaar
           </Text>

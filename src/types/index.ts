@@ -66,10 +66,10 @@ export interface IAuthContext {
   user: AuthModel | null;
 }
 
-export enum SelectOptions {
-  Week,
-  Maand,
-  Jaar,
+export enum ChartTimeframe {
+  Weekly = 'WEEKLY',
+  Monthly = 'MONTHLY',
+  Yearly = 'YEARLY',
 }
 
 export enum Category {

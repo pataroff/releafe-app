@@ -14,7 +14,11 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DiaryContext } from '../context/DiaryContext';
 import { AuthContext } from '../context/AuthContext';
 
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import {
+  useNavigation,
+  useFocusEffect,
+  StackActions,
+} from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -24,13 +28,22 @@ export const DiaryFarewell: React.FC = () => {
     useContext(DiaryContext);
   const { user } = useContext(AuthContext);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      createDiaryEntry();
-      resetSliderValues();
-      resetTextValues();
-    }, [])
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     createDiaryEntry();
+  //     resetSliderValues();
+  //     resetTextValues();
+  //   }, [])
+  // );
+
+  const handleStackReset = (continueFlow: boolean) => {
+    navigation.dispatch(StackActions.popToTop());
+    if (continueFlow) {
+      navigation.navigate('WellbeingOverview');
+    } else {
+      navigation.navigate('Diary1');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -70,7 +83,7 @@ export const DiaryFarewell: React.FC = () => {
       </View>
 
       <Pressable
-        onPress={() => navigation.navigate('WellbeingOverview')}
+        onPress={() => handleStackReset(true)}
         style={styles.dashboardButton}
       >
         <Text style={styles.dashboardButtonText}>
@@ -79,7 +92,7 @@ export const DiaryFarewell: React.FC = () => {
       </Pressable>
 
       <Pressable
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => handleStackReset(false)}
         style={styles.closeButton}
       >
         <Text style={styles.closeButtonText}>Afsluiten</Text>
