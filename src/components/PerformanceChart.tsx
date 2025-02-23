@@ -333,15 +333,15 @@ export const PerformanceChart = ({
   };
 
   return (
-    <View style={{ height: 300, width: '100%', padding: 25 }}>
+    <View style={{ height: 400, width: '100%', padding: 25 }}>
       <View
         style={{
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          paddingHorizontal: 25,
-          paddingVertical: 10,
+          paddingHorizontal: 15,
+          paddingBottom: 10,
         }}
       >
         <Pressable
@@ -396,7 +396,7 @@ export const PerformanceChart = ({
             y: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           },
         }}
-        domainPadding={25}
+        domainPadding={30}
       >
         {({ points }) => (
           <React.Fragment>

@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     height: 150,
     width: '100%',
     borderRadius: 30,
+    borderTopEndRadius: 0,
     paddingBottom: 20,
   },
   h1Text: {
