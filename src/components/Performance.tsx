@@ -36,7 +36,10 @@ export const Performance: React.FC<{ diaryData: IDiaryEntry[] }> = ({
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
     useState<IDiaryEntry | null>(null);
 
-  const sliderData = diaryData.map((entry) => entry.sliderValues);
+  const chartData = diaryData.map((entry) => ({
+    date: entry.date,
+    values: entry.sliderValues,
+  }));
 
   return (
     <>
@@ -64,7 +67,7 @@ export const Performance: React.FC<{ diaryData: IDiaryEntry[] }> = ({
 
           <View style={styles.performanceImageContainer}>
             <PerformanceChart
-              rawChartData={sliderData}
+              rawChartData={chartData}
               displayData={selectedFields}
               chartTimeframe={chartTimeframe}
             />

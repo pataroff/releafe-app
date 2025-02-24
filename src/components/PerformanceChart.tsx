@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   TextStyle,
   Platform,
 } from 'react-native';
-import { CartesianChart, Line, useChartPressState } from 'victory-native';
+import { CartesianChart, Line } from 'victory-native';
 import {
   useFont,
   Image as SkiaImage,
@@ -24,6 +24,7 @@ import { Fonts } from '../styles';
 import poppins from '../../assets/fonts/Poppins-Light.ttf';
 
 interface AggregatedChartData {
+  date: Date;
   x: string;
   algeheel: number;
   angst: number;
@@ -94,49 +95,69 @@ const lineProperties: Record<
   },
 };
 
-const aggregateWeeklyData = (rawData: Record<number, number>[]) => {
+const aggregateWeeklyData = (
+  rawData: {
+    date: Date;
+    values: Record<number, number>;
+  }[]
+) => {
   // [W1, W2, W3, W4, W5]
   return rawData.map((entry, index) => ({
-    x: WEEKLY_LABELS[index % 7],
-    algeheel: entry[0] ?? 0,
-    angst: entry[1] ?? 0,
-    stress: entry[2] ?? 0,
-    energie: entry[3] ?? 0,
-    concentratie: entry[4] ?? 0,
-    slaap: entry[5] ?? 0,
+    date: entry.date,
+    x: WEEKLY_LABELS[index % 7], // @TODO Is this correctly assigning the day corresponding to that date on the x-axis?
+    algeheel: entry.values[0] ?? 0,
+    angst: entry.values[1] ?? 0,
+    stress: entry.values[2] ?? 0,
+    energie: entry.values[3] ?? 0,
+    concentratie: entry.values[4] ?? 0,
+    slaap: entry.values[5] ?? 0,
   }));
 };
 
-const aggregateMonthlyData = (rawData: Record<number, number>[]) => {
+const aggregateMonthlyData = (
+  rawData: {
+    date: Date;
+    values: Record<number, number>;
+  }[]
+) => {
   const weeks = chunkArray(rawData, 7); // Split into weeks
   return weeks.map((week, index) => ({
+    // `week` is an array!
+    date: week[week.length - 1].date,
     x: `W${index + 1}`, // Monthly label: W1, W2, etc.
     ...calculateAverages(week),
   }));
 };
 
-const aggregateYearlyData = (rawData: Record<number, number>[]) => {
-  const months = chunkArrayMonths(rawData, 30); // Split into months // @TODO Check if it is really the average of the days and not the average of the average of the weeks!
-  return months.map((monthData, index) => ({
+const aggregateYearlyData = (
+  rawData: {
+    date: Date;
+    values: Record<number, number>;
+  }[]
+) => {
+  const months = chunkArrayMonths(rawData, 30); // Split into months
+  return months.map((month, index) => ({
+    date: month[month.length - 1].date,
     x: MONTHLY_LABELS[index], // Monthly label: Jan, Feb, etc.
-    ...calculateAverages(monthData),
+    ...calculateAverages(month),
   }));
 };
 
 // Helper to split array into chunks
-const chunkArray = (data: Record<number, number>[], size: number) => {
+const chunkArray = (
+  data: { date: Date; values: Record<number, number> }[],
+  size: number
+) => {
   return Array.from({ length: Math.ceil(data.length / size) }, (_, i) =>
     data.slice(i * size, (i + 1) * size)
   );
 };
 
-const chunkArrayMonths = (data: Record<number, number>[], size: number) => {
+const chunkArrayMonths = (
+  data: { date: Date; values: Record<number, number> }[],
+  size: number
+) => {
   let numChunks = Math.ceil(data.length / size); // 365 days / 30 days = ~12 chunks
-
-  // @TODO Is there a better way of restricting to 12 months?
-  if (numChunks > 12) {
-    numChunks = 12;
-  }
 
   return Array.from({ length: numChunks }, (_, i) => {
     const start = i * size;
@@ -146,7 +167,9 @@ const chunkArrayMonths = (data: Record<number, number>[], size: number) => {
 };
 
 // Helper to calculate averages for a group of entries
-const calculateAverages = (group: {}[]) => {
+const calculateAverages = (
+  group: { date: Date; values: Record<number, number> }[]
+) => {
   const numEntries = group.length;
 
   // Mapping the numeric indices to the keys
@@ -162,7 +185,7 @@ const calculateAverages = (group: {}[]) => {
   // Sum the values based on the key mapping
   const summed = group.reduce(
     (acc, entry) => {
-      Object.values(entry).forEach((value, index) => {
+      Object.values(entry.values).forEach((value, index) => {
         const key = keyMap[index];
         // @ts-expect-error
         if (key) acc[key] += value;
@@ -199,7 +222,7 @@ export const PerformanceChart = ({
   displayData,
   chartTimeframe,
 }: {
-  rawChartData: Record<number, number>[];
+  rawChartData: { date: Date; values: Record<number, number> }[];
   displayData: string[];
   chartTimeframe: ChartTimeframe;
 }) => {
@@ -229,6 +252,103 @@ export const PerformanceChart = ({
     }
   };
 
+  const currentData = handleTimeframe(chartTimeframe);
+
+  // Update pageIndices after the data is aggregated
+  useEffect(() => {
+    switch (chartTimeframe) {
+      case ChartTimeframe.Weekly:
+        setPageIndices((prev) => ({
+          ...prev,
+          WEEKLY: getStartPageIndexWeekly(currentData),
+        }));
+        break;
+      case ChartTimeframe.Monthly:
+        setPageIndices((prev) => ({
+          ...prev,
+          MONTHLY: getStartPageIndexMonthly(currentData),
+        }));
+        break;
+      case ChartTimeframe.Yearly:
+        setPageIndices((prev) => ({
+          ...prev,
+          YEARLY: getStartPageIndexYearly(currentData),
+        }));
+      default:
+        setPageIndices((prev) => ({
+          ...prev,
+          WEEKLY: 0,
+          MONTHLY: 0,
+          YEARLY: 0,
+        }));
+        break;
+    }
+  }, [aggregatedChartData, chartTimeframe]); // Re-run when chartTimeframe or aggregatedChartData changes
+
+  const getFormattedDate = (date: Date) => {
+    return date.toISOString().slice(0, 10);
+  };
+
+  // @TODO Combine these 3 functions into 1!
+
+  const getStartPageIndexWeekly = (data: AggregatedChartData[]) => {
+    const today = new Date('2024-04-08'); // Replace with `new Date()` in production
+    const weekStart = new Date(today);
+
+    // @TODO Does this matter?
+    // // Adjust so the week starts on Monday instead of Sunday
+    // const dayOfWeek = today.getDay();
+    // const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If today is Sunday (0), subtract 6 days to get Monday
+
+    // weekStart.setDate(today.getDate() - daysToSubtract);
+    // weekStart.setHours(0, 0, 0, 0);
+
+    const entryIndex = data.findIndex(
+      (entry) =>
+        getFormattedDate(new Date(entry.date)) === getFormattedDate(weekStart)
+    );
+
+    console.log('Entry Index (WEEKLY):', entryIndex);
+
+    return entryIndex !== -1
+      ? Math.floor(entryIndex / 7)
+      : Math.floor(data.length / 7); // Timeframe - 1
+  };
+
+  const getStartPageIndexMonthly = (data: AggregatedChartData[]) => {
+    const today = new Date('2024-04-08'); // Replace with `new Date()` in production
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+
+    // Find the first entry that belongs to the same month and year
+    const entryIndex = data.findIndex((entry) => {
+      const entryDate = new Date(entry.date);
+      return (
+        entryDate.getMonth() === currentMonth &&
+        entryDate.getFullYear() === currentYear
+      );
+    });
+
+    return entryIndex !== -1
+      ? Math.floor(entryIndex / 5)
+      : Math.floor(data.length / 5);
+  };
+
+  const getStartPageIndexYearly = (data: AggregatedChartData[]) => {
+    const today = new Date('2025-04-08'); // Replace with `new Date()` in production
+    const currentYear = today.getFullYear();
+
+    // Find the first entry that belongs to the same month and year
+    const entryIndex = data.findIndex((entry) => {
+      const entryDate = new Date(entry.date);
+      return entryDate.getFullYear() === currentYear;
+    });
+
+    return entryIndex !== -1
+      ? Math.floor(entryIndex / 12)
+      : Math.floor(data.length / 12);
+  };
+
   // PAGINATION
   const PAGE_SIZES = {
     WEEKLY: 7, // Show one full week
@@ -239,7 +359,7 @@ export const PerformanceChart = ({
   // State for pagination
   const [pageIndices, setPageIndices] = useState({
     WEEKLY: 0,
-    MONTHLY: 0,
+    MONTHLY: 0, // @TODO Does this needs to get incremented by 5?
     YEARLY: 0,
   });
 
@@ -250,28 +370,32 @@ export const PerformanceChart = ({
   const pageSize = PAGE_SIZES[chartTimeframe];
   const startIndex = currentPage * pageSize;
   const endIndex = startIndex + pageSize;
+  // console.log('Start Index: ', startIndex);
 
-  const currentData = handleTimeframe(chartTimeframe);
   const totalDataLength = currentData.length;
   const maxPages = Math.ceil(totalDataLength / PAGE_SIZES[chartTimeframe]) - 1;
 
   // Slice data for pagination
   const paginatedData = currentData.slice(startIndex, endIndex);
+  // console.log(paginatedData);
 
   // Pagination controls
   const handleNext = () => {
-    console.log('test');
-    setPageIndices((prev) => ({
-      ...prev,
-      [chartTimeframe]: Math.min(prev[chartTimeframe] + 1, maxPages),
-    }));
+    setPageIndices((prev) => {
+      return {
+        ...prev,
+        [chartTimeframe]: Math.min(prev[chartTimeframe] + 1, maxPages),
+      };
+    });
   };
 
   const handlePrev = () => {
-    setPageIndices((prev) => ({
-      ...prev,
-      [chartTimeframe]: Math.max(0, prev[chartTimeframe] - 1), // Prevent negative index
-    }));
+    setPageIndices((prev) => {
+      return {
+        ...prev,
+        [chartTimeframe]: Math.max(0, prev[chartTimeframe] - 1),
+      };
+    });
   };
 
   const getXAxisTickCount = (timeframe: ChartTimeframe) => {
@@ -287,31 +411,49 @@ export const PerformanceChart = ({
     }
   };
 
-  const getTitle = () => {
-    const now = new Date(); // Get current date
-    const year = now.getFullYear(); // Get current year
+  const getTitle = (data: AggregatedChartData[]) => {
+    if (!data || data.length === 0) return 'No Data';
+
+    let index = pageIndices[chartTimeframe]; // Ensure we fetch the latest index
+
+    // For monthly view, calculate the index for the first week of the current 5-week block
+    if (chartTimeframe === 'MONTHLY') {
+      // Calculate the block start index (5-week block)
+      index = pageIndices[chartTimeframe] * 5; // Multiply by 5 to get the start of the block
+    } else if (chartTimeframe === 'WEEKLY') {
+      index = pageIndices[chartTimeframe] * 7;
+    }
+
+    // console.log('Index: ', index);
+    console.log('Data at that index: ', data[index]);
+
+    if (index < 0 || index >= data.length) return 'Unknown'; // Prevent invalid index access
+
+    const startDate = new Date(data[index].date);
+    // console.log('Start Date: ', startDate);
 
     if (chartTimeframe === 'WEEKLY') {
-      const startOfYear = new Date(year, 0, 1);
-      const days = startOfYear.getDay(); // Days offset for first week
-      const adjustedDay = pageIndices.WEEKLY * 7 + 1 - days; // Find the correct day offset
-      const weekDate = new Date(year, 0, adjustedDay);
-      const weekNumber = Math.ceil(
-        ((weekDate - startOfYear) / 86400000 + days) / 7
+      // Get the first day of the year
+      const firstDayOfYear = new Date(startDate.getFullYear(), 0, 1, 0, 0, 0);
+      // Calculate the number of days since the start of the year
+      const daysSinceYearStart = Math.floor(
+        (startDate.getTime() - firstDayOfYear.getTime()) / 86400000
       );
-      return `${weekDate.getFullYear()} - Week ${weekNumber + 1}`;
+      // Adjust the days to account for the start of the week (Sunday)
+      const weekNumber = Math.ceil(
+        (daysSinceYearStart + firstDayOfYear.getDay() + 1) / 7
+      ); // Add +1 to ensure Sunday is included in the first week
+      return `${startDate.getFullYear()} - Week ${weekNumber}`;
     }
 
     if (chartTimeframe === 'MONTHLY') {
-      const monthIndex = pageIndices.MONTHLY; // 0 = Jan, 1 = Feb, ...
-      const monthDate = new Date(year, monthIndex, 1);
-      return `${monthDate.toLocaleString('en-US', {
+      return `${startDate.toLocaleString('en-US', {
         month: 'long',
-      })} ${monthDate.getFullYear()}`;
+      })} ${startDate.getFullYear()}`;
     }
 
     if (chartTimeframe === 'YEARLY') {
-      return `${year - maxPages + pageIndices.YEARLY}`;
+      return `${startDate.getFullYear()}`;
     }
 
     return 'Unknown';
@@ -359,7 +501,7 @@ export const PerformanceChart = ({
             { ...Fonts.poppinsMedium[Platform.OS], fontSize: 16 } as TextStyle
           }
         >
-          {getTitle()}
+          {getTitle(currentData)}
         </Text>
         <Pressable
           onPress={() => handleNext()}

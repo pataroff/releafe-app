@@ -24,6 +24,7 @@ export const DashboardScreen: React.FC = () => {
       if (user) {
         const oneYearAgo = new Date();
         oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        oneYearAgo.setHours(0, 0, 0, 0);
 
         try {
           const diaryEntriesList = await pb
