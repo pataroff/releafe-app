@@ -226,9 +226,6 @@ export const PerformanceChart = ({
   displayData: string[];
   chartTimeframe: ChartTimeframe;
 }) => {
-  // @TODO: Chart should show the current timeframe OR the current timeframe - 1!
-  // Show what is there partially for the week, monthly shows prompt that there is not enough data yet to do the average!
-
   const font = useFont(poppins, getFontSize(chartTimeframe));
   // const { state, isActive } = useChartPressState({ x: 0, y: { slaap: 0 } });
 
@@ -274,6 +271,7 @@ export const PerformanceChart = ({
           ...prev,
           YEARLY: getStartPageIndexYearly(currentData),
         }));
+        break;
       default:
         setPageIndices((prev) => ({
           ...prev,
@@ -307,8 +305,6 @@ export const PerformanceChart = ({
       (entry) =>
         getFormattedDate(new Date(entry.date)) === getFormattedDate(weekStart)
     );
-
-    console.log('Entry Index (WEEKLY):', entryIndex);
 
     return entryIndex !== -1
       ? Math.floor(entryIndex / 7)
@@ -370,14 +366,12 @@ export const PerformanceChart = ({
   const pageSize = PAGE_SIZES[chartTimeframe];
   const startIndex = currentPage * pageSize;
   const endIndex = startIndex + pageSize;
-  // console.log('Start Index: ', startIndex);
 
   const totalDataLength = currentData.length;
   const maxPages = Math.ceil(totalDataLength / PAGE_SIZES[chartTimeframe]) - 1;
 
   // Slice data for pagination
   const paginatedData = currentData.slice(startIndex, endIndex);
-  // console.log(paginatedData);
 
   // Pagination controls
   const handleNext = () => {
@@ -414,23 +408,11 @@ export const PerformanceChart = ({
   const getTitle = (data: AggregatedChartData[]) => {
     if (!data || data.length === 0) return 'No Data';
 
-    let index = pageIndices[chartTimeframe]; // Ensure we fetch the latest index
+    let index = pageIndices[chartTimeframe] * PAGE_SIZES[chartTimeframe];
 
-    // For monthly view, calculate the index for the first week of the current 5-week block
-    if (chartTimeframe === 'MONTHLY') {
-      // Calculate the block start index (5-week block)
-      index = pageIndices[chartTimeframe] * 5; // Multiply by 5 to get the start of the block
-    } else if (chartTimeframe === 'WEEKLY') {
-      index = pageIndices[chartTimeframe] * 7;
-    }
-
-    // console.log('Index: ', index);
-    console.log('Data at that index: ', data[index]);
-
-    if (index < 0 || index >= data.length) return 'Unknown'; // Prevent invalid index access
+    if (index < 0 || index > data.length) return 'Unknown';
 
     const startDate = new Date(data[index].date);
-    // console.log('Start Date: ', startDate);
 
     if (chartTimeframe === 'WEEKLY') {
       // Get the first day of the year
@@ -552,7 +534,7 @@ export const PerformanceChart = ({
                       color={lineProperties[key as LineKeys]?.color}
                       strokeWidth={2}
                       connectMissingData={true}
-                      animate={{ type: 'timing', duration: 300 }}
+                      animate={{ type: 'timing', duration: 300 }} // @WARN This line breaks the charts on snack-expo!
                       curveType='natural'
                     />
 
