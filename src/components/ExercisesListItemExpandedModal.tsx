@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   headersTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   mainContainer: {
@@ -216,15 +216,15 @@ const styles = StyleSheet.create({
     padding: 25,
   },
   descriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
   instructionText: {
     textAlign: 'center',
     fontSize: 13,
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,
   useHeadphonesText: {
-    ...Fonts.poppinsItalic[Platform.OS],
+    ...Fonts.sofiaProItalic[Platform.OS],
     color: 'gray',
     fontSize: 11,
     flexShrink: 1,

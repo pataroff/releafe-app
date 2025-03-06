@@ -294,14 +294,14 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   headingText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   questionContainer: {
     paddingVertical: 20,
   },
   questionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   optionsContainer: {
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   optionsText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
     flexShrink: 1, // text wrap
   } as TextStyle,
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#5c6b57',
   },
   buttonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     color: 'white',
   } as TextStyle,
   progressBarContainer: {
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   progressBarText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   progressBar: {
@@ -373,11 +373,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   modalTitleText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   modalDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   saveAndCloseButton: {
@@ -398,11 +398,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   saveAndCloseText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     color: 'white',
   } as TextStyle,
   dontSaveAndCloseText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,
   cancelButton: {
     borderWidth: 1,
@@ -413,6 +413,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   cancelButtonText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,
 });

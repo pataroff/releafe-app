@@ -351,7 +351,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                   <Text
                     style={
                       {
-                        ...Fonts.poppinsSemiBold[Platform.OS],
+                        ...Fonts.sofiaProSemiBold[Platform.OS],
                       } as TextStyle
                     }
                   >
@@ -360,7 +360,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                   <Text
                     style={
                       {
-                        ...Fonts.poppinsRegular[Platform.OS],
+                        ...Fonts.sofiaProRegular[Platform.OS],
                         fontSize: 13,
                       } as TextStyle
                     }
@@ -400,7 +400,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                       <TextInput
                         style={
                           {
-                            ...Fonts.poppinsRegular[Platform.OS],
+                            ...Fonts.sofiaProRegular[Platform.OS],
                             backgroundColor: '#f6f7f8',
                             borderRadius: 10,
                             height: 40,
@@ -425,7 +425,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                       <TextInput
                         style={
                           {
-                            ...Fonts.poppinsRegular[Platform.OS],
+                            ...Fonts.sofiaProRegular[Platform.OS],
                             padding: 10,
                             borderRadius: 10,
                             backgroundColor: '#f6f7f8',
@@ -555,7 +555,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                           <Text
                             style={
                               {
-                                ...Fonts.poppinsMedium[Platform.OS],
+                                ...Fonts.sofiaProMedium[Platform.OS],
                               } as TextStyle
                             }
                           >
@@ -566,7 +566,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         <Text
                           style={
                             {
-                              ...Fonts.poppinsLight[Platform.OS],
+                              ...Fonts.sofiaProLight[Platform.OS],
                               fontSize: 11,
                               textAlign: 'center',
                             } as TextStyle
@@ -592,7 +592,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         <Text
                           style={
                             {
-                              ...Fonts.poppinsSemiBold[Platform.OS],
+                              ...Fonts.sofiaProSemiBold[Platform.OS],
                             } as TextStyle
                           }
                         >
@@ -602,7 +602,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         <Text
                           style={
                             {
-                              ...Fonts.poppinsRegular[Platform.OS],
+                              ...Fonts.sofiaProRegular[Platform.OS],
                               fontSize: 13,
                             } as TextStyle
                           }
@@ -658,7 +658,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                                 {
                                   textAlign: 'center',
                                   alignSelf: 'center',
-                                  ...Fonts.poppinsRegular[Platform.OS],
+                                  ...Fonts.sofiaProRegular[Platform.OS],
                                 } as TextStyle
                               }
                             >
@@ -737,7 +737,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                       <Text
                         style={
                           {
-                            ...Fonts.poppinsSemiBold[Platform.OS],
+                            ...Fonts.sofiaProSemiBold[Platform.OS],
                             fontSize: 15,
                             textAlign: 'center',
                           } as TextStyle
@@ -749,7 +749,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                       <Text
                         style={
                           {
-                            ...Fonts.poppinsRegular[Platform.OS],
+                            ...Fonts.sofiaProRegular[Platform.OS],
                             fontSize: 13,
                             textAlign: 'center',
                           } as TextStyle
@@ -779,7 +779,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                             <Text
                               style={
                                 {
-                                  ...Fonts.poppinsSemiBold[Platform.OS],
+                                  ...Fonts.sofiaProSemiBold[Platform.OS],
                                 } as TextStyle
                               }
                             >
@@ -789,7 +789,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                           <Text
                             style={
                               {
-                                ...Fonts.poppinsRegular[Platform.OS],
+                                ...Fonts.sofiaProRegular[Platform.OS],
                               } as TextStyle
                             }
                           >
@@ -916,15 +916,15 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   headersTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 20,
   } as TextStyle,
   headersHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
     marginTop: 5,
   } as TextStyle,
@@ -938,11 +938,11 @@ const styles = StyleSheet.create({
   },
   modalTitleText: {
     textAlign: 'center',
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 15,
   } as TextStyle,
   optionsText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 12,
     flexShrink: 1, // text wrap
   } as TextStyle,
@@ -980,7 +980,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#a8c1a0',
   },
   backButtonText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontStyle: 'italic',
   } as TextStyle,
   continueButton: {
@@ -992,12 +992,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#5C6B57',
   },
   continueButtonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontStyle: 'italic',
     color: 'white',
   } as TextStyle,
   buttonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 13,
     color: 'white',
   } as TextStyle,
@@ -1020,19 +1020,19 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   worryListItemTitleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 15,
   } as TextStyle,
   worryListItemDateText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 11,
   } as TextStyle,
   worryListItemDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   dynamicTextInputComponent: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     padding: 10,
     borderRadius: 10,
     backgroundColor: '#f6f7f8',

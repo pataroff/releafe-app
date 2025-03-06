@@ -152,11 +152,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   modalTitleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   modalDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   closeButton: {
@@ -177,10 +177,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   closeButtonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     color: 'white',
   } as TextStyle,
   cancelButtonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
   } as TextStyle,
 });

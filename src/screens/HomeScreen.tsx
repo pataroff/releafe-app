@@ -364,11 +364,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   greetingHeadingText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 24,
   } as TextStyle,
   greetingBodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 15,
   } as TextStyle,
   wellbeingOverviewContainer: {
@@ -382,11 +382,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   dateHeadingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 15,
   } as TextStyle,
   dateBodyText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 15,
   } as TextStyle,
   statisticsOverviewContainer: {
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   statisticsOverviewText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
   quoteContainer: {
     marginTop: 20,
@@ -407,17 +407,17 @@ const styles = StyleSheet.create({
   },
   quoteHeadingText: {
     textAlign: 'center',
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     color: 'white',
     fontSize: 18,
   } as TextStyle,
   quoteBodyText: {
-    ...Fonts.poppinsMediumItalic[Platform.OS],
+    ...Fonts.sofiaProMediumItalic[Platform.OS],
     fontStyle: 'italic',
     color: 'white',
   } as TextStyle,
   quoteAuthorText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     color: 'white',
   } as TextStyle,
   nudgingItemContainer: {
@@ -429,18 +429,18 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   nudgingTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 18,
     marginTop: 20,
     alignSelf: 'flex-start',
     marginLeft: 30,
   } as TextStyle,
   nudgingHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   nudgingBodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
   nudgingButton: {
     borderRadius: 15,
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 16,
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     textTransform: 'uppercase',
   } as TextStyle,
   performanceContainer: {
@@ -479,16 +479,16 @@ const styles = StyleSheet.create({
     rowGap: 10,
   },
   performanceContainerHeadingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   performanceHeadingText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   performanceBodyText: {
     textAlign: 'center',
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 12,
   } as TextStyle,
   badgesContainer: {

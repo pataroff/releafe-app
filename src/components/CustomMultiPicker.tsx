@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     top: 5,
   },
   selectedText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 16,
     alignSelf: 'center',
     marginRight: 15,

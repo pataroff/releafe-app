@@ -261,22 +261,22 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   headingText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   questionContainer: {
     paddingVertical: 20,
   },
   questionLabel: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,
   questionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
   diaryEntryFieldTextInput: {
     fontSize: 14,
     height: 200,
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     borderRadius: 10,
     borderColor: 'black',
     paddingTop: 15,
@@ -301,11 +301,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   modalTitleText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   modalDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   saveAndCloseButton: {
@@ -326,11 +326,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   saveAndCloseText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     color: 'white',
   } as TextStyle,
   dontSaveAndCloseText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,
   cancelButton: {
     borderWidth: 1,
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   cancelButtonText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,
   finishButton: {
     width: 170,
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#5c6b57',
   },
   finishButtonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     color: 'white',
   } as TextStyle,
 });

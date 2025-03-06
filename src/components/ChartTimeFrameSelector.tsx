@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
     borderColor: 'white',
   },
   unselectedText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   selectedText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 13,
   } as TextStyle,
 });

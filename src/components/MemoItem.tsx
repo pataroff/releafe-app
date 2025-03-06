@@ -157,7 +157,7 @@ export const MemoItem = ({
               right: 0,
               bottom: 0,
               color: 'gray',
-              ...Fonts.poppinsRegular[Platform.OS],
+              ...Fonts.sofiaProRegular[Platform.OS],
               fontSize: 12,
             } as TextStyle
           }

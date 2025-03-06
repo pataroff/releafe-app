@@ -661,6 +661,6 @@ export const highlightFrequency = (sentence: string) => {
 
 const styles = StyleSheet.create({
   boldText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
   } as TextStyle,
 });

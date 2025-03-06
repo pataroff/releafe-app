@@ -301,7 +301,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             <Text style={styles.dataTitleText}>
               Datum:
               <Text
-                style={{ ...Fonts.poppinsRegular[Platform.OS] } as TextStyle}
+                style={{ ...Fonts.sofiaProRegular[Platform.OS] } as TextStyle}
               >
                 {' '}
                 {displayDate}
@@ -310,7 +310,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             <Text style={styles.dataTitleText}>
               Tijd van invullen:
               <Text
-                style={{ ...Fonts.poppinsRegular[Platform.OS] } as TextStyle}
+                style={{ ...Fonts.sofiaProRegular[Platform.OS] } as TextStyle}
               >
                 {' '}
                 {displayTime} uur
@@ -509,7 +509,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             <Text style={styles.dataTitleText}>
               Datum:
               <Text
-                style={{ ...Fonts.poppinsMedium[Platform.OS] } as TextStyle}
+                style={{ ...Fonts.sofiaProMedium[Platform.OS] } as TextStyle}
               >
                 {' '}
                 {displayDate}
@@ -518,7 +518,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             <Text style={styles.dataTitleText}>
               Tijd van invullen:
               <Text
-                style={{ ...Fonts.poppinsMedium[Platform.OS] } as TextStyle}
+                style={{ ...Fonts.sofiaProMedium[Platform.OS] } as TextStyle}
               >
                 {' '}
                 -
@@ -565,16 +565,16 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   dataTitleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   dataHeadingText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 16,
     marginBottom: 5,
   } as TextStyle,
   dataDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   noDataContainer: {
@@ -582,11 +582,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   noDataTitleText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   noDataDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
     marginTop: 5,
   } as TextStyle,
@@ -601,7 +601,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#5c6b57',
   },
   diaryButtonText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     color: 'white',
     fontSize: 12,
   } as TextStyle,
@@ -617,14 +617,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#5c6b57',
   },
   editButtonText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     color: 'white',
     fontSize: 12,
   } as TextStyle,
   dataTextInputContainer: {
     fontSize: 14,
     height: 150,
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     borderRadius: 10,
     paddingTop: 20,
     paddingLeft: 20,

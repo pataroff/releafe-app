@@ -292,15 +292,15 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   worryListItemTitleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 15,
   } as TextStyle,
   worryListItemDateText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 11,
   } as TextStyle,
   worryListItemDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
 });

@@ -157,7 +157,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                   <TextInput
                     style={
                       {
-                        ...Fonts.poppinsRegular[Platform.OS],
+                        ...Fonts.sofiaProRegular[Platform.OS],
                         backgroundColor: '#f6f7f8',
                         borderRadius: 10,
                         height: 40,
@@ -234,7 +234,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                     <TextInput
                       style={
                         {
-                          ...Fonts.poppinsRegular[Platform.OS],
+                          ...Fonts.sofiaProRegular[Platform.OS],
                           padding: 10,
                           borderRadius: 10,
                           backgroundColor: '#f6f7f8',
@@ -435,15 +435,15 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   headersTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 20,
   } as TextStyle,
   headersHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
     marginTop: 5,
   } as TextStyle,
@@ -458,20 +458,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   storeButtonText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     color: 'white',
     fontSize: 12,
   } as TextStyle,
   successHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   successDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   successCtaDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   cancelButton: {
@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8E8E8',
   },
   cancelButtonText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   reframeButton: {
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#829B7A',
   },
   reframeButtonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 13,
     color: 'white',
   } as TextStyle,

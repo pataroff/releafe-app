@@ -155,19 +155,19 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   headersTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 22,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     marginTop: 5,
   } as TextStyle,
   h3Text: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   bodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   toolkitToolsContainer: {
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#5C6B57',
   },
   toolkitComponentButtonText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 16,
     textAlign: 'center',
     textTransform: 'uppercase',

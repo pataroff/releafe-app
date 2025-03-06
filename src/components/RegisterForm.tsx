@@ -128,11 +128,11 @@ export const RegisterForm = () => {
 
 const styles = StyleSheet.create({
   textInputLabelText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   textInputField: {
-    ...Fonts.poppinsItalic[Platform.OS],
+    ...Fonts.sofiaProItalic[Platform.OS],
     height: 40,
     borderWidth: 1,
     borderColor: '#dedede',
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   } as TextStyle,
   buttonText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     textTransform: 'uppercase',
     fontSize: 16,
     color: 'white',
@@ -168,6 +168,6 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     color: '#A9C1A1',
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,
 });

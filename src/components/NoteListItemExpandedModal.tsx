@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   headersTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   mainContainer: {
@@ -371,20 +371,20 @@ const styles = StyleSheet.create({
     padding: 25,
   },
   headingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
   } as TextStyle,
   bodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   optionsText: {
-    ...Fonts.poppinsMediumItalic[Platform.OS],
+    ...Fonts.sofiaProMediumItalic[Platform.OS],
     fontSize: 12,
     fontStyle: 'italic',
     flexShrink: 1, // text wrap
   } as TextStyle,
   showOldSituationText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 11,
     color: 'gray',
   } as TextStyle,

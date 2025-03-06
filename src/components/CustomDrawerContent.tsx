@@ -197,17 +197,17 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   h1Text: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 20,
     color: 'white',
   } as TextStyle,
   bodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
     color: 'white',
   } as TextStyle,
   labelStyle: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     color: 'black',
     fontSize: 16,
   } as TextStyle,
