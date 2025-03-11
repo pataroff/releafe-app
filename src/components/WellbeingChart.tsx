@@ -7,13 +7,31 @@ import {
   Pressable,
   TextStyle,
   Platform,
+  Dimensions,
+  ImageSourcePropType,
 } from 'react-native';
-import { CartesianChart, Line } from 'victory-native';
 import {
+  CartesianChart,
+  Line,
+  PointsArray,
+  useChartPressState,
+} from 'victory-native';
+import {
+  Skia,
   useFont,
   Image as SkiaImage,
+  Path as SkiaPath,
   useImage,
+  SkImage,
+  usePathValue,
+  Group,
+  RoundedRect as SkiaRoundedRect,
+  Text as SkiaText,
 } from '@shopify/react-native-skia';
+import Animated, {
+  SharedValue,
+  useDerivedValue,
+} from 'react-native-reanimated';
 
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
@@ -21,7 +39,9 @@ import { ChartTimeframe } from '../types';
 import { Fonts } from '../styles';
 
 // @ts-expect-error
-import poppins from '../../assets/fonts/Poppins-Light.ttf';
+import poppinsLight from '../../assets/fonts/Poppins-Light.ttf';
+// @ts-expect-error
+import poppinsSemiBold from '../../assets/fonts/Poppins-SemiBold.ttf';
 
 interface AggregatedChartData {
   date: Date;
@@ -33,6 +53,10 @@ interface AggregatedChartData {
   concentratie: number;
   slaap: number;
 }
+
+const windowWidth = Dimensions.get('window').width;
+const paddingHorizontal = 20;
+const chartWidth = windowWidth - paddingHorizontal * 2;
 
 const WEEKLY_LABELS = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
 const MONTHLY_LABELS = [
@@ -60,8 +84,8 @@ type LineKeys =
   | 'slaap';
 
 const lineProperties: Record<
-  LineKeys,
-  { label: string; shape: string; color: string }
+  string,
+  { label: string; shape: ImageSourcePropType; color: string }
 > = {
   algeheel: {
     label: 'Algeheel',
@@ -95,23 +119,90 @@ const lineProperties: Record<
   },
 };
 
-const aggregateWeeklyData = (
-  rawData: {
-    date: Date;
-    values: Record<number, number>;
-  }[]
+const fillMissingDays = (
+  rawData: { date: Date; values: Record<number, number> }[],
+  startDate?: Date,
+  endDate?: Date
 ) => {
-  // [W1, W2, W3, W4, W5]
-  return rawData.map((entry, index) => ({
-    date: entry.date,
-    x: WEEKLY_LABELS[index % 7], // @TODO Is this correctly assigning the day corresponding to that date on the x-axis?
-    algeheel: entry.values[0] ?? 0,
-    angst: entry.values[1] ?? 0,
-    stress: entry.values[2] ?? 0,
-    energie: entry.values[3] ?? 0,
-    concentratie: entry.values[4] ?? 0,
-    slaap: entry.values[5] ?? 0,
-  }));
+  if (rawData.length === 0) return [];
+
+  const sortedData = rawData
+    .slice()
+    .sort((a, b) => a.date.getTime() - b.date.getTime());
+
+  // If no explicit startDate or endDate provided, infer from the data
+  const start = startDate ?? sortedData[0].date;
+  const end = endDate ?? sortedData[sortedData.length - 1].date;
+
+  const dateMap = new Map<
+    string,
+    { date: Date; values: Record<number, number> }
+  >();
+
+  sortedData.forEach((entry) => {
+    const key = entry.date.toISOString().split('T')[0]; // Use date string for easy map lookup
+    dateMap.set(key, entry);
+  });
+
+  const filledData: { date: Date; values: Record<number, number> }[] = [];
+
+  let currentDate = new Date(start);
+
+  while (currentDate <= end) {
+    const dateKey = currentDate.toISOString().split('T')[0];
+
+    if (dateMap.has(dateKey)) {
+      filledData.push(dateMap.get(dateKey)!);
+    } else {
+      // Fill missing day with zeros
+      filledData.push({
+        date: new Date(currentDate),
+        values: {
+          0: 0, // algeheel
+          1: 0, // angst
+          2: 0, // stress
+          3: 0, // energie
+          4: 0, // concentratie
+          5: 0, // slaap
+        },
+      });
+    }
+
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return filledData;
+};
+
+const aggregateWeeklyData = (
+  rawData: { date: Date; values: Record<number, number> }[]
+) => {
+  const filledData = fillMissingDays(rawData);
+  const weeks = chunkArray(filledData, 7);
+
+  return weeks.flatMap((week) => {
+    return week
+      .map((day) => {
+        const dayIndex = day.date.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+        const shiftedIndex = (dayIndex + 6) % 7; // Convert to Monday-first (Monday = 0)
+
+        return {
+          date: day.date,
+          x: shiftedIndex, // Use this for sorting
+          algeheel: day.values[0] ?? 0,
+          angst: day.values[1] ?? 0,
+          stress: day.values[2] ?? 0,
+          energie: day.values[3] ?? 0,
+          concentratie: day.values[4] ?? 0,
+          slaap: day.values[5] ?? 0,
+        };
+      })
+      .sort((a, b) => a.x - b.x) // Sort by shifted index
+      .map((entry) => ({
+        ...entry,
+        x: WEEKLY_LABELS[entry.x], // Assign final labels in order
+      }));
+  });
 };
 
 const aggregateMonthlyData = (
@@ -121,12 +212,16 @@ const aggregateMonthlyData = (
   }[]
 ) => {
   const weeks = chunkArray(rawData, 7); // Split into weeks
-  return weeks.map((week, index) => ({
-    // `week` is an array!
-    date: week[week.length - 1].date,
-    x: `W${index + 1}`, // Monthly label: W1, W2, etc.
-    ...calculateAverages(week),
-  }));
+  return weeks.map((week, index) => {
+    const weekNumber = calculateWeekOfYear(week[week.length - 1].date); // Calculate the week number from the start of the year
+
+    return {
+      // `week` is an array!
+      date: week[0].date,
+      x: `W${weekNumber}`, // Monthly label: W1, W2, etc.
+      ...calculateAverages(week),
+    };
+  });
 };
 
 const aggregateYearlyData = (
@@ -135,12 +230,24 @@ const aggregateYearlyData = (
     values: Record<number, number>;
   }[]
 ) => {
-  const months = chunkArrayMonths(rawData, 30); // Split into months
-  return months.map((month, index) => ({
-    date: month[month.length - 1].date,
-    x: MONTHLY_LABELS[index], // Monthly label: Jan, Feb, etc.
-    ...calculateAverages(month),
-  }));
+  const months = chunkArrayMonths(rawData, 30); // Split into chunks of 30 days
+
+  return months.map((month, index) => {
+    // Get the date of the first entry in this month
+    const firstEntryDate = month[0].date;
+
+    // Get the month from the first entry (zero-indexed: 0 = January, 1 = February, etc.)
+    const monthIndex = firstEntryDate.getMonth();
+
+    // To ensure each chunk gets its correct month label
+    const monthLabel = MONTHLY_LABELS[monthIndex];
+
+    return {
+      date: firstEntryDate,
+      x: monthLabel, // Use the correct month label based on the first date
+      ...calculateAverages(month),
+    };
+  });
 };
 
 // Helper to split array into chunks
@@ -204,6 +311,14 @@ const calculateAverages = (
   return summed;
 };
 
+const calculateWeekOfYear = (date: Date): number => {
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const days = Math.floor(
+    (date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  return Math.ceil((days + 1) / 7); // Adding 1 to start counting from W1
+};
+
 const getFontSize = (timeframe: ChartTimeframe) => {
   switch (timeframe) {
     case ChartTimeframe.Yearly:
@@ -217,7 +332,91 @@ const getFontSize = (timeframe: ChartTimeframe) => {
   }
 };
 
-export const PerformanceChart = ({
+const VerticalDashedLineTooltip = ({
+  x,
+  pointsData,
+}: {
+  x: SharedValue<number>;
+  pointsData: Record<string, PointsArray>;
+}) => {
+  const path = Skia.Path.Make();
+
+  const animatedPath = usePathValue((path) => {
+    'worklet';
+    path.reset();
+    path.moveTo(x.value, 0);
+    path.lineTo(x.value, 300);
+    path.dash(10, 5, 0);
+  }, path);
+
+  const rectX = useDerivedValue(() => {
+    // Calculate the middle of the chart
+    const midpoint = chartWidth / 2;
+    const offset = 10;
+
+    // Check if x.value has passed the middle of the chart
+    if (x.value < midpoint) {
+      return x.value + offset;
+    }
+    return x.value - 100 - offset; // x.value - rectWidth - offset
+  }, [x]);
+  const textX = useDerivedValue(() => rectX.value + 10, [rectX]);
+  const font = useFont(poppinsSemiBold, 10);
+
+  const numberOfItems = Object.keys(pointsData).length;
+  const rectHeight = numberOfItems * 20 + 10;
+
+  return (
+    <Group>
+      <SkiaPath
+        path={animatedPath}
+        style='stroke'
+        strokeWidth={2}
+        color='gray'
+      />
+
+      <SkiaRoundedRect
+        x={rectX}
+        y={80}
+        r={10}
+        width={100}
+        height={rectHeight}
+        color='#E9F5E5' // #A9C1A1
+      />
+
+      {/* Create the text for each displayed point */}
+      {Object.entries(pointsData).map(([label, points], index) => {
+        const text = useDerivedValue(() => {
+          // Find the closest point to x.value
+          const closestPoint = points.reduce((prev, curr) => {
+            return Math.abs(curr.x - x.value) < Math.abs(prev.x - x.value)
+              ? curr
+              : prev;
+          });
+
+          const capitalizedLabel =
+            label.charAt(0).toUpperCase() + label.slice(1);
+
+          return `${capitalizedLabel}: ${closestPoint.yValue}`;
+        }, [x.value]);
+
+        // Render the text for each displayed point
+        return (
+          <SkiaText
+            key={label}
+            x={textX}
+            y={100 + index * 20}
+            text={text}
+            font={font}
+            color='black'
+          />
+        );
+      })}
+    </Group>
+  );
+};
+
+export const WellbeingChart = ({
   rawChartData,
   displayData,
   chartTimeframe,
@@ -226,8 +425,18 @@ export const PerformanceChart = ({
   displayData: string[];
   chartTimeframe: ChartTimeframe;
 }) => {
-  const font = useFont(poppins, getFontSize(chartTimeframe));
-  // const { state, isActive } = useChartPressState({ x: 0, y: { slaap: 0 } });
+  const font = useFont(poppinsLight, getFontSize(chartTimeframe));
+  const { state, isActive } = useChartPressState({
+    x: '0',
+    y: {
+      algeheel: 0,
+      angst: 0,
+      stress: 0,
+      concentratie: 0,
+      energie: 0,
+      slaap: 0,
+    },
+  });
 
   const aggregatedChartData = useMemo(() => {
     const WEEKLY_DATA = aggregateWeeklyData(rawChartData);
@@ -290,7 +499,7 @@ export const PerformanceChart = ({
   // @TODO Combine these 3 functions into 1!
 
   const getStartPageIndexWeekly = (data: AggregatedChartData[]) => {
-    const today = new Date('2024-04-08'); // Replace with `new Date()` in production
+    const today = new Date(); // 2024-04-08
     const weekStart = new Date(today);
 
     // @TODO Does this matter?
@@ -308,11 +517,11 @@ export const PerformanceChart = ({
 
     return entryIndex !== -1
       ? Math.floor(entryIndex / 7)
-      : Math.floor(data.length / 7); // Timeframe - 1
+      : Math.floor(data.length / 7);
   };
 
   const getStartPageIndexMonthly = (data: AggregatedChartData[]) => {
-    const today = new Date('2024-04-08'); // Replace with `new Date()` in production
+    const today = new Date(); // 2024-04-08
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
 
@@ -331,7 +540,7 @@ export const PerformanceChart = ({
   };
 
   const getStartPageIndexYearly = (data: AggregatedChartData[]) => {
-    const today = new Date('2025-04-08'); // Replace with `new Date()` in production
+    const today = new Date(); // 2024-04-08
     const currentYear = today.getFullYear();
 
     // Find the first entry that belongs to the same month and year
@@ -355,7 +564,7 @@ export const PerformanceChart = ({
   // State for pagination
   const [pageIndices, setPageIndices] = useState({
     WEEKLY: 0,
-    MONTHLY: 0, // @TODO Does this needs to get incremented by 5?
+    MONTHLY: 0,
     YEARLY: 0,
   });
 
@@ -406,26 +615,54 @@ export const PerformanceChart = ({
   };
 
   const getTitle = (data: AggregatedChartData[]) => {
-    if (!data || data.length === 0) return 'No Data';
+    let startDate = null;
 
-    let index = pageIndices[chartTimeframe] * PAGE_SIZES[chartTimeframe];
+    const pageIndex = pageIndices[chartTimeframe];
+    const pageSize = PAGE_SIZES[chartTimeframe];
 
-    if (index < 0 || index > data.length) return 'Unknown';
+    const startElementIndex = pageIndex * pageSize;
+    const lastElementIndex = startElementIndex + pageSize - 1;
+    const safeIndex =
+      lastElementIndex >= data.length ? data.length - 1 : lastElementIndex;
 
-    const startDate = new Date(data[index].date);
+    // DEBUGGING
+    console.log('Page Index:', pageIndex);
+    console.log('Max Pages:', maxPages);
+    console.log('Start Element Index:', startElementIndex);
+    console.log('Last Element Index:', lastElementIndex);
+    console.log('Safe Index:', safeIndex);
+    console.log('Data (Safe Index):', data[safeIndex]);
+
+    if (safeIndex < 0 || !data[safeIndex]) {
+      startDate = new Date();
+    } else {
+      startDate = new Date(data[safeIndex].date);
+    }
 
     if (chartTimeframe === 'WEEKLY') {
-      // Get the first day of the year
-      const firstDayOfYear = new Date(startDate.getFullYear(), 0, 1, 0, 0, 0);
-      // Calculate the number of days since the start of the year
-      const daysSinceYearStart = Math.floor(
-        (startDate.getTime() - firstDayOfYear.getTime()) / 86400000
+      // Copy the date to avoid modifying the original
+      const tempDate = new Date(startDate);
+
+      // Ensure it's in UTC to avoid timezone issues
+      tempDate.setUTCHours(0, 0, 0, 0);
+
+      // Move to Thursday of the current week (ISO rule)
+      tempDate.setUTCDate(
+        tempDate.getUTCDate() + 4 - (tempDate.getUTCDay() || 7)
       );
-      // Adjust the days to account for the start of the week (Sunday)
-      const weekNumber = Math.ceil(
-        (daysSinceYearStart + firstDayOfYear.getDay() + 1) / 7
-      ); // Add +1 to ensure Sunday is included in the first week
-      return `${startDate.getFullYear()} - Week ${weekNumber}`;
+
+      // Get the first Thursday of the year
+      const firstThursday = new Date(tempDate.getUTCFullYear(), 0, 4);
+      firstThursday.setUTCDate(
+        firstThursday.getUTCDate() + 4 - (firstThursday.getUTCDay() || 7)
+      );
+
+      // Calculate the week number (difference in days divided by 7)
+      const weekNumber =
+        Math.ceil((tempDate.getTime() - firstThursday.getTime()) / 604800000) +
+        1;
+
+      return `${tempDate.getUTCFullYear()} - Week ${weekNumber}`;
     }
 
     if (chartTimeframe === 'MONTHLY') {
@@ -437,11 +674,9 @@ export const PerformanceChart = ({
     if (chartTimeframe === 'YEARLY') {
       return `${startDate.getFullYear()}`;
     }
-
-    return 'Unknown';
   };
 
-  const images = {
+  const images: Record<string, SkImage | null> = {
     algeheel: useImage(
       require('../../assets/images/symbols/Symbol-overall-feeling.png')
     ),
@@ -457,7 +692,7 @@ export const PerformanceChart = ({
   };
 
   return (
-    <View style={{ height: 400, width: '100%', padding: 25 }}>
+    <View style={{ height: 400, width: chartWidth, padding: 25 }}>
       <View
         style={{
           display: 'flex',
@@ -499,6 +734,7 @@ export const PerformanceChart = ({
         </Pressable>
       </View>
       <CartesianChart
+        chartPressState={state}
         data={paginatedData}
         xKey={'x'}
         yKeys={[
@@ -511,10 +747,21 @@ export const PerformanceChart = ({
         ]}
         axisOptions={{
           font,
-          tickCount: { x: getXAxisTickCount(chartTimeframe), y: 5 },
+          tickCount: {
+            x:
+              paginatedData.length > 0
+                ? paginatedData.length
+                : getXAxisTickCount(chartTimeframe),
+            y: 5,
+          },
           tickValues: {
             x: Array.from(
-              { length: getXAxisTickCount(chartTimeframe) },
+              {
+                length:
+                  paginatedData.length > 0
+                    ? paginatedData.length
+                    : getXAxisTickCount(chartTimeframe),
+              },
               (_, i) => i
             ),
             y: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -522,41 +769,65 @@ export const PerformanceChart = ({
         }}
         domainPadding={30}
       >
-        {({ points }) => (
-          <React.Fragment>
-            {displayData.map((key, index) => {
-              if (points[key as LineKeys]) {
-                return (
-                  <React.Fragment key={`${key}-${index}`}>
-                    {/* Render the Line */}
-                    <Line
-                      points={points[key as LineKeys]}
-                      color={lineProperties[key as LineKeys]?.color}
-                      strokeWidth={2}
-                      connectMissingData={true}
-                      animate={{ type: 'timing', duration: 300 }} // @WARN This line breaks the charts on snack-expo!
-                      curveType='natural'
-                    />
+        {({ points }) => {
+          const displayedPointsData = displayData.reduce((acc, key) => {
+            acc[key] = points[key as LineKeys];
+            return acc;
+          }, {} as Record<string, PointsArray>);
 
-                    {/* Render the symbols on top of each data point */}
-                    {points[key as LineKeys].map((point, imgIndex) => (
-                      <SkiaImage
-                        key={`${key}-img-${imgIndex}`}
-                        image={images[key as LineKeys]}
-                        x={point.x - 6} // Adjust position
-                        y={point.y - 6} // Adjust position
-                        width={12} // Set the size
-                        height={12} // Set the size
-                        fit='contain'
+          return (
+            <React.Fragment>
+              {Object.entries(displayedPointsData).map(
+                ([label, pointsData], index) => {
+                  // Filter points for this specific label
+                  const filteredPointsData = pointsData.filter(
+                    (point) => point.yValue !== 0
+                  );
+
+                  return (
+                    <React.Fragment key={index}>
+                      {/* Render the Line */}
+                      <Line
+                        points={filteredPointsData}
+                        color={lineProperties[label].color}
+                        strokeWidth={2}
+                        connectMissingData={true} // @TODO Is this needed with the filled data gaps approach?
+                        animate={{ type: 'timing', duration: 300 }} // @WARN This line breaks the charts on snack-expo!
+                        curveType='natural'
                       />
-                    ))}
-                  </React.Fragment>
-                );
-              }
-              return null;
-            })}
-          </React.Fragment>
-        )}
+
+                      {/* Render the symbols on top of each data point */}
+                      {filteredPointsData.map((point, idx) => {
+                        if (point.y) {
+                          return (
+                            <SkiaImage
+                              key={idx}
+                              image={images[label]}
+                              x={point.x - 6} // Adjust position
+                              y={point.y - 6}
+                              width={12}
+                              height={12}
+                              fit='contain'
+                            />
+                          );
+                        }
+
+                        return null; // good practice for map
+                      })}
+                    </React.Fragment>
+                  );
+                }
+              )}
+              {/* Render the tooltip */}
+              {isActive && (
+                <VerticalDashedLineTooltip
+                  x={state.x.position}
+                  pointsData={displayedPointsData}
+                />
+              )}
+            </React.Fragment>
+          );
+        }}
       </CartesianChart>
 
       {/* Chart Legend */}
@@ -566,7 +837,7 @@ export const PerformanceChart = ({
             return (
               <View style={styles.legendLabelContainer} key={key}>
                 <Image
-                  source={lineProperties[key as LineKeys]?.shape}
+                  source={lineProperties[key].shape}
                   style={styles.legendLabelIndicator}
                 />
                 <Text style={styles.legendLabelText}>
@@ -608,5 +879,3 @@ const styles = StyleSheet.create({
     fontSize: 11,
   } as TextStyle,
 });
-
-export default PerformanceChart;

@@ -539,7 +539,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             style={styles.diaryButton}
             onPress={() =>
               navigation.navigate('Diary', {
-                screen: 'Diary2',
+                screen: 'Diary1',
                 params: {
                   date: selectedDate,
                 },

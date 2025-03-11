@@ -149,7 +149,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const handlePrevious = () => {
     // Update slider values (0 to 5, including)
     if (diaryModalIndex != 0 && diaryModalIndex <= sliderSteps.length - 1) {
-      sliderValue.value = 5;
+      sliderValue.value = 5.5;
       setSliderQuestionIndex((prev) => --prev);
     }
 
@@ -172,7 +172,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     // Update slider values (0 to 5, excluding)
     if (diaryModalIndex < sliderSteps.length) {
       addSliderValue(sliderQuestionIndex, Math.round(sliderValue.value));
-      sliderValue.value = 5;
+      sliderValue.value = 5.5;
       // Skip slider question index increment, if on last step
       if (diaryModalIndex !== sliderSteps.length - 1) {
         setSliderQuestionIndex((prev) => ++prev);
@@ -200,7 +200,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     setDiaryModalIndex(0);
     setProgressValue(progressStep);
     setSliderQuestionIndex(0);
-    sliderValue.value = 5;
+    sliderValue.value = 5.5;
     setDate(new Date()); // Is this needed?
     // Clears the passed params for editing
     navigation.setParams({ date: null });
@@ -322,6 +322,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                       bubbleBackgroundColor: '#C1DEBE',
                     }}
                     renderThumb={() => <CustomThumb />}
+                    bubble={(s: number) => s.toFixed(1)}
                   />
                 </View>
                 {/* Slider Options Container */}

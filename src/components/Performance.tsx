@@ -15,7 +15,7 @@ import { IDiaryEntry, ChartTimeframe } from '../types';
 import { ChartTimeframeSelector } from './ChartTimeFrameSelector';
 import { PerformanceCalendar } from './PerformanceCalendar';
 
-import { PerformanceChart } from './PerformanceChart';
+import { WellbeingChart } from './WellbeingChart';
 import MultiSelectDropdown from './MultiSelectDropdown';
 
 const windowWidth = Dimensions.get('window').width;
@@ -66,7 +66,7 @@ export const Performance: React.FC<{ diaryData: IDiaryEntry[] }> = ({
           />
 
           <View style={styles.performanceImageContainer}>
-            <PerformanceChart
+            <WellbeingChart
               rawChartData={chartData}
               displayData={selectedFields}
               chartTimeframe={chartTimeframe}
@@ -108,8 +108,6 @@ export const Performance: React.FC<{ diaryData: IDiaryEntry[] }> = ({
           setSelectedDiaryEntry={setSelectedDiaryEntry}
         />
       </View>
-
-      {/* The Actual Chart */}
     </>
   );
 };
