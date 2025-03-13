@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   performanceHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 18,
     marginTop: 20,
   } as TextStyle,
@@ -143,21 +143,21 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   performanceTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     color: '#5c6b57',
     fontSize: 22,
   } as TextStyle,
   performanceDescriptionText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 13,
     marginTop: 5,
   } as TextStyle,
   calendarTitleText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 20,
   } as TextStyle,
   calendarDescriptionText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 14,
     marginTop: 5,
   } as TextStyle,

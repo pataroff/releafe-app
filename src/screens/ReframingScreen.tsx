@@ -138,12 +138,12 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   headersTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 22,
     color: '#5c6b57',
   } as TextStyle,
   headersHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 18,
     marginTop: 20,
   } as TextStyle,
@@ -163,15 +163,15 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   headersDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     marginTop: 5,
   } as TextStyle,
   h3Text: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   bodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   ctaButton: {
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#A9C1A1',
   },
   ctaButtonText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     color: 'white',
     fontSize: 12,
   } as TextStyle,

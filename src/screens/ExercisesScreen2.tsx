@@ -86,7 +86,7 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
             <Text
               style={
                 {
-                  ...Fonts.poppinsSemiBold[Platform.OS],
+                  ...Fonts.sofiaProSemiBold[Platform.OS],
                   color: 'white',
                   textAlign: 'center',
                 } as TextStyle
@@ -160,15 +160,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   headersTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 20,
   } as TextStyle,
   headersHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     marginTop: 5,
   } as TextStyle,
 });

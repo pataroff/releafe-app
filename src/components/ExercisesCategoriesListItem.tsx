@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   titleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
   } as TextStyle,
 });

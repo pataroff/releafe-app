@@ -715,7 +715,7 @@ export const WellbeingChart = ({
         </Pressable>
         <Text
           style={
-            { ...Fonts.poppinsMedium[Platform.OS], fontSize: 16 } as TextStyle
+            { ...Fonts.sofiaProMedium[Platform.OS], fontSize: 16 } as TextStyle
           }
         >
           {getTitle(currentData)}
@@ -874,7 +874,7 @@ const styles = StyleSheet.create({
     height: 12,
   },
   legendLabelText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     textTransform: 'uppercase',
     fontSize: 11,
   } as TextStyle,

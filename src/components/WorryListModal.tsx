@@ -146,12 +146,12 @@ const styles = StyleSheet.create({
   },
   modalTitleText: {
     textAlign: 'center',
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   modalDescriptionText: {
     textAlign: 'center',
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   worryListContainer: {
@@ -169,12 +169,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   noDataTitleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
     textAlign: 'center',
   } as TextStyle,
   noDataDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 16,
     textAlign: 'center',
   } as TextStyle,

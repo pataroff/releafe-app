@@ -28,6 +28,13 @@ export default function App() {
     'Poppins-MediumItalic': require('./assets/fonts/Poppins-MediumItalic.ttf'),
     'Poppins-SemiBold': require('./assets/fonts/Poppins-SemiBold.ttf'),
     'Poppins-Bold': require('./assets/fonts/Poppins-Bold.ttf'),
+    'SofiaPro-Light': require('./assets/fonts/SofiaProLight.ttf'),
+    'SofiaPro-Regular': require('./assets/fonts/SofiaProRegular.ttf'),
+    'SofiaPro-Italic': require('./assets/fonts/SofiaProRegular-Italic.ttf'),
+    'SofiaPro-Medium': require('./assets/fonts/SofiaProMedium.ttf'),
+    'SofiaPro-MediumItalic': require('./assets/fonts/SofiaProMedium-Italic.ttf'),
+    'SofiaPro-SemiBold': require('./assets/fonts/SofiaProSemiBold.ttf'),
+    'SofiaPro-Bold': require('./assets/fonts/SofiaProBold.ttf')
   });
 
   if (!fontsLoaded && !fontError) {

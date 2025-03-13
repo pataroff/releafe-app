@@ -360,23 +360,23 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   h2Text: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   h3Text: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   bodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   timeframeText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 12,
   } as TextStyle,
   completedTimeframeText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 12,
   } as TextStyle,
   progressBar: {
@@ -386,23 +386,23 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   progressBarText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 9.5,
   } as TextStyle,
   percentageText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   statisticsDataHeadingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   statisticsDataBodyText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   buttonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     color: 'white',
   } as TextStyle,
   viewButton: {

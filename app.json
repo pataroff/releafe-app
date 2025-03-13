@@ -35,7 +35,15 @@
             "./assets/fonts/Poppins-Medium.ttf",
             "./assets/fonts/Poppins-MediumItalic.ttf",
             "./assets/fonts/Poppins-SemiBold.ttf",
-            "./assets/fonts/Poppins-Bold.ttf"
+            "./assets/fonts/Poppins-Bold.ttf",
+            
+            "./assets/fonts/SofiaProLight.ttf",
+            "./assets/fonts/SofiaProRegular.ttf",
+            "./assets/fonts/SofiaProRegular-Italic.ttf",
+            "./assets/fonts/SofiaProMedium.ttf",
+            "./assets/fonts/SofiaProMedium-Italic.ttf",
+            "./assets/fonts/SofiaProSemiBold.ttf",
+            "./assets/fonts/SofiaProBold.ttf"
           ]
         }
       ],

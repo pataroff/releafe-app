@@ -333,33 +333,33 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   overviewGoalsHeadingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   h1Text: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   h2Text: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 15,
   } as TextStyle,
   h3Text: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   bodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   goalHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
   } as TextStyle,
   goalBodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
   statisticsHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
   } as TextStyle,
   statisticsDataContainer: {
     width: 220,
@@ -378,11 +378,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   statisticsDataHeadingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   statisticsDataBodyText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   progressBarContainer: {
@@ -390,11 +390,11 @@ const styles = StyleSheet.create({
     rowGap: 10,
   },
   progressBarHeadingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   progressBarBodyText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   progressBar: {
@@ -404,20 +404,20 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   progressBarPercentageText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 22,
   } as TextStyle,
   completedTimeframeText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 12,
   } as TextStyle,
 
   progressBarText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 9.5,
   } as TextStyle,
   percentageText: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 16,
   } as TextStyle,
 });

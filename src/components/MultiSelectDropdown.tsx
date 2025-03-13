@@ -55,7 +55,7 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
         paddingRight: 5,
       }}
     >
-      <Text style={{ ...Fonts.poppinsRegular[Platform.OS] } as TextStyle}>
+      <Text style={{ ...Fonts.sofiaProRegular[Platform.OS] } as TextStyle}>
         {label}
       </Text>
       <CheckBox
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   placeholderStyle: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   selectedStyle: {

@@ -1,3 +1,6 @@
+import { FontWeight } from "@shopify/react-native-skia";
+import { fontConfig } from "react-native-paper/lib/typescript/styles/fonts";
+
 export const poppinsLight = {
   ios: {
     fontFamily: 'Poppins-Light',
@@ -144,3 +147,144 @@ export const poppinsBold = {
     fontWeight: '700',
   },
 };
+export const sofiaProLight = {
+  ios: {
+    fontFamily: 'SofiaPro-Light',
+  },
+  android: {
+    fontFamily: 'SofiaPro-Light',
+  },
+  web: {
+    fontFamily: 'SofiaPro-Light',
+    FontWeight: '300',
+  },
+  windows: {
+    fontFamily: 'SofiaPro-Light',
+    FontWeight: '300',
+  },
+  macos: {
+    fontFamily: 'SofiaPro-Light',
+    FontWeight: '300',
+  },
+};
+export const sofiaProRegular = {
+  ios: {
+    fontFamily: 'SofiaPro-Regular',
+  },
+  android: {
+    fontFamily: 'SofiaPro-Regular',
+  },
+  web: {
+    fontFamily: 'SofiaPro-Regular',
+    FontWeight: '400',
+  },
+  windows: {
+    fontFamily: 'SofiaPro-Regular',
+    FontWeight: '400',
+  },
+  macos: {
+    fontFamily: 'SofiaPro-Regular',
+    FontWeight: '400',
+  },
+};
+export const sofiaProItalic = {
+  ios: {
+    fontFamily: 'SofiaPro-Italic',
+  },
+  android: {
+    fontFamily: 'SofiaPro-Italic',
+  },
+  web: {
+    fontFamily: 'SofiaPro-Italic',
+    FontWeight: '400',
+  },
+  windows: {
+    fontFamily: 'SofiaPro-Italic',
+    FontWeight: '400',
+  },
+  macos: {
+    fontFamily: 'SofiaPro-Italic',
+    FontWeight: '400',
+  },
+};
+export const sofiaProMedium = {
+  ios: {
+    fontFamily: 'SofiaPro-Medium',
+  },
+  android: {
+    fontFamily: 'SofiaPro-Medium',
+  },
+  web: {
+    fontFamily: 'SofiaPro-Medium',
+    FontWeight: '500',
+  },
+  windows: {
+    fontFamily: 'SofiaPro-Medium',
+    FontWeight: '500',
+  },
+  macos: {
+    fontFamily: 'SofiaPro-Medium',
+    FontWeight: '500',
+  },
+};
+export const sofiaProMediumItalic = {
+  ios: {
+    fontFamily: 'SofiaPro-MediumItalic',
+  },
+  android: {
+    fontFamily: 'SofiaPro-MediumItalic',
+  },
+  web: {
+    fontFamily: 'SofiaPro-MediumItalic',
+    FontWeight: '500',
+  },
+  windows: {
+    fontFamily: 'SofiaPro-MediumItalic',
+    FontWeight: '500',
+  },
+  macos: {
+    fontFamily: 'SofiaPro-MediumItalic',
+    FontWeight: '500',
+  },
+};
+export const sofiaProSemiBold = {
+  ios: {
+    fontFamily: 'SofiaPro-MediumItalic',
+  },
+  android: {
+    fontFamily: 'SofiaPro-MediumItalic',
+  },
+  web: {
+    fontFamily: 'SofiaPro-MediumItalic',
+    FontWeight: '600',
+  },
+  windows: {
+    fontFamily: 'SofiaPro-MediumItalic',
+    FontWeight: '600',
+  },
+  macos: {
+    fontFamily: 'SofiaPro-MediumItalic',
+    FontWeight: '600',
+  },
+};
+export const sofiaProBold = {
+  ios: {
+    fontFamily: 'SofiaPro-Bold',
+  },
+  android: {
+    fontFamily: 'SofiaPro-Bold',
+  },
+  web: {
+    fontFamily: 'SofiaPro-Bold',
+    FontWeight: '700',
+  },
+  windows: {
+    fontFamily: 'SofiaPro-Bold',
+    FontWeight: '700',
+  },
+  macos: {
+    fontFamily: 'SofiaPro-Bold',
+    FontWeight: '700',
+  },
+};
+

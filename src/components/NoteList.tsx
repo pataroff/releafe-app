@@ -66,12 +66,12 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   noDataTitleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
     textAlign: 'center',
   } as TextStyle,
   noDataDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 16,
     textAlign: 'center',
   } as TextStyle,

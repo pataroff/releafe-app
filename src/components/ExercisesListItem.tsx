@@ -123,16 +123,16 @@ const styles = StyleSheet.create({
     padding: 25,
   },
   exerciseHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
   } as TextStyle,
   exerciseBodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   durationHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
   } as TextStyle,
   durationBodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
 });

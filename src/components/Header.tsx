@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   headerTitle: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 24,
     color: 'white',
     textAlign: 'left',

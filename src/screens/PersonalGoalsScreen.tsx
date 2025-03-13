@@ -129,16 +129,16 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   headersTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 22,
     color: '#5c6b57',
   } as TextStyle,
   headersHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 18,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     marginTop: 5,
   } as TextStyle,
   addButton: {
@@ -176,12 +176,12 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   noDataTitleText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
     textAlign: 'center',
   } as TextStyle,
   noDataDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 16,
     textAlign: 'center',
   } as TextStyle,

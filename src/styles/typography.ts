@@ -6,12 +6,12 @@ export const h3 = {
   marginHorizontal: 0,
   marginBottom: 10,
   fontSize: 24,
-  ...Fonts.poppinsMedium[Platform.OS],
+  ...Fonts.sofiaProMedium[Platform.OS],
 };
 
 export const h4 = {
   margin: 0,
   textTransform: 'uppercase',
   fontSize: 20,
-  ...Fonts.poppinsMedium[Platform.OS],
+  ...Fonts.sofiaProMedium[Platform.OS],
 };

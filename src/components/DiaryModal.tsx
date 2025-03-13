@@ -375,7 +375,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                 <Text style={[styles.bodyText, { fontSize: 14 }]}>
                   <Text
                     style={
-                      { ...Fonts.poppinsSemiBold[Platform.OS] } as TextStyle
+                      { ...Fonts.sofiaProSemiBold[Platform.OS] } as TextStyle
                     }
                   >
                     Vraag {textQuestionIndex + 1}:{' '}
@@ -391,7 +391,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                   multiline
                   style={
                     {
-                      ...Fonts.poppinsRegular[Platform.OS],
+                      ...Fonts.sofiaProRegular[Platform.OS],
                       marginTop: 20,
                       padding: 10,
                       borderRadius: 10,
@@ -504,11 +504,11 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   headersTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 20,
   } as TextStyle,
   headersHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
     marginTop: 20,
   } as TextStyle,
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
     rowGap: 5,
   },
   progressBarText: {
-    ...Fonts.poppinsLight[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
     fontSize: 11,
   } as TextStyle,
   progressBar: {
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#a8c1a0',
   },
   backButtonText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontStyle: 'italic',
   } as TextStyle,
   continueButton: {
@@ -579,21 +579,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#5C6B57',
   },
   continueButtonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontStyle: 'italic',
     color: 'white',
   } as TextStyle,
   buttonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 13,
     color: 'white',
   } as TextStyle,
   headingText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   bodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
     flexShrink: 1,
   } as TextStyle,
@@ -603,7 +603,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   optionsText: {
-    ...Fonts.poppinsLight[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
     fontSize: 13,
     flexShrink: 1, // text wrap
   } as TextStyle,

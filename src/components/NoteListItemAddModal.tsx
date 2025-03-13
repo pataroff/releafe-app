@@ -572,7 +572,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                     <TextInput
                       style={
                         {
-                          ...Fonts.poppinsItalic[Platform.OS],
+                          ...Fonts.sofiaProItalic[Platform.OS],
                           backgroundColor: '#F6F7F8',
                           fontStyle: 'italic',
                           borderRadius: 10,
@@ -601,7 +601,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                     <TextInput
                       style={
                         {
-                          ...Fonts.poppinsItalic[Platform.OS],
+                          ...Fonts.sofiaProItalic[Platform.OS],
                           backgroundColor: '#F6F7F8',
                           fontStyle: 'italic',
                           position: 'relative',
@@ -729,7 +729,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                       <Text
                         style={
                           {
-                            ...Fonts.poppinsSemiBold[Platform.OS],
+                            ...Fonts.sofiaProSemiBold[Platform.OS],
                             color: 'white',
                             textAlign: 'center',
                           } as TextStyle
@@ -777,20 +777,20 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   headersTitleText: {
-    ...Fonts.poppinsBold[Platform.OS],
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 20,
   } as TextStyle,
   headersHeadingText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
     marginTop: 5,
   } as TextStyle,
   bodyText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   addButton: {
@@ -843,7 +843,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   mediaFileNameText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 13,
     flexShrink: 1,
     flexWrap: 'wrap',

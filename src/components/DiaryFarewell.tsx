@@ -122,18 +122,18 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     alignSelf: 'flex-start',
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 20,
   } as TextStyle,
   diaryDescriptionText: {
-    ...Fonts.poppinsRegular[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
   dateLabel: {
-    ...Fonts.poppinsMedium[Platform.OS],
+    ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   dateText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
   } as TextStyle,
   continueButton: {
     width: 150,
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#90A38A',
   },
   dashboardButtonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     color: 'white',
     fontSize: 13,
   } as TextStyle,
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
   },
   closeButtonText: {
-    ...Fonts.poppinsSemiBold[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 13,
   } as TextStyle,
 });
