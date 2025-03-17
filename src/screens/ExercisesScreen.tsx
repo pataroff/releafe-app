@@ -24,11 +24,11 @@ export const ExercisesScreen: React.FC<{ route: any }> = ({ route }) => {
       <View style={styles.headersContainer}>
         <Text style={styles.headersTitleText}>Oefeningen</Text>
         <Text style={styles.headersDescriptionText}>
-          Hieronder vind je een selectie van oefeningen, zorgvuldig samengesteld
-          uit ons aanbod. Je kunt kiezen uit verschillende categorieën.
+          Hieronder vind je een selectie van oefeningen, 
+          zorgvuldig samengesteld voor jou, Ontdek welke oefeningen bij jou passen.
         </Text>
 
-        {/* Headers Inner Container */}
+        {/* Headers Inner Container COMMENTED AS RECOMMENDED BY THE DOCUMENT
         <View style={styles.headersInnerContainer}>
           <View style={{ width: '80%' }}>
             <Text style={styles.headersHeadingText}>Categorieën</Text>
@@ -36,7 +36,7 @@ export const ExercisesScreen: React.FC<{ route: any }> = ({ route }) => {
               Kies een categorie waarmee jij aan de slag wilt.
             </Text>
           </View>
-        </View>
+        </View> */}
       </View>
 
       {/* Exercises Categories List */}

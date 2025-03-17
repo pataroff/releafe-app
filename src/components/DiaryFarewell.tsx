@@ -77,7 +77,7 @@ export const DiaryFarewell: React.FC = () => {
           <Text style={{ ...(Fonts.poppinsMedium[Platform.OS] as TextStyle) }}>
             Hou dit vol!
           </Text>{' '}
-          Door elke dag je dagboek in te vullen worden de meest waardevolle
+          Door elke dag je dagboek in te vullen, worden de meest waardevolle
           gegevens verzameld. Deze worden opgeslagen in jouw welzijnsoverzicht.
         </Text>
       </View>

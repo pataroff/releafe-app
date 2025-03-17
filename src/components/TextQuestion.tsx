@@ -152,7 +152,7 @@ export const TextQuestion: React.FC<{ questions: string[][]; route: any }> = ({
       <View>
         <View style={styles.questionContainer}>
           <Text style={styles.questionLabel}>
-            Vraag {textQuestionIndex + 1}:{' '}
+            Vraag {textQuestionIndex + 1}.{' '}
             <Text style={styles.questionText}>
               {questions[textQuestionIndex][0]}
             </Text>

@@ -291,7 +291,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
             {/* Heading */}
             <Text style={styles.headersHeadingText}>
               {diaryModalIndex == 6
-                ? 'Vraag 7: Persoonlijke doelen'
+                ? 'Vraag 7. Persoonlijke doelen'
                 : diaryModalIndex < 6
                 ? sliderSteps[sliderQuestionIndex].heading
                 : 'Aanvullende vragen'}
@@ -378,7 +378,6 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                       { ...Fonts.sofiaProSemiBold[Platform.OS] } as TextStyle
                     }
                   >
-                    Vraag {textQuestionIndex + 1}:{' '}
                   </Text>
                   {textSteps[textQuestionIndex].question}
                 </Text>

@@ -148,7 +148,7 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
         <Text style={styles.headersDescriptionText}>
           Het Zorgenbakje biedt je een veilige ruimte om je zorgen en angsten
           van je af te schrijven en even op te bergen. Wat helpt bij het
-          loslaten van zorgen is het visueel en symbolisch opbergen van deze
+          loslaten van zorgen, is het visueel en symbolisch opbergen van deze
           zorgen.
         </Text>
         {/* Headers Inner Container */}
@@ -156,8 +156,8 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
           <View style={{ width: '80%' }}>
             <Text style={styles.headersHeadingText}>Mijn zorgen</Text>
             <Text style={styles.headersDescriptionText}>
-              Druk op de lade hieronder om je opgeborgen zorgen te kunnen
-              bekijken, of voeg een nieuwe zorg toe.
+              Druk op de lade hieronder om je opgeborgen zorgen te kunnen bekijken,
+              of voeg via de + knop een nieuwe zorg toe.
             </Text>
           </View>
           {/* Add Button */}

@@ -15,7 +15,7 @@ interface Goal {
 export const categories = [
   [
     'Releafe',
-    'Bepaal doelen voor het gebruik van de functies in de Releafe-app',
+    'Bepaal doelen voor het gebruik van de functies in de Releafe app',
   ],
   ['Bewegen', 'Stel doelen om actiever bezig te zijn met fysieke beweging'],
   ['Slapen', 'Stel doelen om bewuster om te gaan met je slaapkwaliteit'],
