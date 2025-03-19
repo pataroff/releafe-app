@@ -30,6 +30,8 @@ import { sliderSteps, textSteps } from '../utils/diary';
 
 import { useNavigation } from '@react-navigation/native';
 import { CloseModal } from './CloseModal';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -258,6 +260,8 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
       visible={modalDiaryVisible}
       onRequestClose={() => setCloseModalVisible(!closeModalVisible)}
     >
+  <GestureHandlerRootView>
+    <SafeAreaView>
       <CloseModal
         closeModalVisible={closeModalVisible}
         setCloseModalVisible={setCloseModalVisible}
@@ -268,6 +272,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
         handleClose={handleClose}
         route={route}
       />
+      </SafeAreaView>
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
           <View style={styles.headersContainer}>
@@ -472,6 +477,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
           </View>
         </View>
       </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 };
