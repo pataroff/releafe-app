@@ -141,9 +141,19 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     } else if (startDate && endDate === null) {
       // Set the end date and color the range between start and end
       const selectedEndDate = new Date(day);
-      setEndDate(selectedEndDate);
-
-      const datesInRange = getDatesInRange(startDate, selectedEndDate);
+      // Make sure the end date is the later of the two
+      let datesInRange;
+      if(startDate > selectedEndDate)
+      {
+        setStartDate(selectedEndDate);
+        setEndDate(startDate);
+        datesInRange = getDatesInRange(selectedEndDate, startDate);
+      }
+      else
+      {
+        setEndDate(selectedEndDate);
+        datesInRange = getDatesInRange(startDate, selectedEndDate);
+      }
 
       setMarkedDates((prevMarkedDates) => {
         const rangeMarkedDates = datesInRange.reduce<MarkedDatesType>(
