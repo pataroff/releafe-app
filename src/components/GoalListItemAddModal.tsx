@@ -220,13 +220,16 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   };
 
   const handleGoalSentences = () => {
-    setSentence(
-      `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
-        specialDropdownValue ? ` ${specialDropdownValue}` : ``
-      } ${goalEndText}`
-    );
-    setDiarySentence(modifyDiarySentence(diarySentence, specialDropdownValue));
-    setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
+    if(startDate!= null && endDate!= null)
+    {
+      setSentence(
+        `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
+          specialDropdownValue ? ` ${specialDropdownValue}` : ``
+        } ${goalEndText}`
+      );
+      setDiarySentence(modifyDiarySentence(diarySentence, specialDropdownValue));
+      setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
+    }
   };
 
   const handleBack = () => {
