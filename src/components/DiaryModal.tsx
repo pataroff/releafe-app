@@ -171,6 +171,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const handleNext = () => {
     // Update slider values (0 to 5, excluding)
     if (diaryModalIndex < sliderSteps.length) {
+      // @TODO Remove the rounding of the slider values, keeps the decimals!
       addSliderValue(sliderQuestionIndex, Math.round(sliderValue.value));
       sliderValue.value = 5.5;
       // Skip slider question index increment, if on last step
@@ -322,6 +323,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                       bubbleBackgroundColor: '#C1DEBE',
                     }}
                     renderThumb={() => <CustomThumb />}
+                    // @TODO Remove the bubble!
                     bubble={(s: number) => s.toFixed(1)}
                   />
                 </View>
