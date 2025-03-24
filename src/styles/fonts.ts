@@ -1,5 +1,5 @@
-import { FontWeight } from "@shopify/react-native-skia";
-import { fontConfig } from "react-native-paper/lib/typescript/styles/fonts";
+import { FontWeight } from '@shopify/react-native-skia';
+import { fontConfig } from 'react-native-paper/lib/typescript/styles/fonts';
 
 export const poppinsLight = {
   ios: {
@@ -249,21 +249,21 @@ export const sofiaProMediumItalic = {
 };
 export const sofiaProSemiBold = {
   ios: {
-    fontFamily: 'SofiaPro-MediumItalic',
+    fontFamily: 'SofiaPro-SemiBold',
   },
   android: {
-    fontFamily: 'SofiaPro-MediumItalic',
+    fontFamily: 'SofiaPro-SemiBold',
   },
   web: {
-    fontFamily: 'SofiaPro-MediumItalic',
+    fontFamily: 'SofiaPro-SemiBold',
     FontWeight: '600',
   },
   windows: {
-    fontFamily: 'SofiaPro-MediumItalic',
+    fontFamily: 'SofiaPro-SemiBold',
     FontWeight: '600',
   },
   macos: {
-    fontFamily: 'SofiaPro-MediumItalic',
+    fontFamily: 'SofiaPro-SemiBold',
     FontWeight: '600',
   },
 };
@@ -287,4 +287,3 @@ export const sofiaProBold = {
     FontWeight: '700',
   },
 };
-
