@@ -15,10 +15,12 @@ import {
   Line,
   PointsArray,
   useChartPressState,
+  ChartPressState,
 } from 'victory-native';
 import {
   Skia,
   useFont,
+  useFonts,
   Image as SkiaImage,
   Path as SkiaPath,
   useImage,
@@ -27,6 +29,8 @@ import {
   Group,
   RoundedRect as SkiaRoundedRect,
   Text as SkiaText,
+  Paragraph as SkiaParagraph,
+  TextAlign,
 } from '@shopify/react-native-skia';
 import Animated, {
   SharedValue,
@@ -42,10 +46,13 @@ import { Fonts } from '../styles';
 import poppinsLight from '../../assets/fonts/Poppins-Light.ttf';
 // @ts-expect-error
 import poppinsSemiBold from '../../assets/fonts/Poppins-SemiBold.ttf';
+// @ts-expect-error
+import sofiaProLight from '../../assets/fonts/SofiaProLight.ttf';
 
 interface AggregatedChartData {
   date: Date;
   x: string;
+  [key: string]: string | number | Date;
   algeheel: number;
   angst: number;
   stress: number;
@@ -75,13 +82,7 @@ const MONTHLY_LABELS = [
 ];
 
 // @TODO Move this to 'types.ts'!
-type LineKeys =
-  | 'algeheel'
-  | 'angst'
-  | 'stress'
-  | 'concentratie'
-  | 'energie'
-  | 'slaap';
+type LineKeys = keyof typeof lineProperties;
 
 const lineProperties: Record<
   string,
@@ -174,21 +175,79 @@ const fillMissingDays = (
   return filledData;
 };
 
+const fillMissingMonths = (
+  rawData: { date: Date; values: Record<number, number> }[],
+  startDate: Date,
+  endDate: Date
+) => {
+  if (rawData.length === 0) return [];
+
+  // Create a map of existing data
+  const dataMap = new Map();
+  rawData.forEach((entry) => {
+    const key = `${entry.date.getFullYear()}-${entry.date.getMonth()}`;
+    if (!dataMap.has(key)) {
+      dataMap.set(key, []);
+    }
+    dataMap.get(key).push(entry);
+  });
+
+  const filledData = [];
+  let currentDate = new Date(startDate);
+
+  // For yearly view, we want to fill until the end of the year
+  const adjustedEndDate = new Date(endDate);
+  if (endDate.getMonth() < 11) {
+    adjustedEndDate.setMonth(11); // Set to December
+    adjustedEndDate.setDate(31); // Set to last day of December
+  }
+
+  // Iterate through each month in the range
+  while (currentDate <= adjustedEndDate) {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const key = `${year}-${month}`;
+
+    if (dataMap.has(key)) {
+      // Use existing data for this month
+      filledData.push(...dataMap.get(key));
+    } else {
+      // Fill with zero values
+      filledData.push({
+        date: new Date(year, month, 1),
+        values: {
+          0: 0, // algeheel
+          1: 0, // angst
+          2: 0, // stress
+          3: 0, // energie
+          4: 0, // concentratie
+          5: 0, // slaap
+        },
+      });
+    }
+
+    // Move to next month
+    currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+
+  return filledData.sort((a, b) => a.date.getTime() - b.date.getTime());
+};
+
 const aggregateWeeklyData = (
   rawData: { date: Date; values: Record<number, number> }[]
 ) => {
-  const filledData = fillMissingDays(rawData);
-  const weeks = chunkArray(filledData, 7);
+  const filledData = fillMissingDays(rawData, undefined, new Date());
+  const weeks = chunkArray(filledData, 7, 'week'); // Pass 'week' mode to chunkArray
 
   return weeks.flatMap((week) => {
     return week
       .map((day) => {
-        const dayIndex = day.date.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
-        const shiftedIndex = (dayIndex + 6) % 7; // Convert to Monday-first (Monday = 0)
+        const dayIndex = day.date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const shiftedIndex = (dayIndex + 6) % 7; // Shifted to make Monday = 0
 
         return {
           date: day.date,
-          x: shiftedIndex, // Use this for sorting
+          x: shiftedIndex, // Sort by shifted index
           algeheel: day.values[0] ?? 0,
           angst: day.values[1] ?? 0,
           stress: day.values[2] ?? 0,
@@ -200,7 +259,7 @@ const aggregateWeeklyData = (
       .sort((a, b) => a.x - b.x) // Sort by shifted index
       .map((entry) => ({
         ...entry,
-        x: WEEKLY_LABELS[entry.x], // Assign final labels in order
+        x: WEEKLY_LABELS[entry.x], // Map shifted index to your labels (Monday = 'ma', etc.)
       }));
   });
 };
@@ -211,17 +270,20 @@ const aggregateMonthlyData = (
     values: Record<number, number>;
   }[]
 ) => {
-  const weeks = chunkArray(rawData, 7); // Split into weeks
-  return weeks.map((week, index) => {
-    const weekNumber = calculateWeekOfYear(week[week.length - 1].date); // Calculate the week number from the start of the year
+  const filledData = fillMissingWeeksForMonths(rawData);
+  if (filledData.length > 0) {
+    const weeks = chunkArrayWeeks(filledData);
+    return weeks.map((week, index) => {
+      const weekNumber = calculateISOWeek(week[0].date);
 
-    return {
-      // `week` is an array!
-      date: week[0].date,
-      x: `W${weekNumber}`, // Monthly label: W1, W2, etc.
-      ...calculateAverages(week),
-    };
-  });
+      return {
+        // `week` is an array!
+        date: week[0].date,
+        x: `W${weekNumber}`, // Monthly label: W1, W2, etc.
+        ...calculateAverages(week),
+      };
+    });
+  }
 };
 
 const aggregateYearlyData = (
@@ -230,34 +292,166 @@ const aggregateYearlyData = (
     values: Record<number, number>;
   }[]
 ) => {
-  const months = chunkArrayMonths(rawData, 30); // Split into chunks of 30 days
+  if (rawData.length === 0) return [];
 
-  return months.map((month, index) => {
-    // Get the date of the first entry in this month
-    const firstEntryDate = month[0].date;
+  // Sort data by date
+  const sortedData = [...rawData].sort(
+    (a, b) => a.date.getTime() - b.date.getTime()
+  );
 
-    // Get the month from the first entry (zero-indexed: 0 = January, 1 = February, etc.)
-    const monthIndex = firstEntryDate.getMonth();
+  // Get the date range
+  const firstDate = new Date(sortedData[0].date);
+  const lastDate = new Date();
 
-    // To ensure each chunk gets its correct month label
-    const monthLabel = MONTHLY_LABELS[monthIndex];
+  // Set to start of first year
+  const startDate = new Date(firstDate.getFullYear(), 0, 1);
 
-    return {
-      date: firstEntryDate,
-      x: monthLabel, // Use the correct month label based on the first date
-      ...calculateAverages(month),
-    };
+  // For end date, if we're not in December, extend to end of year
+  const endDate = new Date(lastDate);
+  if (endDate.getMonth() < 11) {
+    endDate.setMonth(11);
+    endDate.setDate(31);
+  }
+
+  // Fill missing months across all years
+  const filledData = fillMissingMonths(sortedData, startDate, endDate);
+
+  // Group by year-month and calculate averages
+  const monthlyData = new Map();
+  filledData.forEach((entry) => {
+    const date = new Date(entry.date);
+    const key = `${date.getFullYear()}-${date.getMonth()}`;
+
+    if (!monthlyData.has(key)) {
+      monthlyData.set(key, []);
+    }
+    monthlyData.get(key).push(entry);
   });
+
+  // Convert to final format
+  const result: AggregatedChartData[] = Array.from(monthlyData.entries()).map(
+    ([key, entries]) => {
+      const [year, month] = key.split('-').map(Number);
+      return {
+        date: new Date(year, month, 1),
+        x: MONTHLY_LABELS[month],
+        ...calculateAverages(entries),
+      };
+    }
+  );
+
+  // Sort by date
+  return result.sort((a, b) => a.date.getTime() - b.date.getTime());
 };
 
 // Helper to split array into chunks
 const chunkArray = (
   data: { date: Date; values: Record<number, number> }[],
-  size: number
+  size: number,
+  mode: 'week' | 'month' | 'default' = 'default'
 ) => {
-  return Array.from({ length: Math.ceil(data.length / size) }, (_, i) =>
-    data.slice(i * size, (i + 1) * size)
+  // Sort the data first
+  const sortedData = [...data].sort(
+    (a, b) => a.date.getTime() - b.date.getTime()
   );
+
+  if (mode === 'week') {
+    const weeks: { date: Date; values: Record<number, number> }[][] = [];
+
+    if (sortedData.length === 0) return weeks;
+
+    // Clone the data map for easy lookup
+    const dateMap = new Map<
+      string,
+      { date: Date; values: Record<number, number> }
+    >();
+    sortedData.forEach((entry) => {
+      const key = entry.date.toISOString().split('T')[0];
+      dateMap.set(key, entry);
+    });
+
+    // Start from the first Monday before or on the first date
+    const firstDate = sortedData[0].date;
+    const firstDayOfWeek = (firstDate.getDay() + 6) % 7; // Monday=0 ... Sunday=6
+    const startDate = new Date(firstDate);
+    startDate.setDate(startDate.getDate() - firstDayOfWeek);
+
+    // End at the last Sunday after or on the last date
+    const lastDate = sortedData[sortedData.length - 1].date;
+    const lastDayOfWeek = (lastDate.getDay() + 6) % 7;
+    const endDate = new Date(lastDate);
+    endDate.setDate(endDate.getDate() + (6 - lastDayOfWeek));
+
+    // Iterate from startDate to endDate, adding days into weeks
+    let currentWeek: { date: Date; values: Record<number, number> }[] = [];
+
+    const currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      const dateKey = currentDate.toISOString().split('T')[0];
+
+      const entry = dateMap.get(dateKey) ?? {
+        date: new Date(currentDate),
+        values: {
+          0: 0,
+          1: 0,
+          2: 0,
+          3: 0,
+          4: 0,
+          5: 0,
+        },
+      };
+
+      currentWeek.push(entry);
+
+      if (currentWeek.length === 7) {
+        weeks.push(currentWeek);
+        currentWeek = [];
+      }
+
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return weeks;
+  }
+
+  // Fallback for non-week modes (same as before)
+  return Array.from({ length: Math.ceil(sortedData.length / size) }, (_, i) =>
+    sortedData.slice(i * size, (i + 1) * size)
+  );
+};
+
+// Function to chunk the array by ISO week
+const chunkArrayWeeks = (
+  data: { date: Date; values: Record<number, number> }[]
+) => {
+  const chunked: { date: Date; values: Record<number, number> }[][] = [];
+  let currentWeek: { date: Date; values: Record<number, number> }[] = [];
+
+  // Start with the first date
+  let previousISOWeek = calculateISOWeek(data[0].date);
+
+  data.forEach((entry) => {
+    const currentISOWeek = calculateISOWeek(entry.date);
+
+    // If the current date is in the same ISO week as the previous one, add it to the current chunk
+    if (currentISOWeek === previousISOWeek) {
+      currentWeek.push(entry);
+    } else {
+      // Otherwise, push the current week to chunked array and start a new chunk
+      if (currentWeek.length > 0) {
+        chunked.push(currentWeek);
+      }
+      currentWeek = [entry]; // Start a new chunk with the current day
+      previousISOWeek = currentISOWeek;
+    }
+  });
+
+  // Don't forget to push the last week group if it has data
+  if (currentWeek.length > 0) {
+    chunked.push(currentWeek);
+  }
+
+  return chunked;
 };
 
 const chunkArrayMonths = (
@@ -277,8 +471,6 @@ const chunkArrayMonths = (
 const calculateAverages = (
   group: { date: Date; values: Record<number, number> }[]
 ) => {
-  const numEntries = group.length;
-
   // Mapping the numeric indices to the keys
   const keyMap = [
     'algeheel',
@@ -287,36 +479,226 @@ const calculateAverages = (
     'energie',
     'concentratie',
     'slaap',
-  ];
+  ] as const;
 
-  // Sum the values based on the key mapping
-  const summed = group.reduce(
-    (acc, entry) => {
-      Object.values(entry.values).forEach((value, index) => {
-        const key = keyMap[index];
-        // @ts-expect-error
-        if (key) acc[key] += value;
-      });
-      return acc;
-    },
-    { algeheel: 0, angst: 0, stress: 0, energie: 0, concentratie: 0, slaap: 0 }
-  );
+  type MetricKey = (typeof keyMap)[number];
 
-  // Calculate the average for each key
-  Object.keys(summed).forEach((key) => {
-    // @ts-expect-error
-    summed[key] = numEntries ? Math.round(summed[key] / numEntries) : 0;
+  // Initialize accumulators for each metric
+  const sums: Record<MetricKey, number> = {
+    algeheel: 0,
+    angst: 0,
+    stress: 0,
+    energie: 0,
+    concentratie: 0,
+    slaap: 0,
+  };
+
+  const counts: Record<MetricKey, number> = {
+    algeheel: 0,
+    angst: 0,
+    stress: 0,
+    energie: 0,
+    concentratie: 0,
+    slaap: 0,
+  };
+
+  // Sum values and count non-zero entries for each metric
+  group.forEach((entry) => {
+    Object.entries(entry.values).forEach(([index, value]) => {
+      const key = keyMap[Number(index)];
+      if (key) {
+        sums[key] += value;
+        if (value !== 0) {
+          counts[key]++;
+        }
+      }
+    });
   });
 
-  return summed;
+  // Calculate average for each metric based on its own count of non-zero values
+  const averages: Record<MetricKey, number> = { ...sums };
+  (Object.keys(averages) as MetricKey[]).forEach((key) => {
+    averages[key] = counts[key] ? Math.round(sums[key] / counts[key]) : 0;
+  });
+
+  return averages;
 };
 
-const calculateWeekOfYear = (date: Date): number => {
-  const startOfYear = new Date(date.getFullYear(), 0, 1);
-  const days = Math.floor(
-    (date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)
+const calculateISOWeek = (date: Date): number => {
+  const tempDate = new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
   );
-  return Math.ceil((days + 1) / 7); // Adding 1 to start counting from W1
+
+  // Move date to Thursday in current week
+  tempDate.setUTCDate(tempDate.getUTCDate() + 4 - (tempDate.getUTCDay() || 7));
+
+  // Find first day of the year
+  const yearStart = new Date(Date.UTC(tempDate.getUTCFullYear(), 0, 1));
+
+  // Calculate full weeks to this date
+  const weekNo = Math.ceil(
+    ((tempDate.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
+  );
+
+  return weekNo;
+};
+
+// Helper function: Get ISO week number
+const getISOWeek = (date: Date): number => {
+  const target = new Date(date.valueOf());
+  target.setUTCHours(0, 0, 0, 0);
+
+  // Thursday in current week decides the year.
+  target.setUTCDate(target.getUTCDate() + 3 - ((target.getUTCDay() + 6) % 7));
+
+  // January 4 is always in week 1.
+  const firstThursday = new Date(Date.UTC(target.getUTCFullYear(), 0, 4));
+  const weekNumber =
+    1 +
+    Math.round(
+      ((target.getTime() - firstThursday.getTime()) / 86400000 -
+        3 +
+        ((firstThursday.getUTCDay() + 6) % 7)) /
+        7
+    );
+
+  return weekNumber;
+};
+
+// Helper function: Get first ISO week number that intersects with a month
+const getFirstISOWeekOfMonth = (year: number, month: number): number => {
+  const firstDayOfMonth = new Date(Date.UTC(year, month, 1));
+  return getISOWeek(firstDayOfMonth);
+};
+
+// Helper function: Get last ISO week number that intersects with a month
+const getLastISOWeekOfMonth = (year: number, month: number): number => {
+  const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0)); // last day of month
+  return getISOWeek(lastDayOfMonth);
+};
+
+// Helper function: Get Monday date for a given ISO week
+const getDateOfISOWeek = (week: number, year: number): Date => {
+  const simple = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
+  const dow = simple.getUTCDay();
+  const ISOweekStart = simple;
+  if (dow <= 4) {
+    ISOweekStart.setUTCDate(simple.getUTCDate() - simple.getUTCDay() + 1);
+  } else {
+    ISOweekStart.setUTCDate(simple.getUTCDate() + 8 - simple.getUTCDay());
+  }
+  ISOweekStart.setUTCHours(0, 0, 0, 0);
+  return ISOweekStart;
+};
+const fillMissingWeeksForMonths = (
+  rawData: { date: Date; values: Record<number, number> }[]
+) => {
+  if (rawData.length === 0) return [];
+
+  // Sort data by date
+  const sortedData = rawData
+    .slice()
+    .sort((a, b) => a.date.getTime() - b.date.getTime());
+
+  // Find the first and last date in the dataset
+  const firstDate = sortedData[0].date;
+  const lastDate = new Date();
+
+  // Initialize the current working month and year
+  let currentDate = new Date(firstDate);
+
+  const result = [];
+
+  // Iterate through all months from the first date to the last date
+  while (currentDate <= lastDate) {
+    const targetYear = currentDate.getUTCFullYear();
+    const targetMonth = currentDate.getUTCMonth(); // 0 = January, 1 = February, etc.
+
+    // Get first and last ISO weeks for the current month
+    const firstISOWeek = getFirstISOWeekOfMonth(targetYear, targetMonth);
+    const lastISOWeek = getLastISOWeekOfMonth(targetYear, targetMonth);
+
+    // Adjust for year transition in December if the last ISO week goes into the next year
+    let endDate;
+    if (targetMonth === 11 && lastISOWeek === 1) {
+      // For December, check if the last ISO week is actually in January of the next year
+      endDate = getDateOfISOWeek(lastISOWeek, targetYear + 1);
+      endDate.setUTCDate(endDate.getUTCDate() + 6); // Sunday of the last ISO week
+    } else {
+      // Normal case for other months
+      endDate = getDateOfISOWeek(lastISOWeek, targetYear);
+      endDate.setUTCDate(endDate.getUTCDate() + 6); // Sunday
+    }
+
+    endDate.setUTCHours(23, 59, 59, 999); // Make sure it's the last moment of the day
+
+    // Get the Monday of the first ISO week
+    const startDate = getDateOfISOWeek(firstISOWeek, targetYear);
+
+    // Log for debugging
+    console.log(
+      `Filling weeks for → Year: ${targetYear}, Month: ${targetMonth + 1}`
+    );
+    console.log(`Weeks: ${firstISOWeek} → ${lastISOWeek}`);
+    console.log(
+      `Date Range: ${startDate.toISOString()} → ${endDate.toISOString()}`
+    );
+
+    // Fill missing days for the current month
+    const filledData = fillMissingDays(sortedData, startDate, endDate);
+    result.push(...filledData);
+
+    // Move to the next month
+    currentDate.setUTCMonth(currentDate.getUTCMonth() + 1);
+
+    // @TODO: Edge case handling, better way of handling?
+    if (currentDate > lastDate) {
+      const targetYear = currentDate.getUTCFullYear();
+      const targetMonth = currentDate.getUTCMonth(); // 0 = January, 1 = February, etc.
+
+      // Get first and last ISO weeks for the current month
+      const firstISOWeek = getFirstISOWeekOfMonth(targetYear, targetMonth);
+      const lastISOWeek = getLastISOWeekOfMonth(targetYear, targetMonth);
+
+      // Adjust for year transition in December if the last ISO week goes into the next year
+      let endDate;
+      if (targetMonth === 11 && lastISOWeek === 1) {
+        // For December, check if the last ISO week is actually in January of the next year
+        endDate = getDateOfISOWeek(lastISOWeek, targetYear + 1);
+        endDate.setUTCDate(endDate.getUTCDate() + 6); // Sunday of the last ISO week
+      } else {
+        // Normal case for other months
+        endDate = getDateOfISOWeek(lastISOWeek, targetYear);
+        endDate.setUTCDate(endDate.getUTCDate() + 6); // Sunday
+      }
+
+      endDate.setUTCHours(23, 59, 59, 999); // Make sure it's the last moment of the day
+
+      // Get the Monday of the first ISO week
+      const startDate = getDateOfISOWeek(firstISOWeek, targetYear);
+
+      // Log for debugging
+      console.log(
+        `Filling weeks for → Year: ${targetYear}, Month: ${targetMonth + 1}`
+      );
+      console.log(`Weeks: ${firstISOWeek} → ${lastISOWeek}`);
+      console.log(
+        `Date Range: ${startDate.toISOString()} → ${endDate.toISOString()}`
+      );
+
+      // Fill missing days for the current month
+      const filledData = fillMissingDays(sortedData, startDate, endDate);
+      result.push(...filledData);
+    }
+  }
+
+  return result;
+};
+
+const getISOWeekYear = (date: Date) => {
+  const d = new Date(date.getTime());
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  return d.getUTCFullYear();
 };
 
 const getFontSize = (timeframe: ChartTimeframe) => {
@@ -397,7 +779,9 @@ const VerticalDashedLineTooltip = ({
           const capitalizedLabel =
             label.charAt(0).toUpperCase() + label.slice(1);
 
-          return `${capitalizedLabel}: ${closestPoint.yValue}`;
+          return `${capitalizedLabel}: ${
+            closestPoint.yValue === 0 ? '-' : closestPoint.yValue
+          }`;
         }, [x.value]);
 
         // Render the text for each displayed point
@@ -416,16 +800,217 @@ const VerticalDashedLineTooltip = ({
   );
 };
 
+// Add these helper functions at the top level
+const getMonthData = (
+  data: AggregatedChartData[],
+  year: number,
+  month: number
+) => {
+  // Get the first and last day of the month
+  const firstDayOfMonth = new Date(Date.UTC(year, month, 1));
+  const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0));
+
+  // Get ISO week numbers for first and last day
+  const firstWeek = getISOWeek(firstDayOfMonth);
+  const lastWeek = getISOWeek(lastDayOfMonth);
+
+  // Handle December-January transition
+  const firstWeekYear = getISOWeekYear(firstDayOfMonth);
+  const lastWeekYear = getISOWeekYear(lastDayOfMonth);
+
+  // Get data for the current month
+  const monthData = data.filter((entry) => {
+    const entryDate = new Date(entry.date);
+    const entryWeek = getISOWeek(entryDate);
+    const entryWeekYear = getISOWeekYear(entryDate);
+
+    if (firstWeekYear === lastWeekYear) {
+      // Normal case - all weeks in same year
+      return (
+        entryWeekYear === firstWeekYear &&
+        entryWeek >= firstWeek &&
+        entryWeek <= lastWeek
+      );
+    } else {
+      // Year transition case (December-January)
+      return (
+        (entryWeekYear === firstWeekYear && entryWeek >= firstWeek) ||
+        (entryWeekYear === lastWeekYear && entryWeek <= lastWeek)
+      );
+    }
+  });
+
+  // Check if we only have data from a single week
+  if (monthData.length > 0) {
+    const uniqueWeeks = new Set(
+      monthData.map((entry) => getISOWeek(new Date(entry.date)))
+    );
+
+    // If we only have one week of data
+    if (uniqueWeeks.size === 1) {
+      const weekNumber = Array.from(uniqueWeeks)[0];
+
+      // Check if this week is the last week of current month and first week of next month
+      const isLastWeekOfMonth = weekNumber === lastWeek;
+      const isFirstWeekOfNextMonth =
+        weekNumber ===
+        getFirstISOWeekOfMonth(
+          month === 11 ? year + 1 : year,
+          month === 11 ? 0 : month + 1
+        );
+
+      // If it's a shared week, skip this month by returning empty data
+      if (isLastWeekOfMonth && isFirstWeekOfNextMonth) {
+        return [];
+      }
+    }
+  }
+
+  return monthData;
+};
+
+// Restore the getXAxisTickCount function
+const getXAxisTickCount = (timeframe: ChartTimeframe) => {
+  switch (timeframe) {
+    case ChartTimeframe.Weekly:
+      return 7; // Weekly would show 7 ticks (one per day)
+    case ChartTimeframe.Monthly:
+      return 5; // Monthly shows 5 ticks (4.33 weeks on average per month)
+    case ChartTimeframe.Yearly:
+      return 12; // Yearly shows 12 ticks (one per month)
+    default:
+      return 7; // Default to 7 ticks for weekly
+  }
+};
+
+// Define ChartPressStateType
+interface ChartPressStateType {
+  x: string;
+  y: Record<LineKeys, number>;
+}
+
+// Update type definitions
+type ChartKeys = LineKeys | 'x';
+type ChartDataPoint = {
+  [K in ChartKeys]: K extends 'x' ? string : number;
+} & {
+  date: Date;
+};
+
+// Helper function to find the earliest and latest months with data
+const findDataBoundaries = (data: AggregatedChartData[]) => {
+  if (!data || data.length === 0) return null;
+
+  const sortedData = [...data].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA.getTime() - dateB.getTime();
+  });
+
+  const firstDate = new Date(sortedData[0].date);
+  const lastDate = new Date(); // Use current date as the latest boundary
+
+  return {
+    earliestYear: firstDate.getFullYear(),
+    earliestMonth: firstDate.getMonth(),
+    latestYear: lastDate.getFullYear(),
+    latestMonth: lastDate.getMonth(),
+  };
+};
+
+// Helper function to check if a month has data
+const hasDataForMonth = (
+  data: AggregatedChartData[],
+  year: number,
+  month: number
+) => {
+  const monthData = getMonthData(data, year, month);
+  return (
+    monthData &&
+    monthData.length > 0 &&
+    monthData.some((entry) =>
+      Object.values(entry).some(
+        (value) => typeof value === 'number' && value > 0
+      )
+    )
+  );
+};
+
+// Helper function to find the previous month with data
+const findPreviousMonthWithData = (
+  data: AggregatedChartData[],
+  year: number,
+  month: number
+) => {
+  const boundaries = findDataBoundaries(data);
+  if (!boundaries) return null;
+
+  let prevMonth = month;
+  let prevYear = year;
+
+  while (
+    prevYear >= boundaries.earliestYear &&
+    (prevYear > boundaries.earliestYear || prevMonth > boundaries.earliestMonth)
+  ) {
+    prevMonth--;
+    if (prevMonth < 0) {
+      prevMonth = 11;
+      prevYear--;
+    }
+
+    if (hasDataForMonth(data, prevYear, prevMonth)) {
+      return { year: prevYear, month: prevMonth };
+    }
+  }
+  return null;
+};
+
+// Helper function to find the next month with data
+const findNextMonthWithData = (
+  data: AggregatedChartData[],
+  year: number,
+  month: number
+) => {
+  const boundaries = findDataBoundaries(data);
+  if (!boundaries) return null;
+
+  let nextMonth = month;
+  let nextYear = year;
+
+  while (
+    nextYear <= boundaries.latestYear &&
+    (nextYear < boundaries.latestYear || nextMonth < boundaries.latestMonth)
+  ) {
+    nextMonth++;
+    if (nextMonth > 11) {
+      nextMonth = 0;
+      nextYear++;
+    }
+
+    if (hasDataForMonth(data, nextYear, nextMonth)) {
+      return { year: nextYear, month: nextMonth };
+    }
+  }
+  return null;
+};
+
 export const WellbeingChart = ({
   rawChartData,
   displayData,
   chartTimeframe,
 }: {
   rawChartData: { date: Date; values: Record<number, number> }[];
-  displayData: string[];
+  displayData: LineKeys[];
   chartTimeframe: ChartTimeframe;
 }) => {
-  const font = useFont(poppinsLight, getFontSize(chartTimeframe));
+  const customFontMgr = useFonts({
+    SofiaPro: [
+      require('../../assets/fonts/SofiaProLight.ttf'),
+      require('../../assets/fonts/SofiaProRegular.ttf'),
+      require('../../assets/fonts/SofiaProBold.ttf'),
+    ],
+  });
+  const font = useFont(sofiaProLight, getFontSize(chartTimeframe));
   const { state, isActive } = useChartPressState({
     x: '0',
     y: {
@@ -438,126 +1023,105 @@ export const WellbeingChart = ({
     },
   });
 
+  // START
   const aggregatedChartData = useMemo(() => {
     const WEEKLY_DATA = aggregateWeeklyData(rawChartData);
     const MONTHLY_DATA = aggregateMonthlyData(rawChartData);
     const YEARLY_DATA = aggregateYearlyData(rawChartData);
     return { WEEKLY_DATA, MONTHLY_DATA, YEARLY_DATA };
-  }, [rawChartData]); // Only recompute if chartData changes
+  }, [rawChartData]); // Only recompute if there are chartData changes
 
   const handleTimeframe = (chartTimeframe: ChartTimeframe) => {
     switch (chartTimeframe) {
       case ChartTimeframe.Weekly:
-        return aggregatedChartData.WEEKLY_DATA;
+        return aggregatedChartData.WEEKLY_DATA || [];
       case ChartTimeframe.Monthly:
-        return aggregatedChartData.MONTHLY_DATA;
+        return aggregatedChartData.MONTHLY_DATA || [];
       case ChartTimeframe.Yearly:
-        return aggregatedChartData.YEARLY_DATA;
+        return aggregatedChartData.YEARLY_DATA || [];
       default:
-        return aggregatedChartData.WEEKLY_DATA;
+        return aggregatedChartData.WEEKLY_DATA || [];
     }
   };
 
-  const currentData = handleTimeframe(chartTimeframe);
+  const currentChartData = useMemo(() => {
+    return handleTimeframe(chartTimeframe); // Will return an empty array if undefined
+  }, [chartTimeframe, aggregatedChartData]); // Recompute when chartTimeframe or aggregatedChartData change
 
   // Update pageIndices after the data is aggregated
   useEffect(() => {
-    switch (chartTimeframe) {
-      case ChartTimeframe.Weekly:
-        setPageIndices((prev) => ({
-          ...prev,
-          WEEKLY: getStartPageIndexWeekly(currentData),
-        }));
-        break;
-      case ChartTimeframe.Monthly:
-        setPageIndices((prev) => ({
-          ...prev,
-          MONTHLY: getStartPageIndexMonthly(currentData),
-        }));
-        break;
-      case ChartTimeframe.Yearly:
-        setPageIndices((prev) => ({
-          ...prev,
-          YEARLY: getStartPageIndexYearly(currentData),
-        }));
-        break;
-      default:
-        setPageIndices((prev) => ({
-          ...prev,
-          WEEKLY: 0,
-          MONTHLY: 0,
-          YEARLY: 0,
-        }));
-        break;
+    // Only update page indices if the data has changed or is now available
+    if (currentChartData.length > 0) {
+      setPageIndices((prev) => ({
+        ...prev,
+        [chartTimeframe]: getStartPageIndex(currentChartData, chartTimeframe),
+      }));
     }
-  }, [aggregatedChartData, chartTimeframe]); // Re-run when chartTimeframe or aggregatedChartData changes
+  }, [aggregatedChartData, chartTimeframe, currentChartData]); // Dependencies should trigger whenever relevant data changes
 
   const getFormattedDate = (date: Date) => {
     return date.toISOString().slice(0, 10);
   };
 
-  // @TODO Combine these 3 functions into 1!
+  const getStartPageIndex = (
+    data: AggregatedChartData[],
+    timeframe: ChartTimeframe
+  ) => {
+    const today = new Date(); // Current date
+    const currentMonth = today.getMonth(); // Current month
+    const currentYear = today.getFullYear(); // Current year
+    let entryIndex = -1;
 
-  const getStartPageIndexWeekly = (data: AggregatedChartData[]) => {
-    const today = new Date(); // 2024-04-08
-    const weekStart = new Date(today);
+    switch (timeframe) {
+      case ChartTimeframe.Weekly:
+        // Adjust date to match the start of the current week (e.g., Monday)
+        const weekStart = new Date(today);
+        // const dayOfWeek = today.getDay();
+        // const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If today is Sunday (0), subtract 6 days to get Monday
+        // weekStart.setDate(today.getDate() - daysToSubtract);
+        // weekStart.setHours(0, 0, 0, 0);
 
-    // @TODO Does this matter?
-    // // Adjust so the week starts on Monday instead of Sunday
-    // const dayOfWeek = today.getDay();
-    // const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If today is Sunday (0), subtract 6 days to get Monday
+        // Find the first entry for the same week
+        entryIndex = data.findIndex(
+          (entry) =>
+            getFormattedDate(new Date(entry.date)) ===
+            getFormattedDate(weekStart)
+        );
+        return entryIndex !== -1
+          ? Math.floor(entryIndex / 7)
+          : Math.floor(data.length / 7);
 
-    // weekStart.setDate(today.getDate() - daysToSubtract);
-    // weekStart.setHours(0, 0, 0, 0);
+      case ChartTimeframe.Monthly:
+        // Find the first entry in the current month and year
+        entryIndex = data.findIndex((entry) => {
+          const entryDate = new Date(entry.date);
+          return (
+            entryDate.getMonth() === currentMonth &&
+            entryDate.getFullYear() === currentYear
+          );
+        });
+        return entryIndex !== -1
+          ? Math.floor(entryIndex / 5)
+          : Math.floor(data.length / 5);
 
-    const entryIndex = data.findIndex(
-      (entry) =>
-        getFormattedDate(new Date(entry.date)) === getFormattedDate(weekStart)
-    );
+      case ChartTimeframe.Yearly:
+        // Find the first entry in the current year
+        entryIndex = data.findIndex((entry) => {
+          const entryDate = new Date(entry.date);
+          return entryDate.getFullYear() === currentYear;
+        });
+        return entryIndex !== -1
+          ? Math.floor(entryIndex / 12)
+          : Math.floor(data.length / 12);
 
-    return entryIndex !== -1
-      ? Math.floor(entryIndex / 7)
-      : Math.floor(data.length / 7);
+      default:
+        return 0; // Fallback, return 0 if no matching timeframe
+    }
   };
-
-  const getStartPageIndexMonthly = (data: AggregatedChartData[]) => {
-    const today = new Date(); // 2024-04-08
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-
-    // Find the first entry that belongs to the same month and year
-    const entryIndex = data.findIndex((entry) => {
-      const entryDate = new Date(entry.date);
-      return (
-        entryDate.getMonth() === currentMonth &&
-        entryDate.getFullYear() === currentYear
-      );
-    });
-
-    return entryIndex !== -1
-      ? Math.floor(entryIndex / 5)
-      : Math.floor(data.length / 5);
-  };
-
-  const getStartPageIndexYearly = (data: AggregatedChartData[]) => {
-    const today = new Date(); // 2024-04-08
-    const currentYear = today.getFullYear();
-
-    // Find the first entry that belongs to the same month and year
-    const entryIndex = data.findIndex((entry) => {
-      const entryDate = new Date(entry.date);
-      return entryDate.getFullYear() === currentYear;
-    });
-
-    return entryIndex !== -1
-      ? Math.floor(entryIndex / 12)
-      : Math.floor(data.length / 12);
-  };
-
   // PAGINATION
   const PAGE_SIZES = {
     WEEKLY: 7, // Show one full week
-    MONTHLY: 5, // Show 5 weeks (approx. one month)
+    MONTHLY: 5, // Show 5 weeks (approx. one month) // @TODO This value should be dynamically calculated iso weeks in a month!
     YEARLY: 12, // Show 12 months at a time
   };
 
@@ -568,112 +1132,204 @@ export const WellbeingChart = ({
     YEARLY: 0,
   });
 
-  // Get current page index based on timeframe
+  // Step 1: Calculate initial pageSize (used for the first page)
+  let pageSize = useMemo(() => {
+    if (!currentChartData || currentChartData.length === 0) return 0;
+
+    if (chartTimeframe === 'MONTHLY') {
+      let paginationDate = currentChartData[0].date;
+      const currentYear = paginationDate.getUTCFullYear();
+      const currentMonth = paginationDate.getUTCMonth();
+
+      const firstISOWeekThisMonth = getFirstISOWeekOfMonth(
+        currentYear,
+        currentMonth
+      );
+      const lastISOWeekThisMonth = getLastISOWeekOfMonth(
+        currentYear,
+        currentMonth
+      );
+      const firstISOWeekNextMonth = getFirstISOWeekOfMonth(
+        currentYear,
+        currentMonth + 1
+      );
+      const lastISOWeekNextMonth = getLastISOWeekOfMonth(
+        currentYear,
+        currentMonth + 1
+      );
+
+      let firstISOWeek = firstISOWeekThisMonth;
+      let lastISOWeek = lastISOWeekThisMonth;
+
+      const selectedMonth = currentMonth;
+      const selectedYear = currentYear;
+
+      const isShiftedToNextMonth =
+        currentChartData?.filter((data) => {
+          const dataDate = new Date(data.date);
+          const isoWeek = getISOWeek(dataDate);
+          const isoWeekYear = getISOWeekYear(dataDate);
+          return (
+            isoWeek >= firstISOWeek &&
+            isoWeek <= lastISOWeek &&
+            isoWeekYear === selectedYear
+          );
+        }).length === 1;
+
+      if (isShiftedToNextMonth) {
+        firstISOWeek = firstISOWeekNextMonth;
+        lastISOWeek = lastISOWeekNextMonth;
+      }
+
+      let numberOfWeeksInMonth = Math.ceil(lastISOWeek - firstISOWeek + 1);
+
+      if (isShiftedToNextMonth) {
+        numberOfWeeksInMonth--;
+      }
+
+      return numberOfWeeksInMonth;
+    }
+
+    return PAGE_SIZES[chartTimeframe];
+  }, [chartTimeframe, currentChartData]);
+
+  console.log('Initial pageSize:', pageSize);
+
+  // Step 2: Calculate startIndex (dynamically based on currentPage * pageSize)
   const currentPage = pageIndices[chartTimeframe];
 
-  // Calculate slice range
-  const pageSize = PAGE_SIZES[chartTimeframe];
-  const startIndex = currentPage * pageSize;
+  let startIndex = useMemo(() => {
+    return currentPage * pageSize; // Use pageSize for initial startIndex calculation
+  }, [currentPage, pageSize]);
+
   const endIndex = startIndex + pageSize;
 
-  const totalDataLength = currentData.length;
+  console.log('START INDEX:', startIndex);
+  console.log('END INDEX:', endIndex);
+  // END
+
+  const totalDataLength = currentChartData.length;
   const maxPages = Math.ceil(totalDataLength / PAGE_SIZES[chartTimeframe]) - 1;
+  console.log('MAX PAGES:', maxPages);
 
-  // Slice data for pagination
-  const paginatedData = currentData.slice(startIndex, endIndex);
+  let paginatedData = null;
 
-  // Pagination controls
+  // Add state for month/year tracking
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
+  // Get data for the current month
+  paginatedData = useMemo(() => {
+    if (chartTimeframe === 'MONTHLY') {
+      const monthData = getMonthData(
+        currentChartData,
+        currentYear,
+        currentMonth
+      );
+
+      // If no data for current month (or only shared week), automatically move to next month
+      if (monthData.length === 0) {
+        // Use setTimeout to avoid state updates during render
+        setTimeout(() => {
+          setCurrentMonth((prev) => {
+            if (prev === 11) {
+              setCurrentYear((year) => year + 1);
+              return 0;
+            }
+            return prev + 1;
+          });
+        }, 0);
+      }
+
+      return monthData;
+    } else {
+      const pageSize = PAGE_SIZES[chartTimeframe];
+      const startIndex = pageIndices[chartTimeframe] * pageSize;
+      const endIndex = startIndex + pageSize;
+      return currentChartData?.slice(startIndex, endIndex);
+    }
+  }, [
+    chartTimeframe,
+    currentChartData,
+    currentMonth,
+    currentYear,
+    pageIndices,
+  ]);
+
+  // Update pagination controls
   const handleNext = () => {
-    setPageIndices((prev) => {
-      return {
+    if (chartTimeframe === 'MONTHLY') {
+      const nextMonthData = findNextMonthWithData(
+        currentChartData,
+        currentYear,
+        currentMonth
+      );
+      if (nextMonthData) {
+        setCurrentYear(nextMonthData.year);
+        setCurrentMonth(nextMonthData.month);
+      }
+    } else {
+      setPageIndices((prev) => ({
         ...prev,
         [chartTimeframe]: Math.min(prev[chartTimeframe] + 1, maxPages),
-      };
-    });
+      }));
+    }
   };
 
   const handlePrev = () => {
-    setPageIndices((prev) => {
-      return {
+    if (chartTimeframe === 'MONTHLY') {
+      const prevMonthData = findPreviousMonthWithData(
+        currentChartData,
+        currentYear,
+        currentMonth
+      );
+      if (prevMonthData) {
+        setCurrentYear(prevMonthData.year);
+        setCurrentMonth(prevMonthData.month);
+      }
+    } else {
+      setPageIndices((prev) => ({
         ...prev,
         [chartTimeframe]: Math.max(0, prev[chartTimeframe] - 1),
-      };
-    });
-  };
-
-  const getXAxisTickCount = (timeframe: ChartTimeframe) => {
-    switch (timeframe) {
-      case ChartTimeframe.Weekly:
-        return 7; // Weekly would show 7 ticks (one per day)
-      case ChartTimeframe.Monthly:
-        return 5; // Monthly shows 5 ticks (4.33 weeks on average per month)
-      case ChartTimeframe.Yearly:
-        return 12; // Yearly shows 12 ticks (one per month)
-      default:
-        return 7; // Default to 7 ticks for weekly
+      }));
     }
   };
 
-  const getTitle = (data: AggregatedChartData[]) => {
-    let startDate = null;
-
-    const pageIndex = pageIndices[chartTimeframe];
-    const pageSize = PAGE_SIZES[chartTimeframe];
-
-    const startElementIndex = pageIndex * pageSize;
-    const lastElementIndex = startElementIndex + pageSize - 1;
-    const safeIndex =
-      lastElementIndex >= data.length ? data.length - 1 : lastElementIndex;
-
-    // DEBUGGING
-    console.log('Page Index:', pageIndex);
-    console.log('Max Pages:', maxPages);
-    console.log('Start Element Index:', startElementIndex);
-    console.log('Last Element Index:', lastElementIndex);
-    console.log('Safe Index:', safeIndex);
-    console.log('Data (Safe Index):', data[safeIndex]);
-
-    if (safeIndex < 0 || !data[safeIndex]) {
-      startDate = new Date();
-    } else {
-      startDate = new Date(data[safeIndex].date);
+  // Update the title generation
+  const getTitle = () => {
+    if (chartTimeframe === 'MONTHLY') {
+      const date = new Date(currentYear, currentMonth);
+      return `${date.toLocaleString('en-US', {
+        month: 'long',
+      })} ${currentYear}`;
     }
 
     if (chartTimeframe === 'WEEKLY') {
-      // Copy the date to avoid modifying the original
-      const tempDate = new Date(startDate);
+      // Find the date for the current page
+      const pageSize = PAGE_SIZES[chartTimeframe];
+      const startIndex = pageIndices[chartTimeframe] * pageSize;
+      const currentData = currentChartData[startIndex];
 
-      // Ensure it's in UTC to avoid timezone issues
-      tempDate.setUTCHours(0, 0, 0, 0);
+      if (!currentData) {
+        return `${new Date().getUTCFullYear()} - Week ${getISOWeek(
+          new Date()
+        )}`;
+      }
 
-      // Move to Thursday of the current week (ISO rule)
-      tempDate.setUTCDate(
-        tempDate.getUTCDate() + 4 - (tempDate.getUTCDay() || 7)
-      );
-
-      // Get the first Thursday of the year
-      const firstThursday = new Date(tempDate.getUTCFullYear(), 0, 4);
-      firstThursday.setUTCDate(
-        firstThursday.getUTCDate() + 4 - (firstThursday.getUTCDay() || 7)
-      );
-
-      // Calculate the week number (difference in days divided by 7)
-      const weekNumber =
-        Math.ceil((tempDate.getTime() - firstThursday.getTime()) / 604800000) +
-        1;
-
-      return `${tempDate.getUTCFullYear()} - Week ${weekNumber}`;
-    }
-
-    if (chartTimeframe === 'MONTHLY') {
-      return `${startDate.toLocaleString('en-US', {
-        month: 'long',
-      })} ${startDate.getFullYear()}`;
+      const weekNumber = calculateISOWeek(currentData.date);
+      return `${currentData.date.getUTCFullYear()} - Week ${weekNumber}`;
     }
 
     if (chartTimeframe === 'YEARLY') {
-      return `${startDate.getFullYear()}`;
+      const pageSize = PAGE_SIZES[chartTimeframe];
+      const startIndex = pageIndices[chartTimeframe] * pageSize;
+      const currentData = currentChartData[startIndex];
+      return currentData
+        ? `${new Date(currentData.date).getFullYear()}`
+        : `${new Date().getFullYear()}`;
     }
+
+    return ''; // Fallback
   };
 
   const images: Record<string, SkImage | null> = {
@@ -691,6 +1347,12 @@ export const WellbeingChart = ({
     slaap: useImage(require('../../assets/images/symbols/Symbol-sleep.png')),
   };
 
+  // Get the data boundaries
+  const dataBoundaries = useMemo(
+    () => findDataBoundaries(currentChartData),
+    [currentChartData]
+  );
+
   return (
     <View style={{ height: 400, width: chartWidth, padding: 25 }}>
       <View
@@ -705,12 +1367,34 @@ export const WellbeingChart = ({
       >
         <Pressable
           onPress={() => handlePrev()}
-          disabled={pageIndices[chartTimeframe] === 0 ? true : false}
+          disabled={
+            chartTimeframe === 'MONTHLY'
+              ? !dataBoundaries ||
+                !findPreviousMonthWithData(
+                  currentChartData,
+                  currentYear,
+                  currentMonth
+                )
+              : pageIndices[chartTimeframe] === 0
+          }
         >
           <FontAwesome5
             name='chevron-left'
             size={20}
-            color={pageIndices[chartTimeframe] === 0 ? 'gainsboro' : 'black'}
+            color={
+              chartTimeframe === 'MONTHLY'
+                ? !dataBoundaries ||
+                  !findPreviousMonthWithData(
+                    currentChartData,
+                    currentYear,
+                    currentMonth
+                  )
+                  ? 'gainsboro'
+                  : 'black'
+                : pageIndices[chartTimeframe] === 0
+                ? 'gainsboro'
+                : 'black'
+            }
           />
         </Pressable>
         <Text
@@ -718,49 +1402,57 @@ export const WellbeingChart = ({
             { ...Fonts.sofiaProMedium[Platform.OS], fontSize: 16 } as TextStyle
           }
         >
-          {getTitle(currentData)}
+          {getTitle()}
         </Text>
         <Pressable
           onPress={() => handleNext()}
-          disabled={pageIndices[chartTimeframe] === maxPages ? true : false}
+          disabled={
+            chartTimeframe === 'MONTHLY'
+              ? !dataBoundaries ||
+                !findNextMonthWithData(
+                  currentChartData,
+                  currentYear,
+                  currentMonth
+                )
+              : pageIndices[chartTimeframe] === maxPages
+          }
         >
           <FontAwesome5
             name='chevron-right'
             size={20}
             color={
-              pageIndices[chartTimeframe] === maxPages ? 'gainsboro' : 'black'
+              chartTimeframe === 'MONTHLY'
+                ? !dataBoundaries ||
+                  !findNextMonthWithData(
+                    currentChartData,
+                    currentYear,
+                    currentMonth
+                  )
+                  ? 'gainsboro'
+                  : 'black'
+                : pageIndices[chartTimeframe] === maxPages
+                ? 'gainsboro'
+                : 'black'
             }
           />
         </Pressable>
       </View>
       <CartesianChart
-        chartPressState={state}
-        data={paginatedData}
-        xKey={'x'}
-        yKeys={[
-          'algeheel',
-          'angst',
-          'stress',
-          'concentratie',
-          'energie',
-          'slaap',
-        ]}
+        chartPressState={state as any}
+        data={paginatedData || []}
+        xKey='x'
+        yKeys={displayData}
         axisOptions={{
           font,
           tickCount: {
-            x:
-              paginatedData.length > 0
-                ? paginatedData.length
-                : getXAxisTickCount(chartTimeframe),
+            x: paginatedData?.length || getXAxisTickCount(chartTimeframe),
             y: 5,
           },
           tickValues: {
             x: Array.from(
               {
                 length:
-                  paginatedData.length > 0
-                    ? paginatedData.length
-                    : getXAxisTickCount(chartTimeframe),
+                  paginatedData?.length || getXAxisTickCount(chartTimeframe),
               },
               (_, i) => i
             ),
@@ -769,11 +1461,47 @@ export const WellbeingChart = ({
         }}
         domainPadding={30}
       >
-        {({ points }) => {
+        {({ points }: { points: Record<LineKeys, PointsArray> }) => {
           const displayedPointsData = displayData.reduce((acc, key) => {
-            acc[key] = points[key as LineKeys];
+            acc[key] = points[key];
             return acc;
-          }, {} as Record<string, PointsArray>);
+          }, {} as Record<LineKeys, PointsArray>);
+
+          const allDataZero = Object.values(displayedPointsData).every(
+            (pointsData) => pointsData.every((point) => point.yValue === 0)
+          );
+
+          if (allDataZero && customFontMgr !== null) {
+            const paragraphBuilder = Skia.ParagraphBuilder.Make(
+              {
+                textAlign: TextAlign.Center,
+              },
+              customFontMgr
+            );
+
+            const paragraph = paragraphBuilder
+              .pushStyle({
+                fontFamilies: ['SofiaPro'],
+                fontSize: 14,
+                fontStyle: { weight: 500 },
+                color: Skia.Color('black'),
+                heightMultiplier: 1.25,
+              })
+              .addText(
+                'Geen gegevens beschikbaar voor de geselecteerde periode. Vul je dagboek in om hier je voortgang te bekijken.'
+              )
+              .pop()
+              .build();
+            return (
+              <SkiaParagraph
+                paragraph={paragraph}
+                x={55} // Adjust as needed
+                y={100} // Adjust as needed
+                width={200}
+                color='black'
+              />
+            );
+          }
 
           return (
             <React.Fragment>
@@ -833,7 +1561,7 @@ export const WellbeingChart = ({
       {/* Chart Legend */}
       <View style={styles.legendContainer}>
         {displayData.map((key) => {
-          if (lineProperties[key as LineKeys]) {
+          if (lineProperties[key]) {
             return (
               <View style={styles.legendLabelContainer} key={key}>
                 <Image
@@ -841,7 +1569,7 @@ export const WellbeingChart = ({
                   style={styles.legendLabelIndicator}
                 />
                 <Text style={styles.legendLabelText}>
-                  {lineProperties[key as LineKeys]?.label}
+                  {lineProperties[key].label}
                 </Text>
               </View>
             );
