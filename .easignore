@@ -38,6 +38,5 @@ yarn-error.*
 pb_data
 
 # eas
-google-services.json
 /ios
 /android

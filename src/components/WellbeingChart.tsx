@@ -131,9 +131,19 @@ const fillMissingDays = (
     .slice()
     .sort((a, b) => a.date.getTime() - b.date.getTime());
 
-  // If no explicit startDate or endDate provided, infer from the data
+  // If no explicit startDate provided, infer from the data
   const start = startDate ?? sortedData[0].date;
-  const end = endDate ?? sortedData[sortedData.length - 1].date;
+
+  // If no endDate provided, calculate end of current week
+  if (!endDate) {
+    const today = new Date();
+    const dayOfWeek = today.getUTCDay(); // 0 = Sunday, 1 = Monday
+    const daysUntilEndOfWeek = dayOfWeek === 0 ? 0 : 7 - dayOfWeek;
+
+    endDate = new Date(today);
+    endDate.setDate(today.getDate() + daysUntilEndOfWeek);
+    endDate.setHours(23, 59, 59, 999); // End of day
+  }
 
   const dateMap = new Map<
     string,
@@ -149,7 +159,7 @@ const fillMissingDays = (
 
   let currentDate = new Date(start);
 
-  while (currentDate <= end) {
+  while (currentDate <= endDate) {
     const dateKey = currentDate.toISOString().split('T')[0];
 
     if (dateMap.has(dateKey)) {
@@ -236,13 +246,14 @@ const fillMissingMonths = (
 const aggregateWeeklyData = (
   rawData: { date: Date; values: Record<number, number> }[]
 ) => {
-  const filledData = fillMissingDays(rawData, undefined, new Date());
-  const weeks = chunkArray(filledData, 7, 'week'); // Pass 'week' mode to chunkArray
+  // Fill missing days including up to the end of the current week
+  const filledData = fillMissingDays(rawData);
+  const weeks = chunkArray(filledData, 7, 'week');
 
   return weeks.flatMap((week) => {
     return week
       .map((day) => {
-        const dayIndex = day.date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const dayIndex = day.date.getUTCDay(); // Using UTC day to avoid timezone issues
         const shiftedIndex = (dayIndex + 6) % 7; // Shifted to make Monday = 0
 
         return {
@@ -1441,7 +1452,16 @@ export const WellbeingChart = ({
         chartPressState={state as any}
         data={paginatedData || []}
         xKey='x'
-        yKeys={displayData}
+        yKeys={
+          displayData as (
+            | 'algeheel'
+            | 'angst'
+            | 'stress'
+            | 'concentratie'
+            | 'energie'
+            | 'slaap'
+          )[]
+        }
         axisOptions={{
           font,
           tickCount: {
