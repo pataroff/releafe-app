@@ -104,6 +104,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
   const [showPriorityButtons, setShowPriorityButtons] =
     useState<boolean>(false);
+  const {deleteWorryEntry} = useContext(WorryContext)
 
   // @TODO Is there a better way of doing this?
   const reframingModalTextState = new Map<number, StringStateSetterPair>([
@@ -180,6 +181,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
       resetNoteEntryFields();
       resetWorryEntryFields();
+      deleteWorryEntry(uuid);
     }
   };
 
@@ -218,6 +220,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
         title='Stoppen met reframen'
         description='Je staat op het punt te stoppen met het reframing-proces. Weet je het zeker?'
         handleClose={handleClose}
+        denyText='Nee, ik wil doorgaan'
+        confirmText='Ja, ik wil afsluiten'
       />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>

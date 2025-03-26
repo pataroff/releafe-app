@@ -18,17 +18,17 @@ export const sliderSteps: SliderStep[] = [
   {
     heading: 'Vraag 2. Angst & zorgen',
     question: 'Hoeveel angst of zorgen heb je vandaag ervaren?',
-    options: ['Zeer veel', 'Zeer weinig'],
+    options: ['Geen', 'Zeer veel'],
   },
   {
     heading: 'Vraag 3. Stress',
     question: 'Hoe gestrest voelde je je vandaag?',
-    options: ['Zeer veel', 'Zeer weinig'],
+    options: ['Geen', 'Zeer veel'],
   },
   {
     heading: 'Vraag 4. Energie',
     question: 'Hoe zou je je energieniveau vandaag beoordelen?',
-    options: ['Zeer weinig', 'Zeer veel'],
+    options: ['Geen', 'Zeer veel'],
   },
   {
     heading: 'Vraag 5. Concentratie',
@@ -50,17 +50,17 @@ export const textSteps: TextStep[] = [
   },
   {
     question:
-      'Zijn er ook andere dingen gebeurd die je gevoel hebben beïnvloed?',
+      'Heb je ook dingen vermeden?',
     placeholder:
-      'Omschrijf hier wat er is gebeurd en hoe jij je daardoor voelde...',
-  },
-  {
-    question: 'Heb je ook dingen vermeden?',
-    placeholder:
-      'Omschrijf hier wat je hebt vermeden en waarom en hoe jij je daardoor voelde...',
+      'Omschrijf hier wat je hebt vermeden, waarom en hoe jij je daardoor voelde...',
   },
   {
     question: 'Wat heeft je vandaag dankbaar, trots of blij gemaakt?',
-    placeholder: 'Schrijf het hier op... ',
+    placeholder:
+      'Schrijf het hier op...',
+  },
+  {
+    question: 'Zijn er nog andere dingen die je graag kwijt zou willen?',
+    placeholder: 'Schrijf het hier op...',
   },
 ];

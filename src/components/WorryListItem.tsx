@@ -8,6 +8,7 @@ import {
   Pressable,
   TextStyle,
   Platform,
+  Modal,
 } from 'react-native';
 
 import { Fonts } from '../styles';
@@ -15,6 +16,7 @@ import { Fonts } from '../styles';
 import { IWorryListItem } from '../types';
 import { getPriorityColor, getCategory } from '../utils/worry';
 import { WorryContext } from '../context/WorryContext';
+import { CloseModal } from './CloseModal';
 
 interface WorryListItemProps {
   item: IWorryListItem;
@@ -42,6 +44,8 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
   const { uuid, category, priority, date, title, description, reframed } = item;
 
   const { updateWorryEntryFields, deleteWorryEntry } = useContext(WorryContext);
+
+  const [modalCloseVisible,setModalCloseVisible] = useState<boolean>(false);
 
   const [expandedItems, setExpandedItems] = useState<{
     [key: string]: boolean;
@@ -90,6 +94,10 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
     }, 300);
   };
 
+  const handleClose = () => {
+      handleDelete();
+  }
+
   return (
     <Pressable
       style={
@@ -104,6 +112,29 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
       }
       onPress={() => expandItem(uuid)}
     >
+      <View>
+          <Modal
+          animationType='none'
+          transparent={true}
+          visible={modalCloseVisible}
+          onRequestClose={() =>
+            setModalCloseVisible(!modalCloseVisible)
+          }
+        >
+          <CloseModal
+            closeModalVisible={modalCloseVisible}
+            setCloseModalVisible={setModalCloseVisible}
+            parentModalVisible={modalCloseVisible}
+            setParentModalVisible={setModalCloseVisible}
+            title='Zorg verwijderen'
+            description='Je staat op het punt om je zorg te verwijderen. Weet je het zeker?'
+            handleClose={handleClose}
+            denyText='Nee, bewaar mijn zorg.'
+            confirmText='Ja, verwijder mijn zorg.'
+            closeButtonDisabled = {true}
+          />
+        </Modal>
+      </View>
       {/* Priority Bar */}
       <View
         style={{
@@ -219,7 +250,7 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
                     </Pressable>
 
                     {/* Delete Button  */}
-                    <Pressable onPress={() => handleDelete()}>
+                    <Pressable onPress={() => setModalCloseVisible(true)}>
                       <Image
                         resizeMode='contain'
                         style={{ width: 43, height: 46 }}

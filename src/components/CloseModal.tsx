@@ -24,6 +24,9 @@ interface CloseModalProps {
   description: string;
   handleClose?: (index?: number) => void;
   route?: any;
+  denyText: string;
+  confirmText: string;
+  closeButtonDisabled?: boolean;
 }
 
 export const CloseModal: React.FC<CloseModalProps> = ({
@@ -35,6 +38,9 @@ export const CloseModal: React.FC<CloseModalProps> = ({
   description,
   handleClose,
   route,
+  denyText,
+  confirmText,
+  closeButtonDisabled = false,
 }) => {
   const handleCloseModal = () => {
     setCloseModalVisible(!closeModalVisible);
@@ -98,6 +104,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
 
           <View style={{ rowGap: 15 }}>
             <Pressable
+              disabled = {closeButtonDisabled}
               style={styles.closeButton}
               onPress={() =>
                 route?.name === 'Diary1'
@@ -106,9 +113,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
               }
             >
               <Text style={styles.closeButtonText}>
-                {route?.name == 'Diary1'
-                  ? 'Opslaan en afsluiten'
-                  : 'Nee, ik wil doorgaan'}
+                {denyText}
               </Text>
             </Pressable>
             <Pressable
@@ -122,9 +127,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
               }
             >
               <Text style={styles.cancelButtonText}>
-                {route?.name == 'Diary1'
-                  ? 'Niet opslaan en afsluiten'
-                  : 'Ja, ik wil afsluiten'}
+                {confirmText}
               </Text>
             </Pressable>
           </View>

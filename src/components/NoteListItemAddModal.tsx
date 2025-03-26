@@ -509,6 +509,8 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
             title='Stoppen met bericht toevoegen'
             description='Je staat op het punt te stoppen met het aanmaken van jouw bericht aan jezelf. Weet je het zeker?'
             handleClose={handleClose}
+            denyText='Nee, ik wil doorgaan'
+            confirmText='Ja, ik wil afsluiten'
           />
           <View style={styles.modalWrapper}>
             <View style={styles.modalContainer}>

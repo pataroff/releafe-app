@@ -64,7 +64,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                   </Pressable>
                 )}
               {route?.name !== 'Home' ? (
-                <Text style={styles.headerTitle}>{title}</Text>
+                <Text style={styles.headerTitle}> {title} </Text>
               ) : (
                 <Image
                   style={{
@@ -122,5 +122,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
     textAlign: 'left',
+    textShadowColor: 'black',
+    textShadowRadius: 6,
   } as TextStyle,
 });

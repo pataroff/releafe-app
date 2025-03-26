@@ -8,6 +8,7 @@ import {
   Pressable,
   Platform,
   TextStyle,
+  Modal,
 } from 'react-native';
 
 import { ProgressBar } from 'react-native-paper';
@@ -27,6 +28,7 @@ import {
 import Entypo from '@expo/vector-icons/Entypo';
 
 import { GoalContext } from '../context/GoalContext';
+import { CloseModal } from './CloseModal';
 
 const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
   const {
@@ -57,9 +59,42 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     setTimeframeProgressValue(completedTimeframe / 10);
     setPeriodProgressValue(completedPeriod / 10);
   }, [completedTimeframe, completedPeriod]);
+  
+  const [modalCloseVisible, setModalCloseVisible] = useState<boolean>(false);
+
+  const handleClose = () => {
+    setModalCloseVisible(!modalCloseVisible);
+    deleteGoalEntry(uuid);
+  };
+
+  const onPress = () =>
+  {
+    setModalCloseVisible(!modalCloseVisible);
+  }
 
   return (
     <View style={styles.goalComponent}>
+          <Modal
+          animationType='none'
+          transparent={true}
+          visible={modalCloseVisible}
+          onRequestClose={() =>
+            setModalCloseVisible(!modalCloseVisible)
+          }
+        >
+          <CloseModal
+            closeModalVisible={modalCloseVisible}
+            setCloseModalVisible={setModalCloseVisible}
+            parentModalVisible={modalCloseVisible}
+            setParentModalVisible={setModalCloseVisible}
+            title='Persoonlijk doel verwijderen'
+            description='Je staat op het punt om je persoonlijke doel te verwijderen. Weet je het zeker?'
+            handleClose={handleClose}
+            denyText='Nee, ik wil doorgaan'
+            confirmText='Ja, ik wil afsluiten'
+            closeButtonDisabled = {true}
+          />
+    </Modal>
       <View
         style={{
           display: 'flex',
@@ -314,7 +349,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
               </View>
 
               <Pressable
-                onPress={() => deleteGoalEntry(uuid)}
+                onPress={() => setModalCloseVisible(true)}
                 style={styles.viewButton}
               >
                 <Text style={styles.buttonText}>Doel verwijderen</Text>

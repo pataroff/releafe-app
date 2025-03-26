@@ -98,6 +98,8 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
         setParentModalVisible={setModalAddWorryListItemVisible}
         title='Stoppen met zorg toevoegen'
         description='Je staat op het punt te stoppen met het toevoegen van jouw zorg. Weet je het zeker?'
+        denyText='Nee, ik wil doorgaan'
+        confirmText='Ja, ik wil afsluiten'
         handleClose={handleClose}
       />
       <View style={styles.modalWrapper}>
@@ -220,9 +222,6 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                     <Text style={styles.headersHeadingText}>
                       Situatieomschrijving
                     </Text>
-                    <Text style={styles.headersDescriptionText}>
-                      Omschrijf hier wat de situatie is van jouw zorg.
-                    </Text>
                   </View>
 
                   <View
@@ -241,7 +240,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                           height: 180,
                         } as TextStyle
                       }
-                      placeholder='Schrij hier je zorg op...'
+                      placeholder='Schrijf hier op wat je kwijt wil over jouw zorg...'
                       placeholderTextColor='#00000080'
                       multiline
                       value={description}
@@ -345,7 +344,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                     onPress={() => handleStore()}
                   >
                     <Text style={styles.storeButtonText}>
-                      Zorg opslaan in zorgenbakje
+                      Zorg opslaan in Zorgenbakje
                     </Text>
                   </Pressable>
                 </>

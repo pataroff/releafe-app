@@ -327,6 +327,8 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
         title='Stoppen met doel toevoegen'
         description='Je staat op het punt te stoppen met het aanmaken van dit persoonlijk doel. Weet je het zeker?'
         handleClose={handleClose}
+        denyText='Nee, bewaar mijn doel.'
+        confirmText='Ja, verwijder mijn doel'
       />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
@@ -764,7 +766,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                     onPress={() => handleFinish()}
                     style={styles.finishButton}
                   >
-                    <Text style={styles.buttonText}>Opslaan en afsluiten</Text>
+                    <Text style={styles.buttonText}>Doel aanmaken</Text>
                   </Pressable>
                 )}
               </View>

@@ -137,9 +137,9 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const [diaryModalIndex, setDiaryModalIndex] = useState<number>(0);
   const [progressValue, setProgressValue] = useState(progressStep);
 
-  const min = useSharedValue(1);
+  const min = useSharedValue(0);
   const max = useSharedValue(10);
-  const sliderValue = useSharedValue(5.5);
+  const sliderValue = useSharedValue(5);
 
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState<number>(0);
   const [textValue, setTextValue] = useState<string>('');
@@ -151,7 +151,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const handlePrevious = () => {
     // Update slider values (0 to 5, including)
     if (diaryModalIndex != 0 && diaryModalIndex <= sliderSteps.length - 1) {
-      sliderValue.value = 5.5;
+      sliderValue.value = 5;
       setSliderQuestionIndex((prev) => --prev);
     }
 
@@ -175,7 +175,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     if (diaryModalIndex < sliderSteps.length) {
       // @TODO Remove the rounding of the slider values, keeps the decimals!
       addSliderValue(sliderQuestionIndex, Math.round(sliderValue.value));
-      sliderValue.value = 5.5;
+      sliderValue.value = 5;
       // Skip slider question index increment, if on last step
       if (diaryModalIndex !== sliderSteps.length - 1) {
         setSliderQuestionIndex((prev) => ++prev);
@@ -203,7 +203,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     setDiaryModalIndex(0);
     setProgressValue(progressStep);
     setSliderQuestionIndex(0);
-    sliderValue.value = 5.5;
+    sliderValue.value = 5;
     setDate(new Date()); // Is this needed?
     // Clears the passed params for editing
     navigation.setParams({ date: null });
@@ -272,6 +272,8 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
         description='Je staat op het punt te stoppen met het invullen van je dagboek. Weet je het zeker?'
         handleClose={handleClose}
         route={route}
+        denyText='Opslaan en afsluiten'
+        confirmText='Niet opslaan en afsluiten'
       />
       </SafeAreaView>
       <View style={styles.modalWrapper}>
