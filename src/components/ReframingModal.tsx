@@ -635,7 +635,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         placeholder={
                           reframingSteps[reframingModalIndex].placeholder
                         }
-                        placeholderTextColor='#dedede'
+                        //placeholderTextColor='#dedede'
                         multiline
                         value={
                           reframingModalTextState.get(reframingModalIndex)
@@ -644,7 +644,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         onChangeText={(value) =>
                           reframingModalTextState
                             .get(reframingModalIndex)
-                            ?.setter(value.trim())
+                            ?.setter(value)
                         }
                       />
                       {/* Dynamic Slider Component  */}

@@ -584,7 +584,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                         } as TextStyle
                       }
                       placeholder='Voeg een titel toe...'
-                      placeholderTextColor='#dedede'
+                      //placeholderTextColor='#dedede'
                       value={title}
                       onChangeText={(value) => setTitle(value)}
                     />
@@ -613,7 +613,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                         } as TextStyle
                       }
                       placeholder='Schrijf hier je note-to-self...'
-                      placeholderTextColor='#dedede'
+                      //placeholderTextColor='#dedede'
                       multiline
                       value={description}
                       onChangeText={(value) => setDescription(value)}
