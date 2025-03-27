@@ -30,11 +30,26 @@ import { MemoItem } from './MemoItem';
 const getCategory = (category: Category): React.ReactElement => {
   switch (category) {
     case Category.Work:
-      return <FontAwesome6 name='suitcase' size={30} color='black' />;
+      return <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_work.png')} />;
     case Category.Health:
-      return <FontAwesome5 name='plus' size={30} color='black' />;
+      return <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />;
     case Category.Relationships:
-      return <FontAwesome name='heart' size={30} color='black' />;
+      return <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />;
+    case Category.Education:
+      return <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')} />
+    case Category.Finance:
+      return <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')} />
+    case Category.Other:
+      return <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />
+    default: 
+      return <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />
   }
 };
 

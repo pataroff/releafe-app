@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -10,19 +10,40 @@ import { Category, IIcon } from '../types';
 
 const icons: IIcon[] = [
   {
-    label: 'Werk',
-    value: 'werk',
-    icon: <FontAwesome6 name='suitcase' size={24} color='#5C6B57' />,
+    label: 'Gezin en relaties',
+    value: 'gezin en relaties',
+    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />,
   },
   {
     label: 'Gezondheid',
     value: 'gezondheid',
-    icon: <FontAwesome5 name='plus' size={24} color='#5C6B57' />,
+    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezondheid.png')} />,
   },
   {
-    label: 'Relaties',
-    value: 'relaties',
-    icon: <FontAwesome name='heart' size={24} color='#5C6B57' />,
+    label: 'Werk',
+    value: 'werk',
+    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    source= {require('../../assets/images/dropdown_icons/dropdown_icon_work.png')} />,
+  },
+  {
+    label: 'Onderwijs',
+    value: 'onderwijs',
+    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    source= {require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')} />,
+  },
+  {
+    label: 'Financiën',
+    value: 'financiën',
+    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    source= {require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')} />,
+  },
+  {
+    label: 'Overig',
+    value: 'Overig',
+    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />,
   },
 ];
 
@@ -37,10 +58,16 @@ const getCategory = (category: string) => {
       return Category.Work;
     case 'gezondheid':
       return Category.Health;
-    case 'relaties':
+    case 'gezin en relaties':
       return Category.Relationships;
+    case 'onderwijs':
+      return Category.Education;
+    case 'financiën':
+      return Category.Finance;
+    case 'overig':
+      return Category.Other;
     default:
-      return Category.Work;
+      return Category.Other;
   }
 };
 
@@ -51,9 +78,15 @@ const categoryToString = (category: Category) => {
     case Category.Health:
       return 'gezondheid';
     case Category.Relationships:
-      return 'relaties';
+      return 'gezin en relaties';
+    case Category.Education:
+      return 'onderwijs';
+    case Category.Finance:
+      return 'financiën';
+    case Category.Other:
+      return 'overig';
     default:
-      return 'werk';
+      return 'overig';
   }
 };
 
@@ -143,4 +176,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
   },
+  image: {
+    width: 10,
+    height: 10,
+  }
 });

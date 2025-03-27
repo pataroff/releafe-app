@@ -17,6 +17,7 @@ import { IWorryListItem } from '../types';
 import { getPriorityColor, getCategory } from '../utils/worry';
 import { WorryContext } from '../context/WorryContext';
 import { CloseModal } from './CloseModal';
+import Entypo from '@expo/vector-icons/Entypo';
 
 interface WorryListItemProps {
   item: IWorryListItem;
@@ -281,23 +282,13 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
           </View>
 
           {/* Reframe Icon */}
-          {expandedItems[uuid] !== true && (
             <View style={{ width: 30 }}>
-              {reframed ? (
-                <Image
-                  resizeMode='contain'
-                  style={{ width: '100%', height: 30 }}
-                  source={require('../../assets/images/reframe_reframed_icon.png')}
-                />
+              {expandedItems[uuid] === true ? (
+              <Entypo name='chevron-up' size={32} style={styles.worryListExpandedArrow} color='#5c6b57' />
               ) : (
-                <Image
-                  resizeMode='contain'
-                  style={{ width: '100%', height: 30 }}
-                  source={require('../../assets/images/reframe_not_reframed_icon.png')}
-                />
+              <Entypo name='chevron-down' size={32} color='#5c6b57' />
               )}
             </View>
-          )}
         </View>
       </View>
     </Pressable>
@@ -334,4 +325,9 @@ const styles = StyleSheet.create({
     ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
+  worryListExpandedArrow: {
+    position: 'absolute',
+    right: 32,
+    bottom: 60,
+  }
 });

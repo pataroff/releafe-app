@@ -76,6 +76,9 @@ export enum Category {
   Work = 'WORK',
   Health = 'HEALTH',
   Relationships = 'RELATIONSHIPS',
+  Education = 'EDUCATION',
+  Finance = 'FINANCE',
+  Other = 'OTHER',
 }
 
 export enum Priority {
