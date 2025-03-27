@@ -26,6 +26,7 @@ import { WorryContext } from '../context/WorryContext';
 
 import { Video, ResizeMode } from 'expo-av';
 import { MemoItem } from './MemoItem';
+import { CloseModal } from './CloseModal';
 
 const getCategory = (category: Category): React.ReactElement => {
   switch (category) {
@@ -120,6 +121,8 @@ export const NoteListItemExpandedModal: React.FC<
     },
   ];
 
+  const [modalCloseVisible,setModalCloseVisible] = useState<boolean>(false);
+
   const handleReframing = async () => {
     updateWorryEntryFields(uuid, category, priority, title, description);
     updateNoteEntryFields(
@@ -142,6 +145,10 @@ export const NoteListItemExpandedModal: React.FC<
     deleteNoteEntry(uuid);
   };
 
+  const handleClose = () => {
+    handleDelete();
+  }
+
   return (
     <Modal
       animationType='none'
@@ -151,6 +158,18 @@ export const NoteListItemExpandedModal: React.FC<
         setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible)
       }
     >
+    <CloseModal
+      closeModalVisible={modalCloseVisible}
+      setCloseModalVisible={setModalCloseVisible}
+      parentModalVisible={modalNoteListItemExpandedVisible}
+      setParentModalVisible={setModalNoteListItemExpandedVisible}
+      title='Bericht aan jezelf verwijderen'
+      description='Je staat op het punt om het bericht aan jezelf te verwijderen. Weet je het zeker?'
+      handleClose={handleClose}
+      denyText='Nee, bewaar het bericht.'
+      confirmText='Ja, verwijder het bericht.'
+      closeButtonDisabled = {true}
+    />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
           <View style={styles.headersContainer}>
@@ -317,18 +336,18 @@ export const NoteListItemExpandedModal: React.FC<
                 columnGap: 10,
               }}
             >
-              {feelingDescription !== '' && (
+              {/*} {feelingDescription !== '' && (
                 <Pressable onPress={() => handleReframing()}>
                   <Image
                     style={{ width: 190, height: 47 }}
                     source={require('../../assets/images/reframe_again_button.png')}
                   />
                 </Pressable>
-              )}
+              )}*/}
 
               <Pressable
                 style={{ position: 'absolute', right: 0 }}
-                onPress={() => handleDelete()}
+                onPress={() => setModalCloseVisible(true)}
               >
                 <Image
                   resizeMode='contain'

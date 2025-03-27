@@ -574,9 +574,9 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                     <TextInput
                       style={
                         {
-                          ...Fonts.sofiaProItalic[Platform.OS],
+                          ...Fonts.sofiaProRegular[Platform.OS],
                           backgroundColor: '#F6F7F8',
-                          fontStyle: 'italic',
+                          //fontStyle: 'italic',
                           borderRadius: 10,
                           height: 50,
                           width: '65%',
@@ -603,9 +603,9 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                     <TextInput
                       style={
                         {
-                          ...Fonts.sofiaProItalic[Platform.OS],
+                          ...Fonts.sofiaProRegular[Platform.OS],
                           backgroundColor: '#F6F7F8',
-                          fontStyle: 'italic',
+                          //fontStyle: 'italic',
                           position: 'relative',
                           padding: 10,
                           borderRadius: 10,
