@@ -91,7 +91,7 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
 
         {/* Favourite Button */}
         {/*TODO: Is this correct styling? - Luna*/}
-        <Pressable onPress={() => handleFavourite(id)} style={{width: 36,height:36, paddingTop:5, paddingLeft:10}}> 
+        <Pressable onPress={() => handleFavourite(id)} style={{width: 36, height:36, paddingTop:5, paddingLeft:10}}> 
           {isFavourite ? (
             <Image
               source={require('../../assets/images/favourite_button_on_icon.png')}
