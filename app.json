@@ -13,13 +13,21 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "dev.expo.releafeapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "dev.expo.releafeapp",
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -36,7 +44,6 @@
             "./assets/fonts/Poppins-MediumItalic.ttf",
             "./assets/fonts/Poppins-SemiBold.ttf",
             "./assets/fonts/Poppins-Bold.ttf",
-            
             "./assets/fonts/SofiaProLight.ttf",
             "./assets/fonts/SofiaProRegular.ttf",
             "./assets/fonts/SofiaProRegular-Italic.ttf",
@@ -75,6 +82,12 @@
         }
       ]
     ],
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "extra": {
+      "eas": {
+        "projectId": "2379856a-8b9f-46a2-8e1c-0d5b50e0169b"
+      }
+    },
+    "owner": "iwwan_01"
   }
 }
