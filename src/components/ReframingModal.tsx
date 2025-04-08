@@ -167,7 +167,12 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
   const handleNext = () => {
     if (reframingModalIndex < reframingSteps.length - 1) {
-      setReframingModalIndex(reframingModalIndex + 1);
+      //TODO Input validation: Is there a better way to do this? - Luna
+      if(title && reframingModalIndex === 0)
+        setReframingModalIndex(reframingModalIndex + 1);
+      else if(reframingModalTextState.get(reframingModalIndex)?.value || reframingModalIndex ===5)
+        setReframingModalIndex(reframingModalIndex + 1);
+      //TODO Add Error Messages - Luna
     } else {
       setReframed(true); // @TODO This is part of the worry and it is not being updated in the database here, so why are we doing this?
       setReframingModalIndex(0);
