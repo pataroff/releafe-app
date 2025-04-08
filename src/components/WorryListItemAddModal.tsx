@@ -70,6 +70,18 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
   };
 
+  const handleStorePress  = () => {
+    if(!title)
+    {
+      //TODO: Add error message - Luna
+    }
+    else
+    {
+      title.trim();
+      handleStore();
+    }
+  }
+
   const handleReframing = () => {
     // resetWorryEntryFields(); // TODO: Where should the reset happen?
     setWorryListItemAddModalIndex(0);
@@ -341,7 +353,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                   </View>
                   <Pressable
                     style={styles.storeButton}
-                    onPress={() => handleStore()}
+                    onPress={() => handleStorePress()}
                   >
                     <Text style={styles.storeButtonText}>
                       Zorg opslaan in Zorgenbakje
