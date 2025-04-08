@@ -50,6 +50,8 @@ const mediaAddIcons = [
   require('../../assets/images/media_add/media_add_file.png'),
 ];
 
+const voiceMemoRedIcon = require('../../assets/images/media_add/media_add_voice_memo_red.png');
+
 const imageExtensions = ['.jpg', '.jpeg', '.png', '.pdf'];
 
 interface NoteListModalProps {
@@ -113,6 +115,14 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     resetWorryEntryFields();
     setModalAddNoteListItemVisible(!modalAddNoteListItemVisible);
   };
+  
+  const handleStorePress = () => {
+    if(title)
+    {
+      title.trim();
+      handleStore();
+    }
+  }
 
   const handleClose = () => {
     resetNoteEntryFields();
@@ -310,6 +320,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
         setAudio(recording);
         console.log('Recording started...');
 
+
         recording.setOnRecordingStatusUpdate((status) => {
           if (status.metering) {
             setAudioMetering((curVal) => [...curVal, status.metering || -100]);
@@ -331,6 +342,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     }
 
     console.log('Stopping recording...');
+    setIsAudioRecording(false);
     setAudio(null);
     await audio.stopAndUnloadAsync();
     await Audio.setAudioModeAsync({
@@ -647,8 +659,9 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                           >
                             <Image
                               resizeMode='contain'
-                              style={{ height: 35, width: 35 }}
-                              source={icon}
+                              style={{height: 35, width: 35 }}
+                              //TODO: Is there a better way to do this? - Luna
+                              source={index===2? isAudioRecording? voiceMemoRedIcon : icon : icon}
                             ></Image>
                           </Pressable>
                         );
@@ -718,13 +731,13 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                     )}
 
                     <Pressable
-                      onPress={() => handleStore()}
+                      onPress={() => handleStorePress()}
                       style={{
                         marginVertical: 20,
                         alignSelf: 'center',
                         width: 215,
                         borderRadius: 10,
-                        backgroundColor: '#A9C1A1',
+                        backgroundColor:'#A9C1A1' ,
                         paddingVertical: 12,
                       }}
                     >
