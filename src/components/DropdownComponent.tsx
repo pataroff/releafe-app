@@ -12,37 +12,37 @@ const icons: IIcon[] = [
   {
     label: 'Gezin en relaties',
     value: 'gezin en relaties',
-    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
     source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />,
   },
   {
     label: 'Gezondheid',
     value: 'gezondheid',
-    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
     source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezondheid.png')} />,
   },
   {
     label: 'Werk',
     value: 'werk',
-    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
     source= {require('../../assets/images/dropdown_icons/dropdown_icon_work.png')} />,
   },
   {
     label: 'Onderwijs',
     value: 'onderwijs',
-    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
     source= {require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')} />,
   },
   {
     label: 'Financiën',
     value: 'financiën',
-    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
     source= {require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')} />,
   },
   {
     label: 'Overig',
     value: 'Overig',
-    icon: <Image style = {{paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
     source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />,
   },
 ];
