@@ -40,7 +40,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     timeframe,
     targetFrequency,
     startDate,
-    endDate,
+    //endDate,
     completedTimeframe,
     completedPeriod,
   } = item;
@@ -173,9 +173,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   </Text>
                   <Text style={styles.completedTimeframeText}>
                     {completedTimeframe}/
-                    {timeframe !== Timeframe.Daily
-                      ? targetFrequency
-                      : getDaysBetweenDates(startDate, endDate)}
+                    {targetFrequency}
                   </Text>
                 </View>
                 <ProgressBar
@@ -233,9 +231,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
 
                   <Text style={styles.completedTimeframeText}>
                     {completedTimeframe}/
-                    {timeframe !== Timeframe.Daily
-                      ? targetFrequency
-                      : getDaysBetweenDates(startDate, endDate)}
+                    {targetFrequency}
                   </Text>
                 </View>
                 <ProgressBar
@@ -249,7 +245,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                 </Text>
               </View>
 
-              {/* Period Progress Bar */}
+              {/* Period Progress Bar /*}
               <View
                 style={{
                   display: 'flex',
@@ -280,7 +276,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   color='#A9C1A1'
                   style={styles.progressBar}
                 />
-                {/* Period Percentage Text */}
+                {/* Period Percentage Text /*}
                 <Text style={styles.percentageText}>
                   {periodProgressValue * 100}%
                 </Text>
@@ -309,13 +305,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                     Startdatum
                   </Text>
                   <Text style={styles.statisticsDataHeadingText}>
-                    Einddatum
-                  </Text>
-                  <Text style={styles.statisticsDataHeadingText}>
                     Dagen actief
-                  </Text>
-                  <Text style={styles.statisticsDataHeadingText}>
-                    Dagen tot einddatum
                   </Text>
                 </View>
 
@@ -330,9 +320,6 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   <Text style={styles.statisticsDataBodyText}>
                     {formatDateString(startDate as Date)}
                   </Text>
-                  <Text style={styles.statisticsDataBodyText}>
-                    {formatDateString(endDate as Date)}
-                  </Text>
                   {/* Completed Timeframe */}
                   <Text style={styles.statisticsDataBodyText}>
                     {new Date(startDate as Date) > new Date()
@@ -340,11 +327,6 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                       : Math.floor(getDaysBetweenDates(startDate, new Date()))}
                   </Text>
                   {/* Completed Period */}
-                  <Text style={styles.statisticsDataBodyText}>
-                    {new Date(startDate as Date) > new Date()
-                      ? Math.floor(getDaysBetweenDates(startDate, endDate))
-                      : Math.floor(getDaysBetweenDates(new Date(), endDate))}
-                  </Text>
                 </View>
               </View>
 
