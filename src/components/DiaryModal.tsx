@@ -396,6 +396,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                     handleTextChange(textQuestionIndex, value)
                   }
                   placeholder={textSteps[textQuestionIndex].placeholder}
+                  placeholderTextColor={'rgba(0,0,0,0.5)'}
                   multiline
                   style={
                     {
