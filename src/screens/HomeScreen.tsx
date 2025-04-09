@@ -13,6 +13,7 @@ import {
   TextStyle,
   Dimensions,
   Animated,
+  Modal
 } from 'react-native';
 
 import { Fonts } from '../styles';
@@ -78,6 +79,8 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const [questionMarkModalActive, setQuestionMarkModalActive] = useState<boolean>(false);
+
   // Animation values
   const animatedValues = useRef(
     // Array of Animated.Values for each item
@@ -89,6 +92,10 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
     const newIndex = Math.round(offsetX / (windowWidth - 40)); // 40 = padding * 2
     if (newIndex !== activeIndex) setActiveIndex(newIndex);
   };
+
+  const handleNudgingQuestionMark = () => {
+    setQuestionMarkModalActive(true);
+  }
 
   const handleNudging = (index: number) => {
     switch (index) {
@@ -144,6 +151,35 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
   return (
     <>
+        <Modal
+          animationType='none'
+          transparent={true}
+          visible={questionMarkModalActive}
+          onRequestClose={() => setQuestionMarkModalActive(!questionMarkModalActive)}
+        >
+          <View style={styles.modalWrapper}>
+            <View style={styles.modalContainer}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <View style={{ rowGap: 20 }}>
+                  <Text style={styles.nudgingBodyText}>Op basis van jouw gebruik van de app geven we je hier tips om je volgende stap te zetten.</Text>
+                </View>
+              </View>
+              <Pressable
+                onPress={() =>
+                  setQuestionMarkModalActive(!questionMarkModalActive)
+                }
+              >
+                <Feather name='x-circle' size={24} color='gray' />
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
       <StatusBar />
       <Header title={title} route={route} />
       <ScrollView
@@ -155,9 +191,9 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
         {/* Greeting Container */}
         <View style={styles.greetingContainer}>
           <Text style={styles.greetingHeadingText}>
-            Hallo, {user?.firstName}!
+            Hallo {user?.firstName}
           </Text>
-          <Text style={styles.greetingBodyText}>Welkom terug,</Text>
+          <Text style={styles.greetingBodyText}>Welkom!</Text>
           <Text style={styles.dateHeadingText}>
             Het is vandaag
             <Text style={styles.dateBodyText}>
@@ -186,7 +222,23 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
         </View>
 
         {/* Nudging Container */}
-        <Text style={styles.nudgingTitleText}>Geadviseerde stappen</Text>
+      <View style={styles.tipsHeaderContainer}>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          columnGap: 10,
+        }}
+      >
+        <Text style={styles.nudgingHeadingText}>Tips</Text>
+        <Pressable
+          onPress={() => handleNudgingQuestionMark()}
+        >
+          <FontAwesome6 name='question-circle' size={18} color='black' />
+        </Pressable>
+        </View>
+      </View>
         <ScrollView
           horizontal={true}
           decelerationRate={'fast'}
@@ -261,7 +313,6 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
             <Text style={styles.performanceContainerHeadingText}>
               Jouw prestaties
             </Text>
-            <FontAwesome6 name='question-circle' size={18} color='black' />
           </View>
 
           {/* Performance Data Container */}
@@ -502,5 +553,28 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     rowGap: 5,
+  },
+  tipsHeaderContainer: {
+    flex: 1,
+    width: 325,
+    marginTop:10,
+    borderRadius: 25,
+    padding: 20,
+  },
+  modalWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  modalContainer: {
+    borderRadius: 30,
+    height: 270,
+    width: windowWidth - 2 * 15,
+    backgroundColor: 'white',
+    padding: 25,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
 });

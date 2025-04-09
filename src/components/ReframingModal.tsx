@@ -104,7 +104,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
   const [showPriorityButtons, setShowPriorityButtons] =
     useState<boolean>(false);
-  const {deleteWorryEntry} = useContext(WorryContext)
+  const { deleteWorryEntry } = useContext(WorryContext)
+  const [showUnreframedData, setShowUnreframedData] = useState<boolean>(false);
 
   // @TODO Is there a better way of doing this?
   const reframingModalTextState = new Map<number, StringStateSetterPair>([
@@ -132,6 +133,17 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       },
     ],
   ]);
+  const unreframedData = [
+    {
+      heading: 'Situatieomschrijving',
+      body: description,
+    },
+    {
+      heading: 'Gevoelsomschrijving',
+      body: feelingDescription,
+      sliderValue: thoughtLikelihoodSliderOne,
+    },
+  ];
 
   const successData = [
     { heading: null, body: alternativePerspective },
@@ -167,12 +179,29 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
   const handleNext = () => {
     if (reframingModalIndex < reframingSteps.length - 1) {
+<<<<<<< Updated upstream
       //TODO Input validation: Is there a better way to do this? - Luna
       if(title && reframingModalIndex === 0)
         setReframingModalIndex(reframingModalIndex + 1);
       else if(reframingModalTextState.get(reframingModalIndex)?.value || reframingModalIndex ===5)
         setReframingModalIndex(reframingModalIndex + 1);
       //TODO Add Error Messages - Luna
+=======
+<<<<<<< Updated upstream
+      setReframingModalIndex(reframingModalIndex + 1);
+=======
+      //TODO Input validation: Is there a better way to do this? - Luna
+      if (title && reframingModalIndex === 0) {
+        title.trim();
+        setReframingModalIndex(reframingModalIndex + 1);
+      }
+      else if (reframingModalTextState.get(reframingModalIndex)?.value || reframingModalIndex === 5) {
+        reframingModalTextState.get(reframingModalIndex)?.value.trim();
+        setReframingModalIndex(reframingModalIndex + 1);
+        //TODO Add Error Messages - Luna
+      }
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     } else {
       setReframed(true); // @TODO This is part of the worry and it is not being updated in the database here, so why are we doing this?
       setReframingModalIndex(0);
@@ -655,67 +684,67 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                       {/* Dynamic Slider Component  */}
                       {(reframingModalIndex == 1 ||
                         reframingModalIndex == 6) && (
-                        <View
-                          style={{
-                            marginTop: 20,
-                            rowGap: 15,
-                          }}
-                        >
-                          {reframingModalIndex === 1 && (
-                            <Text
-                              style={
-                                {
-                                  textAlign: 'center',
-                                  alignSelf: 'center',
-                                  ...Fonts.sofiaProRegular[Platform.OS],
-                                } as TextStyle
-                              }
-                            >
-                              Hoe groot denk je dat de kans is dat deze gedachte
-                              realiteit wordt?
-                            </Text>
-                          )}
-                          <View>
-                            <Slider
-                              style={{ width: '100%' }}
-                              trackStyle={{ height: 15, borderRadius: 30 }}
-                              thumbStyle={{
-                                width: 28,
-                                height: 28,
-                              }}
-                              thumbTintColor='#C1DEBE'
-                              minimumValue={0}
-                              maximumValue={10}
-                              value={
-                                reframingModalIndex === 1
-                                  ? reframingModalSliderState.get(1)?.value
-                                  : reframingModalSliderState.get(2)?.value
-                              }
-                              onValueChange={(value) =>
-                                reframingModalIndex === 1
-                                  ? reframingModalSliderState
+                          <View
+                            style={{
+                              marginTop: 20,
+                              rowGap: 15,
+                            }}
+                          >
+                            {reframingModalIndex === 1 && (
+                              <Text
+                                style={
+                                  {
+                                    textAlign: 'center',
+                                    alignSelf: 'center',
+                                    ...Fonts.sofiaProRegular[Platform.OS],
+                                  } as TextStyle
+                                }
+                              >
+                                Hoe groot denk je dat de kans is dat deze gedachte
+                                realiteit wordt?
+                              </Text>
+                            )}
+                            <View>
+                              <Slider
+                                style={{ width: '100%' }}
+                                trackStyle={{ height: 15, borderRadius: 30 }}
+                                thumbStyle={{
+                                  width: 28,
+                                  height: 28,
+                                }}
+                                thumbTintColor='#C1DEBE'
+                                minimumValue={0}
+                                maximumValue={10}
+                                value={
+                                  reframingModalIndex === 1
+                                    ? reframingModalSliderState.get(1)?.value
+                                    : reframingModalSliderState.get(2)?.value
+                                }
+                                onValueChange={(value) =>
+                                  reframingModalIndex === 1
+                                    ? reframingModalSliderState
                                       .get(1)
                                       ?.setter(Math.round(value))
-                                  : reframingModalSliderState
+                                    : reframingModalSliderState
                                       .get(2)
                                       ?.setter(Math.round(value))
-                              }
-                              minimumTrackTintColor='#E4E1E1'
-                              maximumTrackTintColor='#E4E1E1'
-                            />
-                            <View
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                              }}
-                            >
-                              <Text style={styles.optionsText}>Heel klein</Text>
-                              <Text style={styles.optionsText}>Heel groot</Text>
+                                }
+                                minimumTrackTintColor='#E4E1E1'
+                                maximumTrackTintColor='#E4E1E1'
+                              />
+                              <View
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                }}
+                              >
+                                <Text style={styles.optionsText}>Heel klein</Text>
+                                <Text style={styles.optionsText}>Heel groot</Text>
+                              </View>
                             </View>
                           </View>
-                        </View>
-                      )}
+                        )}
                     </View>
                   </View>
                 )}
@@ -807,6 +836,45 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         </View>
                       );
                     })}
+                    <View
+                      style={{
+                        marginVertical: 20,
+                        display: 'flex',
+                        flexDirection: showUnreframedData
+                          ? 'column-reverse'
+                          : 'column',
+                        rowGap: 20,
+                      }}
+                    >
+                      <Pressable
+                        style={{ alignSelf: 'center', alignItems: 'center' }}
+                        onPress={() => setShowUnreframedData(!showUnreframedData)}
+                      >
+                        <Text style={styles.showOldSituationText}>
+                          {showUnreframedData
+                            ? 'Oude situatie verbergen'
+                            : 'Oude situatie bekijken'}
+                        </Text>
+
+                        <Feather
+                          name={showUnreframedData ? 'chevron-up' : 'chevron-down'}
+                          size={20}
+                          color={'gray'}
+                        />
+                      </Pressable>
+
+                      {showUnreframedData &&
+                        unreframedData.map((data, index) => (
+                          <View key={index}>
+                            <Text style={[styles.headingText, { color: 'gray' }]}>
+                              {data.heading}
+                            </Text>
+                            <Text style={[styles.bodyText, { color: 'gray' }]}>
+                              {data.body}
+                            </Text>
+                          </View>
+                        ))}
+                    </View>
                   </View>
                 </>
               )}
@@ -1046,5 +1114,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#f6f7f8',
     height: 165,
+  } as TextStyle,
+  showOldSituationText: {
+    ...Fonts.sofiaProRegular[Platform.OS],
+    fontSize: 11,
+    color: 'gray',
+  } as TextStyle,
+  headingText: {
+    ...Fonts.sofiaProSemiBold[Platform.OS],
+  } as TextStyle,
+  bodyText: {
+    ...Fonts.sofiaProRegular[Platform.OS],
+    fontSize: 13,
   } as TextStyle,
 });
