@@ -41,7 +41,7 @@ export const GoalsOverview = () => {
     timeframe,
     targetFrequency,
     startDate,
-    endDate,
+    //endDate,
     completedTimeframe,
     completedPeriod,
   } = goalEntries[goalIndex];
@@ -81,8 +81,7 @@ export const GoalsOverview = () => {
           columnGap: 10,
         }}
       >
-        <Text style={styles.overviewGoalsHeadingText}>Overzicht doelen</Text>
-        <FontAwesome6 name='question-circle' size={18} color='black' />
+        <Text style={styles.overviewGoalsHeadingText}>Overzicht persoonlijke doelen</Text>
       </View>
 
       {/* Goal Headers Container */}
@@ -156,19 +155,17 @@ export const GoalsOverview = () => {
 
               <Text style={styles.completedTimeframeText}>
                 {completedTimeframe}/
-                {timeframe !== Timeframe.Daily
-                  ? targetFrequency
-                  : getDaysBetweenDates(startDate, endDate)}
+                {targetFrequency}
               </Text>
             </View>
             <ProgressBar
-              progress={timeframeProgressValue}
+              progress={completedTimeframe/targetFrequency}
               color='#A9C1A1'
               style={styles.progressBar}
             />
             {/* Timeframe Percentage Text */}
             <Text style={styles.percentageText}>
-              {timeframeProgressValue * 100}%
+              {(completedTimeframe/targetFrequency) * 100}%
             </Text>
           </View>
 
@@ -188,25 +185,8 @@ export const GoalsOverview = () => {
                 justifyContent: 'space-between',
               }}
             >
-              <Text style={styles.progressBarText}>
-                Statistieken voor gehele looptijd
-              </Text>
 
-              <Text style={styles.completedTimeframeText}>
-                {completedPeriod}/
-                {calculatePeriod(timeframe, startDate, endDate)}
-              </Text>
             </View>
-
-            <ProgressBar
-              progress={periodProgressValue}
-              color='#A9C1A1'
-              style={styles.progressBar}
-            />
-            {/* Period Percentage Text */}
-            <Text style={styles.percentageText}>
-              {periodProgressValue * 100}%
-            </Text>
           </View>
         </View>
 
@@ -233,11 +213,8 @@ export const GoalsOverview = () => {
             }}
           >
             <Text style={styles.statisticsDataHeadingText}>Startdatum</Text>
-            <Text style={styles.statisticsDataHeadingText}>Einddatum</Text>
             <Text style={styles.statisticsDataHeadingText}>Dagen actief</Text>
-            <Text style={styles.statisticsDataHeadingText}>
-              Dagen tot einddatum
-            </Text>
+            <Text style={styles.statisticsDataHeadingText}>Aantal keer gedaan</Text>
           </View>
 
           <View
@@ -251,9 +228,6 @@ export const GoalsOverview = () => {
             <Text style={styles.statisticsDataBodyText}>
               {formatDateString(startDate as Date)}
             </Text>
-            <Text style={styles.statisticsDataBodyText}>
-              {formatDateString(endDate as Date)}
-            </Text>
             {/* Completed Timeframe */}
             <Text style={styles.statisticsDataBodyText}>
               {new Date(startDate as Date) > new Date()
@@ -262,9 +236,7 @@ export const GoalsOverview = () => {
             </Text>
             {/* Completed Period */}
             <Text style={styles.statisticsDataBodyText}>
-              {new Date(startDate as Date) > new Date()
-                ? Math.floor(getDaysBetweenDates(startDate, endDate))
-                : Math.floor(getDaysBetweenDates(new Date(), endDate))}
+                {completedTimeframe}
             </Text>
           </View>
         </View>
