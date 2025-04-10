@@ -197,6 +197,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
       setDiaryModalIndex((prev) => ++prev);
       setProgressValue((prev) => Math.min(1, prev + progressStep));
     }
+    console.log(progressValue);
   };
 
   const resetLocalState = () => {
@@ -469,7 +470,10 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
               {/* Progress Bar Container */}
               <View style={styles.progressBarContainer}>
                 <Text style={styles.progressBarText}>
-                  {Math.round(progressValue * 100)}%
+                  {diaryModalIndex == totalStepsIndex
+                  ? '100%'
+                  : Math.round(progressValue * 100) +  '%'
+                  }
                 </Text>
                 <ProgressBar
                   // Jan prefers switching to the steps to keep the design more consistent!
