@@ -456,7 +456,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                   }
                   style={
                     diaryModalIndex == totalStepsIndex
-                      ? [styles.continueButton, { width: 165 }]
+                      ? [styles.continueButton, { width: 150 }]
                       : styles.continueButton
                   }
                 >
