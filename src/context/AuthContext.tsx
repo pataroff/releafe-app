@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message';
 
 // TODO: Make usage of the `pb_auth` item in local storage!
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 // Create context
 export const AuthContext = createContext<IAuthContext>({
@@ -47,6 +48,8 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
       type,
       text1: title,
       text2: message,
+      text1Style: Platform.OS == 'android'? {paddingBottom:0} : {},
+      text2Style: Platform.OS == 'android'? {paddingBottom:0} : {},
     });
   };
 
