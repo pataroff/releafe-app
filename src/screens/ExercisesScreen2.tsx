@@ -74,7 +74,9 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
           }}
         >
           <Pressable
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              setShowOnlyFavourites(false);
+              navigation.goBack()}}
             style={{
               marginVertical: 25,
               width: 200,
