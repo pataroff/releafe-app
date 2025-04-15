@@ -307,6 +307,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   <Text style={styles.statisticsDataHeadingText}>
                     Dagen actief
                   </Text>
+                  <Text style={styles.statisticsDataHeadingText}>Aantal keer gedaan</Text>
                 </View>
 
                 <View
@@ -322,9 +323,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   </Text>
                   {/* Completed Timeframe */}
                   <Text style={styles.statisticsDataBodyText}>
-                    {new Date(startDate as Date) > new Date()
-                      ? 0
-                      : Math.floor(getDaysBetweenDates(startDate, new Date()))}
+                    {completedTimeframe}
                   </Text>
                   {/* Completed Period */}
                 </View>

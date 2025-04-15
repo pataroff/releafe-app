@@ -401,6 +401,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                   multiline
                   style={
                     {
+                      paddingBottom: Platform.OS == 'android'? 0 : {},
                       ...Fonts.sofiaProRegular[Platform.OS],
                       marginTop: 20,
                       padding: 10,

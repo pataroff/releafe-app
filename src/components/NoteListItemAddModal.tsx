@@ -40,6 +40,7 @@ import * as MediaLibrary from 'expo-media-library';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as VideoThumbnails from 'expo-video-thumbnails';
+import Toast from 'react-native-toast-message';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -122,6 +123,10 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
       title.trim();
       handleStore();
     }
+    else
+    {
+      showToast('error','Title cannot be empty','Please add a title');
+    }
   }
 
   const handleClose = () => {
@@ -183,6 +188,18 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
       }
     }
   };
+  const showToast = (
+    type: 'error' | 'success' | 'info',
+    title: string,
+    message: string,
+    ) => {
+      Toast.show({
+      topOffset: 15,
+      type,
+      text1: title,
+      text2: message,
+      });
+    };
 
   const generateVideoThumbnail = async (videoUri: string) => {
     try {
@@ -757,6 +774,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                 </View>
               </TouchableWithoutFeedback>
             </View>
+            <Toast />
           </View>
         </Modal>
       )}
