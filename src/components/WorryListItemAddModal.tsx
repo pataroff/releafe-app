@@ -85,6 +85,8 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setWorryListItemAddModalIndex(0);
     setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
   };
+
+
   const handleStorePress  = () => {
     if(!title)
     {
@@ -94,6 +96,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     {
       title.trim();
       description.trim();
+
       handleStore();
     }
   }
