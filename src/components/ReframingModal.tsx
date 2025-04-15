@@ -12,14 +12,17 @@ import {
   Dimensions,
   TextStyle,
   Platform,
+  StyleProp
 } from 'react-native';
 
+import { useSharedValue } from 'react-native-reanimated';
 import Checkbox from 'expo-checkbox';
-import { Slider } from '@rneui/themed';
+import { Slider } from 'react-native-awesome-slider';
 import { MarkerProps } from '@react-native-community/slider';
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
+import Toast from 'react-native-toast-message';
 
 import { DropdownComponent } from './DropdownComponent';
 import { CloseModal } from './CloseModal';
@@ -30,6 +33,9 @@ import { AuthContext } from '../context/AuthContext';
 
 import { Priority } from '../types';
 import { getCategory, getPriorityColor, reframingSteps } from '../utils/worry';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { center } from '@shopify/react-native-skia';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -152,6 +158,22 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     { heading: 'Waarschijnlijkheid', body: thoughtLikelihood },
   ];
 
+const min = useSharedValue(0);
+const max = useSharedValue(10);
+const sliderValue = useSharedValue(5);
+
+const CustomThumb: React.FC<{}> = () => {
+  return (
+    <View
+      style={{
+        backgroundColor: '#C1DEBE',
+        height: 28,
+        width: 28,
+        borderRadius: 99,
+      }}
+    ></View>
+  );
+};
   const handleClose = () => {
     setReframingModalIndex(0);
     resetWorryEntryFields();
@@ -184,10 +206,17 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
         title.trim();
         setReframingModalIndex(reframingModalIndex + 1);
       }
+      else if(!title)
+      {
+        showToast('error','Title cannot be empty','Please add a title');
+      }
+      else if(!reframingModalTextState.get(reframingModalIndex)?.value)
+      {
+        showToast('error','Text cannot be empty','Please input text');
+      }
       else if (reframingModalTextState.get(reframingModalIndex)?.value || reframingModalIndex === 5) {
         reframingModalTextState.get(reframingModalIndex)?.value.trim();
         setReframingModalIndex(reframingModalIndex + 1);
-        //TODO Add Error Messages - Luna
       }
     } else {
       setReframed(true); // @TODO This is part of the worry and it is not being updated in the database here, so why are we doing this?
@@ -211,6 +240,19 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     setShowPriorityButtons(!showPriorityButtons);
   };
 
+    const showToast = (
+      type: 'error' | 'success' | 'info',
+      title: string,
+      message: string,
+    ) => {
+      Toast.show({
+        topOffset: 15,
+        type,
+        text1: title,
+        text2: message,
+      });
+    };
+
   // const StepMarker: React.FC<MarkerProps> = ({ stepMarked }) => {
   //   return (
   //     <View
@@ -233,6 +275,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       visible={modalReframingVisible}
       onRequestClose={() => setCloseModalVisible(!closeModalVisible)}
     >
+    <GestureHandlerRootView>
+    <SafeAreaView>
       <CloseModal
         closeModalVisible={closeModalVisible}
         setCloseModalVisible={setCloseModalVisible}
@@ -244,7 +288,9 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
         denyText='Nee, ik wil doorgaan'
         confirmText='Ja, ik wil afsluiten'
       />
+    </SafeAreaView>
       <View style={styles.modalWrapper}>
+        <View>
         <View style={styles.modalContainer}>
           <View style={styles.headersContainer}>
             {/* Title + Close Button */}
@@ -692,33 +738,27 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                               </Text>
                             )}
                             <View>
-                              <Slider
-                                style={{ width: '100%' }}
-                                trackStyle={{ height: 15, borderRadius: 30 }}
-                                thumbStyle={{
-                                  width: 28,
-                                  height: 28,
-                                }}
-                                thumbTintColor='#C1DEBE'
-                                minimumValue={0}
-                                maximumValue={10}
-                                value={
-                                  reframingModalIndex === 1
-                                    ? reframingModalSliderState.get(1)?.value
-                                    : reframingModalSliderState.get(2)?.value
-                                }
-                                onValueChange={(value) =>
-                                  reframingModalIndex === 1
-                                    ? reframingModalSliderState
-                                      .get(1)
-                                      ?.setter(Math.round(value))
-                                    : reframingModalSliderState
-                                      .get(2)
-                                      ?.setter(Math.round(value))
-                                }
-                                minimumTrackTintColor='#E4E1E1'
-                                maximumTrackTintColor='#E4E1E1'
-                              />
+                              <View style={{ marginVertical: 25 }}>
+                                <Slider
+                                  progress={sliderValue}
+                                  onValueChange={(value) => (sliderValue.value = value)}
+                                  minimumValue={min}
+                                  maximumValue={max}
+                                  disableTrackPress={true}
+                                  disableTapEvent={true}
+                                  containerStyle={{ borderRadius: 30 }}
+                                  sliderHeight={15}
+                                  thumbWidth={25}
+                                  theme={{
+                                    minimumTrackTintColor: '#E4E1E1',
+                                    maximumTrackTintColor: '#E4E1E1',
+                                    bubbleBackgroundColor: '#C1DEBE',
+                                  }}
+                                  renderThumb={() => <CustomThumb />}
+                                  // @TODO Remove the bubble!
+                                  bubble={(s: number) => s.toFixed(1)}
+                                />
+                              </View>
                               <View
                                 style={{
                                   display: 'flex',
@@ -905,7 +945,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                   onPress={() => handleNext()}
                   style={
                     reframingModalIndex == reframingSteps.length - 1
-                      ? [styles.continueButton, { width: 165 }]
+                      ? [styles.continueButton, { width: 150 }]
                       : styles.continueButton
                   }
                 >
@@ -948,6 +988,9 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
           </View>
         </View>
       </View>
+      <Toast/>
+      </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 };

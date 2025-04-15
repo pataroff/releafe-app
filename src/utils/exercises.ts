@@ -15,16 +15,16 @@ export const categories = [
     description:
       'Meditatie draait om (mentale) stilte. Je laat je geest volledig tot rust komen en probeert uiteindelijk tot een andere staat van bewustzijn te komen door je volledig op het hier en nu te focussen.',
   },*/
-  {
+ /* {
     title: 'Ontspanning',
     description:
       'Door te ontspannen werkt jouw lichaam weer beter na stress. Als je ontspant, adem je rustiger, klopt het hart langzamer en verlaagt de bloeddruk. Dit is goed voor het lichaam.',
-  },
- /* {
+  },*/
+  {
     title: 'Lichaamsbeweging',
     description:
       'Voldoende bewegen heeft invloed op het gewicht en zorgt verbetert de motoriek. Ook is het goed voor de ontwikkeling van de hersenen en de mentale gezondheid, onder andere omdat bewegen stressregulatie verbetert.',
-  },*/
+  },
   {
     title: 'Ademhaling',
     description:

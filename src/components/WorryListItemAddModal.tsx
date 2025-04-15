@@ -22,6 +22,7 @@ import { getPriorityColor } from '../utils/worry';
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
+import Toast from 'react-native-toast-message';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -59,6 +60,21 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     useState<boolean>(false);
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
+      const showToast = (
+        type: 'error' | 'success' | 'info',
+        title: string,
+        message: string,
+      ) => {
+        Toast.show({
+          topOffset: 15,
+          type,
+          text1: title,
+          text2: message,
+          text1Style: Platform.OS == 'android'? {paddingBottom:0} : {},
+          text2Style: Platform.OS == 'android'? {paddingBottom:0} : {},
+        });
+      };
+  
   const handleStore = () => {
     createWorryEntry();
     setWorryListItemAddModalIndex(1);
@@ -72,7 +88,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
   const handleStorePress  = () => {
     if(!title)
     {
-      //TODO: Add error message - Luna
+      showToast('error','Title cannot be empty','Please add a title');
     }
     else
     {
