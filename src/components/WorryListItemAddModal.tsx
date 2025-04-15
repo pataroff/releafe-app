@@ -70,11 +70,6 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
   };
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
   const handleStorePress  = () => {
     if(!title)
     {
@@ -83,18 +78,10 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     else
     {
       title.trim();
-<<<<<<< Updated upstream
-=======
       description.trim();
->>>>>>> Stashed changes
       handleStore();
     }
   }
-
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
   const handleReframing = () => {
     // resetWorryEntryFields(); // TODO: Where should the reset happen?
     setWorryListItemAddModalIndex(0);
