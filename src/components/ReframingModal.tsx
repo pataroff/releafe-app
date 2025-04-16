@@ -472,6 +472,7 @@ const CustomThumb: React.FC<{}> = () => {
                         style={
                           {
                             ...Fonts.sofiaProRegular[Platform.OS],
+                            verticalAlign: Platform.OS == 'android'? "top" : {},
                             backgroundColor: '#f6f7f8',
                             borderRadius: 10,
                             height: 40,
@@ -497,6 +498,7 @@ const CustomThumb: React.FC<{}> = () => {
                         style={
                           {
                             ...Fonts.sofiaProRegular[Platform.OS],
+                            verticalAlign: Platform.OS == 'android'? "top" : {},
                             padding: 10,
                             borderRadius: 10,
                             backgroundColor: '#f6f7f8',
@@ -1139,6 +1141,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   } as TextStyle,
   dynamicTextInputComponent: {
+    verticalAlign: Platform.OS == 'android'? "top" : {},
     ...Fonts.sofiaProRegular[Platform.OS],
     padding: 10,
     borderRadius: 10,

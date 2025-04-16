@@ -197,7 +197,6 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
       setDiaryModalIndex((prev) => ++prev);
       setProgressValue((prev) => Math.min(1, prev + progressStep));
     }
-    console.log(progressValue);
   };
 
   const resetLocalState = () => {
@@ -401,11 +400,11 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                   multiline
                   style={
                     {
-                      paddingBottom: Platform.OS == 'android'? 0 : {},
+                      verticalAlign: Platform.OS == 'android'? "top" : {},
                       ...Fonts.sofiaProRegular[Platform.OS],
-                      marginTop: 20,
-                      padding: 10,
-                      borderRadius: 10,
+                     marginTop: 20,
+                     paddingHorizontal: 10,
+                     borderRadius: 10,
                       backgroundColor: '#f6f7f8',
                       height: 165,
                     } as TextStyle

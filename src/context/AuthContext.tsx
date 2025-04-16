@@ -48,8 +48,6 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
       type,
       text1: title,
       text2: message,
-      text1Style: Platform.OS == 'android'? {paddingBottom:0} : {},
-      text2Style: Platform.OS == 'android'? {paddingBottom:0} : {},
     });
   };
 

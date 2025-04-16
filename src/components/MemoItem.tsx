@@ -153,6 +153,7 @@ export const MemoItem = ({
         <Text
           style={
             {
+              verticalAlign: Platform.OS == 'android'? "top" : {},
               position: 'absolute',
               right: 0,
               bottom: 0,

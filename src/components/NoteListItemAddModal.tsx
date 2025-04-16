@@ -604,6 +604,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                       style={
                         {
                           ...Fonts.sofiaProRegular[Platform.OS],
+                          verticalAlign: Platform.OS == 'android'? "top" : {},
                           backgroundColor: '#F6F7F8',
                           //fontStyle: 'italic',
                           borderRadius: 10,
@@ -633,6 +634,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                       style={
                         {
                           ...Fonts.sofiaProRegular[Platform.OS],
+                          verticalAlign: Platform.OS == 'android'? "top" : {},
                           backgroundColor: '#F6F7F8',
                           //fontStyle: 'italic',
                           position: 'relative',

@@ -188,6 +188,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                   <TextInput
                     style={
                       {
+                        verticalAlign: Platform.OS == 'android'? "top" : {},
                         ...Fonts.sofiaProRegular[Platform.OS],
                         backgroundColor: '#f6f7f8',
                         borderRadius: 10,
@@ -262,6 +263,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                     <TextInput
                       style={
                         {
+                          verticalAlign: Platform.OS == 'android'? "top" : {},
                           ...Fonts.sofiaProRegular[Platform.OS],
                           padding: 10,
                           borderRadius: 10,

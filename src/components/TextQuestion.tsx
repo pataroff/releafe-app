@@ -274,6 +274,7 @@ const styles = StyleSheet.create({
     ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
   diaryEntryFieldTextInput: {
+    verticalAlign: Platform.OS == 'android'? "top" : {},
     fontSize: 14,
     height: 200,
     ...Fonts.sofiaProRegular[Platform.OS],
