@@ -204,15 +204,20 @@ const CustomThumb: React.FC<{}> = () => {
       //TODO Input validation: Is there a better way to do this? - Luna
       if ((title && description) && reframingModalIndex === 0) {
         title.trim();
+        description.trim();
         setReframingModalIndex(reframingModalIndex + 1);
       }
       else if(!title && reframingModalIndex!=5)
       {
-        showToast('error','Title cannot be empty','Please add a title');
+        showToast('error','Titel ontbreekt nog','Voeg een titel toe.');
+      }
+      else if (!description && reframingModalIndex === 0)
+      {
+        showToast('error','Omschrijving ontbreekt nog','Voeg een omschrijving toe.')
       }
       else if(!reframingModalTextState.get(reframingModalIndex)?.value && reframingModalIndex!=5)
       {
-        showToast('error','Text cannot be empty','Please input text');
+        showToast('error','Antwoord ontbreekt nog','Voeg een antwoord toe.');
       }
       else if (reframingModalTextState.get(reframingModalIndex)?.value || reframingModalIndex === 5) {
         reframingModalTextState.get(reframingModalIndex)?.value.trim();

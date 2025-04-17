@@ -125,7 +125,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     }
     else
     {
-      showToast('error','Title cannot be empty','Please add a title');
+      showToast('error','Titel ontbreekt nog','Voeg een titel toe.');
     }
   }
 

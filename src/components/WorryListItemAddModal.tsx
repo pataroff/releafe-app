@@ -88,7 +88,11 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
   const handleStorePress  = () => {
     if(!title)
     {
-      showToast('error','Title cannot be empty','Please add a title');
+      showToast('error','Titel ontbreekt nog','Voeg een titel toe.');
+    }
+    else if (!description)
+    {
+      showToast('error','Titel ontbreekt nog', 'Voeg een titel toe.')
     }
     else
     {
