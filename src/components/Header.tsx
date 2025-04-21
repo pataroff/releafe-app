@@ -20,6 +20,8 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Fonts } from '../styles';
 import { Avatar } from 'react-native-paper';
 
+import { useGamification } from '../context/BonsaiContext';
+
 const windowHeight = Dimensions.get('window').height;
 
 export const Header: React.FC<{ title: string; route?: any }> = ({
@@ -29,6 +31,8 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
+
+  const { points } = useGamification();
 
   return (
     <>
@@ -42,7 +46,16 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
         }}
       >
         {/* Main Container */}
-        <View style={styles.container}>
+        <View
+          style={[
+            styles.container,
+            {
+              backgroundColor: route?.params?.bonsaiTreeStackScreen
+                ? '#829B7A'
+                : '#C1D6BA',
+            },
+          ]}
+        >
           {/* Header Container */}
           <View style={styles.headerContainer}>
             <View
@@ -53,9 +66,11 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                 columnGap: 10,
               }}
             >
-              {route?.params?.toolkitStackScreen &&
+              {/* Nested Routes */}
+              {(route?.params?.toolkitStackScreen ||
+                route?.params?.bonsaiTreeStackScreen) &&
                 route?.name !== 'Toolkit1' && (
-                  <Pressable onPress={() => navigation.navigate('Toolkit1')}>
+                  <Pressable onPress={() => navigation.goBack()}>
                     <MaterialCommunityIcons
                       name='chevron-left-circle-outline'
                       size={30}
@@ -63,6 +78,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                     />
                   </Pressable>
                 )}
+              {/* Home Route */}
               {route?.name !== 'Home' ? (
                 <Text style={styles.headerTitle}>{title}</Text>
               ) : (
@@ -76,18 +92,59 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                 />
               )}
             </View>
-            <Pressable onPress={() => navigation.openDrawer()}>
-              <Avatar.Text
+            {route?.name !== 'BonsaiTreeShop' ? (
+              <Pressable onPress={() => navigation.openDrawer()}>
+                <Avatar.Text
+                  style={{
+                    backgroundColor: route?.params?.bonsaiTreeStackScreen
+                      ? '#829B7A'
+                      : '#C1D6BA',
+                    borderWidth: 2,
+                    borderColor: 'white',
+                  }}
+                  color='white'
+                  size={60}
+                  label={user?.firstName[0] + user?.lastName[0]}
+                />
+              </Pressable>
+            ) : (
+              <View
                 style={{
-                  backgroundColor: '#C1D6BA',
-                  borderWidth: 2,
-                  borderColor: 'white',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  columnGap: 15,
                 }}
-                color='white'
-                size={60}
-                label={user?.firstName[0] + user?.lastName[0]}
-              />
-            </Pressable>
+              >
+                <View
+                  style={{
+                    backgroundColor: '#C1D6BA',
+                    padding: 15,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text
+                    style={
+                      {
+                        ...Fonts.sofiaProBold[Platform.OS],
+                        fontSize: 20,
+                        color: 'white',
+                      } as TextStyle
+                    }
+                  >
+                    {points} punten
+                  </Text>
+                </View>
+                <Image
+                  style={{
+                    height: 60,
+                    width: 60,
+                  }}
+                  resizeMode='contain'
+                  source={require('../../assets/images/logo_releafe_white.png')}
+                />
+              </View>
+            )}
           </View>
         </View>
       </View>
@@ -105,7 +162,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     borderBottomStartRadius: 30,
     borderBottomEndRadius: 30,
-    backgroundColor: '#C1D6BA',
   },
   headerContainer: {
     display: 'flex',

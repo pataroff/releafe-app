@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 
-import { NavigationContainer } from '@react-navigation/native';
+// import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 
@@ -20,11 +20,7 @@ const AppNav = () => {
     );
   }
 
-  return (
-    <NavigationContainer>
-      {isLoggedIn ? <AppStack /> : <AuthStack />}
-    </NavigationContainer>
-  );
+  return <>{isLoggedIn ? <AppStack /> : <AuthStack />}</>;
 };
 
 export default AppNav;

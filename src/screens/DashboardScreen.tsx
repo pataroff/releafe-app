@@ -12,8 +12,11 @@ import pb from '../lib/pocketbase';
 import { AuthContext } from '../context/AuthContext';
 import { DiaryContext } from '../context/DiaryContext';
 
+import { useNotification } from '../context/NotificationContext';
+
 export const DashboardScreen: React.FC = () => {
   const title = 'Welzijnsoverzicht';
+  const { scheduleDashboardInactivityNotification } = useNotification();
 
   const { user } = useContext(AuthContext);
   const { diaryEntries, setDiaryEntries, deserializeRecord } =
@@ -59,6 +62,7 @@ export const DashboardScreen: React.FC = () => {
     };
 
     fetchDiaryEntries();
+    scheduleDashboardInactivityNotification();
   }, [user]);
 
   return (

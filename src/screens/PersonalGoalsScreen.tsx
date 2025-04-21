@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
 import {
@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import { useNotification } from '../context/NotificationContext';
 
 import { GoalListItemAddModal } from '../components/GoalListItemAddModal';
 
@@ -27,10 +28,45 @@ const windowWidth = Dimensions.get('window').width;
 
 export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
+  const { scheduleEvery3DaysNotification, scheduleReminder3DaysNotification } =
+    useNotification();
   const { goalEntries } = useContext(GoalContext);
 
   const [modalAddGoalListItemVisible, setModalAddGoalListItemVisible] =
     useState<boolean>(false);
+
+  useEffect(() => {
+    if (goalEntries.length === 0) {
+      scheduleEvery3DaysNotification();
+    }
+
+    if (goalEntries.length > 0) {
+      const eligibleGoals = goalEntries.filter(
+        (goal) =>
+          goal.endDate &&
+          (goal.timeframe === 'WEEKLY' || goal.timeframe === 'MONTHLY')
+      );
+
+      const upcomingGoals = eligibleGoals.filter((goal) => {
+        const now = new Date();
+        const deadline = new Date(goal.endDate!);
+
+        const timeDiff = deadline.getTime() - now.getTime();
+        const daysUntilDeadline = timeDiff / (1000 * 60 * 60 * 24); // Convert ms to days
+
+        return daysUntilDeadline >= 3 && daysUntilDeadline <= 4;
+      });
+
+      if (upcomingGoals.length > 0) {
+        // Pick the goal with the earliest deadline
+        const soonestGoal = upcomingGoals.reduce((a, b) =>
+          new Date(a.endDate!) < new Date(b.endDate!) ? a : b
+        );
+
+        scheduleReminder3DaysNotification(soonestGoal);
+      }
+    }
+  }, [goalEntries]);
 
   return (
     <>

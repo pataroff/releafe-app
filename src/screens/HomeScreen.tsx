@@ -18,14 +18,13 @@ import {
 import { Fonts } from '../styles';
 
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import Feather from '@expo/vector-icons/Feather';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { Header } from '../components/Header';
+import { GoalsOverview } from '../components/GoalsOverview';
 
 import { AuthContext } from '../context/AuthContext';
 import { GoalContext } from '../context/GoalContext';
-import { GoalsOverview } from '../components/GoalsOverview';
+import { useNotification } from '../context/NotificationContext';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -33,39 +32,87 @@ const windowWidth = Dimensions.get('window').width;
 
 const nudgingItems = [
   {
-    icon: <Feather name='book' size={24} color='black' />,
+    icon: (
+      <Image
+        resizeMode='contain'
+        style={{ width: 25, height: 25 }}
+        source={require('../../assets/images/navigation_bar/diary_icon_active.png')}
+      />
+    ),
     title: 'Dagboek invullen',
     description:
-      'Zou je vandaag iets aan je dagboek willen toevoegen? Zo kun jij je proces goed bijhouden.',
+      'Zou je iets aan je dagboek willen toevoegen? Zo kun je goed bijhouden hoe het met je gaat.',
     buttonText: 'Vul dagboek in',
   },
   {
-    icon: <FontAwesome6 name='heart' size={24} color='black' />,
-    title: 'Voortgang bekijken',
-    description:
-      'Dit is een goed moment om je voortgang van deze week te bekijken.',
+    icon: (
+      <Image
+        resizeMode='contain'
+        style={{ width: 25, height: 25 }}
+        source={require('../../assets/images/navigation_bar/wellbeing_overview_icon_active.png')}
+      />
+    ),
+    title: 'Volg je voortgang',
+    description: 'Sta even stil bij hoe het met je gaat.',
     buttonText: 'Bekijk voortgang',
   },
   {
-    icon: <FontAwesome6 name='heart' size={24} color='black' />,
-    title: 'Zorgen reframen',
+    icon: (
+      <Image
+        resizeMode='contain'
+        style={{ width: 25, height: 25 }}
+        source={require('../../assets/images/custom_icons/persoonlijke_doelen_icon.png')}
+      />
+    ),
+    title: 'Werk aan jouw doelen',
     description:
-      'De beste manier om met zorgen om te gaan, is om ze anders te benaderen – probeer het eens!',
-    buttonText: 'Ga naar Reframing',
+      'Kleine stappen maken een groot verschil. Maak een doel aan of bekijk je voortgang.',
+    buttonText: 'Ga naar doelen',
   },
   {
     icon: (
-      <MaterialCommunityIcons name='arm-flex-outline' size={24} color='black' />
+      <Image
+        resizeMode='contain'
+        style={{ width: 25, height: 25 }}
+        source={require('../../assets/images/custom_icons/zorgenbakje_icon.png')}
+      />
     ),
-    title: 'Blijf actief!',
+    title: 'Parkeer je zorgen',
     description:
-      'Wat dacht je van wat lichaamsbeweging vandaag? Er is vast een oefening die bij je past!',
+      'Soms is het fijn om je zorgen even los te laten. Schrijf ze op en geef jezelf wat ruimte.',
+    buttonText: 'Ga naar Zorgenbakje',
+  },
+  {
+    icon: (
+      <Image
+        resizeMode='contain'
+        style={{ width: 25, height: 25 }}
+        source={require('../../assets/images/custom_icons/reframing_icon.png')}
+      />
+    ),
+    title: 'Zorgen anders bekijken',
+    description:
+      'Een goede manier om met zorgen om te gaan, is om ze anders te bekijken. Probeer het eens!',
+    buttonText: 'Ga naar Reframen',
+  },
+  {
+    icon: (
+      <Image
+        resizeMode='contain'
+        style={{ width: 25, height: 25 }}
+        source={require('../../assets/images/custom_icons/oefeningen_icon.png')}
+      />
+    ),
+    title: 'Toe aan ontspanning?',
+    description:
+      'Bekijk hier oefeningen die je daarbij helpen. Er is vast een oefening die bij je past!',
     buttonText: 'Bekijk oefeningen',
   },
 ];
 
 export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
+  const { scheduleDailyNotification } = useNotification();
 
   const title = 'Home';
   const { user } = useContext(AuthContext);
@@ -99,9 +146,14 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
         navigation.navigate('WellbeingOverview');
         break;
       case 2:
-        navigation.navigate('Toolkit', { screen: 'Reframing' });
+        navigation.navigate('Toolkit', { screen: 'PersonalGoals' });
         break;
       case 3:
+        navigation.navigate('Toolkit', { screen: 'WorryBox' });
+      case 4:
+        navigation.navigate('Toolkit', { screen: 'Reframing' });
+        break;
+      case 5:
         navigation.navigate('Toolkit', { screen: 'Exercises' });
     }
   };
@@ -189,9 +241,9 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
         <Text style={styles.nudgingTitleText}>Geadviseerde stappen</Text>
         <ScrollView
           horizontal={true}
-          decelerationRate={'fast'}
           snapToInterval={windowWidth - 2 * 20}
           snapToAlignment={'center'}
+          decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
           style={{
             marginVertical: 20,
