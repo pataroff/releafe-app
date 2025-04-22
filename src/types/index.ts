@@ -76,6 +76,9 @@ export enum Category {
   Work = 'WORK',
   Health = 'HEALTH',
   Relationships = 'RELATIONSHIPS',
+  Education = 'EDUCATION',
+  Finance = 'FINANCE',
+  Other = 'OTHER',
 }
 
 export enum Priority {
@@ -130,7 +133,7 @@ export interface IGoalEntry {
   timeframe: Timeframe;
   targetFrequency: number;
   startDate: Date | null;
-  endDate: Date | null;
+  //endDate: Date | null;
   completedTimeframe: number;
   completedPeriod: number;
 }
@@ -146,7 +149,7 @@ export interface IGoalContext {
   timeframe: Timeframe;
   targetFrequency: number;
   startDate: Date | null;
-  endDate: Date | null;
+  //endDate: Date | null;
   completedTimeframe: number;
   completedPeriod: number;
   setGoalEntries: React.Dispatch<React.SetStateAction<IGoalEntry[]>>;
@@ -161,7 +164,7 @@ export interface IGoalContext {
   setCompletedTimeframe: React.Dispatch<React.SetStateAction<number>>;
   setCompletedPeriod: React.Dispatch<React.SetStateAction<number>>;
   setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
-  setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  //setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
   createGoalEntry: () => void;
   updateGoalEntry: (uuid: string) => void;
   deleteGoalEntry: (uuid: string) => void;

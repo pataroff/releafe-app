@@ -1,4 +1,5 @@
 import { Priority, Category } from '../types';
+import { Image } from 'react-native';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -16,7 +17,7 @@ export const reframingSteps: ReframingStep[] = [
   {
     heading: 'Stap 1: Situatieomschrijving',
     description:
-      "Het resultaat van deze methode is een 'bericht aan jezelf'. Als je deze niet wilt koppelen aan je bestaande zorg, kun je de koppeling uitschakelen.",
+      "Het resultaat van deze methode is een 'bericht aan jezelf'. Dit bericht zal worden opgeslagen in de lijst met berichten aan jezelf. Deze zorg zal na het reframen automatisch worden verwijderd uit je Zorgenbakje.",
     placeholder: 'Omschrijf hier jouw zorg...',
   },
   {
@@ -30,7 +31,7 @@ export const reframingSteps: ReframingStep[] = [
     description: 'Omschrijf hier jouw antwoord op de volgende vraag.',
     question: 'Welk bewijs heb ik dat deze gedachte echt waar is?',
     instruction:
-      'Noteer feiten en observaties die jouw gedachte ondersteunen. Dit helpt je om te zien of er objectief bewijs is dat jouw zorgen bevestigt.',
+      'Noteer feiten en observaties die jouw gedachte ondersteunen. Dit helpt je om na te gaan of er concreet bewijs is dat jouw zorg ondersteunt.',
     placeholder: 'Omschrijf hier jouw bewijs...',
   },
   {
@@ -43,11 +44,11 @@ export const reframingSteps: ReframingStep[] = [
   },
   {
     heading: 'Stap 5: Advies',
-    description: 'Omschrijf hier jouw antwoord op de volgende vraag.',
+    description: '',
     question: 'Wat zou ik tegen een vriend(in) zeggen die deze gedachte heeft?',
     instruction:
       'Bedenk welk advies of welke troostende woorden je aan een vriend(in) zou geven in dezelfde situatie. Dit perspectief helpt je om milder en realistischer naar je eigen gedachten te kijken.',
-    placeholder: 'Omschrijf hier jouw bewijs...',
+    placeholder: 'Omschrijf hier wat jij tegen jouw vriend(in) zou zeggen...',
   },
   {
     heading: 'Stap 5: Advies',
@@ -59,8 +60,8 @@ export const reframingSteps: ReframingStep[] = [
     question:
       'Hoe groot denk je dat de kans nu is dat de  omschreven, negatieve gedachte realiteit wordt?',
     instruction:
-      'Gebruik de schuifbalk om de waarschijnlijkheid van jouw (negatieve) gedachte in te schatten. Dit helpt je om de reële kans op het scenario te evalueren en irrationele angsten te verminderen.',
-    placeholder: 'En, waarom?...',
+      'Gebruik de schuifbalk om aan te geven hoe waarschijnlijk je jouw (negatieve) gedachte nu inschat. Dit helpt je om in te schatten hoe groot de kans echt is dat het gebeurt en om minder bang te zijn voor dingen die misschien niet gebeuren.',
+    placeholder: 'En waarom...?',
   },
   {
     heading: 'Stap 7: Alternatieve verklaring',
@@ -96,10 +97,25 @@ export const getPriorityColor = (priority: Priority): string => {
 export const getCategory = (category: Category): React.ReactElement => {
   switch (category) {
     case Category.Work:
-      return <FontAwesome6 name='suitcase' size={24} color='black' />;
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_work.png')} />;
     case Category.Health:
-      return <FontAwesome5 name='plus' size={24} color='black' />;
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />;
     case Category.Relationships:
-      return <FontAwesome name='heart' size={24} color='black' />;
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />;
+    case Category.Education:
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')} />
+    case Category.Finance:
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')} />
+    case Category.Other:
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />
+    default: 
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />
   }
 };

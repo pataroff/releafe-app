@@ -26,15 +26,31 @@ import { WorryContext } from '../context/WorryContext';
 
 import { Video, ResizeMode } from 'expo-av';
 import { MemoItem } from './MemoItem';
+import { CloseModal } from './CloseModal';
 
 const getCategory = (category: Category): React.ReactElement => {
   switch (category) {
     case Category.Work:
-      return <FontAwesome6 name='suitcase' size={30} color='black' />;
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_work.png')} />;
     case Category.Health:
-      return <FontAwesome5 name='plus' size={30} color='black' />;
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />;
     case Category.Relationships:
-      return <FontAwesome name='heart' size={30} color='black' />;
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />;
+    case Category.Education:
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')} />
+    case Category.Finance:
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')} />
+    case Category.Other:
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />
+    default: 
+      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
+          source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />
   }
 };
 
@@ -105,6 +121,8 @@ export const NoteListItemExpandedModal: React.FC<
     },
   ];
 
+  const [modalCloseVisible,setModalCloseVisible] = useState<boolean>(false);
+
   const handleReframing = async () => {
     updateWorryEntryFields(uuid, category, priority, title, description);
     updateNoteEntryFields(
@@ -127,6 +145,10 @@ export const NoteListItemExpandedModal: React.FC<
     deleteNoteEntry(uuid);
   };
 
+  const handleClose = () => {
+    handleDelete();
+  }
+
   return (
     <Modal
       animationType='none'
@@ -136,6 +158,18 @@ export const NoteListItemExpandedModal: React.FC<
         setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible)
       }
     >
+    <CloseModal
+      closeModalVisible={modalCloseVisible}
+      setCloseModalVisible={setModalCloseVisible}
+      parentModalVisible={modalNoteListItemExpandedVisible}
+      setParentModalVisible={setModalNoteListItemExpandedVisible}
+      title='Bericht aan jezelf verwijderen'
+      description='Je staat op het punt om het bericht aan jezelf te verwijderen. Weet je het zeker?'
+      handleClose={handleClose}
+      denyText='Nee, bewaar het bericht.'
+      confirmText='Ja, verwijder het bericht.'
+      closeButtonDisabled = {true}
+    />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
           <View style={styles.headersContainer}>
@@ -302,18 +336,18 @@ export const NoteListItemExpandedModal: React.FC<
                 columnGap: 10,
               }}
             >
-              {feelingDescription !== '' && (
+              {/*} {feelingDescription !== '' && (
                 <Pressable onPress={() => handleReframing()}>
                   <Image
                     style={{ width: 190, height: 47 }}
                     source={require('../../assets/images/reframe_again_button.png')}
                   />
                 </Pressable>
-              )}
+              )}*/}
 
               <Pressable
                 style={{ position: 'absolute', right: 0 }}
-                onPress={() => handleDelete()}
+                onPress={() => setModalCloseVisible(true)}
               >
                 <Image
                   resizeMode='contain'

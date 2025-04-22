@@ -152,7 +152,7 @@ export const TextQuestion: React.FC<{ questions: string[][]; route: any }> = ({
       <View>
         <View style={styles.questionContainer}>
           <Text style={styles.questionLabel}>
-            Vraag {textQuestionIndex + 1}:{' '}
+            Vraag {textQuestionIndex + 1}.{' '}
             <Text style={styles.questionText}>
               {questions[textQuestionIndex][0]}
             </Text>
@@ -274,6 +274,7 @@ const styles = StyleSheet.create({
     ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
   diaryEntryFieldTextInput: {
+    verticalAlign: Platform.OS == 'android'? "top" : {},
     fontSize: 14,
     height: 200,
     ...Fonts.sofiaProRegular[Platform.OS],

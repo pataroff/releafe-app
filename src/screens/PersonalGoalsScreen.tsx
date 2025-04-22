@@ -88,7 +88,7 @@ export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
             <Text style={styles.headersDescriptionText}>
               Het stellen van persoonlijke doelen helpt je om je op specifieke
               gebieden te richten die je mentale welzijn bevorderen. Door er
-              gemotiveerd en bewust mee aan de slag te gaan zorgt dit voor een
+              gemotiveerd en bewust mee aan de slag te gaan, zorgt dit voor een
               positieve gedragsverandering.
             </Text>
             {/* Headers Inner Container */}
@@ -96,8 +96,7 @@ export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
               <View style={{ width: '80%' }}>
                 <Text style={styles.headersHeadingText}>Mijn doelen</Text>
                 <Text style={styles.headersDescriptionText}>
-                  Bekijk hier de voortgang van je persoonlijke doelen of stel
-                  een nieuw persoonlijk doel in.
+                Bekijk hieronder de voortgang van je persoonlijke doelen of stel via de + knop hiernaast een nieuwe persoonlijk doel in.
                 </Text>
               </View>
               {/* Add Button */}

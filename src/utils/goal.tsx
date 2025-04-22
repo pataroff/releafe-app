@@ -15,7 +15,7 @@ interface Goal {
 export const categories = [
   [
     'Releafe',
-    'Bepaal doelen voor het gebruik van de functies in de Releafe-app',
+    'Bepaal doelen voor het gebruik van de functies in de Releafe app',
   ],
   ['Bewegen', 'Stel doelen om actiever bezig te zijn met fysieke beweging'],
   ['Slapen', 'Stel doelen om bewuster om te gaan met je slaapkwaliteit'],
@@ -47,26 +47,26 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         category: 'Releafe',
         title: 'Reflecteren in dagboek',
         description:
-          'Het regelmatig bijhouden van het dagboek bevordert zelfinzicht en emotionele verwerking. Dit draagt bij aan betere mentale gezondheid.',
-        endText: 'mijn dagboek in Releafe invullen.',
-        diarySentence: 'Ik heb vandaag mijn dagboek in Releafe ingevuld.',
+          'Schrijf je gedachten op in je dagboek. Dit helpt je om jezelfte begrijpen en je emoties te verwerken.',
+        endText: 'mijn dagboek invullen.',
+        diarySentence: 'Ik heb vandaag mijn dagboek ingevuld',
       },
       {
         category: 'Releafe',
         title: 'Ontspannen',
         description:
-          'Ontspanningsoefeningen helpen bij het verbeteren van concentratie, het verlagen van stress en het verhogen van algemeen welzijn.',
-        endText: 'een ontspannende oefening doen in Releafe.',
+          'Ontspanningsoefeningen zijn een makkelijke manier om je concentratie te verbeteren, stress te verminderen en je algehele welzijn te verhogen.',
+        endText: 'een ontspannende oefening doen.',
         diarySentence: 'Ik heb vandaag een ontspanningsoefening gedaan.',
       },
       {
         category: 'Releafe',
-        title: 'Cognitief reframen',
+        title: 'Reframen',
         description:
-          'Het reframen van een situatie of (negatieve) gedachte kan je helpen om patronen te doorbreken. Hierdoor voel je je gezonder en meer ‘in control’ over je eigen gedachtes.',
-        endText: 'een zorg van mij Reframen in Releafe.',
+          'Je gedachten ombuigen (reframen)? Dat helpt je om negatieve patronen te doorbreken. Zo krijg je meer controle over je gedachten en voel je je beter.',
+        endText: 'een zorg of gedachte reframen.',
         diarySentence:
-          'Ik heb vandaag een zorg of gedachte van mij in Releafe gereframed.',
+          'Ik heb vandaag een zorg of gedachte gereframed.',
       },
     ],
   ],
@@ -76,9 +76,34 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
     [
       {
         category: 'Bewegen',
+        title: 'Stappendoel',
+        description:
+          'Elke dag een stappendoel stellen om te wandelen, is goed voor je lichaam. Het helpt je om meer te bewegen. Meer bewegen is belangrijk voor je lichaam en je hoofd. Als je regelmatig wandelt, heb je minder stress. Je voelt je vrolijker en hebt meer energie.',
+        endText: 'per dag zetten.',
+        dropdownText: 'Hoeveel stappen wil je per keer zetten?',
+        dropdownOptions: [
+          { label: '2.000 stappen', value: '2.000 stappen' },
+          { label: '4.000 stappen', value: '4.000 stappen' },
+          { label: '6.000 stappen', value: '6.000 stappen' },
+          { label: '8.000 stappen', value: '8.000 stappen' },
+          { label: '10.000 stappen', value: '10.000 stappen' },
+        ],
+        diarySentence: 'Ik heb vandaag X gezet.',
+      },
+      {
+        category: 'Bewegen',
+        title: 'Actief verplaatsen',
+        description:
+          'Als je loopt of fietst in plaats van de auto of bus te nemen, beweeg je meer. Dit is goed voor je lichaam. Hierdoor heb je minder stress en kun je beter nadenken.',
+        endText: 'lopend of fietsend naar mijn bestemming gaan.',
+        diarySentence:
+          'Ik ben vandaag lopend of fietsend naar een bestemming gegaan.',
+      },
+      {
+        category: 'Bewegen',
         title: 'Regelmatig bewegen',
         description:
-          'Regelmatige lichaamsbeweging verbetert de fysieke gezondheid. Dit heeft direct invloed op het mentale welzijn doordat het symptomen van depressie en angst vermindert.',
+          'Regelmatig bewegen is goed voor je lichaam. En als je lichaam gezond is, voel je je ook beter in je hoofd. Bewegen helpt tegen sombere gevoelens en angst.',
         endText: 'bewegen.',
         dropdownText: 'Hoelang wil je per keer bewegen?',
         dropdownOptions: [
@@ -89,14 +114,14 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: '50 minuten', value: '50 minuten' },
           { label: '60 minuten', value: '60 minuten' },
         ],
-        diarySentence: 'Ik heb vandaag X aan beweging gehad.',
+        diarySentence: 'Ik heb vandaag X aan beweging gedaan.',
       },
       {
         category: 'Bewegen',
         title: 'Krachttraining',
         description:
-          'Krachttraining kan helpen bij het verbeteren van het zelfbeeld en hoe je je in je eigen lichaam voelt. Ook maakt het endorfines vrij die je humeur verbeteren.',
-        endText: 'krachttraining uitvoeren.',
+          'Krachttraining is goed voor hoe je over jezelf denkt. Je voelt je beter in je eigen lichaam. Ook komen er stofjes vrij in je lichaam, die je vrolijk maken.',
+        endText: 'krachttraining doen.',
         dropdownText:
           'Hoeveel minuten wil je per keer aan krachttraining doen?',
         dropdownOptions: [
@@ -107,22 +132,13 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: '50 minuten', value: '50 minuten' },
           { label: '60 minuten', value: '60 minuten' },
         ],
-        diarySentence: 'Ik heb vandaag X aan krachttraining uitgevoerd.',
+        diarySentence: 'Ik heb vandaag X aan krachttraining gedaan.',
       },
       {
         category: 'Bewegen',
-        title: 'Actief transport',
+        title: 'Intervaltraining',
         description:
-          'Het gebruik van actief transport zoals wandelen of fietsen kan de dagelijkse fysieke activiteit verhogen en dit vermindert stress en verbetert de mentale helderheid.',
-        endText: 'op een actieve manier naar een plaats van bestemming.',
-        diarySentence:
-          'Ik ben vandaag op een actieve manier naar een plaats van bestemming gegaan.',
-      },
-      {
-        category: 'Bewegen',
-        title: 'Interval training',
-        description:
-          'Intervaltraining kan helpen bij het effectief managen van stress en het verbeteren van de algehele energieniveaus. Daarnaast kan het helpen je hart gezond te houden en calorieën efficiënt te verbranden.',
+          'Intervaltraining helpt goed tegen stress en geeft je meer energie. Ook is het goed voor je hart en verbrand je er veel calorieën mee.',
         endText: 'aan intervaltraining doen.',
         dropdownText:
           'Hoeveel minuten wil je per keer aan intervaltraining doen?',
@@ -136,22 +152,6 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         ],
         diarySentence: 'Ik heb vandaag X aan intervaltraining gedaan.',
       },
-      {
-        category: 'Bewegen',
-        title: 'Stappendoel',
-        description:
-          'Het stellen van een dagelijks stappendoel helpt bij het verhogen van fysieke activiteit. Dit is belangrijk voor zowel je fysieke als mentale gezondheid. Regelmatig wandelen kan stress verminderen, je humeur verbeteren en je algehele energieniveau verhogen.',
-        endText: 'per dag zetten.',
-        dropdownText: 'Hoeveel stappen wil je per keer zetten?',
-        dropdownOptions: [
-          { label: '2.000 stappen', value: '2.000 stappen' },
-          { label: '4.000 stappen', value: '4.000 stappen' },
-          { label: '6.000 stappen', value: '6.000 stappen' },
-          { label: '8.000 stappen', value: '8.000 stappen' },
-          { label: '10.000 stappen', value: '10.000 stappen' },
-        ],
-        diarySentence: 'Ik heb vandaag X gezet.',
-      },
     ],
   ],
   // Slapen
@@ -160,33 +160,33 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
     [
       {
         category: 'Slapen',
-        title: 'Consistente slaaptijden',
-        description:
-          'Het handhaven van een regelmatig slaapschema helpt de interne klok te stabiliseren. Dit leidt tot betere slaapkwaliteit en een verbeterd humeur.',
-        endText: 'op een vaste tijd naar bed gaan en opstaan.',
-        diarySentence: 'Ik ben op een vaste tijd naar bed gegaan en opgestaan',
-      },
-      {
-        category: 'Slapen',
-        title: 'Kwaliteit van slaap',
-        description:
-          'Het verbeteren van de slaapkwaliteit door ontspanningsoefeningen kan de algehele gezondheid verbeteren en symptomen van depressie en angst verminderen.',
-        endText: 'iets ontspannends doen voor het slapen gaan.',
-        diarySentence: 'Ik heb iets ontspannends gedaan voor het slapen gaan.',
-      },
-      {
-        category: 'Slapen',
         title: 'Voldoende slaap',
         description:
-          'Voldoende slaap krijgen is essentieel voor de cognitieve functie en emotionele regulatie.',
+          'Goed slapen is heel belangrijk. Als je genoeg slaapt, kun je beter nadenken en je emoties beter regelen.',
         endText: '7 tot 9 uren slapen.',
         diarySentence: 'Ik heb afgelopen nacht 7 tot 9 uren geslapen.',
       },
       {
         category: 'Slapen',
+        title: 'Kwaliteit van slaap',
+        description:
+          'Als je ontspanningsoefeningen doet, slaap je beter. Beter slapen is goed voor je gezondheid. Ook helpt het tegen sombere gevoelens en angst.',
+        endText: 'iets ontspannends doen voor het slapen gaan.',
+        diarySentence: 'Ik heb iets ontspannends gedaan voor het slapen gaan.',
+      },
+      {
+        category: 'Slapen',
+        title: 'Regelmatige bedtijden',
+        description:
+          'Als je elke dag op dezelfde tijd gaat slapen en wakker wordt, helpt dat je lichaam. Je slaapt dan beter en je bent vrolijker.',
+        endText: 'op een vaste tijd naar bed gaan en opstaan.',
+        diarySentence: 'Ik ben op een vaste tijd naar bed gegaan en opgestaan',
+      },
+      {
+        category: 'Slapen',
         title: 'Geen of minder middagdutjes',
         description:
-          'Beperking van middagdutjes kan nachtelijke slaapkwaliteit verbeteren. Dit is cruciaal voor emotioneel en fysiek herstel.',
+          'Korte dutjes overdag zijn prima, maar lange dutjes zijn niet goed. Daardoor slaap je \'s nachts minder goed. Goed slapen is belangrijk voor je lichaam en hoe je je voelt.',
         endText: 'geen middagdutje doen.',
         diarySentence: 'Ik heb vandaag geen middagdutje gedaan.',
       },
@@ -200,41 +200,17 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         category: 'Voeding',
         title: 'Groente en fruit boost',
         description:
-          'Een dieet rijk aan groenten en fruit kan het energieniveau verhogen en bijdragen aan een beter humeur door de aanvoer van essentiële vitaminen en mineralen. Eet minimaal 250 gram groenten en 2 stuks fruit.',
+          'Het eten van groenten en fruit geeft je energie en maakt je vrolijker. Eet elke dag minstens 250 gram groenten en 2 stuks fruit. Dat is goed voor je.',
         endText: '250 gram groente en twee stuks fruit eten.',
         diarySentence:
           'Ik heb vandaag 250 gram groenten en 2 stuks fruit gegeten.',
       },
       {
         category: 'Voeding',
-        title: 'Volkoren voorkeur',
-        description:
-          'Volkorenproducten bevatten meer voedingsstoffen en vezels. Deze helpen bij het reguleren van de bloedsuikerspiegel en het verbeteren van de hersenfunctie.',
-        endText: 'een volkoren maaltijd eten.',
-        diarySentence: 'Ik heb vandaag een volkoren maaltijd gegeten.',
-      },
-      {
-        category: 'Voeding',
-        title: 'Noten noodzaak',
-        description:
-          'Ongezouten noten bieden gezonde vetten en eiwitten die bijdragen aan hersengezondheid en stemmingstabilisatie.',
-        endText: 'een handvol ongezouten noten eten.',
-        diarySentence: 'Ik heb vandaag een handvol ongezouten noten gegeten.',
-      },
-      {
-        category: 'Voeding',
-        title: 'Minder rood vlees',
-        description:
-          'Het verminderen van de consumptie van rood vlees kan het risico op fysieke gezondheidsproblemen verlagen, wat indirect bijdraagt aan een beter mentaal welzijn.',
-        endText: 'geen rood vlees eten.',
-        diarySentence: 'Ik heb vandaag geen rood vlees gegeten.',
-      },
-      {
-        category: 'Voeding',
         title: 'Minder suikerhoudende dranken',
         description:
-          'Het vermijden van suikerhoudende dranken helpt bij het stabiliseren van energieniveaus en het voorkomen van stemmingswisselingen.',
-        endText: 'suikerhoudende dranken drinken per dag.',
+          'Drink geen zoete drankjes die suiker bevatten. Dat helpt om je energie beter te houden. Ook ben je dan minder snel boos of verdrietig.',
+        endText: 'suikerhoudende dranken per dag drinken',
         dropdownText:
           'Hoeveel suikerhoudende dranken wil je maximaal drinken per dag?',
         dropdownOptions: [
@@ -244,6 +220,30 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
           { label: 'niet meer dan 3', value: 'niet meer dan 3' },
         ],
         diarySentence: 'Ik heb vandaag X suikerhoudende dranken gedronken.',
+      },
+      {
+        category: 'Voeding',
+        title: 'Volkoren voorkeur',
+        description:
+          'Volkorenproducten zijn gezond. Er zitten meer goede stoffen en vezels in. Die helpen je bloedsuiker goed te houden en je hersenen beter te werken.',
+        endText: 'een volkoren maaltijd eten.',
+        diarySentence: 'Ik heb vandaag een volkoren maaltijd gegeten.',
+      },
+      {
+        category: 'Voeding',
+        title: 'Noten noodzaak',
+        description:
+          'Noten zonder zout zijn gezond. Ze hebben goede vetten en eiwitten. Die helpen je hersenen goed te werken en je stemming stabiel te houden.',
+        endText: 'een handvol ongezouten noten eten.',
+        diarySentence: 'Ik heb vandaag een handvol ongezouten noten gegeten.',
+      },
+      {
+        category: 'Voeding',
+        title: 'Minder rood vlees',
+        description:
+          'Minder rood vlees eten is beter voor je lichaam. Daardoor heb je minder kans op ziektes. En als je lichaam gezond is, voel je je ook beter in je hoofd.',
+        endText: 'geen rood vlees eten.',
+        diarySentence: 'Ik heb vandaag geen rood vlees gegeten.',
       },
     ],
   ],
@@ -255,7 +255,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         category: 'Alcohol, drugs en cafeïne',
         title: 'Alcoholvrije dagen',
         description:
-          'Het verminderen van alcoholgebruik kan leiden tot betere slaapkwaliteit en verminderde angst en depressie.',
+          'Minder alcohol drinken helpt je beter te slapen. Ook voel je je minder angstig en minder somber.',
         endText: 'geen alcohol drinken.',
         diarySentence: 'Ik heb vandaag geen alcohol gedronken.',
       },
@@ -263,7 +263,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         category: 'Alcohol, drugs en cafeïne',
         title: 'Cafeïne controle',
         description:
-          'Het beperken van cafeïne helpt bij het verminderen van angst, slaapproblemen en rusteloosheid.',
+          'Minder cafeïne gebruiken helpt tegen angst, slaapproblemen en onrust.',
         endText: 'kopjes koffie drinken per dag.',
         dropdownText: 'Hoeveel kopjes koffie wil je maximaal drinken per dag?',
         dropdownOptions: [
@@ -279,7 +279,7 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         category: 'Alcohol, drugs en cafeïne',
         title: 'Stoppen met roken',
         description:
-          'Stoppen met roken verbetert de fysieke gezondheid. Dit is essentieel voor je mentale welzijn.',
+          'Stoppen met roken is goed voor je lichaam. En als je lichaam gezond is, voel je je ook beter in je hoofd.',
         endText: 'een sigaret roken per dag.',
         dropdownText: 'Hoeveel sigaretten wil je maximaal roken per dag?',
         dropdownOptions: [
@@ -294,25 +294,18 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
       },
       {
         category: 'Alcohol, drugs en cafeïne',
-        title: 'Minder drugs',
+        title: 'Verminder drugs',
         description:
-          "Verminderen van (recreatief) druggebruik vermindert risico's van stemmingsstoornissen en cognitieve beperkingen.",
-        endText: 'drugs gebruiken per dag.',
-        dropdownText: 'Hoevaak wil je maximaal drugs gebruiken per dag?',
-        dropdownOptions: [
-          { label: '0 keer', value: '0 keer' },
-          { label: 'niet meer dan 1 keer', value: 'niet meer dan 1 keer' },
-          { label: 'niet meer dan 2 keer', value: 'niet meer dan 2 keer' },
-          { label: 'niet meer dan 3 keer', value: 'niet meer dan 3 keer' },
-        ],
+          "Minder drugs gebruiken is beter voor je. Daardoor heb je minder kans op problemen met je stemming en je hersenen.",
+        endText: 'geen drugs gebruiken.',
         diarySentence: 'Ik heb vandaag geen drugs gebruikt.',
       },
       {
         category: 'Alcohol, drugs en cafeïne',
         title: 'Verminder energie dranken',
         description:
-          'Vermijden van energiedranken vermindert overstimulatie en bevordert een stabieler energieniveau en mentaal evenwicht.',
-        endText: 'energiedranken drinken per dag.',
+          'Drink geen energiedrankjes. Dan ben je minder onrustig en heb je meer rust in je hoofd. Je energie blijft ook beter in balans.',
+        endText: 'energiedranken per dag drinken.',
         dropdownText: 'Hoeveel energiedranken wil je maximaal drinken per dag?',
         dropdownOptions: [
           { label: '0 keer', value: '0 keer' },
@@ -330,43 +323,43 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
     [
       {
         category: 'Ontspanning',
-        title: 'Mediteren',
+        title: 'Gecontroleerd ademen',
         description:
-          'Regelmatige meditatie bevordert mindfulness. Dit helpt bij het managen van stress en het verbeteren van emotionele veerkracht.',
-        endText: 'een meditatieoefening doen.',
-        diarySentence: 'Ik heb vandaag een meditatieoefening gedaan.',
-      },
-      {
-        category: 'Ontspanning',
-        title: 'Yoga',
-        description:
-          'Yoga ondersteunt zowel fysieke als mentale gezondheid door het verbeteren van flexibiliteit, kracht, en stressverlichting.',
-        endText: 'een yoga sessie doen.',
-        diarySentence: 'Ik heb vandaag een yogasessie gedaan.',
-      },
-      {
-        category: 'Ontspanning',
-        title: 'Ademhalingsbeheersing',
-        description:
-          'Regelmatige ademhalingsoefeningen kunnen helpen bij het reguleren van de reactie van het lichaam op stress.',
+          'Regelmatig ademhalingsoefeningen doen, helpt je lichaam beter om te gaan met stress.',
         endText: 'een ademhalingsoefening doen.',
         diarySentence: 'Ik heb vandaag een ademhalingsoefening gedaan.',
       },
       {
         category: 'Ontspanning',
-        title: 'Stress management',
+        title: 'Mindfulness routine',
         description:
-          'Het toepassen van stressmanagementtechnieken helpt bij het verminderen van algehele stressniveaus en het bevorderen van mentale gezondheid.',
+          'Als je elke dag oefeningen doet om rustig en bewust te zijn (mindful), kun je je beter concentreren. Je hebt minder stress en je voelt je beter.',
+        endText: 'een mindfulnessoefening doen.',
+        diarySentence: 'Ik heb vandaag een mindfulnessoefening gedaan.',
+      },
+      {
+        category: 'Ontspanning',
+        title: 'Mediteren',
+        description:
+          'Als je regelmatig mediteert, word je rustiger en bewuster. Dat helpt tegen stress en maakt je sterker in moeilijke situaties.',
+        endText: 'een meditatieoefening doen.',
+        diarySentence: 'Ik heb vandaag een meditatieoefening gedaan.',
+      },
+      {
+        category: 'Ontspanning',
+        title: 'Omgaan met stress',
+        description:
+          'Als je leert hoe je met stress om moet gaan, heb je minder stress. Dat is goed voor je mentale gezondheid.',
         endText: 'een stressmanagementoefening.',
         diarySentence: 'Ik heb vandaag een stressmanagementoefening gedaan.',
       },
       {
         category: 'Ontspanning',
-        title: 'Mindfulness routine',
+        title: 'Yoga',
         description:
-          'Het integreren van mindfulness in het dagelijks leven helpt om bewuster te leven en stressvolle situaties beter aan te kunnen.',
-        endText: 'een mindful moment nemen.',
-        diarySentence: 'Ik heb vandaag een mindfulnessoefening gedaan.',
+          'Yoga is goed voor je lichaam en geest. Je wordt er soepeler en sterker van. Ook helpt het tegen stress',
+        endText: 'een yogasessie doen.',
+        diarySentence: 'Ik heb vandaag een yogasessie gedaan.',
       },
     ],
   ],
@@ -378,29 +371,29 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
         category: 'Ervaringen delen',
         title: 'Deel je ervaringen en zorgen',
         description:
-          'Het delen van ervaringen biedt emotionele ondersteuning en helpt bij het verminderen van het gevoel van isolatie.',
+          'Als je bespreekt wat je meemaakt, helpt dat. Je voelt je minder alleen en je krijgt steun van anderen.',
         endText: 'mijn ervaringen of zorgen met iemand delen.',
         diarySentence:
           'Ik heb vandaag mijn ervaringen of zorgen met iemand gedeeld.',
       },
       {
         category: 'Ervaringen delen',
-        title: 'Groepsondersteuning',
-        description:
-          'Deelnemen aan steungroepen biedt gemeenschappelijke ondersteuning en vermindert gevoelens van eenzaamheid en isolatie.',
-        endText: 'deelnemen aan een steun- of lotgenoten groep.',
-        diarySentence:
-          'Ik heb vandaag deelgenomen aan een steun- of lotgenotengroep.',
-      },
-      {
-        category: 'Ervaringen delen',
         title: 'Familie en vrienden betrekken',
         description:
-          'Het betrekken van naasten bij het persoonlijke proces bevordert openheid en begrip, wat leidt tot betere relaties en emotionele steun.',
+          'Als je je familie en vrienden vertelt over wat je meemaakt, begrijpen ze je beter. Je relaties worden beter en je krijgt meer emotionele steun.',
         endText:
           'mijn persoonlijke proces met een vriend of familie bespreken.',
         diarySentence:
           'Ik heb vandaag mijn persoonlijke proces met een vriend of familielid besproken.',
+      },
+      {
+        category: 'Ervaringen delen',
+        title: 'Steun van een groep',
+        description:
+          'In een groep met mensen die hetzelfde meemaken, krijg je steun. Je voelt je minder alleen en minder buitengesloten.',
+        endText: 'deelnemen aan een steun- of lotgenotengroep.',
+        diarySentence:
+          'Ik heb vandaag deelgenomen aan een steun- of lotgenotengroep.', 
       },
     ],
   ],
@@ -410,17 +403,18 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
     [
       {
         category: 'Ondernemen',
-        title: 'Vermijding overwinnen',
+        title: 'Sociale contacten onderhouden',
         description:
-          'Het aangaan van uitdagingen helpt je om angsten te confronteren en vermijdingsgedrag te verminderen. Dit leidt tot grotere zelfverzekerdheid en controle over je leven.',
-        endText: 'een uitdaging aangaan.',
-        diarySentence: 'Ik ben vandaag een uitdaging aangegaan.',
+          'Meer sociale contacten geven je een gevoel van verbondenheid en steun. Dit is belangrijk voor je emotionele gezondheid en helpt tegen eenzaamheid.',
+        endText: 'een sociale contact hebben.',
+        diarySentence: 'Ik heb vandaag een sociaal contact gehad.',
+        
       },
       {
         category: 'Ondernemen',
         title: "Tijd nemen voor hobby's",
         description:
-          "Het onderhouden van hobby's zorgt voor noodzakelijke ontspanning en afleiding van dagelijkse stress. Dit bevordert emotioneel evenwicht.",
+          "Hobby's geven je ontspanning, halen je uit de dagelijkse stress en zorgen voor meer balans in je leven.",
         endText: 'besteden aan een hobby.',
         dropdownText: 'Hoeveel tijd wil je per keer aan een hobby besteden?',
         dropdownOptions: [
@@ -433,19 +427,19 @@ export const categoryGoals = new Map<GoalCategory, Goal[]>([
       },
       {
         category: 'Ondernemen',
-        title: 'Sociale contacten onderhouden',
+        title: 'Deelnemen aan sociale activiteiten',
         description:
-          'Meer sociale contacten bevorderen het gevoel van verbondenheid en steun. Dit is cruciaal voor je emotionele gezondheid en het verminderen van gevoelens van isolatie.',
-        endText: 'een sociale interactie hebben.',
-        diarySentence: 'Ik heb vandaag een sociaal contact gehad.',
+          'Meedoen aan sociale activiteiten helpt je om verbinding te voelen en minder eenzaam te zijn. Het versterkt je sociale vaardigheden en zelfvertrouwen, wat goed is voor je mentale gezondheid.',
+        endText: 'een sociale activiteit ondernemen.',
+        diarySentence: 'Ik heb vandaag een sociale activiteit ondernomen.',
       },
       {
         category: 'Ondernemen',
-        title: 'Deelnemen aan sociale activiteiten',
+        title: 'Vermijding overwinnen',
         description:
-          'Regelmatig deelnemen aan sociale activiteiten bevordert verbinding en verminderen gevoelens van isolatie. Ze helpen bij het opbouwen van sociale vaardigheden en zelfvertrouwen. Dit is essentieel voor mentaal welzijn en emotionele stabiliteit.',
-        endText: 'een sociale activiteit ondernemen.',
-        diarySentence: 'Ik heb vandaag een sociale activiteit ondernomen.',
+          'Uitdagingen aangaan helpt je angsten te overwinnen en minder te vermijden. Dit maakt je zelfverzekerder en geeft je meer controle over je leven.',
+        endText: 'een uitdaging aangaan.',
+        diarySentence: 'Ik ben vandaag een uitdaging aangegaan.',
       },
     ],
   ],

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, ScrollView } from 'react-native';
+import { StyleSheet, Text, ScrollView, View } from 'react-native';
 
 import {
   categoryExercises,
@@ -24,12 +24,13 @@ export const ExercisesList: React.FC<ExercisesListProps> = ({
 
   // Define the structure of `exercisesData`
   const exercisesData: [ExerciseCategory, Exercise[]][] | Exercise[] =
-    category === 'Bekijk alle oefeningen'
-      ? Array.from(categoryExercises.entries()) // Grouped: [categoryKey, exercises[]]
-      : categoryExercises.get(getExerciseCategory(category)) || []; // Flat array of exercises
+    //category === 'Bekijk alle oefeningen'
+       Array.from(categoryExercises.entries()) // Grouped: [categoryKey, exercises[]]
+      //: categoryExercises.get(getExerciseCategory(category)) || []; // Flat array of exercises
 
   // Type guard to check if `exercisesData` is grouped
-  const isGrouped = Array.isArray(exercisesData[0]);
+  const isGrouped = category == 'Bekijk alle oefeningen'
+  //Array.isArray(exercisesData[0]);
 
   const filteredExercises = (exercises: Exercise[]) =>
     showOnlyFavourites
@@ -61,9 +62,30 @@ export const ExercisesList: React.FC<ExercisesListProps> = ({
             }
           )
         : // Handle single category
-          (exercisesData as Exercise[]).map((exercise, index) => (
-            <ExercisesListItem key={index} exercise={exercise} />
-          ))}
+        (exercisesData as [ExerciseCategory, Exercise[]][]).map(
+          ([categoryKey, exercises]) => {
+            console.log("Category: " + category.toUpperCase());
+            console.log("CategoryKey: " + categoryKey);
+            console.log("---");
+            if(categoryKey==category.toUpperCase()){
+            console.log("------Match-----");
+            exercises = categoryExercises.get(getExerciseCategory(category)) || []
+            const filtered = filteredExercises(exercises);
+            if (filtered.length === 0) return null; // Skip rendering if no favourites for this category
+            return (
+             <>
+                <Text style={styles.categoryText}>
+                  {getExerciseCategoryString(categoryKey)}
+                </Text>
+              <React.Fragment>
+                {filtered.map((exercise, index) => (
+                  <ExercisesListItem key={index} exercise={exercise} />
+                ))}
+              </React.Fragment>
+            </> 
+            );
+          }}
+        )}
     </ScrollView>
   );
 };

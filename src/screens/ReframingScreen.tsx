@@ -23,11 +23,11 @@ const windowWidth = Dimensions.get('window').width;
 const reframingOptionsData = [
   [
     'Reframen van een bestaande zorg',
-    'Wanneer je een eerder aangemaakte zorg reframed, leer je op een nieuwe manier naar deze zorg of negatieve gedachte te kijken.',
+    'Wil je een bestaande zorg die je in je Zorgenbakje hebt vastgelegd reframen? Ga dan naar het Zorgenbakje.',
   ],
   [
     'Reframen van een nieuwe zorg',
-    'Heb je een zorg die je nog niet aan je zorgenbakje hebt toegevoegd, maar die je direct wilt reframen? Begin dan meteen.',
+    'Heb je een zorg die je nog niet aan je Zorgenbakje hebt toegevoegd, maar die je direct wilt reframen? Begin dan meteen.',
   ],
 ];
 
@@ -63,15 +63,14 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
         contentContainerStyle={styles.contentContainerStyles}
       >
         <View style={styles.headersContainer}>
-          <Text style={styles.headersTitleText}>Reframing</Text>
+          <Text style={styles.headersTitleText}>Reframen</Text>
           <Text style={styles.headersDescriptionText}>
-            Reframing is het bekijken van een situatie, gedachte of gevoel
-            vanuit een andere invalshoek.{'\n\n'}Door een situatie of
-            (negatieve) gedachte te herformuleren, kun je patronen doorbreken en
-            jezelf helpen gezonder te voelen en meer controle te krijgen over je
-            eigen gedachten.
+            Reframen helpt je om je zorgen vanuit een andere invalshoek te bekijken.
+            {'\n \n'} 
+            Door stapsgewijs je gedachten te herformuleren helpt deze oefening je om meer positieve en realistische gedachten te ontdekken. 
+            Hierdoor krijg je meer grip op je emoties en situaties waardoor je je rustiger en zelfverzekerder voelt.
           </Text>
-          <Text style={styles.headersHeadingText}>Proces starten</Text>
+          <Text style={styles.headersHeadingText}>Starten</Text>
           <Text style={styles.headersDescriptionText}>
             Het toepassen van reframen kan op twee manieren.
           </Text>

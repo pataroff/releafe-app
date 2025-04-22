@@ -40,6 +40,7 @@ import * as MediaLibrary from 'expo-media-library';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as VideoThumbnails from 'expo-video-thumbnails';
+import Toast from 'react-native-toast-message';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -49,6 +50,8 @@ const mediaAddIcons = [
   require('../../assets/images/media_add/media_add_voice_memo.png'),
   require('../../assets/images/media_add/media_add_file.png'),
 ];
+
+const voiceMemoRedIcon = require('../../assets/images/media_add/media_add_voice_memo_red.png');
 
 const imageExtensions = ['.jpg', '.jpeg', '.png', '.pdf'];
 
@@ -113,6 +116,18 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     resetWorryEntryFields();
     setModalAddNoteListItemVisible(!modalAddNoteListItemVisible);
   };
+  
+  const handleStorePress = () => {
+    if(title)
+    {
+      title.trim();
+      handleStore();
+    }
+    else
+    {
+      showToast('error','Titel ontbreekt nog','Voeg een titel toe.');
+    }
+  }
 
   const handleClose = () => {
     resetNoteEntryFields();
@@ -173,6 +188,18 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
       }
     }
   };
+  const showToast = (
+    type: 'error' | 'success' | 'info',
+    title: string,
+    message: string,
+    ) => {
+      Toast.show({
+      topOffset: 15,
+      type,
+      text1: title,
+      text2: message,
+      });
+    };
 
   const generateVideoThumbnail = async (videoUri: string) => {
     try {
@@ -310,6 +337,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
         setAudio(recording);
         console.log('Recording started...');
 
+
         recording.setOnRecordingStatusUpdate((status) => {
           if (status.metering) {
             setAudioMetering((curVal) => [...curVal, status.metering || -100]);
@@ -331,6 +359,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     }
 
     console.log('Stopping recording...');
+    setIsAudioRecording(false);
     setAudio(null);
     await audio.stopAndUnloadAsync();
     await Audio.setAudioModeAsync({
@@ -509,6 +538,8 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
             title='Stoppen met bericht toevoegen'
             description='Je staat op het punt te stoppen met het aanmaken van jouw bericht aan jezelf. Weet je het zeker?'
             handleClose={handleClose}
+            denyText='Nee, ik wil doorgaan'
+            confirmText='Ja, ik wil afsluiten'
           />
           <View style={styles.modalWrapper}>
             <View style={styles.modalContainer}>
@@ -572,9 +603,10 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                     <TextInput
                       style={
                         {
-                          ...Fonts.sofiaProItalic[Platform.OS],
+                          ...Fonts.sofiaProRegular[Platform.OS],
+                          verticalAlign: Platform.OS == 'android'? "top" : {},
                           backgroundColor: '#F6F7F8',
-                          fontStyle: 'italic',
+                          //fontStyle: 'italic',
                           borderRadius: 10,
                           height: 50,
                           width: '65%',
@@ -582,7 +614,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                         } as TextStyle
                       }
                       placeholder='Voeg een titel toe...'
-                      placeholderTextColor='#dedede'
+                      //placeholderTextColor='#dedede'
                       value={title}
                       onChangeText={(value) => setTitle(value)}
                     />
@@ -601,9 +633,10 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                     <TextInput
                       style={
                         {
-                          ...Fonts.sofiaProItalic[Platform.OS],
+                          ...Fonts.sofiaProRegular[Platform.OS],
+                          verticalAlign: Platform.OS == 'android'? "top" : {},
                           backgroundColor: '#F6F7F8',
-                          fontStyle: 'italic',
+                          //fontStyle: 'italic',
                           position: 'relative',
                           padding: 10,
                           borderRadius: 10,
@@ -611,7 +644,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                         } as TextStyle
                       }
                       placeholder='Schrijf hier je note-to-self...'
-                      placeholderTextColor='#dedede'
+                      //placeholderTextColor='#dedede'
                       multiline
                       value={description}
                       onChangeText={(value) => setDescription(value)}
@@ -645,8 +678,9 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                           >
                             <Image
                               resizeMode='contain'
-                              style={{ height: 35, width: 35 }}
-                              source={icon}
+                              style={{height: 35, width: 35 }}
+                              //TODO: Is there a better way to do this? - Luna
+                              source={index===2? isAudioRecording? voiceMemoRedIcon : icon : icon}
                             ></Image>
                           </Pressable>
                         );
@@ -716,13 +750,13 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                     )}
 
                     <Pressable
-                      onPress={() => handleStore()}
+                      onPress={() => handleStorePress()}
                       style={{
                         marginVertical: 20,
                         alignSelf: 'center',
                         width: 215,
                         borderRadius: 10,
-                        backgroundColor: '#A9C1A1',
+                        backgroundColor:'#A9C1A1' ,
                         paddingVertical: 12,
                       }}
                     >
@@ -742,6 +776,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                 </View>
               </TouchableWithoutFeedback>
             </View>
+            <Toast />
           </View>
         </Modal>
       )}

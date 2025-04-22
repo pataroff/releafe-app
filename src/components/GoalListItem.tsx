@@ -8,6 +8,7 @@ import {
   Pressable,
   Platform,
   TextStyle,
+  Modal,
 } from 'react-native';
 
 import { ProgressBar } from 'react-native-paper';
@@ -27,6 +28,7 @@ import {
 import Entypo from '@expo/vector-icons/Entypo';
 
 import { GoalContext } from '../context/GoalContext';
+import { CloseModal } from './CloseModal';
 
 const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
   const {
@@ -38,7 +40,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     timeframe,
     targetFrequency,
     startDate,
-    endDate,
+    //endDate,
     completedTimeframe,
     completedPeriod,
   } = item;
@@ -57,9 +59,42 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     setTimeframeProgressValue(completedTimeframe / 10);
     setPeriodProgressValue(completedPeriod / 10);
   }, [completedTimeframe, completedPeriod]);
+  
+  const [modalCloseVisible, setModalCloseVisible] = useState<boolean>(false);
+
+  const handleClose = () => {
+    setModalCloseVisible(!modalCloseVisible);
+    deleteGoalEntry(uuid);
+  };
+
+  const onPress = () =>
+  {
+    setModalCloseVisible(!modalCloseVisible);
+  }
 
   return (
     <View style={styles.goalComponent}>
+          <Modal
+          animationType='none'
+          transparent={true}
+          visible={modalCloseVisible}
+          onRequestClose={() =>
+            setModalCloseVisible(!modalCloseVisible)
+          }
+        >
+          <CloseModal
+            closeModalVisible={modalCloseVisible}
+            setCloseModalVisible={setModalCloseVisible}
+            parentModalVisible={modalCloseVisible}
+            setParentModalVisible={setModalCloseVisible}
+            title='Persoonlijk doel verwijderen'
+            description='Je staat op het punt om je persoonlijke doel te verwijderen. Weet je het zeker?'
+            handleClose={handleClose}
+            denyText='Nee, ik wil doorgaan'
+            confirmText='Ja, ik wil afsluiten'
+            closeButtonDisabled = {true}
+          />
+    </Modal>
       <View
         style={{
           display: 'flex',
@@ -138,9 +173,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   </Text>
                   <Text style={styles.completedTimeframeText}>
                     {completedTimeframe}/
-                    {timeframe !== Timeframe.Daily
-                      ? targetFrequency
-                      : getDaysBetweenDates(startDate, endDate)}
+                    {targetFrequency}
                   </Text>
                 </View>
                 <ProgressBar
@@ -198,9 +231,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
 
                   <Text style={styles.completedTimeframeText}>
                     {completedTimeframe}/
-                    {timeframe !== Timeframe.Daily
-                      ? targetFrequency
-                      : getDaysBetweenDates(startDate, endDate)}
+                    {targetFrequency}
                   </Text>
                 </View>
                 <ProgressBar
@@ -214,7 +245,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                 </Text>
               </View>
 
-              {/* Period Progress Bar */}
+              {/* Period Progress Bar /*}
               <View
                 style={{
                   display: 'flex',
@@ -245,7 +276,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   color='#A9C1A1'
                   style={styles.progressBar}
                 />
-                {/* Period Percentage Text */}
+                {/* Period Percentage Text /*}
                 <Text style={styles.percentageText}>
                   {periodProgressValue * 100}%
                 </Text>
@@ -274,14 +305,9 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                     Startdatum
                   </Text>
                   <Text style={styles.statisticsDataHeadingText}>
-                    Einddatum
-                  </Text>
-                  <Text style={styles.statisticsDataHeadingText}>
                     Dagen actief
                   </Text>
-                  <Text style={styles.statisticsDataHeadingText}>
-                    Dagen tot einddatum
-                  </Text>
+                  <Text style={styles.statisticsDataHeadingText}>Aantal keer gedaan</Text>
                 </View>
 
                 <View
@@ -295,26 +321,16 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   <Text style={styles.statisticsDataBodyText}>
                     {formatDateString(startDate as Date)}
                   </Text>
-                  <Text style={styles.statisticsDataBodyText}>
-                    {formatDateString(endDate as Date)}
-                  </Text>
                   {/* Completed Timeframe */}
                   <Text style={styles.statisticsDataBodyText}>
-                    {new Date(startDate as Date) > new Date()
-                      ? 0
-                      : Math.floor(getDaysBetweenDates(startDate, new Date()))}
+                    {completedTimeframe}
                   </Text>
                   {/* Completed Period */}
-                  <Text style={styles.statisticsDataBodyText}>
-                    {new Date(startDate as Date) > new Date()
-                      ? Math.floor(getDaysBetweenDates(startDate, endDate))
-                      : Math.floor(getDaysBetweenDates(new Date(), endDate))}
-                  </Text>
                 </View>
               </View>
 
               <Pressable
-                onPress={() => deleteGoalEntry(uuid)}
+                onPress={() => setModalCloseVisible(true)}
                 style={styles.viewButton}
               >
                 <Text style={styles.buttonText}>Doel verwijderen</Text>

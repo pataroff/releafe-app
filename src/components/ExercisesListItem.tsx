@@ -84,24 +84,24 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
           }}
         >
           <Text style={styles.exerciseHeadingText}>{title}</Text>
-          <Text style={styles.exerciseBodyText}>{description}</Text>
           <Text style={styles.durationHeadingText}>
             Duur: <Text style={styles.durationBodyText}>{duration}</Text>
           </Text>
         </View>
 
         {/* Favourite Button */}
-        <Pressable onPress={() => handleFavourite(id)}>
+        {/*TODO: Is this correct styling? - Luna*/}
+        <Pressable onPress={() => handleFavourite(id)} style={{width: 36, height:36, paddingTop:5, paddingLeft:10}}> 
           {isFavourite ? (
             <Image
               source={require('../../assets/images/favourite_button_on_icon.png')}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 24, height: 24 }}
               resizeMode='contain'
             />
           ) : (
             <Image
               source={require('../../assets/images/favourite_button_off_icon.png')}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 24, height: 24 }}
               resizeMode='contain'
             />
           )}

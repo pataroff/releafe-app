@@ -37,9 +37,8 @@ export const NotesToSelfScreen: React.FC<{ route: any }> = ({ route }) => {
         <View style={styles.headersContainer}>
           <Text style={styles.headersTitleText}>Berichten aan jezelf</Text>
           <Text style={styles.headersDescriptionText}>
-            Onder de 'berichten aan jezelf' kun je notities voor jezelf opslaan
-            die je op elk gewenst moment kunt bekijken. Deze berichten kun je
-            volledig naar wens personaliseren.
+          Hier sla je notities voor jezelf op die je op elk gewenst moment kunt bekijken. 
+          Jij personaliseert deze berichten volledig naar jouw wensen.
           </Text>
 
           {/* Headers Inner Container */}
@@ -47,8 +46,7 @@ export const NotesToSelfScreen: React.FC<{ route: any }> = ({ route }) => {
             <View style={{ width: '80%' }}>
               <Text style={styles.headersHeadingText}>Mijn berichten</Text>
               <Text style={styles.headersDescriptionText}>
-                Bekijk hier de berichten aan jezelf, of voeg een bericht aan
-                jezelf toe.
+                Bekijk hier de berichten aan jezelf, of voeg via de + knop hiernaast een bericht aan jezelf toe.
               </Text>
             </View>
             {/* Add Button */}

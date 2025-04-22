@@ -36,6 +36,7 @@ import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
 
 import { CloseModal } from './CloseModal';
+import Day from 'react-native-calendars/src/calendar/day';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -63,7 +64,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     timeframe,
     targetFrequency,
     startDate,
-    endDate,
+    //endDate,
     setCategory,
     setTitle,
     setDescription,
@@ -72,7 +73,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setTimeframe,
     setTargetFrequency,
     setStartDate,
-    setEndDate,
+    //setEndDate,
     createGoalEntry,
     resetGoalEntryFields,
   } = useContext(GoalContext);
@@ -100,7 +101,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
 
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
-  const handleCalendarPeriodSelect = (day: string) => {
+  /*const handleCalendarPeriodSelect = (day: string) => {
     type MarkedDatesType = Record<
       string,
       {
@@ -109,9 +110,9 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
         endingDay?: boolean;
         color: string;
       }
-    >;
+    >;*/
 
-    // Helper function to get all dates between two dates
+    /* Helper function to get all dates between two dates
     const getDatesInRange = (start: Date, end: Date) => {
       const dates: string[] = [];
       let currentDate = new Date(start);
@@ -126,9 +127,9 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
       dates.push(end.toISOString().split('T')[0]);
 
       return dates;
-    };
+    };*/
 
-    if (startDate === null) {
+    /*if (startDate === null) {
       // Set the start date
       setStartDate(new Date(day));
       setMarkedDates((prevMarkedDates) => ({
@@ -141,9 +142,19 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     } else if (startDate && endDate === null) {
       // Set the end date and color the range between start and end
       const selectedEndDate = new Date(day);
-      setEndDate(selectedEndDate);
-
-      const datesInRange = getDatesInRange(startDate, selectedEndDate);
+      // Make sure the end date is the later of the two
+      let datesInRange;
+      if(startDate > selectedEndDate)
+      {
+        //setStartDate(selectedEndDate);
+        setEndDate(startDate);
+        datesInRange = getDatesInRange(selectedEndDate, startDate);
+      }
+      else
+      {
+        setEndDate(selectedEndDate);
+        datesInRange = getDatesInRange(startDate, selectedEndDate);
+      }
 
       setMarkedDates((prevMarkedDates) => {
         const rangeMarkedDates = datesInRange.reduce<MarkedDatesType>(
@@ -172,7 +183,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
       setEndDate(null);
       setMarkedDates({});
     }
-  };
+  };*/
 
   const validateTextInput = (text: string, max: number) => {
     const min = 1;
@@ -220,13 +231,14 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   };
 
   const handleGoalSentences = () => {
-    setSentence(
-      `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
-        specialDropdownValue ? ` ${specialDropdownValue}` : ``
-      } ${goalEndText}`
-    );
-    setDiarySentence(modifyDiarySentence(diarySentence, specialDropdownValue));
-    setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
+    setStartDate(new Date());
+      setSentence(
+        `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
+          specialDropdownValue ? ` ${specialDropdownValue}` : ``
+        } ${goalEndText}`
+      );
+      setDiarySentence(modifyDiarySentence(diarySentence, specialDropdownValue));
+      setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
   };
 
   const handleBack = () => {
@@ -236,6 +248,10 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   };
 
   const handleFinish = () => {
+    if(timeframe === Timeframe.Daily)
+    {
+    setTargetFrequency(1);
+    }
     createGoalEntry();
     resetGoalEntryFields();
     resetLocalState();
@@ -327,6 +343,8 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
         title='Stoppen met doel toevoegen'
         description='Je staat op het punt te stoppen met het aanmaken van dit persoonlijk doel. Weet je het zeker?'
         handleClose={handleClose}
+        denyText='Nee, bewaar mijn doel.'
+        confirmText='Ja, verwijder mijn doel'
       />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
@@ -611,13 +629,13 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                     />
                   </View>
                 )}
-
                 <View style={styles.menuComponent}>
+                  {/*
                   <Text style={[styles.h2Text, { textAlign: 'center' }]}>
                     Start- en einddatum
                   </Text>
-
-                  {/* Calendar */}
+                  */}
+                  {/* Calendar }
                   <Calendar
                     // Old functionality
                     // minDate={
@@ -651,7 +669,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                         />
                       )
                     }
-                  />
+                  />*/}
                   <Pressable
                     onPress={() => handleGoalSentences()}
                     style={styles.viewButton}
@@ -709,6 +727,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                         })}
                       </Text>
                     </Text>
+                    {/*
                     <Text style={styles.h3Text}>
                       Einddatum:{' '}
                       <Text style={styles.bodyText}>
@@ -719,6 +738,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                         })}
                       </Text>
                     </Text>
+                    */}
                   </View>
                 </View>
               </View>
@@ -764,7 +784,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                     onPress={() => handleFinish()}
                     style={styles.finishButton}
                   >
-                    <Text style={styles.buttonText}>Opslaan en afsluiten</Text>
+                    <Text style={styles.buttonText}>Doel aanmaken</Text>
                   </Pressable>
                 )}
               </View>

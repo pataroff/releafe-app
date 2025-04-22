@@ -30,6 +30,8 @@ import { sliderSteps, textSteps } from '../utils/diary';
 
 import { useNavigation } from '@react-navigation/native';
 import { CloseModal } from './CloseModal';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -135,9 +137,9 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const [diaryModalIndex, setDiaryModalIndex] = useState<number>(0);
   const [progressValue, setProgressValue] = useState(progressStep);
 
-  const min = useSharedValue(1);
+  const min = useSharedValue(0);
   const max = useSharedValue(10);
-  const sliderValue = useSharedValue(5.5);
+  const sliderValue = useSharedValue(5);
 
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState<number>(0);
   const [textValue, setTextValue] = useState<string>('');
@@ -149,7 +151,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const handlePrevious = () => {
     // Update slider values (0 to 5, including)
     if (diaryModalIndex != 0 && diaryModalIndex <= sliderSteps.length - 1) {
-      sliderValue.value = 5.5;
+      sliderValue.value = 5;
       setSliderQuestionIndex((prev) => --prev);
     }
 
@@ -173,7 +175,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     if (diaryModalIndex < sliderSteps.length) {
       // @TODO Remove the rounding of the slider values, keeps the decimals!
       addSliderValue(sliderQuestionIndex, Math.round(sliderValue.value));
-      sliderValue.value = 5.5;
+      sliderValue.value = 5;
       // Skip slider question index increment, if on last step
       if (diaryModalIndex !== sliderSteps.length - 1) {
         setSliderQuestionIndex((prev) => ++prev);
@@ -201,7 +203,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     setDiaryModalIndex(0);
     setProgressValue(progressStep);
     setSliderQuestionIndex(0);
-    sliderValue.value = 5.5;
+    sliderValue.value = 5;
     setDate(new Date()); // Is this needed?
     // Clears the passed params for editing
     navigation.setParams({ date: null });
@@ -259,6 +261,8 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
       visible={modalDiaryVisible}
       onRequestClose={() => setCloseModalVisible(!closeModalVisible)}
     >
+  <GestureHandlerRootView>
+    <SafeAreaView>
       <CloseModal
         closeModalVisible={closeModalVisible}
         setCloseModalVisible={setCloseModalVisible}
@@ -268,7 +272,10 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
         description='Je staat op het punt te stoppen met het invullen van je dagboek. Weet je het zeker?'
         handleClose={handleClose}
         route={route}
+        denyText='Opslaan en afsluiten'
+        confirmText='Niet opslaan en afsluiten'
       />
+      </SafeAreaView>
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
           <View style={styles.headersContainer}>
@@ -292,7 +299,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
             {/* Heading */}
             <Text style={styles.headersHeadingText}>
               {diaryModalIndex == 6
-                ? 'Vraag 7: Persoonlijke doelen'
+                ? 'Vraag 7. Persoonlijke doelen'
                 : diaryModalIndex < 6
                 ? sliderSteps[sliderQuestionIndex].heading
                 : 'Aanvullende vragen'}
@@ -380,7 +387,6 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                       { ...Fonts.sofiaProSemiBold[Platform.OS] } as TextStyle
                     }
                   >
-                    Vraag {textQuestionIndex + 1}:{' '}
                   </Text>
                   {textSteps[textQuestionIndex].question}
                 </Text>
@@ -390,13 +396,15 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                     handleTextChange(textQuestionIndex, value)
                   }
                   placeholder={textSteps[textQuestionIndex].placeholder}
+                  placeholderTextColor={'rgba(0,0,0,0.5)'}
                   multiline
                   style={
                     {
+                      verticalAlign: Platform.OS == 'android'? "top" : {},
                       ...Fonts.sofiaProRegular[Platform.OS],
-                      marginTop: 20,
-                      padding: 10,
-                      borderRadius: 10,
+                     marginTop: 20,
+                     paddingHorizontal: 10,
+                     borderRadius: 10,
                       backgroundColor: '#f6f7f8',
                       height: 165,
                     } as TextStyle
@@ -448,7 +456,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                   }
                   style={
                     diaryModalIndex == totalStepsIndex
-                      ? [styles.continueButton, { width: 165 }]
+                      ? [styles.continueButton, { width: 150 }]
                       : styles.continueButton
                   }
                 >
@@ -462,7 +470,10 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
               {/* Progress Bar Container */}
               <View style={styles.progressBarContainer}>
                 <Text style={styles.progressBarText}>
-                  {Math.round(progressValue * 100)}%
+                  {diaryModalIndex == totalStepsIndex
+                  ? '100%'
+                  : Math.round(progressValue * 100) +  '%'
+                  }
                 </Text>
                 <ProgressBar
                   // Jan prefers switching to the steps to keep the design more consistent!
@@ -475,6 +486,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
           </View>
         </View>
       </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 };

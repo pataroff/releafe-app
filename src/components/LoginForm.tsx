@@ -31,7 +31,7 @@ export const LoginForm = () => {
       <View style={{ width: windowWidth - 2 * 25 }}>
         {/* Input Fields */}
         <View>
-          <Text style={styles.textInputLabelText}>Email</Text>
+          <Text style={styles.textInputLabelText}>E-mail</Text>
           <TextInput
             style={styles.textInputField}
             placeholder='Enter your email...'
@@ -40,7 +40,7 @@ export const LoginForm = () => {
             value={email}
           ></TextInput>
 
-          <Text style={styles.textInputLabelText}>Password</Text>
+          <Text style={styles.textInputLabelText}>Wachtwoord</Text>
           <TextInput
             style={styles.textInputField}
             placeholder='Enter your password...'
@@ -53,14 +53,14 @@ export const LoginForm = () => {
             style={styles.signInButton}
             onPress={() => signIn(email, password)}
           >
-            <Text style={styles.buttonText}>Sign In</Text>
+            <Text style={styles.buttonText}>Inloggen</Text>
           </Pressable>
         </View>
 
         <View style={styles.signUpBox}>
-          <Text>Don't have an account?</Text>
+          <Text>Nog geen account?</Text>
           <Pressable onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.signUpText}> Sign Up</Text>
+            <Text style={styles.signUpText}> Account aanmaken</Text>
           </Pressable>
         </View>
       </View>
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   textInputField: {
     ...Fonts.sofiaProItalic[Platform.OS],
+    verticalAlign: Platform.OS == 'android'? "top" : {},
     height: 40,
     borderWidth: 1,
     borderColor: '#dedede',

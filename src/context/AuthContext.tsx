@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message';
 
 // TODO: Make usage of the `pb_auth` item in local storage!
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 // Create context
 export const AuthContext = createContext<IAuthContext>({
@@ -64,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
       setIsLoading(false);
 
       if (error.response?.code === 400) {
-        showToast('error', 'Sign In Failed', 'This account does not exist.');
+        showToast('error', 'Inloggen mislukt', 'Combinatie van e-mailadres en wachtwoord klopt niet.');
       } else {
         showToast(
           'error',
@@ -106,7 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
       showToast('success', 'Account Created', 'You can now log in.');
     } catch (error) {
       console.error('Error: ', error);
-      showToast('error', 'Sign Up Failed', 'Could not create account.');
+      showToast('error', 'Account aanmaken mislukt', 'Controleer je gegevens of probeer het later opnieuw.');
     }
   };
 

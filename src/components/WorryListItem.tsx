@@ -8,6 +8,7 @@ import {
   Pressable,
   TextStyle,
   Platform,
+  Modal,
 } from 'react-native';
 
 import { Fonts } from '../styles';
@@ -15,6 +16,8 @@ import { Fonts } from '../styles';
 import { IWorryListItem } from '../types';
 import { getPriorityColor, getCategory } from '../utils/worry';
 import { WorryContext } from '../context/WorryContext';
+import { CloseModal } from './CloseModal';
+import Entypo from '@expo/vector-icons/Entypo';
 
 interface WorryListItemProps {
   item: IWorryListItem;
@@ -42,6 +45,8 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
   const { uuid, category, priority, date, title, description, reframed } = item;
 
   const { updateWorryEntryFields, deleteWorryEntry } = useContext(WorryContext);
+
+  const [modalCloseVisible,setModalCloseVisible] = useState<boolean>(false);
 
   const [expandedItems, setExpandedItems] = useState<{
     [key: string]: boolean;
@@ -90,6 +95,10 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
     }, 300);
   };
 
+  const handleClose = () => {
+      handleDelete();
+  }
+
   return (
     <Pressable
       style={
@@ -104,6 +113,29 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
       }
       onPress={() => expandItem(uuid)}
     >
+      <View>
+          <Modal
+          animationType='none'
+          transparent={true}
+          visible={modalCloseVisible}
+          onRequestClose={() =>
+            setModalCloseVisible(!modalCloseVisible)
+          }
+        >
+          <CloseModal
+            closeModalVisible={modalCloseVisible}
+            setCloseModalVisible={setModalCloseVisible}
+            parentModalVisible={modalCloseVisible}
+            setParentModalVisible={setModalCloseVisible}
+            title='Zorg verwijderen'
+            description='Je staat op het punt om je zorg te verwijderen. Weet je het zeker?'
+            handleClose={handleClose}
+            denyText='Nee, bewaar mijn zorg.'
+            confirmText='Ja, verwijder mijn zorg.'
+            closeButtonDisabled = {true}
+          />
+        </Modal>
+      </View>
       {/* Priority Bar */}
       <View
         style={{
@@ -219,7 +251,7 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
                     </Pressable>
 
                     {/* Delete Button  */}
-                    <Pressable onPress={() => handleDelete()}>
+                    <Pressable onPress={() => setModalCloseVisible(true)}>
                       <Image
                         resizeMode='contain'
                         style={{ width: 43, height: 46 }}
@@ -250,23 +282,13 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
           </View>
 
           {/* Reframe Icon */}
-          {expandedItems[uuid] !== true && (
             <View style={{ width: 30 }}>
-              {reframed ? (
-                <Image
-                  resizeMode='contain'
-                  style={{ width: '100%', height: 30 }}
-                  source={require('../../assets/images/reframe_reframed_icon.png')}
-                />
+              {expandedItems[uuid] === true ? (
+              <Entypo name='chevron-up' size={32} style={styles.worryListExpandedArrow} color='#5c6b57' />
               ) : (
-                <Image
-                  resizeMode='contain'
-                  style={{ width: '100%', height: 30 }}
-                  source={require('../../assets/images/reframe_not_reframed_icon.png')}
-                />
+              <Entypo name='chevron-down' size={32} color='#5c6b57' />
               )}
             </View>
-          )}
         </View>
       </View>
     </Pressable>
@@ -303,4 +325,9 @@ const styles = StyleSheet.create({
     ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
   } as TextStyle,
+  worryListExpandedArrow: {
+    position: 'absolute',
+    right: 32,
+    bottom: 60,
+  }
 });

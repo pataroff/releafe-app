@@ -74,7 +74,9 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
           }}
         >
           <Pressable
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              setShowOnlyFavourites(false);
+              navigation.goBack()}}
             style={{
               marginVertical: 25,
               width: 200,
@@ -100,7 +102,7 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
           <View
             style={{ display: 'flex', flexDirection: 'row', columnGap: 10 }}
           >
-            {/* List Icon */}
+            {/* List Icon }
             <Pressable>
               <Image
                 resizeMode='contain'
@@ -108,9 +110,10 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
                 source={require('../../assets/images/exercises_list_icon.png')}
               />
             </Pressable>
+            */}
 
             {/* Favourites Icon */}
-            {category === 'Bekijk alle oefeningen' && (
+            {/*category === 'Bekijk alle oefeningen' && (*/
               <Pressable
                 onPress={() => setShowOnlyFavourites(!showOnlyFavourites)}
               >
@@ -128,7 +131,7 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
                   />
                 )}
               </Pressable>
-            )}
+            /*)*/}
           </View>
         </View>
       </View>

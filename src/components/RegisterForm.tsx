@@ -56,7 +56,7 @@ export const RegisterForm = () => {
       <View style={{ width: windowWidth - 2 * 25 }}>
         {/* Input Fields */}
         <View>
-          <Text style={styles.textInputLabelText}>Email</Text>
+          <Text style={styles.textInputLabelText}>E-mail</Text>
           <TextInput
             style={styles.textInputField}
             placeholder='Enter your email...'
@@ -65,14 +65,14 @@ export const RegisterForm = () => {
             value={email}
           ></TextInput>
 
-          <Text style={styles.textInputLabelText}>First Name</Text>
+          <Text style={styles.textInputLabelText}>Voornaam</Text>
           <TextInput
             style={styles.textInputField}
             placeholder='Enter your first name...'
             onChangeText={(value) => setFirstName(value)}
             value={firstName}
           ></TextInput>
-          <Text style={styles.textInputLabelText}>Last Name</Text>
+          <Text style={styles.textInputLabelText}>Achternaam</Text>
           <TextInput
             style={styles.textInputField}
             placeholder='Enter your last name...'
@@ -80,7 +80,7 @@ export const RegisterForm = () => {
             value={lastName}
           ></TextInput>
 
-          <Text style={styles.textInputLabelText}>Password</Text>
+          <Text style={styles.textInputLabelText}>Wachtwoord</Text>
           <TextInput
             style={styles.textInputField}
             placeholder='Enter your password...'
@@ -89,7 +89,7 @@ export const RegisterForm = () => {
             onChangeText={(value) => setPassword(value)}
             value={password}
           ></TextInput>
-          <Text style={styles.textInputLabelText}>Confirm Password</Text>
+          <Text style={styles.textInputLabelText}>Bevestig wachtwoord</Text>
           <TextInput
             style={styles.textInputField}
             placeholder='Enter your password...'
@@ -111,14 +111,14 @@ export const RegisterForm = () => {
               )
             }
           >
-            <Text style={styles.buttonText}>Sign Up</Text>
+            <Text style={styles.buttonText}>Account aanmaken</Text>
           </Pressable>
         </View>
 
         <View style={styles.signUpBox}>
-          <Text>Already have an account?</Text>
+          <Text>Heb je al een account?</Text>
           <Pressable onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.signUpText}> Sign In</Text>
+            <Text style={styles.signUpText}> Log In</Text>
           </Pressable>
         </View>
       </View>
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   textInputField: {
     ...Fonts.sofiaProItalic[Platform.OS],
+    verticalAlign: Platform.OS == 'android'? "top" : {},
     height: 40,
     borderWidth: 1,
     borderColor: '#dedede',

@@ -22,6 +22,7 @@ import { getPriorityColor } from '../utils/worry';
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
+import Toast from 'react-native-toast-message';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -59,6 +60,19 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     useState<boolean>(false);
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
+      const showToast = (
+        type: 'error' | 'success' | 'info',
+        title: string,
+        message: string,
+      ) => {
+        Toast.show({
+          topOffset: 15,
+          type,
+          text1: title,
+          text2: message,
+        });
+      };
+  
   const handleStore = () => {
     createWorryEntry();
     setWorryListItemAddModalIndex(1);
@@ -69,6 +83,25 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setWorryListItemAddModalIndex(0);
     setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
   };
+
+
+  const handleStorePress  = () => {
+    if(!title)
+    {
+      showToast('error','Titel ontbreekt nog','Voeg een titel toe.');
+    }
+    else if (!description)
+    {
+      showToast('error','Titel ontbreekt nog', 'Voeg een titel toe.')
+    }
+    else
+    {
+      title.trim();
+      description.trim();
+
+      handleStore();
+    }
+  }
 
   const handleReframing = () => {
     // resetWorryEntryFields(); // TODO: Where should the reset happen?
@@ -98,6 +131,8 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
         setParentModalVisible={setModalAddWorryListItemVisible}
         title='Stoppen met zorg toevoegen'
         description='Je staat op het punt te stoppen met het toevoegen van jouw zorg. Weet je het zeker?'
+        denyText='Nee, ik wil doorgaan'
+        confirmText='Ja, ik wil afsluiten'
         handleClose={handleClose}
       />
       <View style={styles.modalWrapper}>
@@ -157,6 +192,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                   <TextInput
                     style={
                       {
+                        verticalAlign: Platform.OS == 'android'? "top" : {},
                         ...Fonts.sofiaProRegular[Platform.OS],
                         backgroundColor: '#f6f7f8',
                         borderRadius: 10,
@@ -220,9 +256,6 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                     <Text style={styles.headersHeadingText}>
                       Situatieomschrijving
                     </Text>
-                    <Text style={styles.headersDescriptionText}>
-                      Omschrijf hier wat de situatie is van jouw zorg.
-                    </Text>
                   </View>
 
                   <View
@@ -234,6 +267,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                     <TextInput
                       style={
                         {
+                          verticalAlign: Platform.OS == 'android'? "top" : {},
                           ...Fonts.sofiaProRegular[Platform.OS],
                           padding: 10,
                           borderRadius: 10,
@@ -241,7 +275,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                           height: 180,
                         } as TextStyle
                       }
-                      placeholder='Schrij hier je zorg op...'
+                      placeholder='Schrijf hier op wat je kwijt wil over jouw zorg...'
                       placeholderTextColor='#00000080'
                       multiline
                       value={description}
@@ -342,10 +376,10 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                   </View>
                   <Pressable
                     style={styles.storeButton}
-                    onPress={() => handleStore()}
+                    onPress={() => handleStorePress()}
                   >
                     <Text style={styles.storeButtonText}>
-                      Zorg opslaan in zorgenbakje
+                      Zorg opslaan in Zorgenbakje
                     </Text>
                   </Pressable>
                 </>
@@ -402,6 +436,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
             </View>
           </View>
         </View>
+        <Toast/>
       </View>
     </Modal>
   );

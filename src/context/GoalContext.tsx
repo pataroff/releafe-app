@@ -19,7 +19,7 @@ export const GoalContext = createContext<IGoalContext>({
   timeframe: Timeframe.Daily,
   targetFrequency: 0,
   startDate: new Date(),
-  endDate: new Date(),
+  //endDate: new Date(),
   completedTimeframe: 0,
   completedPeriod: 0,
   setGoalEntries: () => {},
@@ -32,7 +32,7 @@ export const GoalContext = createContext<IGoalContext>({
   setTimeframe: () => {},
   setTargetFrequency: () => {},
   setStartDate: () => {},
-  setEndDate: () => {},
+  //setEndDate: () => {},
   setCompletedTimeframe: () => {},
   setCompletedPeriod: () => {},
   createGoalEntry: () => {},
@@ -55,7 +55,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
   const [timeframe, setTimeframe] = useState<Timeframe>(Timeframe.Daily);
   const [targetFrequency, setTargetFrequency] = useState<number>(1);
   const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  //const [endDate, setEndDate] = useState<Date | null>(null);
   const [completedTimeframe, setCompletedTimeframe] = useState<number>(0);
   const [completedPeriod, setCompletedPeriod] = useState<number>(0);
 
@@ -75,7 +75,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       timeframe,
       targetFrequency,
       startDate,
-      endDate,
+      //endDate,
       // @TODO: Are these necessary on goal creation or only on update?
       completedTimeframe,
       completedPeriod,
@@ -94,7 +94,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       timeframe,
       targetFrequency,
       startDate,
-      endDate,
+      //endDate,
       // @TODO: Are these necessary on goal creation or only on update?
       completedTimeframe,
       completedPeriod,
@@ -212,7 +212,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     setTimeframe(Timeframe.Daily);
     setTargetFrequency(1);
     setStartDate(null);
-    setEndDate(null);
+    //setEndDate(null);
   };
 
   return (
@@ -228,7 +228,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         timeframe,
         targetFrequency,
         startDate,
-        endDate,
+        //endDate,
         completedTimeframe,
         completedPeriod,
         setGoalEntries,
@@ -241,7 +241,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         setTimeframe,
         setTargetFrequency,
         setStartDate,
-        setEndDate,
+        //setEndDate,
         setCompletedTimeframe,
         setCompletedPeriod,
         createGoalEntry,

@@ -12,14 +12,17 @@ import {
   Dimensions,
   TextStyle,
   Platform,
+  StyleProp
 } from 'react-native';
 
+import { useSharedValue } from 'react-native-reanimated';
 import Checkbox from 'expo-checkbox';
-import { Slider } from '@rneui/themed';
+import { Slider } from 'react-native-awesome-slider';
 import { MarkerProps } from '@react-native-community/slider';
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
+import Toast from 'react-native-toast-message';
 
 import { DropdownComponent } from './DropdownComponent';
 import { CloseModal } from './CloseModal';
@@ -30,6 +33,9 @@ import { AuthContext } from '../context/AuthContext';
 
 import { Priority } from '../types';
 import { getCategory, getPriorityColor, reframingSteps } from '../utils/worry';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { center } from '@shopify/react-native-skia';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -104,6 +110,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
   const [showPriorityButtons, setShowPriorityButtons] =
     useState<boolean>(false);
+  const { deleteWorryEntry } = useContext(WorryContext)
+  const [showUnreframedData, setShowUnreframedData] = useState<boolean>(false);
 
   // @TODO Is there a better way of doing this?
   const reframingModalTextState = new Map<number, StringStateSetterPair>([
@@ -131,6 +139,17 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       },
     ],
   ]);
+  const unreframedData = [
+    {
+      heading: 'Situatieomschrijving',
+      body: description,
+    },
+    {
+      heading: 'Gevoelsomschrijving',
+      body: feelingDescription,
+      sliderValue: thoughtLikelihoodSliderOne,
+    },
+  ];
 
   const successData = [
     { heading: null, body: alternativePerspective },
@@ -139,6 +158,22 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     { heading: 'Waarschijnlijkheid', body: thoughtLikelihood },
   ];
 
+const min = useSharedValue(0);
+const max = useSharedValue(10);
+const sliderValue = useSharedValue(5);
+
+const CustomThumb: React.FC<{}> = () => {
+  return (
+    <View
+      style={{
+        backgroundColor: '#C1DEBE',
+        height: 28,
+        width: 28,
+        borderRadius: 99,
+      }}
+    ></View>
+  );
+};
   const handleClose = () => {
     setReframingModalIndex(0);
     resetWorryEntryFields();
@@ -166,7 +201,28 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
   const handleNext = () => {
     if (reframingModalIndex < reframingSteps.length - 1) {
-      setReframingModalIndex(reframingModalIndex + 1);
+      //TODO Input validation: Is there a better way to do this? - Luna
+      if ((title && description) && reframingModalIndex === 0) {
+        title.trim();
+        description.trim();
+        setReframingModalIndex(reframingModalIndex + 1);
+      }
+      else if(!title && reframingModalIndex!=5)
+      {
+        showToast('error','Titel ontbreekt nog','Voeg een titel toe.');
+      }
+      else if (!description && reframingModalIndex === 0)
+      {
+        showToast('error','Omschrijving ontbreekt nog','Voeg een omschrijving toe.')
+      }
+      else if(!reframingModalTextState.get(reframingModalIndex)?.value && reframingModalIndex!=5)
+      {
+        showToast('error','Antwoord ontbreekt nog','Voeg een antwoord toe.');
+      }
+      else if (reframingModalTextState.get(reframingModalIndex)?.value || reframingModalIndex === 5) {
+        reframingModalTextState.get(reframingModalIndex)?.value.trim();
+        setReframingModalIndex(reframingModalIndex + 1);
+      }
     } else {
       setReframed(true); // @TODO This is part of the worry and it is not being updated in the database here, so why are we doing this?
       setReframingModalIndex(0);
@@ -180,6 +236,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
       resetNoteEntryFields();
       resetWorryEntryFields();
+      deleteWorryEntry(uuid);
     }
   };
 
@@ -187,6 +244,19 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     setPriority(priority);
     setShowPriorityButtons(!showPriorityButtons);
   };
+
+    const showToast = (
+      type: 'error' | 'success' | 'info',
+      title: string,
+      message: string,
+    ) => {
+      Toast.show({
+        topOffset: 15,
+        type,
+        text1: title,
+        text2: message,
+      });
+    };
 
   // const StepMarker: React.FC<MarkerProps> = ({ stepMarked }) => {
   //   return (
@@ -210,6 +280,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       visible={modalReframingVisible}
       onRequestClose={() => setCloseModalVisible(!closeModalVisible)}
     >
+    <GestureHandlerRootView>
+    <SafeAreaView>
       <CloseModal
         closeModalVisible={closeModalVisible}
         setCloseModalVisible={setCloseModalVisible}
@@ -218,8 +290,12 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
         title='Stoppen met reframen'
         description='Je staat op het punt te stoppen met het reframing-proces. Weet je het zeker?'
         handleClose={handleClose}
+        denyText='Nee, ik wil doorgaan'
+        confirmText='Ja, ik wil afsluiten'
       />
+    </SafeAreaView>
       <View style={styles.modalWrapper}>
+        <View>
         <View style={styles.modalContainer}>
           <View style={styles.headersContainer}>
             {/* Title + Close Button */}
@@ -401,6 +477,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         style={
                           {
                             ...Fonts.sofiaProRegular[Platform.OS],
+                            verticalAlign: Platform.OS == 'android'? "top" : {},
                             backgroundColor: '#f6f7f8',
                             borderRadius: 10,
                             height: 40,
@@ -426,6 +503,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         style={
                           {
                             ...Fonts.sofiaProRegular[Platform.OS],
+                            verticalAlign: Platform.OS == 'android'? "top" : {},
                             padding: 10,
                             borderRadius: 10,
                             backgroundColor: '#f6f7f8',
@@ -631,7 +709,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         placeholder={
                           reframingSteps[reframingModalIndex].placeholder
                         }
-                        placeholderTextColor='#dedede'
+                        //placeholderTextColor='#dedede'
                         multiline
                         value={
                           reframingModalTextState.get(reframingModalIndex)
@@ -640,73 +718,67 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         onChangeText={(value) =>
                           reframingModalTextState
                             .get(reframingModalIndex)
-                            ?.setter(value.trim())
+                            ?.setter(value)
                         }
                       />
                       {/* Dynamic Slider Component  */}
                       {(reframingModalIndex == 1 ||
                         reframingModalIndex == 6) && (
-                        <View
-                          style={{
-                            marginTop: 20,
-                            rowGap: 15,
-                          }}
-                        >
-                          {reframingModalIndex === 1 && (
-                            <Text
-                              style={
-                                {
-                                  textAlign: 'center',
-                                  alignSelf: 'center',
-                                  ...Fonts.sofiaProRegular[Platform.OS],
-                                } as TextStyle
-                              }
-                            >
-                              Hoe groot denk je dat de kans is dat deze gedachte
-                              realiteit wordt?
-                            </Text>
-                          )}
-                          <View>
-                            <Slider
-                              style={{ width: '100%' }}
-                              trackStyle={{ height: 15, borderRadius: 30 }}
-                              thumbStyle={{
-                                width: 28,
-                                height: 28,
-                              }}
-                              thumbTintColor='#C1DEBE'
-                              minimumValue={0}
-                              maximumValue={10}
-                              value={
-                                reframingModalIndex === 1
-                                  ? reframingModalSliderState.get(1)?.value
-                                  : reframingModalSliderState.get(2)?.value
-                              }
-                              onValueChange={(value) =>
-                                reframingModalIndex === 1
-                                  ? reframingModalSliderState
-                                      .get(1)
-                                      ?.setter(Math.round(value))
-                                  : reframingModalSliderState
-                                      .get(2)
-                                      ?.setter(Math.round(value))
-                              }
-                              minimumTrackTintColor='#E4E1E1'
-                              maximumTrackTintColor='#E4E1E1'
-                            />
-                            <View
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                              }}
-                            >
-                              <Text style={styles.optionsText}>Heel klein</Text>
-                              <Text style={styles.optionsText}>Heel groot</Text>
+                          <View
+                            style={{
+                              marginTop: 20,
+                              rowGap: 15,
+                            }}
+                          >
+                            {reframingModalIndex === 1 && (
+                              <Text
+                                style={
+                                  {
+                                    textAlign: 'center',
+                                    alignSelf: 'center',
+                                    ...Fonts.sofiaProRegular[Platform.OS],
+                                  } as TextStyle
+                                }
+                              >
+                                Hoe groot denk je dat de kans is dat deze gedachte
+                                realiteit wordt?
+                              </Text>
+                            )}
+                            <View>
+                              <View style={{ marginVertical: 25 }}>
+                                <Slider
+                                  progress={sliderValue}
+                                  onValueChange={(value) => (sliderValue.value = value)}
+                                  minimumValue={min}
+                                  maximumValue={max}
+                                  disableTrackPress={true}
+                                  disableTapEvent={true}
+                                  containerStyle={{ borderRadius: 30 }}
+                                  sliderHeight={15}
+                                  thumbWidth={25}
+                                  theme={{
+                                    minimumTrackTintColor: '#E4E1E1',
+                                    maximumTrackTintColor: '#E4E1E1',
+                                    bubbleBackgroundColor: '#C1DEBE',
+                                  }}
+                                  renderThumb={() => <CustomThumb />}
+                                  // @TODO Remove the bubble!
+                                  bubble={(s: number) => s.toFixed(1)}
+                                />
+                              </View>
+                              <View
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                }}
+                              >
+                                <Text style={styles.optionsText}>Heel klein</Text>
+                                <Text style={styles.optionsText}>Heel groot</Text>
+                              </View>
                             </View>
                           </View>
-                        </View>
-                      )}
+                        )}
                     </View>
                   </View>
                 )}
@@ -798,6 +870,45 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         </View>
                       );
                     })}
+                    <View
+                      style={{
+                        marginVertical: 20,
+                        display: 'flex',
+                        flexDirection: showUnreframedData
+                          ? 'column-reverse'
+                          : 'column',
+                        rowGap: 20,
+                      }}
+                    >
+                      <Pressable
+                        style={{ alignSelf: 'center', alignItems: 'center' }}
+                        onPress={() => setShowUnreframedData(!showUnreframedData)}
+                      >
+                        <Text style={styles.showOldSituationText}>
+                          {showUnreframedData
+                            ? 'Oude situatie verbergen'
+                            : 'Oude situatie bekijken'}
+                        </Text>
+
+                        <Feather
+                          name={showUnreframedData ? 'chevron-up' : 'chevron-down'}
+                          size={20}
+                          color={'gray'}
+                        />
+                      </Pressable>
+
+                      {showUnreframedData &&
+                        unreframedData.map((data, index) => (
+                          <View key={index}>
+                            <Text style={[styles.headingText, { color: 'gray' }]}>
+                              {data.heading}
+                            </Text>
+                            <Text style={[styles.bodyText, { color: 'gray' }]}>
+                              {data.body}
+                            </Text>
+                          </View>
+                        ))}
+                    </View>
                   </View>
                 </>
               )}
@@ -841,7 +952,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                   onPress={() => handleNext()}
                   style={
                     reframingModalIndex == reframingSteps.length - 1
-                      ? [styles.continueButton, { width: 165 }]
+                      ? [styles.continueButton, { width: 150 }]
                       : styles.continueButton
                   }
                 >
@@ -884,6 +995,9 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
           </View>
         </View>
       </View>
+      <Toast/>
+      </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 };
@@ -1032,10 +1146,23 @@ const styles = StyleSheet.create({
     fontSize: 13,
   } as TextStyle,
   dynamicTextInputComponent: {
+    verticalAlign: Platform.OS == 'android'? "top" : {},
     ...Fonts.sofiaProRegular[Platform.OS],
     padding: 10,
     borderRadius: 10,
     backgroundColor: '#f6f7f8',
     height: 165,
+  } as TextStyle,
+  showOldSituationText: {
+    ...Fonts.sofiaProRegular[Platform.OS],
+    fontSize: 11,
+    color: 'gray',
+  } as TextStyle,
+  headingText: {
+    ...Fonts.sofiaProSemiBold[Platform.OS],
+  } as TextStyle,
+  bodyText: {
+    ...Fonts.sofiaProRegular[Platform.OS],
+    fontSize: 13,
   } as TextStyle,
 });

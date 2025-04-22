@@ -48,7 +48,7 @@ export const Performance: React.FC<{ diaryData: IDiaryEntry[] }> = ({
           <Text style={styles.performanceTitleText}>Overzicht welzijn</Text>
           <Text style={styles.performanceDescriptionText}>
             Hier vind je een overzicht van de door jou ingevoerde gegevens uit
-            het dagboek voor de geselecteerde periode.
+            het dagboek voor de geselecteerde periode (week, maand, jaar).
           </Text>
           <Text style={styles.performanceHeadingText}>
             Persoonlijk dashboard
