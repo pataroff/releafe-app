@@ -24,7 +24,9 @@ const windowWidth = Dimensions.get('window').width;
 
 export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
   const title = '';
-  const { points, unlockedItems, unlockItem } = useGamification();
+
+  const { points, unlockedItems, unlockItem, updateGamificationInDatabase } =
+    useGamification();
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<{
@@ -33,14 +35,25 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
   } | null>(null);
 
   const handleIconPress = (itemId: string, price: number) => {
+    if (unlockedItems.includes(itemId)) {
+      return;
+    }
+
     setSelectedItem({ itemId, price });
     setModalVisible(true);
   };
+
   const handleConfirmPurchase = () => {
-    if (selectedItem) {
-      unlockItem(selectedItem.itemId, selectedItem.price);
-      setModalVisible(false);
+    if (!selectedItem) {
+      return;
     }
+
+    const updatedPoints = points - selectedItem.price;
+    const updatedUnlockedItems = [...unlockedItems, selectedItem.itemId];
+
+    unlockItem(selectedItem.itemId, selectedItem.price);
+    updateGamificationInDatabase(updatedPoints, updatedUnlockedItems);
+    setModalVisible(false);
   };
 
   return (
