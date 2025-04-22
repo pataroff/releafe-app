@@ -13,12 +13,13 @@ import {
   TextStyle,
   Dimensions,
   Animated,
-  Modal
+  Modal,
 } from 'react-native';
 
 import { Fonts } from '../styles';
 
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Feather from '@expo/vector-icons/Feather';
 
 import { Header } from '../components/Header';
 import { GoalsOverview } from '../components/GoalsOverview';
@@ -126,7 +127,8 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const [questionMarkModalActive, setQuestionMarkModalActive] = useState<boolean>(false);
+  const [questionMarkModalActive, setQuestionMarkModalActive] =
+    useState<boolean>(false);
 
   // Animation values
   const animatedValues = useRef(
@@ -142,7 +144,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
   const handleNudgingQuestionMark = () => {
     setQuestionMarkModalActive(true);
-  }
+  };
 
   const handleNudging = (index: number) => {
     switch (index) {
@@ -203,35 +205,40 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
   return (
     <>
-        <Modal
-          animationType='none'
-          transparent={true}
-          visible={questionMarkModalActive}
-          onRequestClose={() => setQuestionMarkModalActive(!questionMarkModalActive)}
-        >
-          <View style={styles.modalWrapper}>
-            <View style={styles.modalContainer}>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <View style={{ rowGap: 20 }}>
-                  <Text style={styles.nudgingBodyText}>Op basis van jouw gebruik van de app geven we je hier tips om je volgende stap te zetten.</Text>
-                </View>
+      <Modal
+        animationType='none'
+        transparent={true}
+        visible={questionMarkModalActive}
+        onRequestClose={() =>
+          setQuestionMarkModalActive(!questionMarkModalActive)
+        }
+      >
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
+            >
+              <View style={{ rowGap: 20 }}>
+                <Text style={styles.nudgingBodyText}>
+                  Op basis van jouw gebruik van de app geven we je hier tips om
+                  je volgende stap te zetten.
+                </Text>
               </View>
-              <Pressable
-                onPress={() =>
-                  setQuestionMarkModalActive(!questionMarkModalActive)
-                }
-              >
-                <Feather name='x-circle' size={24} color='gray' />
-              </Pressable>
             </View>
+            <Pressable
+              onPress={() =>
+                setQuestionMarkModalActive(!questionMarkModalActive)
+              }
+            >
+              <Feather name='x-circle' size={24} color='gray' />
+            </Pressable>
           </View>
-        </Modal>
+        </View>
+      </Modal>
       <StatusBar />
       <Header title={title} route={route} />
       <ScrollView
@@ -274,23 +281,21 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
         </View>
 
         {/* Nudging Container */}
-      <View style={styles.tipsHeaderContainer}>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          columnGap: 10,
-        }}
-      >
-        <Text style={styles.nudgingHeadingText}>Tips</Text>
-        <Pressable
-          onPress={() => handleNudgingQuestionMark()}
-        >
-          <FontAwesome6 name='question-circle' size={18} color='black' />
-        </Pressable>
+        <View style={styles.tipsHeaderContainer}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              columnGap: 10,
+            }}
+          >
+            <Text style={styles.nudgingHeadingText}>Tips</Text>
+            <Pressable onPress={() => handleNudgingQuestionMark()}>
+              <FontAwesome6 name='question-circle' size={18} color='black' />
+            </Pressable>
+          </View>
         </View>
-      </View>
         <ScrollView
           horizontal={true}
           snapToInterval={windowWidth - 2 * 20}
@@ -609,7 +614,7 @@ const styles = StyleSheet.create({
   tipsHeaderContainer: {
     flex: 1,
     width: 325,
-    marginTop:10,
+    marginTop: 10,
     borderRadius: 25,
     padding: 20,
   },
