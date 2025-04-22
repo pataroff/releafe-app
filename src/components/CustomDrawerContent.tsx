@@ -34,7 +34,8 @@ export const CustomDrawerContent = (props) => {
     {
       label: 'Bonsai boom',
       icon: require('../../assets/images/drawer_icons/drawer_bonsai_tree_icon.png'),
-      action: () => console.log('Bonsai boom pressed!'),
+      action: () =>
+        navigation.navigate('BonsaiTree', { screen: 'BonsaiTree1' }),
     },
     {
       label: 'Community',

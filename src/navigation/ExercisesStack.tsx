@@ -9,11 +9,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ExercisesScreen } from '../screens/ExercisesScreen';
 import { ExercisesScreen2 } from '../screens/ExercisesScreen2';
 
+import { useNotification } from '../context/NotificationContext';
+
 const Stack = createNativeStackNavigator();
 
 export const ExercisesStack: React.FC = () => {
   const { user } = useContext(AuthContext);
   const { setFavouriteExercises } = useContext(SettingsContext);
+  const { scheduleExerciseInactivityNotification } = useNotification();
 
   useEffect(() => {
     const fetchFavouriteExercises = async () => {
@@ -30,6 +33,7 @@ export const ExercisesStack: React.FC = () => {
       }
     };
     fetchFavouriteExercises();
+    scheduleExerciseInactivityNotification();
   }, [user]);
 
   return (

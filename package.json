@@ -55,7 +55,8 @@
     "victory-native": "^40.1.0",
     "expo-notifications": "~0.29.14",
     "expo-device": "~7.0.2",
-    "expo-constants": "~17.0.8"
+    "expo-constants": "~17.0.8",
+    "expo-dev-client": "~5.0.19"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

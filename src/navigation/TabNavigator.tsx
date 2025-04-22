@@ -1,16 +1,16 @@
 import React, { useEffect, useContext } from 'react';
-import { View, Image } from 'react-native';
+import { Image } from 'react-native';
 
 import { IWorryListItem, INoteEntry, IGoalEntry } from '../types';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import { HomeScreen } from '../screens/HomeScreen';
+import { DashboardScreen } from '../screens/DashboardScreen';
+
 import { DiaryStack } from './DiaryStack';
 import { ToolkitStack } from './ToolkitStack';
-
-import { HomeScreen } from '../screens/HomeScreen';
-import { AIScreen } from '../screens/AIScreen';
-import { DashboardScreen } from '../screens/DashboardScreen';
+import { BonsaiTreeStack } from './BonsaiTreeStack';
 
 import { AuthContext } from '../context/AuthContext';
 import { WorryContext } from '../context/WorryContext';
@@ -23,11 +23,10 @@ const Tab = createBottomTabNavigator();
 
 export const TabNavigator = () => {
   const { user } = useContext(AuthContext);
-  const { worryEntries, setWorryEntries } = useContext(WorryContext);
+  const { setWorryEntries } = useContext(WorryContext);
   const { setNoteEntries } = useContext(NoteContext);
   const { setGoalEntries } = useContext(GoalContext);
 
-  // TODO: Is this the right place to fetch the data?
   useEffect(() => {
     const fetchWorryEntries = async () => {
       if (user) {
@@ -188,30 +187,6 @@ export const TabNavigator = () => {
     fetchGoalEntries();
   }, [user]);
 
-  const CustomTabIcon = () => {
-    return (
-      <View
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 99,
-          backgroundColor: '#C1D6BA',
-          width: 70,
-          height: 70,
-          marginBottom: 20,
-          paddingVertical: 10,
-        }}
-      >
-        <Image
-          resizeMode='contain'
-          style={{ width: '100%', height: 45 }}
-          source={require('../../assets/images/bonsai_tree_icon.png')}
-        />
-      </View>
-    );
-  };
-
   return (
     <Tab.Navigator
       initialRouteName='Home'
@@ -225,7 +200,6 @@ export const TabNavigator = () => {
           borderTopStartRadius: 30,
           borderTopEndRadius: 30,
           height: 80,
-          // This can be done through tabBarIconStyle 👇🏻
           paddingTop: 10,
         },
       }}
@@ -273,17 +247,6 @@ export const TabNavigator = () => {
         }}
       />
 
-      {/* Custom Tab Bar Icon */}
-      {/* <Tab.Screen
-        name='AI'
-        component={AIScreen}
-        options={{
-          tabBarIcon: ({ size, focused, color }) => {
-            return <CustomTabIcon />;
-          },
-        }}
-      /> */}
-
       <Tab.Screen
         name='WellbeingOverview'
         component={DashboardScreen}
@@ -325,10 +288,14 @@ export const TabNavigator = () => {
               />
             );
           },
-          tabBarBadge:
-            //	The || operator returns the first truthy value it encounters or the last value if all are falsy.
-            worryEntries.filter((item) => item.reframed !== true).length ||
-            undefined,
+        }}
+      />
+
+      <Tab.Screen
+        name='BonsaiTree'
+        component={BonsaiTreeStack}
+        options={{
+          tabBarButton: () => null,
         }}
       />
     </Tab.Navigator>
