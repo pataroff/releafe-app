@@ -24,17 +24,7 @@ const windowWidth = Dimensions.get('window').width;
 
 export const DiaryFarewell: React.FC = () => {
   const navigation = useNavigation();
-  const { createDiaryEntry, resetSliderValues, resetTextValues } =
-    useContext(DiaryContext);
   const { user } = useContext(AuthContext);
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     createDiaryEntry();
-  //     resetSliderValues();
-  //     resetTextValues();
-  //   }, [])
-  // );
 
   const handleStackReset = (continueFlow: boolean) => {
     navigation.dispatch(StackActions.popToTop());
@@ -74,7 +64,7 @@ export const DiaryFarewell: React.FC = () => {
         }}
       >
         <Text style={styles.diaryDescriptionText}>
-          <Text style={{ ...(Fonts.poppinsMedium[Platform.OS] as TextStyle) }}>
+          <Text style={{ ...(Fonts.sofiaProMedium[Platform.OS] as TextStyle) }}>
             Hou dit vol!
           </Text>{' '}
           Door elke dag je dagboek in te vullen, worden de meest waardevolle

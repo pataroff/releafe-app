@@ -59,7 +59,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     setTimeframeProgressValue(completedTimeframe / 10);
     setPeriodProgressValue(completedPeriod / 10);
   }, [completedTimeframe, completedPeriod]);
-  
+
   const [modalCloseVisible, setModalCloseVisible] = useState<boolean>(false);
 
   const handleClose = () => {
@@ -67,34 +67,27 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     deleteGoalEntry(uuid);
   };
 
-  const onPress = () =>
-  {
-    setModalCloseVisible(!modalCloseVisible);
-  }
-
   return (
     <View style={styles.goalComponent}>
-          <Modal
-          animationType='none'
-          transparent={true}
-          visible={modalCloseVisible}
-          onRequestClose={() =>
-            setModalCloseVisible(!modalCloseVisible)
-          }
-        >
-          <CloseModal
-            closeModalVisible={modalCloseVisible}
-            setCloseModalVisible={setModalCloseVisible}
-            parentModalVisible={modalCloseVisible}
-            setParentModalVisible={setModalCloseVisible}
-            title='Persoonlijk doel verwijderen'
-            description='Je staat op het punt om je persoonlijke doel te verwijderen. Weet je het zeker?'
-            handleClose={handleClose}
-            denyText='Nee, ik wil doorgaan'
-            confirmText='Ja, ik wil afsluiten'
-            closeButtonDisabled = {true}
-          />
-    </Modal>
+      <Modal
+        animationType='none'
+        transparent={true}
+        visible={modalCloseVisible}
+        onRequestClose={() => setModalCloseVisible(!modalCloseVisible)}
+      >
+        <CloseModal
+          closeModalVisible={modalCloseVisible}
+          setCloseModalVisible={setModalCloseVisible}
+          parentModalVisible={modalCloseVisible}
+          setParentModalVisible={setModalCloseVisible}
+          title='Persoonlijk doel verwijderen'
+          description='Je staat op het punt om je persoonlijke doel te verwijderen. Weet je het zeker?'
+          handleClose={handleClose}
+          denyText='Nee, ik wil doorgaan'
+          confirmText='Ja, ik wil afsluiten'
+          closeButtonDisabled={true}
+        />
+      </Modal>
       <View
         style={{
           display: 'flex',
@@ -126,6 +119,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
             style={{
               display: 'flex',
               flexDirection: 'column',
+              rowGap: 5,
             }}
           >
             <Text style={styles.h2Text}>{getGoalCategoryString(category)}</Text>
@@ -143,6 +137,34 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                 marginTop: 10,
               }}
             >
+              {/* Reward Container */}
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  columnGap: 5,
+                }}
+              >
+                {/* Points Container */}
+                <View style={styles.pointsContainer}>
+                  <Text style={styles.pointsText}>+20</Text>
+
+                  <Image
+                    style={styles.shopIcon}
+                    source={require('../../assets/images/bonsai_tree_icons/shop_icon.png')}
+                    resizeMode='contain'
+                  />
+                </View>
+                {/* Trophy Container */}
+                <View style={styles.trophyContainer}>
+                  <Image
+                    style={styles.trophyIcon}
+                    source={require('../../assets/images/bonsai_tree_icons/trophy_icon.png')}
+                    resizeMode='contain'
+                  />
+                </View>
+              </View>
+
               <Text style={styles.bodyText}>
                 {highlightFrequency(sentence)}
               </Text>
@@ -172,8 +194,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                     })()}
                   </Text>
                   <Text style={styles.completedTimeframeText}>
-                    {completedTimeframe}/
-                    {targetFrequency}
+                    {completedTimeframe}/{targetFrequency}
                   </Text>
                 </View>
                 <ProgressBar
@@ -230,8 +251,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   </Text>
 
                   <Text style={styles.completedTimeframeText}>
-                    {completedTimeframe}/
-                    {targetFrequency}
+                    {completedTimeframe}/{targetFrequency}
                   </Text>
                 </View>
                 <ProgressBar
@@ -307,7 +327,9 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   <Text style={styles.statisticsDataHeadingText}>
                     Dagen actief
                   </Text>
-                  <Text style={styles.statisticsDataHeadingText}>Aantal keer gedaan</Text>
+                  <Text style={styles.statisticsDataHeadingText}>
+                    Aantal keer gedaan
+                  </Text>
                 </View>
 
                 <View
@@ -325,7 +347,34 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   <Text style={styles.statisticsDataBodyText}>
                     {completedTimeframe}
                   </Text>
-                  {/* Completed Period */}
+                </View>
+              </View>
+
+              {/* Reward Container */}
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  columnGap: 5,
+                }}
+              >
+                {/* Points Container */}
+                <View style={styles.pointsContainer}>
+                  <Text style={styles.pointsText}>+20</Text>
+
+                  <Image
+                    style={styles.shopIcon}
+                    source={require('../../assets/images/bonsai_tree_icons/shop_icon.png')}
+                    resizeMode='contain'
+                  />
+                </View>
+                {/* Trophy Container */}
+                <View style={styles.trophyContainer}>
+                  <Image
+                    style={styles.trophyIcon}
+                    source={require('../../assets/images/bonsai_tree_icons/trophy_icon.png')}
+                    resizeMode='contain'
+                  />
                 </View>
               </View>
 
@@ -384,7 +433,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   } as TextStyle,
   bodyText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
     fontSize: 13,
   } as TextStyle,
   timeframeText: {
@@ -430,5 +479,39 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     paddingVertical: 8,
     backgroundColor: '#5c6b57',
+  },
+  pointsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 72,
+    height: 31,
+    columnGap: 5,
+    backgroundColor: '#90A38A',
+    borderRadius: 7.5,
+    padding: 5,
+  },
+  pointsText: {
+    ...Fonts.sofiaProSemiBold[Platform.OS],
+    color: 'white',
+    fontSize: 16,
+  } as TextStyle,
+  shopIcon: {
+    width: 29,
+    height: 20,
+    marginBottom: 5,
+  },
+  trophyContainer: {
+    width: 35,
+    padding: 5,
+    borderRadius: 7.5,
+    backgroundColor: '#FCF2D0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trophyIcon: {
+    width: 23,
+    height: 20,
   },
 });

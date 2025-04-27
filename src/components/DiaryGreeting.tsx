@@ -49,7 +49,8 @@ export const DiaryGreeting = ({ route }) => {
         >
           <FontAwesome name='heart' size={36} color='#5C6B57' />
           <Text style={styles.greetingText}>
-            Hi {user?.firstName}, welkom!
+            Hi {user?.firstName}, wat goed dat je er weer bent. Laten we gelijk
+            beginnen.
           </Text>
         </View>
         {/* Body Container */}
@@ -65,6 +66,28 @@ export const DiaryGreeting = ({ route }) => {
             Door dagelijks je dagboek bij te houden, volg je zorgvuldig jouw
             groeiproces.
           </Text>
+          {/* Reward Container */}
+          <View style={{ display: 'flex', flexDirection: 'row', columnGap: 5 }}>
+            {/* Points Container */}
+            <View style={styles.pointsContainer}>
+              <Text style={styles.pointsText}>+35</Text>
+
+              <Image
+                style={styles.shopIcon}
+                source={require('../../assets/images/bonsai_tree_icons/shop_icon.png')}
+                resizeMode='contain'
+              />
+            </View>
+            {/* Trophy Container */}
+            <View style={styles.trophyContainer}>
+              <Image
+                style={styles.trophyIcon}
+                source={require('../../assets/images/bonsai_tree_icons/trophy_icon.png')}
+                resizeMode='contain'
+              />
+            </View>
+          </View>
+
           <Text style={styles.dateLabel}>
             Het is vandaag:{' '}
             <Text style={styles.dateText}>
@@ -81,7 +104,7 @@ export const DiaryGreeting = ({ route }) => {
           onPress={() => setModalDiaryVisible(!modalDiaryVisible)}
           style={styles.startButton}
         >
-          <Text style={styles.startButtonText}>Vul je dagboek in</Text>
+          <Text style={styles.startButtonText}>Start met dagboek</Text>
         </Pressable>
       </View>
     </>
@@ -114,14 +137,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
   } as TextStyle,
   diaryDescriptionText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
   } as TextStyle,
   dateLabel: {
     ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   dateText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
   } as TextStyle,
   startButton: {
     width: 160,
@@ -138,4 +161,38 @@ const styles = StyleSheet.create({
     ...Fonts.sofiaProSemiBold[Platform.OS],
     color: 'white',
   } as TextStyle,
+  pointsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 72,
+    height: 31,
+    columnGap: 5,
+    backgroundColor: '#90A38A',
+    borderRadius: 7.5,
+    padding: 5,
+  },
+  pointsText: {
+    ...Fonts.sofiaProSemiBold[Platform.OS],
+    color: 'white',
+    fontSize: 16,
+  } as TextStyle,
+  shopIcon: {
+    width: 29,
+    height: 20,
+    marginBottom: 5,
+  },
+  trophyContainer: {
+    width: 35,
+    padding: 5,
+    borderRadius: 7.5,
+    backgroundColor: '#FCF2D0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trophyIcon: {
+    width: 23,
+    height: 20,
+  },
 });

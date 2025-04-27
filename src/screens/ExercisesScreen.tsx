@@ -24,8 +24,8 @@ export const ExercisesScreen: React.FC<{ route: any }> = ({ route }) => {
       <View style={styles.headersContainer}>
         <Text style={styles.headersTitleText}>Oefeningen</Text>
         <Text style={styles.headersDescriptionText}>
-          Hieronder vind je een selectie van oefeningen, 
-          zorgvuldig samengesteld voor jou, Ontdek welke oefeningen bij jou passen.
+          Hieronder vind je een selectie van oefeningen, zorgvuldig samengesteld
+          voor jou, Ontdek welke oefeningen bij jou passen.
         </Text>
 
         {/* Headers Inner Container COMMENTED AS RECOMMENDED BY THE DOCUMENT

@@ -31,13 +31,13 @@ const styles = StyleSheet.create({
   exercisesCategoriesListContainer: {
     marginVertical: 20,
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f9f9f9',
   },
   exercisesCategoriesListContentContainer: {
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f9f9f9',
     rowGap: 10,
     marginHorizontal: 30,
     marginBottom: 100,

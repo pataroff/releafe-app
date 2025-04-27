@@ -187,6 +187,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
             screen: 'Toolkit',
             params: {
               screen: 'PersonalGoals',
+              // @TODO: Jan wants this to go to the first screen of goal setting!
             },
           },
         },
@@ -221,6 +222,11 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       );
     }
 
+    // @TODO: Luna removed 'endDate' from the goal, so it no longer exists!
+    // ONLY WEEKLY/MONTHLY
+    // END DATE SHOULD POINTS TO THE LAST DATE OF THAT SPECIFIC TIMEFRAME, WEEKLY,
+    // LAST DAY OF THE WEEK IT WAS SET
+    // LAST WEEK OF THE MONTH IT WAS SET
     const deadline = new Date(goal.endDate!);
     deadline.setDate(deadline.getDate() - 3); // 3 days before the goal's deadline
     deadline.setHours(10, 0, 0, 0); // At 10:00
@@ -235,7 +241,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
             screen: 'Toolkit',
             params: {
               screen: 'PersonalGoals',
-              // @TODO: Jan wants this to go to the first screen of goal setting!
             },
           },
         },

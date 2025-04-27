@@ -26,7 +26,6 @@ import { GoalsOverview } from '../components/GoalsOverview';
 
 import { AuthContext } from '../context/AuthContext';
 import { GoalContext } from '../context/GoalContext';
-import { useNotification } from '../context/NotificationContext';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -114,7 +113,6 @@ const nudgingItems = [
 
 export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
-  const { scheduleDailyNotification } = useNotification();
 
   const title = 'Home';
   const { user } = useContext(AuthContext);
@@ -252,7 +250,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
           <Text style={styles.greetingHeadingText}>
             Hallo {user?.firstName}
           </Text>
-          <Text style={styles.greetingBodyText}>Welkom!</Text>
+          <Text style={styles.greetingBodyText}>Welkom terug,</Text>
           <Text style={styles.dateHeadingText}>
             Het is vandaag
             <Text style={styles.dateBodyText}>
@@ -298,7 +296,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
         </View>
         <ScrollView
           horizontal={true}
-          snapToInterval={windowWidth - 2 * 20}
+          snapToInterval={windowWidth - 2 * 30 + 20}
           snapToAlignment={'center'}
           decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
@@ -323,6 +321,9 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
             return (
               <Animated.View
+                // onLayout={(e) =>
+                //   console.log('Item width:', e.nativeEvent.layout.width)
+                // }
                 key={index}
                 style={[
                   styles.nudgingItemContainer,
@@ -612,11 +613,10 @@ const styles = StyleSheet.create({
     rowGap: 5,
   },
   tipsHeaderContainer: {
-    flex: 1,
-    width: 325,
-    marginTop: 10,
-    borderRadius: 25,
-    padding: 20,
+    alignSelf: 'flex-start',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginHorizontal: 35,
   },
   modalWrapper: {
     flex: 1,

@@ -17,7 +17,7 @@ import { Fonts } from '../styles';
 import { Header } from '../components/Header';
 import { PurchaseModal } from '../components/PurchaseModal';
 
-import { bonsaiCategories } from '../utils/bonsai';
+import { bonsaiShopCategories } from '../utils/bonsai';
 import { useGamification } from '../context/BonsaiContext';
 
 const windowWidth = Dimensions.get('window').width;
@@ -25,7 +25,7 @@ const windowWidth = Dimensions.get('window').width;
 export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
   const title = '';
 
-  const { points, unlockedItems, unlockItem, updateGamificationInDatabase } =
+  const { points, unlockedItems, unlockItem, updateUnlockedItemsInDatabase } =
     useGamification();
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -52,7 +52,7 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
     const updatedUnlockedItems = [...unlockedItems, selectedItem.itemId];
 
     unlockItem(selectedItem.itemId, selectedItem.price);
-    updateGamificationInDatabase(updatedPoints, updatedUnlockedItems);
+    updateUnlockedItemsInDatabase(updatedPoints, updatedUnlockedItems);
     setModalVisible(false);
   };
 
@@ -83,7 +83,7 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
         </View>
 
         {/* Bonsai Category Row */}
-        {bonsaiCategories.map((category, index) => (
+        {bonsaiShopCategories.map((category, index) => (
           <View
             key={index}
             style={{

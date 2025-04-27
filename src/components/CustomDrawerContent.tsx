@@ -23,7 +23,10 @@ import { Avatar } from 'react-native-paper';
 
 export const CustomDrawerContent = (props) => {
   const { user, signOut } = useContext(AuthContext);
-  const { navigation } = props;
+  const { navigation, state } = props;
+
+  const currentRoute = state.routes[state.index];
+  const nestedRoute = currentRoute.state?.routes?.[currentRoute.state.index];
 
   const menuConfigGroup1 = [
     {
@@ -36,11 +39,6 @@ export const CustomDrawerContent = (props) => {
       icon: require('../../assets/images/drawer_icons/drawer_bonsai_tree_icon.png'),
       action: () =>
         navigation.navigate('BonsaiTree', { screen: 'BonsaiTree1' }),
-    },
-    {
-      label: 'Community',
-      icon: require('../../assets/images/drawer_icons/drawer_community_icon.png'),
-      action: () => console.log('Community pressed!'),
     },
   ];
 

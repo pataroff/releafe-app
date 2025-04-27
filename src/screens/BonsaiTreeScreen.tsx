@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
@@ -17,117 +17,27 @@ import { Fonts } from '../styles';
 
 import { Header } from '../components/Header';
 
-import { useGamification } from '../context/BonsaiContext';
-import { bonsaiCategories } from '../utils/bonsai';
+import {
+  stateIcons,
+  branchesStateIcons,
+  leavesStateIcons,
+  flowersStateIcons,
+  branchesImages,
+  leavesImages,
+  flowerImages,
+} from '../utils/bonsai';
 
+import { useGamification } from '../context/BonsaiContext';
 import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
-
-const stateIcons = [
-  require('../../assets/images/bonsai_tree_icons/branches_icon.png'),
-  require('../../assets/images/bonsai_tree_icons/leaves_icon.png'),
-  require('../../assets/images/bonsai_tree_icons/blossom_icon.png'),
-];
-
-const branchesStateIcons = [
-  {
-    id: 'branches_1',
-    image: require('../../assets/images/bonsai_tree_icons/branches_icons/branches_icon_1.png'),
-  },
-  {
-    id: 'branches_2',
-    image: require('../../assets/images/bonsai_tree_icons/branches_icons/branches_icon_2.png'),
-  },
-  {
-    id: 'branches_3',
-    image: require('../../assets/images/bonsai_tree_icons/branches_icons/branches_icon_3.png'),
-  },
-  {
-    id: 'branches_4',
-    image: require('../../assets/images/bonsai_tree_icons/branches_icons/branches_icon_4.png'),
-  },
-  {
-    id: 'branches_5',
-    image: require('../../assets/images/bonsai_tree_icons/branches_icons/branches_icon_5.png'),
-  },
-];
-
-const leavesStateIcons = [
-  {
-    id: 'leaves_1',
-    image: require('../../assets/images/bonsai_tree_icons/leaves_icons/leaves_icon_1.png'),
-  },
-  {
-    id: 'leaves_2',
-    image: require('../../assets/images/bonsai_tree_icons/leaves_icons/leaves_icon_2.png'),
-  },
-  {
-    id: 'leaves_3',
-    image: require('../../assets/images/bonsai_tree_icons/leaves_icons/leaves_icon_3.png'),
-  },
-  {
-    id: 'leaves_4',
-    image: require('../../assets/images/bonsai_tree_icons/leaves_icons/leaves_icon_4.png'),
-  },
-  {
-    id: 'leaves_5',
-    image: require('../../assets/images/bonsai_tree_icons/leaves_icons/leaves_icon_5.png'),
-  },
-];
-
-const flowersStateIcons = [
-  {
-    id: 'flowers_1',
-    image: require('../../assets/images/bonsai_tree_icons/flowers_icons/flowers_icon_1.png'),
-  },
-  {
-    id: 'flowers_2',
-    image: require('../../assets/images/bonsai_tree_icons/flowers_icons/flowers_icon_2.png'),
-  },
-  {
-    id: 'flowers_3',
-    image: require('../../assets/images/bonsai_tree_icons/flowers_icons/flowers_icon_3.png'),
-  },
-  {
-    id: 'flowers_4',
-    image: require('../../assets/images/bonsai_tree_icons/flowers_icons/flowers_icon_4.png'),
-  },
-  {
-    id: 'flowers_5',
-    image: require('../../assets/images/bonsai_tree_icons/flowers_icons/flowers_icon_5.png'),
-  },
-];
-
-const branchesImages = [
-  require('../../assets/images/bonsai_tree_icons/branches/branches_1.png'),
-  require('../../assets/images/bonsai_tree_icons/branches/branches_2.png'),
-  require('../../assets/images/bonsai_tree_icons/branches/branches_3.png'),
-  require('../../assets/images/bonsai_tree_icons/branches/branches_4.png'),
-  require('../../assets/images/bonsai_tree_icons/branches/branches_5.png'),
-];
-
-const leavesImages = [
-  require('../../assets/images/bonsai_tree_icons/leaves/leaves_1.png'),
-  require('../../assets/images/bonsai_tree_icons/leaves/leaves_2.png'),
-  require('../../assets/images/bonsai_tree_icons/leaves/leaves_3.png'),
-  require('../../assets/images/bonsai_tree_icons/leaves/leaves_4.png'),
-  require('../../assets/images/bonsai_tree_icons/leaves/leaves_5.png'),
-];
-
-const flowerImages = [
-  require('../../assets/images/bonsai_tree_icons/flowers/flowers_1.png'),
-  require('../../assets/images/bonsai_tree_icons/flowers/flowers_2.png'),
-  require('../../assets/images/bonsai_tree_icons/flowers/flowers_3.png'),
-  require('../../assets/images/bonsai_tree_icons/flowers/flowers_4.png'),
-  require('../../assets/images/bonsai_tree_icons/flowers/flowers_5.png'),
-];
 
 export const BonsaiTreeScreen: React.FC = ({ route }) => {
   const title = 'Bonsaiboom';
   const navigation = useNavigation();
 
-  const { points, unlockedItems } = useGamification();
+  const { points, unlockedItems, treeState, updateTreeStateInDatabase } =
+    useGamification();
 
   const [showBranchesOptions, setShowBranchesOptions] =
     useState<boolean>(false);
@@ -149,6 +59,28 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
     setSelectedLeafIndex,
     setSelectedFlowerIndex,
   ];
+
+  // 1. Sync `treeState` from database into local state when it loads
+  useEffect(() => {
+    if (treeState) {
+      setSelectedBranchIndex(treeState.selectedBranchIndex ?? null);
+      setSelectedLeafIndex(treeState.selectedLeafIndex ?? null);
+      setSelectedFlowerIndex(treeState.selectedFlowerIndex ?? null);
+    }
+  }, [treeState]);
+
+  // 2. Save `treeState` to database when user leaves the screen
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      updateTreeStateInDatabase(
+        selectedBranchIndex,
+        selectedLeafIndex,
+        selectedFlowerIndex
+      );
+    });
+
+    return unsubscribe;
+  }, [navigation, selectedBranchIndex, selectedLeafIndex, selectedFlowerIndex]);
 
   const handleBonsaiStateDropdown = (index: number) => {
     switch (index) {
@@ -232,8 +164,6 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                         : index === 1
                         ? leavesStateIcons
                         : flowersStateIcons;
-
-                    const setSelectedIndex = selectedIndexSetters[index];
 
                     return (
                       <View key={index}>
@@ -331,46 +261,122 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                 />
 
                 {/* Flowers */}
-                <Image
-                  source={flowerImages[selectedFlowerIndex]}
-                  style={{
-                    position: 'absolute',
-                    bottom: 175, // same as hill height
-                    left: '50%',
-                    transform: [{ translateX: -windowWidth / 2 }],
-                    width: '100%',
-                    height: 235,
-                    zIndex: 4,
-                  }}
-                />
+                {selectedBranchIndex !== null &&
+                  selectedFlowerIndex !== null &&
+                  (() => {
+                    const flowersToUse = [];
+
+                    // Step 1: Stack flowers from the selected flower level
+                    for (let i = 0; i <= selectedFlowerIndex; i++) {
+                      flowersToUse.push(
+                        ...flowerImages.slice(i * 5, (i + 1) * 5)
+                      );
+                    }
+
+                    // Step 2: Only display the correct number of flowers based on the selected branch level
+                    const flowersToDisplay = [
+                      ...flowersToUse.slice(0, selectedBranchIndex + 1), // Always show flowers based on branch index
+                      ...(selectedFlowerIndex >= 1
+                        ? [
+                            // Loop through each level from 1 to selectedFlowerIndex
+                            ...Array.from(
+                              { length: selectedFlowerIndex },
+                              (_, i) => {
+                                // Slice each flower level, from (i + 1) * 5 to (i + 2) * 5 (because we skip the 0-index)
+                                return flowerImages
+                                  .slice((i + 1) * 5, (i + 2) * 5)
+                                  .slice(0, selectedBranchIndex + 1);
+                              }
+                            ).flat(), // Flatten the array to ensure all flowers are in a single array
+                          ]
+                        : []),
+                    ];
+
+                    // Step 3: Render the flowers
+                    return flowersToDisplay.map((imgSrc, idx) => (
+                      <Image
+                        key={`flower-${idx}`}
+                        source={imgSrc}
+                        style={{
+                          position: 'absolute',
+                          bottom: 175,
+                          left: '50%',
+                          transform: [{ translateX: -windowWidth / 2 }],
+                          width: '100%',
+                          height: 235,
+                          zIndex: 28 + idx,
+                        }}
+                        resizeMode='cover'
+                      />
+                    ));
+                  })()}
 
                 {/* Leaves */}
-                <Image
-                  source={leavesImages[selectedLeafIndex]}
-                  style={{
-                    position: 'absolute',
-                    bottom: 175, // same as hill height
-                    left: '50%',
-                    transform: [{ translateX: -windowWidth / 2 }],
-                    width: '100%',
-                    height: 235,
-                    zIndex: 3,
-                  }}
-                />
+                {selectedBranchIndex !== null &&
+                  selectedLeafIndex !== null &&
+                  (() => {
+                    const leavesToUse = [];
+
+                    // Step 1: Stack leaves from the selected leaf level
+                    for (let i = 0; i <= selectedLeafIndex; i++) {
+                      leavesToUse.push(
+                        ...leavesImages.slice(i * 5, (i + 1) * 5)
+                      );
+                    }
+
+                    // Step 2: Only display the correct number of leaves based on the selected branch level
+                    const leavesToDisplay = [
+                      ...leavesToUse.slice(0, selectedBranchIndex + 1), // Always show leaves based on branch index
+                      ...(selectedLeafIndex >= 1
+                        ? [
+                            // Loop through each level from 1 to selectedLeafIndex
+                            ...Array.from(
+                              { length: selectedLeafIndex },
+                              (_, i) => {
+                                // Slice each leaf level, from (i + 1) * 5 to (i + 2) * 5 (because we skip the 0-index)
+                                return leavesImages
+                                  .slice((i + 1) * 5, (i + 2) * 5)
+                                  .slice(0, selectedBranchIndex + 1);
+                              }
+                            ).flat(), // Flatten the array to ensure all leaves are in a single array
+                          ]
+                        : []),
+                    ];
+
+                    // Step 3: Render the leaves
+                    return leavesToDisplay.map((imgSrc, idx) => (
+                      <Image
+                        key={`leaf-${idx}`}
+                        source={imgSrc}
+                        style={{
+                          position: 'absolute',
+                          bottom: 175,
+                          left: '50%',
+                          transform: [{ translateX: -windowWidth / 2 }],
+                          width: '100%',
+                          height: 235,
+                          zIndex: 3 + idx,
+                        }}
+                        resizeMode='cover'
+                      />
+                    ));
+                  })()}
 
                 {/* Branches */}
-                <Image
-                  source={branchesImages[selectedBranchIndex]}
-                  style={{
-                    position: 'absolute',
-                    bottom: 175, // same as hill height
-                    left: '50%',
-                    transform: [{ translateX: -windowWidth / 2 }],
-                    width: '100%',
-                    height: 235,
-                    zIndex: 2,
-                  }}
-                />
+                {selectedBranchIndex !== null && (
+                  <Image
+                    source={branchesImages[selectedBranchIndex]}
+                    style={{
+                      position: 'absolute',
+                      bottom: 175, // same as hill height
+                      left: '50%',
+                      transform: [{ translateX: -windowWidth / 2 }],
+                      width: '100%',
+                      height: 235,
+                      zIndex: 2,
+                    }}
+                  />
+                )}
 
                 {/* Root */}
                 <Image

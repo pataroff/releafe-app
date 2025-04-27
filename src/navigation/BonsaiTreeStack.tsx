@@ -15,7 +15,7 @@ const Stack = createNativeStackNavigator();
 
 export const BonsaiTreeStack: React.FC = () => {
   const { user } = useContext(AuthContext);
-  const { setPoints, setUnlockedItems } = useGamification();
+  const { setPoints, setUnlockedItems, setTreeState } = useGamification();
 
   useEffect(() => {
     const fetchGamificationData = async () => {
@@ -26,9 +26,17 @@ export const BonsaiTreeStack: React.FC = () => {
           const unlockedItems = userRecord?.unlockedItems
             ? userRecord.unlockedItems
             : [];
+          const treeState = userRecord?.treeState
+            ? userRecord?.treeState
+            : {
+                selectedBranchIndex: null,
+                selectedLeafIndex: null,
+                selectedFlowerIndex: null,
+              };
 
           setPoints(points);
           setUnlockedItems(unlockedItems);
+          setTreeState(treeState);
         } catch (error) {
           console.error('Error fetching gamification data:', error);
         }

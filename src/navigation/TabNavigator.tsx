@@ -16,6 +16,7 @@ import { AuthContext } from '../context/AuthContext';
 import { WorryContext } from '../context/WorryContext';
 import { NoteContext } from '../context/NoteContext';
 import { GoalContext } from '../context/GoalContext';
+import { useGamification } from '../context/BonsaiContext';
 
 import pb from '../lib/pocketbase';
 
@@ -26,6 +27,7 @@ export const TabNavigator = () => {
   const { setWorryEntries } = useContext(WorryContext);
   const { setNoteEntries } = useContext(NoteContext);
   const { setGoalEntries } = useContext(GoalContext);
+  const { setPoints } = useGamification();
 
   useEffect(() => {
     const fetchWorryEntries = async () => {
@@ -182,9 +184,24 @@ export const TabNavigator = () => {
       }
     };
 
+    // @TODO: Is this where this should happen?
+    const fetchUserPoints = async () => {
+      if (user) {
+        console.log(user.points);
+        setPoints(user.points);
+        // try {
+        //   const userRecord = await pb.collection('users').getOne(user?.id);
+        //   setPoints(userRecord.points || 0);
+        // } catch (error) {
+        //   console.error('Error fetching points:', error);
+        // }
+      }
+    };
+
     fetchWorryEntries();
     fetchNoteEntries();
     fetchGoalEntries();
+    fetchUserPoints();
   }, [user]);
 
   return (

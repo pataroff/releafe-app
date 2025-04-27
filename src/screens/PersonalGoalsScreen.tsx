@@ -96,7 +96,8 @@ export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
               <View style={{ width: '80%' }}>
                 <Text style={styles.headersHeadingText}>Mijn doelen</Text>
                 <Text style={styles.headersDescriptionText}>
-                Bekijk hieronder de voortgang van je persoonlijke doelen of stel via de + knop hiernaast een nieuwe persoonlijk doel in.
+                  Bekijk hieronder de voortgang van je persoonlijke doelen of
+                  stel via de + knop hiernaast een nieuwe persoonlijk doel in.
                 </Text>
               </View>
               {/* Add Button */}
@@ -173,8 +174,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
-    marginTop: 5,
+    ...Fonts.sofiaProLight[Platform.OS],
+    lineHeight: 18,
+    marginTop: 10,
   } as TextStyle,
   addButton: {
     borderRadius: 15,

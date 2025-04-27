@@ -15,6 +15,7 @@ import {
 
 import { DiaryContext } from '../context/DiaryContext';
 import { GoalContext } from '../context/GoalContext';
+import { useGamification } from '../context/BonsaiContext';
 
 import { useSharedValue } from 'react-native-reanimated';
 import { Slider } from 'react-native-awesome-slider';
@@ -126,6 +127,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const navigation = useNavigation();
 
   const { goalEntries, updateGoalEntry } = useContext(GoalContext);
+  const { addPoints, updatePointsInDatabase } = useGamification();
 
   const totalSteps =
     goalEntries.length > 0
@@ -214,6 +216,8 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const handleFinish = () => {
     // Create diary entry
     createDiaryEntry();
+    // Reward points
+    addPoints(35);
 
     // Update goal entries (if applicable)
     if (goalEntries.length > 0 && checkedGoals.length > 0) {
@@ -261,231 +265,231 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
       visible={modalDiaryVisible}
       onRequestClose={() => setCloseModalVisible(!closeModalVisible)}
     >
-  <GestureHandlerRootView>
-    <SafeAreaView>
-      <CloseModal
-        closeModalVisible={closeModalVisible}
-        setCloseModalVisible={setCloseModalVisible}
-        parentModalVisible={modalDiaryVisible}
-        setParentModalVisible={setModalDiaryVisible}
-        title='Stoppen met invullen dagboek'
-        description='Je staat op het punt te stoppen met het invullen van je dagboek. Weet je het zeker?'
-        handleClose={handleClose}
-        route={route}
-        denyText='Opslaan en afsluiten'
-        confirmText='Niet opslaan en afsluiten'
-      />
-      </SafeAreaView>
-      <View style={styles.modalWrapper}>
-        <View style={styles.modalContainer}>
-          <View style={styles.headersContainer}>
-            {/* Title + Close Button */}
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
-              <Text style={styles.headersTitleText}>Dagboek invullen</Text>
-              <Pressable
-                style={{ position: 'absolute', right: 0 }}
-                onPress={() => setCloseModalVisible(!closeModalVisible)}
-              >
-                <Feather name='x-circle' size={24} color='gray' />
-              </Pressable>
-            </View>
-
-            {/* Heading */}
-            <Text style={styles.headersHeadingText}>
-              {diaryModalIndex == 6
-                ? 'Vraag 7. Persoonlijke doelen'
-                : diaryModalIndex < 6
-                ? sliderSteps[sliderQuestionIndex].heading
-                : 'Aanvullende vragen'}
-            </Text>
-          </View>
-
-          <View style={{ flex: 1 }}>
-            {/* Slider Question Component */}
-            {diaryModalIndex < 6 && (
-              <View style={styles.componentContainer}>
-                <Text style={styles.headingText}>
-                  {sliderSteps[sliderQuestionIndex].question}
-                </Text>
-                <View style={{ marginVertical: 25 }}>
-                  <Slider
-                    progress={sliderValue}
-                    onValueChange={(value) => (sliderValue.value = value)}
-                    minimumValue={min}
-                    maximumValue={max}
-                    disableTrackPress={true}
-                    disableTapEvent={true}
-                    containerStyle={{ borderRadius: 30 }}
-                    sliderHeight={15}
-                    thumbWidth={25}
-                    theme={{
-                      minimumTrackTintColor: '#E4E1E1',
-                      maximumTrackTintColor: '#E4E1E1',
-                      bubbleBackgroundColor: '#C1DEBE',
-                    }}
-                    renderThumb={() => <CustomThumb />}
-                    // @TODO Remove the bubble!
-                    bubble={(s: number) => s.toFixed(1)}
-                  />
-                </View>
-                {/* Slider Options Container */}
-                <View style={styles.optionsContainer}>
-                  <Text style={styles.optionsText}>
-                    {sliderSteps[sliderQuestionIndex].options[0]}
-                  </Text>
-                  <Text style={styles.optionsText}>
-                    {sliderSteps[sliderQuestionIndex].options[1]}
-                  </Text>
-                </View>
-              </View>
-            )}
-
-            {/* Goals Checklist Component */}
-            {diaryModalIndex == 6 && (
-              <View
-                style={[
-                  styles.componentContainer,
-                  { maxHeight: windowHeight - 400 },
-                ]}
-              >
-                <Text style={styles.headingText}>
-                  Vink aan welke van de volgende doelen jij vandaag hebt
-                  behaald.
-                </Text>
-                {/* Goal Check Item */}
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  style={styles.goalsChecklistContainer}
-                  contentContainerStyle={styles.goalsChecklistContentContainer}
-                >
-                  {goalEntries.map((goal, index) => {
-                    return (
-                      <GoalsChecklistItem
-                        key={index}
-                        goal={goal}
-                        checked={checkedGoals.includes(goal.uuid)}
-                        setCheckedGoals={setCheckedGoals}
-                      />
-                    );
-                  })}
-                </ScrollView>
-              </View>
-            )}
-
-            {/* Text Question Component */}
-            {diaryModalIndex > 6 && (
-              <View style={styles.componentContainer}>
-                <Text style={[styles.bodyText, { fontSize: 14 }]}>
-                  <Text
-                    style={
-                      { ...Fonts.sofiaProSemiBold[Platform.OS] } as TextStyle
-                    }
-                  >
-                  </Text>
-                  {textSteps[textQuestionIndex].question}
-                </Text>
-                <TextInput
-                  value={textValue}
-                  onChangeText={(value) =>
-                    handleTextChange(textQuestionIndex, value)
-                  }
-                  placeholder={textSteps[textQuestionIndex].placeholder}
-                  placeholderTextColor={'rgba(0,0,0,0.5)'}
-                  multiline
-                  style={
-                    {
-                      verticalAlign: Platform.OS == 'android'? "top" : {},
-                      ...Fonts.sofiaProRegular[Platform.OS],
-                     marginTop: 20,
-                     paddingHorizontal: 10,
-                     borderRadius: 10,
-                      backgroundColor: '#f6f7f8',
-                      height: 165,
-                    } as TextStyle
-                  }
-                />
-              </View>
-            )}
-          </View>
-
-          {/* Progress Wrapper */}
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 40,
-              width: '100%',
-              alignSelf: 'center',
-              paddingHorizontal: 15,
-            }}
-          >
-            {/* Progress Container */}
-            <View style={styles.progressContainer}>
-              {/* Buttons Container */}
+      <GestureHandlerRootView>
+        <SafeAreaView>
+          <CloseModal
+            closeModalVisible={closeModalVisible}
+            setCloseModalVisible={setCloseModalVisible}
+            parentModalVisible={modalDiaryVisible}
+            setParentModalVisible={setModalDiaryVisible}
+            title='Stoppen met invullen dagboek'
+            description='Je staat op het punt te stoppen met het invullen van je dagboek. Weet je het zeker?'
+            handleClose={handleClose}
+            route={route}
+            denyText='Opslaan en afsluiten'
+            confirmText='Niet opslaan en afsluiten'
+          />
+        </SafeAreaView>
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            <View style={styles.headersContainer}>
+              {/* Title + Close Button */}
               <View
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
                 }}
               >
-                {/* Go Back Button */}
+                <Text style={styles.headersTitleText}>Dagboek invullen</Text>
                 <Pressable
-                  onPress={() => handlePrevious()}
-                  disabled={diaryModalIndex == 0 ? true : false}
-                  style={
-                    diaryModalIndex == 0
-                      ? [styles.backButton, { opacity: 0.4 }]
-                      : styles.backButton
-                  }
+                  style={{ position: 'absolute', right: 0 }}
+                  onPress={() => setCloseModalVisible(!closeModalVisible)}
                 >
-                  <Text style={styles.buttonText}>Ga terug</Text>
-                </Pressable>
-                {/* Continue Button */}
-                <Pressable
-                  onPress={
-                    diaryModalIndex == totalStepsIndex
-                      ? handleFinish
-                      : handleNext
-                  }
-                  style={
-                    diaryModalIndex == totalStepsIndex
-                      ? [styles.continueButton, { width: 150 }]
-                      : styles.continueButton
-                  }
-                >
-                  <Text style={styles.buttonText}>
-                    {diaryModalIndex == totalStepsIndex
-                      ? 'Afronden en sluiten'
-                      : 'Ga verder'}
-                  </Text>
+                  <Feather name='x-circle' size={24} color='gray' />
                 </Pressable>
               </View>
-              {/* Progress Bar Container */}
-              <View style={styles.progressBarContainer}>
-                <Text style={styles.progressBarText}>
-                  {diaryModalIndex == totalStepsIndex
-                  ? '100%'
-                  : Math.round(progressValue * 100) +  '%'
-                  }
-                </Text>
-                <ProgressBar
-                  // Jan prefers switching to the steps to keep the design more consistent!
-                  progress={progressValue}
-                  color='#A9C1A1'
-                  style={styles.progressBar}
-                />
+
+              {/* Heading */}
+              <Text style={styles.headersHeadingText}>
+                {diaryModalIndex == 6
+                  ? 'Vraag 7. Persoonlijke doelen'
+                  : diaryModalIndex < 6
+                  ? sliderSteps[sliderQuestionIndex].heading
+                  : 'Aanvullende vragen'}
+              </Text>
+            </View>
+
+            <View style={{ flex: 1 }}>
+              {/* Slider Question Component */}
+              {diaryModalIndex < 6 && (
+                <View style={styles.componentContainer}>
+                  <Text style={styles.headingText}>
+                    {sliderSteps[sliderQuestionIndex].question}
+                  </Text>
+                  <View style={{ marginVertical: 25 }}>
+                    <Slider
+                      progress={sliderValue}
+                      onValueChange={(value) => (sliderValue.value = value)}
+                      minimumValue={min}
+                      maximumValue={max}
+                      disableTrackPress={true}
+                      disableTapEvent={true}
+                      containerStyle={{ borderRadius: 30 }}
+                      sliderHeight={15}
+                      thumbWidth={25}
+                      theme={{
+                        minimumTrackTintColor: '#E4E1E1',
+                        maximumTrackTintColor: '#E4E1E1',
+                        bubbleBackgroundColor: '#C1DEBE',
+                      }}
+                      renderThumb={() => <CustomThumb />}
+                      // @TODO Remove the bubble!
+                      bubble={(s: number) => s.toFixed(1)}
+                    />
+                  </View>
+                  {/* Slider Options Container */}
+                  <View style={styles.optionsContainer}>
+                    <Text style={styles.optionsText}>
+                      {sliderSteps[sliderQuestionIndex].options[0]}
+                    </Text>
+                    <Text style={styles.optionsText}>
+                      {sliderSteps[sliderQuestionIndex].options[1]}
+                    </Text>
+                  </View>
+                </View>
+              )}
+
+              {/* Goals Checklist Component */}
+              {diaryModalIndex == 6 && (
+                <View
+                  style={[
+                    styles.componentContainer,
+                    { maxHeight: windowHeight - 400 },
+                  ]}
+                >
+                  <Text style={styles.headingText}>
+                    Vink aan welke van de volgende doelen jij vandaag hebt
+                    behaald.
+                  </Text>
+                  {/* Goal Check Item */}
+                  <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    style={styles.goalsChecklistContainer}
+                    contentContainerStyle={
+                      styles.goalsChecklistContentContainer
+                    }
+                  >
+                    {goalEntries.map((goal, index) => {
+                      return (
+                        <GoalsChecklistItem
+                          key={index}
+                          goal={goal}
+                          checked={checkedGoals.includes(goal.uuid)}
+                          setCheckedGoals={setCheckedGoals}
+                        />
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              )}
+
+              {/* Text Question Component */}
+              {diaryModalIndex > 6 && (
+                <View style={styles.componentContainer}>
+                  <Text style={[styles.bodyText, { fontSize: 14 }]}>
+                    <Text
+                      style={
+                        { ...Fonts.sofiaProSemiBold[Platform.OS] } as TextStyle
+                      }
+                    ></Text>
+                    {textSteps[textQuestionIndex].question}
+                  </Text>
+                  <TextInput
+                    value={textValue}
+                    onChangeText={(value) =>
+                      handleTextChange(textQuestionIndex, value)
+                    }
+                    placeholder={textSteps[textQuestionIndex].placeholder}
+                    placeholderTextColor={'rgba(0,0,0,0.5)'}
+                    multiline
+                    style={
+                      {
+                        verticalAlign: Platform.OS == 'android' ? 'top' : {},
+                        ...Fonts.sofiaProRegular[Platform.OS],
+                        marginTop: 20,
+                        paddingHorizontal: 10,
+                        borderRadius: 10,
+                        backgroundColor: '#f6f7f8',
+                        height: 165,
+                      } as TextStyle
+                    }
+                  />
+                </View>
+              )}
+            </View>
+
+            {/* Progress Wrapper */}
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 40,
+                width: '100%',
+                alignSelf: 'center',
+                paddingHorizontal: 15,
+              }}
+            >
+              {/* Progress Container */}
+              <View style={styles.progressContainer}>
+                {/* Buttons Container */}
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  {/* Go Back Button */}
+                  <Pressable
+                    onPress={() => handlePrevious()}
+                    disabled={diaryModalIndex == 0 ? true : false}
+                    style={
+                      diaryModalIndex == 0
+                        ? [styles.backButton, { opacity: 0.4 }]
+                        : styles.backButton
+                    }
+                  >
+                    <Text style={styles.buttonText}>Ga terug</Text>
+                  </Pressable>
+                  {/* Continue Button */}
+                  <Pressable
+                    onPress={
+                      diaryModalIndex == totalStepsIndex
+                        ? handleFinish
+                        : handleNext
+                    }
+                    style={
+                      diaryModalIndex == totalStepsIndex
+                        ? [styles.continueButton, { width: 150 }]
+                        : styles.continueButton
+                    }
+                  >
+                    <Text style={styles.buttonText}>
+                      {diaryModalIndex == totalStepsIndex
+                        ? 'Afronden en sluiten'
+                        : 'Ga verder'}
+                    </Text>
+                  </Pressable>
+                </View>
+                {/* Progress Bar Container */}
+                <View style={styles.progressBarContainer}>
+                  <Text style={styles.progressBarText}>
+                    {diaryModalIndex == totalStepsIndex
+                      ? '100%'
+                      : Math.round(progressValue * 100) + '%'}
+                  </Text>
+                  <ProgressBar
+                    // Jan prefers switching to the steps to keep the design more consistent!
+                    progress={progressValue}
+                    color='#A9C1A1'
+                    style={styles.progressBar}
+                  />
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
       </GestureHandlerRootView>
     </Modal>
   );

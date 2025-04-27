@@ -9,16 +9,30 @@ import React, {
 import pb from '../lib/pocketbase';
 import { AuthContext } from './AuthContext';
 
+interface TreeState {
+  selectedBranchIndex: number | null;
+  selectedLeafIndex: number | null;
+  selectedFlowerIndex: number | null;
+}
+
 interface BonsaiContextType {
   points: number;
   unlockedItems: string[];
+  treeState: TreeState;
   setPoints: React.Dispatch<SetStateAction<number>>;
   setUnlockedItems: React.Dispatch<SetStateAction<string[]>>;
+  setTreeState: React.Dispatch<SetStateAction<TreeState>>;
   unlockItem: (itemId: string, cost: number) => void;
   addPoints: (amount: number) => void;
-  updateGamificationInDatabase: (
+  updatePointsInDatabase: (newPoints: number) => Promise<void>;
+  updateUnlockedItemsInDatabase: (
     newPoints: number,
     newUnlockedItems: string[]
+  ) => Promise<void>;
+  updateTreeStateInDatabase: (
+    selectedBranchIndex: number | null,
+    selectedLeafIndex: number | null,
+    selectedFlowerIndex: number | null
   ) => Promise<void>;
 }
 
@@ -36,6 +50,11 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
 
   const [points, setPoints] = useState<number>(0);
   const [unlockedItems, setUnlockedItems] = useState<string[]>([]);
+  const [treeState, setTreeState] = useState<TreeState>({
+    selectedBranchIndex: null,
+    selectedLeafIndex: null,
+    selectedFlowerIndex: null,
+  });
 
   const unlockItem = (itemId: string, cost: number) => {
     if (points >= cost && !unlockedItems.includes(itemId)) {
@@ -45,10 +64,26 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addPoints = (amount: number) => {
-    setPoints((prev) => prev + amount);
+    setPoints((prev) => {
+      const updatedPoints = prev + amount;
+      updatePointsInDatabase(updatedPoints);
+      return updatedPoints;
+    });
   };
 
-  const updateGamificationInDatabase = async (
+  const updatePointsInDatabase = async (newPoints: number) => {
+    try {
+      const userRecord = await pb.collection('users').getOne(user?.id);
+
+      await pb.collection('users').update(userRecord.id, {
+        points: newPoints,
+      });
+    } catch (error) {
+      console.error('Error updating points data:', error);
+    }
+  };
+
+  const updateUnlockedItemsInDatabase = async (
     newPoints: number,
     newUnlockedItems: string[]
   ) => {
@@ -62,7 +97,29 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
         unlockedItems: newUnlockedItemsJSON,
       });
     } catch (error) {
-      console.error('Error updating gamification data:', error);
+      console.error('Error updating unlocked items data:', error);
+    }
+  };
+
+  const updateTreeStateInDatabase = async (
+    selectedBranchIndex: number | null,
+    selectedLeafIndex: number | null,
+    selectedFlowerIndex: number | null
+  ) => {
+    try {
+      const updatedTreeState = {
+        selectedBranchIndex,
+        selectedLeafIndex,
+        selectedFlowerIndex,
+      };
+
+      const userRecord = await pb.collection('users').getOne(user?.id);
+
+      await pb.collection('users').update(userRecord.id, {
+        treeState: updatedTreeState,
+      });
+    } catch (error) {
+      console.error('Error updating tree state data:', error);
     }
   };
 
@@ -71,11 +128,15 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
       value={{
         points,
         unlockedItems,
+        treeState,
+        setTreeState,
         setPoints,
         setUnlockedItems,
         unlockItem,
         addPoints,
-        updateGamificationInDatabase,
+        updatePointsInDatabase,
+        updateUnlockedItemsInDatabase,
+        updateTreeStateInDatabase,
       }}
     >
       {children}

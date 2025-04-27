@@ -87,10 +87,10 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
   const sliderValuesLength = Object.keys(
     selectedDiaryEntry?.sliderValues ?? {}
-  ).length+1;
+  ).length;
   const textValuesLength = Object.keys(
     selectedDiaryEntry?.textValues ?? {}
-  ).length+1;
+  ).length;
 
   useFocusEffect(
     useCallback(() => {
@@ -322,6 +322,9 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
           <View style={styles.dataSlidersContainer}>
             <Text style={styles.dataHeadingText}>
               {sliderTitlesAndDescriptions[sliderQuestionIndex][0]}
+            </Text>
+            <Text style={styles.dataDescriptionText}>
+              {sliderTitlesAndDescriptions[sliderQuestionIndex][1]}
             </Text>
             <Slider
               disabled={true}

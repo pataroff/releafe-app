@@ -25,11 +25,11 @@ export const ExercisesList: React.FC<ExercisesListProps> = ({
   // Define the structure of `exercisesData`
   const exercisesData: [ExerciseCategory, Exercise[]][] | Exercise[] =
     //category === 'Bekijk alle oefeningen'
-       Array.from(categoryExercises.entries()) // Grouped: [categoryKey, exercises[]]
-      //: categoryExercises.get(getExerciseCategory(category)) || []; // Flat array of exercises
+    Array.from(categoryExercises.entries()); // Grouped: [categoryKey, exercises[]]
+  //: categoryExercises.get(getExerciseCategory(category)) || []; // Flat array of exercises
 
   // Type guard to check if `exercisesData` is grouped
-  const isGrouped = category == 'Bekijk alle oefeningen'
+  const isGrouped = category == 'Bekijk alle oefeningen';
   //Array.isArray(exercisesData[0]);
 
   const filteredExercises = (exercises: Exercise[]) =>
@@ -62,30 +62,32 @@ export const ExercisesList: React.FC<ExercisesListProps> = ({
             }
           )
         : // Handle single category
-        (exercisesData as [ExerciseCategory, Exercise[]][]).map(
-          ([categoryKey, exercises]) => {
-            console.log("Category: " + category.toUpperCase());
-            console.log("CategoryKey: " + categoryKey);
-            console.log("---");
-            if(categoryKey==category.toUpperCase()){
-            console.log("------Match-----");
-            exercises = categoryExercises.get(getExerciseCategory(category)) || []
-            const filtered = filteredExercises(exercises);
-            if (filtered.length === 0) return null; // Skip rendering if no favourites for this category
-            return (
-             <>
-                <Text style={styles.categoryText}>
-                  {getExerciseCategoryString(categoryKey)}
-                </Text>
-              <React.Fragment>
-                {filtered.map((exercise, index) => (
-                  <ExercisesListItem key={index} exercise={exercise} />
-                ))}
-              </React.Fragment>
-            </> 
-            );
-          }}
-        )}
+          (exercisesData as [ExerciseCategory, Exercise[]][]).map(
+            ([categoryKey, exercises], index) => {
+              console.log('Category: ' + category.toUpperCase());
+              console.log('CategoryKey: ' + categoryKey);
+              console.log('---');
+              if (categoryKey == category.toUpperCase()) {
+                console.log('------Match-----');
+                exercises =
+                  categoryExercises.get(getExerciseCategory(category)) || [];
+                const filtered = filteredExercises(exercises);
+                if (filtered.length === 0) return null; // Skip rendering if no favourites for this category
+                return (
+                  <React.Fragment key={index}>
+                    <Text style={styles.categoryText}>
+                      {getExerciseCategoryString(categoryKey)}
+                    </Text>
+                    <React.Fragment>
+                      {filtered.map((exercise, idx) => (
+                        <ExercisesListItem key={idx} exercise={exercise} />
+                      ))}
+                    </React.Fragment>
+                  </React.Fragment>
+                );
+              }
+            }
+          )}
     </ScrollView>
   );
 };
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#f9f9f9',
     rowGap: 15,
-    marginBottom: 200,
+    marginBottom: 100,
   },
   categoryText: {
     fontSize: 18,
