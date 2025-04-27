@@ -520,8 +520,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                   <Text style={styles.h2Text}>Mijn doel</Text>
                   <Text style={styles.h3Text}>{title}</Text>
                   <Text style={styles.bodyText}>
-                    Binnen welk tijdsbestek wil jij je doel opstellen en
-                    evalueren?
+                    Kies of je dit dagelijks, wekelijks of maandelijks wil doen.
                   </Text>
 
                   {/* Dropdown */}
@@ -565,8 +564,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                     <Text style={styles.h2Text}>Mijn doel</Text>
                     <Text style={styles.h3Text}>{title}</Text>
                     <Text style={styles.bodyText}>
-                      Hoe vaak wil je je doel behalen binnen het gekozen
-                      tijdsbestek?
+                      Kies hoe vaak je dit doel wil uitvoeren.
                     </Text>
                     <Text style={styles.bodyText}>
                       Selecteer een aantal tussen:{'\n'}Wekelijks: 1 - 7 keer.
