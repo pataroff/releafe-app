@@ -9,6 +9,7 @@ import {
     Platform,
     Modal,
     Dimensions,
+    Linking,
 } from 'react-native';
 
 import { AuthContext } from '../context/AuthContext';
@@ -43,7 +44,16 @@ export const InformationModal: React.FC<InformationModalProps> = ({
         }
     }
     const handleWebsitePress = () => {
-        console.log("WEBSITE BUTTON PRESSED");
+        Linking.canOpenURL("https://www.releafe.nl/").then(supported => {
+            if(supported)
+            {
+                Linking.openURL("https://www.releafe.nl/")
+            }
+            else
+            {
+                console.log("Can't open ULR");
+            }
+        })
     }
     const informatiegidsSteps = [
         {

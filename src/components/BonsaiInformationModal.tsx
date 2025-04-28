@@ -41,9 +41,6 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
             setInformatiegidsIndex((prev) => --prev);
         }
     }
-    const handleWebsitePress = () => {
-        console.log("WEBSITE BUTTON PRESSED");
-    }
     const informatiegidsSteps = [
         {
             title: 'Releafe',
