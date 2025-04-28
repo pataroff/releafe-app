@@ -153,14 +153,19 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                         >
                             {/*First Page*/}
                             {informatiegidsIndex == 0 && (
-                                <>
+                            <>
+                                <View style={{ rowGap: 20 }}>
                                     <Image source={require('../../assets/images/logo_releafe_05.png')}
-                                        style={{ width: windowWidth / 4.5, height: 62, paddingBottom: 90 }}
+                                        style={{ width: windowWidth / 4.5, height: 62}}
                                         resizeMode='contain' />
-                                    <View style={{ rowGap: 20 }}>
-                                        <Text style={styles.informationTitleIntro}>
+                                    <Text style={styles.informationTitleIntro}>
                                             Hi {user?.firstName}, en welkom bij Releafe.
-                                        </Text>
+                                    </Text>
+                                    <View>
+
+                                    </View>
+                                </View>
+                                <View style={{ rowGap: 20 }}>
                                         <Text style={styles.informationBody}>
                                             Releafe. biedt je de mogelijkheid om actief aan je mentale gezondheid te werken en ondersteuning te krijgen bij je
                                             mentale klachten.
@@ -168,8 +173,8 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                                         <Text style={styles.informationBody}>
                                             Volg deze informatiegids om te ontdekken hoe de mobiele applicatie werkt en wat wij voor jou kunnen betekenen.
                                         </Text>
-                                    </View>
-                                </>
+                                </View>
+                            </>
                             )}
                             {/*Title, Description & Icon for pages past the first*/}
                             {informatiegidsIndex >= 1 && (
@@ -182,18 +187,20 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                                         }
                                     }>
                                         {informatiegidsSteps[informatiegidsIndex].icon && (
+                                        <View style={{width: windowWidth / 20}}>
                                             <Image style={
                                                 {
                                                     objectFit: 'contain',
                                                     paddingRight: 10,
                                                     paddingLeft: 10,
                                                     height: 20,
-                                                    width: windowWidth / 20,
+                                                    width: '100%',
                                                     marginRight: 5,
                                                     top: 4,
                                                 }
                                             }
                                                 source={informatiegidsSteps[informatiegidsIndex].icon}></Image>
+                                        </View>
                                         )}
                                         <Text style={styles.informationTitle}>
                                             {informatiegidsSteps[informatiegidsIndex].title}
@@ -216,7 +223,9 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                                                     marginBottom: 10,
                                                     marginRight: 30,
                                                 }}>
+                                                <View style={{alignSelf:'center'}}>
                                                 <Image source={informatiegidsNavigationElements[index].icon} style={styles.navigationScreenIcon}></Image>
+                                                </View>
                                                 {informatiegidsNavigationElements[index].specialtext ? (
                                                     <Text style={styles.informationBody}>
                                                         {informatiegidsNavigationElements[index].specialtext}
@@ -253,7 +262,9 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                                                     marginBottom: 10,
                                                     marginRight: 30,
                                                 }}>
-                                                <Image source={informatiegidsExerciseElements[index].icon} style={styles.navigationScreenIcon}></Image>
+                                                <View style={{alignSelf:'center'}}>
+                                                    <Image source={informatiegidsExerciseElements[index].icon} style={styles.navigationScreenIcon}></Image>
+                                                </View>
                                                 <Text style={styles.informationBody}>
                                                     {informatiegidsExerciseElements[index].text}
                                                 </Text>
@@ -275,7 +286,9 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                             {informatiegidsIndex == 4 && (
                                 <>
                                     <Text style={{ ...styles.informationBody, marginBottom: 10 }}>Alle meldingen zijn standaard ingeschakeld. Wil je dit wijzigen? Dan kun je de meldingen aanpassen via de instellingen, onderdelen "
-                                        <Image source={require('../../assets/images/drawer_icons/drawer_settings_icon.png')} style={{ objectFit: 'contain', width: windowWidth / 34, height: 12, paddingHorizontal: 5 }} />
+                                        <View style={{width: windowWidth/34}}>
+                                        <Image source={require('../../assets/images/drawer_icons/drawer_settings_icon.png')} style={{ objectFit: 'contain', width: "100%", height: 12}} />
+                                        </View>
                                         extra meldingen" in het "Meldingen"-venster.
                                     </Text>
                                     <Text style={styles.informationBody}>De instellingen vind je door op je profiel te klikken, rechtsboven in het scherm.</Text>
@@ -433,9 +446,8 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         paddingLeft: 10,
         height: 26,
-        width: windowWidth / 16,
+        width: '100%',
         marginRight: 25,
-        top: 4,
         alignSelf: 'center'
     },
     websiteButton: {

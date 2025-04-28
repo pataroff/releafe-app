@@ -82,12 +82,13 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                             }}
                         >
                             {/*First Page*/}
-                            {console.log(windowWidth)}
                             {informatiegidsIndex == 0 && (
                                 <>
+                                    <View style={{width: windowWidth / 4.5}}>
                                     <Image source={require('../../assets/images/bonsai_tree_information_icon.png')}
-                                        style={{ width: windowWidth / 4.5, height: 62, paddingBottom: 90 }}
+                                        style={{ width: "100%", height: 62, paddingBottom: 90 }}
                                         resizeMode='contain' />
+                                    </View>
                                     <View style={{ rowGap: 20 }}>
                                         <Text style={styles.informationTitleIntro}>
                                             Hi {user?.firstName}, welkom bij je bonsaiboom.
@@ -108,20 +109,6 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                                             marginBottom: 10,
                                         }
                                     }>
-                                        {informatiegidsSteps[informatiegidsIndex].icon && (
-                                            <Image style={
-                                                {
-                                                    objectFit: 'contain',
-                                                    paddingRight: 10,
-                                                    paddingLeft: 10,
-                                                    height: 20,
-                                                    width: 20,
-                                                    marginRight: 5,
-                                                    top: 4,
-                                                }
-                                            }
-                                                source={informatiegidsSteps[informatiegidsIndex].icon}></Image>
-                                        )}
                                         <Text style={styles.informationTitle}>
                                             {informatiegidsSteps[informatiegidsIndex].title}
                                         </Text>
@@ -134,13 +121,15 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                             {informatiegidsIndex == 1 && (
                                 <>
                                 <Text style={{...styles.informationBody, marginBottom: 10}}>Op plekken waar je Releafe-punten kunt verdienen én badges kunt behalen, zie je deze symbolen:</Text>
-                                <Image source={require('../../assets/images/information_achievement_points_icon.png')} style={{ objectFit: 'contain', width: windowWidth / 3.2, height: 36, marginVertical: 10, }}/>
+                                <View style={{width: windowWidth / 3.2, paddingVertical: 10}}>
+                                    <Image source={require('../../assets/images/information_achievement_points_icon.png')} style={{ objectFit: 'contain', width: "100%", height: 36}}/>
+                                </View>
                                 </>
                             )}
                             {/*Third Page*/}
                             {informatiegidsIndex == 2 && (
                                 <>
-                                <Image source = {require('../../assets/images/bonsai_upgrades_information_icons.png')} style={{ objectFit:'contain', width: windowWidth / 1.25, height: 128, paddingVertical: 70, marginBottom: 20}}/>
+                                <Image source = {require('../../assets/images/bonsai_upgrades_information_icons.png')} style={{ objectFit:'contain', width: windowWidth / 1.25, height: 128, marginBottom:10}}/>
                                 </>
                             )}
                             {/*Fourth Page*/}
