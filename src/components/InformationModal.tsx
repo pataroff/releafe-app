@@ -13,20 +13,10 @@ import {
 
 import { AuthContext } from '../context/AuthContext';
 
-import {
-    DrawerContentScrollView,
-    DrawerItemList,
-    DrawerItem,
-} from '@react-navigation/drawer';
-
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
-import { Avatar } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { topLeft } from '@shopify/react-native-skia';
-import { useSharedValue } from 'react-native-reanimated';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ScreenWidth } from '@rneui/base';
 const windowWidth = Dimensions.get('window').width;
 
 interface InformationModalProps {
@@ -148,13 +138,14 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                                 display: 'flex',
                                 flexDirection: 'column',
                                 justifyContent: 'space-between',
+                                maxHeight: Dimensions.get("window").height * 0.8,
                             }}
                         >
                             {/*First Page*/}
                             {informatiegidsIndex == 0 && (
                                 <>
                                     <Image source={require('../../assets/images/logo_releafe_05.png')}
-                                        style={{ width: ScreenWidth / 4.5, height: 62, paddingBottom: 90 }}
+                                        style={{ width: windowWidth / 4.5, height: 62, paddingBottom: 90 }}
                                         resizeMode='contain' />
                                     <View style={{ rowGap: 20 }}>
                                         <Text style={styles.informationTitleIntro}>
@@ -187,7 +178,7 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                                                     paddingRight: 10,
                                                     paddingLeft: 10,
                                                     height: 20,
-                                                    width: ScreenWidth / 20,
+                                                    width: windowWidth / 20,
                                                     marginRight: 5,
                                                     top: 4,
                                                 }
@@ -264,17 +255,17 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                             {/*Fourth Page*/}
                             {informatiegidsIndex == 3 && (
                                 <>
-                                    <Image source={require('../../assets/images/information_achievement_points_icon.png')} style={{ objectFit: 'contain', width: ScreenWidth / 3.2, height: 36, marginVertical: 10, }} />
+                                    <Image source={require('../../assets/images/information_achievement_points_icon.png')} style={{ objectFit: 'contain', width: windowWidth / 3.2, height: 36, marginVertical: 10, }} />
                                     <Text style={{ ...styles.informationBody, marginBottom: 10 }}>Met deze punten kun je jouw eigen bonsaiboom upgraden en verzorgen, door bijvoorbeeld extra bladeren of bloesems toe te voegen.</Text>
                                     <Text style={{ ...styles.informationBody, marginBottom: 10 }}>Jouw bonsaiboom vind je door op je profiel te klikken, rechtsboven in het scherm.</Text>
-                                    <Image source={require('../../assets/images/bonsai_tree_tree.png')} style={{ objectFit: 'contain', alignSelf: 'center', width: ScreenWidth / 1.15}} />
+                                    <Image source={require('../../assets/images/bonsai_tree_tree.png')} style={{ objectFit: 'contain', alignSelf: 'center', width: windowWidth / 1.15}} />
                                 </>
                             )}
                             {/*Fifth Page*/}
                             {informatiegidsIndex == 4 && (
                                 <>
                                     <Text style={{ ...styles.informationBody, marginBottom: 10 }}>Alle meldingen zijn standaard ingeschakeld. Wil je dit wijzigen? Dan kun je de meldingen aanpassen via de instellingen, onderdelen "
-                                        <Image source={require('../../assets/images/drawer_icons/drawer_settings_icon.png')} style={{ objectFit: 'contain', width: ScreenWidth / 34, height: 12, paddingHorizontal: 5 }} />
+                                        <Image source={require('../../assets/images/drawer_icons/drawer_settings_icon.png')} style={{ objectFit: 'contain', width: windowWidth / 34, height: 12, paddingHorizontal: 5 }} />
                                         extra meldingen" in het "Meldingen"-venster.
                                     </Text>
                                     <Text style={styles.informationBody}>De instellingen vind je door op je profiel te klikken, rechtsboven in het scherm.</Text>
@@ -432,13 +423,13 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         paddingLeft: 10,
         height: 26,
-        width: ScreenWidth / 16,
+        width: windowWidth / 16,
         marginRight: 25,
         top: 4,
         alignSelf: 'center'
     },
     websiteButton: {
-        width: ScreenWidth / 2.1,
+        width: windowWidth / 2.1,
         alignItems: 'center',
         borderRadius: 10,
         borderColor: 'black',

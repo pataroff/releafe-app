@@ -13,20 +13,10 @@ import {
 
 import { AuthContext } from '../context/AuthContext';
 
-import {
-    DrawerContentScrollView,
-    DrawerItemList,
-    DrawerItem,
-} from '@react-navigation/drawer';
-
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
-import { Avatar } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { topLeft } from '@shopify/react-native-skia';
-import { useSharedValue } from 'react-native-reanimated';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ScreenWidth } from '@rneui/base';
 const windowWidth = Dimensions.get('window').width;
 
 interface BonsaiInformationModalProps {
@@ -37,7 +27,6 @@ interface BonsaiInformationModalProps {
 export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
     modalBonsaiInformationVisible,
     setModalBonsaiInformationVisible,
-    route,
 }) => {
     const { user } = useContext(AuthContext);
     const [informatiegidsIndex, setInformatiegidsIndex] = useState<number>(0);
@@ -96,11 +85,11 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                             }}
                         >
                             {/*First Page*/}
-                            {console.log(ScreenWidth)}
+                            {console.log(windowWidth)}
                             {informatiegidsIndex == 0 && (
                                 <>
                                     <Image source={require('../../assets/images/bonsai_tree_information_icon.png')}
-                                        style={{ width: ScreenWidth / 4.5, height: 62, paddingBottom: 90 }}
+                                        style={{ width: windowWidth / 4.5, height: 62, paddingBottom: 90 }}
                                         resizeMode='contain' />
                                     <View style={{ rowGap: 20 }}>
                                         <Text style={styles.informationTitleIntro}>
@@ -148,20 +137,20 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                             {informatiegidsIndex == 1 && (
                                 <>
                                 <Text style={{...styles.informationBody, marginBottom: 10}}>Op plekken waar je Releafe-punten kunt verdienen én badges kunt behalen, zie je deze symbolen:</Text>
-                                <Image source={require('../../assets/images/information_achievement_points_icon.png')} style={{ objectFit: 'contain', width: ScreenWidth / 3.2, height: 36, marginVertical: 10, }}/>
+                                <Image source={require('../../assets/images/information_achievement_points_icon.png')} style={{ objectFit: 'contain', width: windowWidth / 3.2, height: 36, marginVertical: 10, }}/>
                                 </>
                             )}
                             {/*Third Page*/}
                             {informatiegidsIndex == 2 && (
                                 <>
-                                <Image source = {require('../../assets/images/bonsai_upgrades_information_icons.png')} style={{ objectFit:'contain', width: ScreenWidth / 1.25, height: 128, paddingVertical: 70, marginBottom: 20}}/>
+                                <Image source = {require('../../assets/images/bonsai_upgrades_information_icons.png')} style={{ objectFit:'contain', width: windowWidth / 1.25, height: 128, paddingVertical: 70, marginBottom: 20}}/>
                                 </>
                             )}
                             {/*Fourth Page*/}
                             {informatiegidsIndex == 3 && (
                                 <>
                                     <Text style={{ ...styles.informationBody, marginBottom: 10 }}>Rechtsonder vind je jouw prestaties: de badges die je hebt verdiend, bijvoorbeeld door een streak te behalen.</Text>
-                                    <Image source={require('../../assets/images/bonsai_points_achievements_information_icons.png')} style={{ objectFit: 'contain', alignSelf: 'center', width: ScreenWidth / 1.15, height: 160 }} />
+                                    <Image source={require('../../assets/images/bonsai_points_achievements_information_icons.png')} style={{ objectFit: 'contain', alignSelf: 'center', width: windowWidth / 1.15, height: 160 }} />
                                 </>
                             )}
                         </View>
