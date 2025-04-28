@@ -31,6 +31,8 @@ import { useGamification } from '../context/BonsaiContext';
 import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
+// @TODO: Is there a better way to handle smaller screen sizes?
+const windowHeight = Dimensions.get('window').height;
 
 export const BonsaiTreeScreen: React.FC = ({ route }) => {
   const title = 'Bonsaiboom';
@@ -137,6 +139,7 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
           <View style={{ flex: 1, zIndex: 2 }}>
             <ScrollView
               bounces={false}
+              showsVerticalScrollIndicator={false}
               style={styles.container}
               contentContainerStyle={styles.contentContainerStyles}
             >
@@ -242,7 +245,7 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
               {/* Bonsai Tree + Hill */}
               <View
                 style={{
-                  height: 400,
+                  height: windowHeight < 700 ? 500 : 400,
                   width: '100%',
                   justifyContent: 'flex-end',
                   position: 'relative',

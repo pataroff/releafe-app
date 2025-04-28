@@ -187,7 +187,6 @@ export const TabNavigator = () => {
     // @TODO: Is this where this should happen?
     const fetchUserPoints = async () => {
       if (user) {
-        console.log(user.points);
         setPoints(user.points);
         // try {
         //   const userRecord = await pb.collection('users').getOne(user?.id);
