@@ -187,15 +187,12 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                                         }
                                     }>
                                         {informatiegidsSteps[informatiegidsIndex].icon && (
-                                        <View style={{width: windowWidth / 20}}>
+                                        <View style={{width: 16}}>
                                             <Image style={
                                                 {
                                                     objectFit: 'contain',
-                                                    paddingRight: 10,
-                                                    paddingLeft: 10,
                                                     height: 20,
                                                     width: '100%',
-                                                    marginRight: 5,
                                                     top: 4,
                                                 }
                                             }
@@ -232,7 +229,7 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                                                         <Text style={styles.informationBodyBold}>
                                                             {informatiegidsNavigationElements[index].boldtext}
                                                             <Text style={styles.informationBody}>
-                                                                {" "}{informatiegidsNavigationElements[index].text}
+                                                                {informatiegidsNavigationElements[index].text}
                                                             </Text>
                                                         </Text>
                                                     </Text>
@@ -443,15 +440,14 @@ const styles = StyleSheet.create({
     navigationScreenIcon:
     {
         objectFit: 'contain',
-        paddingRight: 10,
-        paddingLeft: 10,
+        paddingHorizontal: 10,
         height: 26,
         width: '100%',
-        marginRight: 25,
+        marginRight: 20,
         alignSelf: 'center'
     },
     websiteButton: {
-        width: windowWidth / 2.1,
+        width: 200,
         alignItems: 'center',
         borderRadius: 10,
         borderColor: 'black',

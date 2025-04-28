@@ -84,9 +84,9 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                             {/*First Page*/}
                             {informatiegidsIndex == 0 && (
                                 <>
-                                    <View style={{width: windowWidth / 4.5}}>
+                                    <View style={{width: windowWidth - 2*15}}>
                                     <Image source={require('../../assets/images/bonsai_tree_information_icon.png')}
-                                        style={{ width: "100%", height: 62, paddingBottom: 90 }}
+                                        style={{ width: "100%", height: 62}}
                                         resizeMode='contain' />
                                     </View>
                                     <View style={{ rowGap: 20 }}>
