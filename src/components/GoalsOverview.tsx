@@ -165,7 +165,7 @@ export const GoalsOverview = () => {
             />
             {/* Timeframe Percentage Text */}
             <Text style={styles.percentageText}>
-              {(completedTimeframe/targetFrequency) * 100}%
+              {Math.round((completedTimeframe/targetFrequency) * 100)}%
             </Text>
           </View>
 

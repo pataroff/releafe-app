@@ -198,7 +198,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   </Text>
                 </View>
                 <ProgressBar
-                  progress={timeframeProgressValue}
+                  progress={completedTimeframe / targetFrequency}
                   color='#A9C1A1'
                   style={styles.progressBar}
                 />
@@ -255,13 +255,13 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   </Text>
                 </View>
                 <ProgressBar
-                  progress={timeframeProgressValue}
+                  progress={completedTimeframe / targetFrequency}
                   color='#A9C1A1'
                   style={styles.progressBar}
                 />
                 {/* Timeframe Percentage Text */}
                 <Text style={styles.percentageText}>
-                  {timeframeProgressValue * 100}%
+                  {Math.round((completedTimeframe / targetFrequency) * 100)}%
                 </Text>
               </View>
 
@@ -343,38 +343,16 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   <Text style={styles.statisticsDataBodyText}>
                     {formatDateString(startDate as Date)}
                   </Text>
-                  {/* Completed Timeframe */}
+                  {/* Days Active */}
                   <Text style={styles.statisticsDataBodyText}>
-                    {completedTimeframe}
+                    {new Date(startDate as Date) > new Date()
+                      ? 0
+                      : Math.floor(getDaysBetweenDates(startDate, new Date()))}
                   </Text>
-                </View>
-              </View>
-
-              {/* Reward Container */}
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  columnGap: 5,
-                }}
-              >
-                {/* Points Container */}
-                <View style={styles.pointsContainer}>
-                  <Text style={styles.pointsText}>+20</Text>
-
-                  <Image
-                    style={styles.shopIcon}
-                    source={require('../../assets/images/bonsai_tree_icons/shop_icon.png')}
-                    resizeMode='contain'
-                  />
-                </View>
-                {/* Trophy Container */}
-                <View style={styles.trophyContainer}>
-                  <Image
-                    style={styles.trophyIcon}
-                    source={require('../../assets/images/bonsai_tree_icons/trophy_icon.png')}
-                    resizeMode='contain'
-                  />
+                  {/* Completed Period */}
+                  <Text style={styles.statisticsDataBodyText}>
+                    {completedPeriod}
+                  </Text>
                 </View>
               </View>
 
