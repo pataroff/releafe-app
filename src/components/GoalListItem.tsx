@@ -177,7 +177,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   </Text>
                 </View>
                 <ProgressBar
-                  progress={timeframeProgressValue}
+                  progress={completedTimeframe / targetFrequency}
                   color='#A9C1A1'
                   style={styles.progressBar}
                 />
@@ -235,13 +235,13 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   </Text>
                 </View>
                 <ProgressBar
-                  progress={timeframeProgressValue}
+                  progress={completedTimeframe / targetFrequency}
                   color='#A9C1A1'
                   style={styles.progressBar}
                 />
                 {/* Timeframe Percentage Text */}
                 <Text style={styles.percentageText}>
-                  {timeframeProgressValue * 100}%
+                  {Math.round(completedTimeframe / targetFrequency * 100)}%
                 </Text>
               </View>
 
@@ -321,11 +321,16 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   <Text style={styles.statisticsDataBodyText}>
                     {formatDateString(startDate as Date)}
                   </Text>
-                  {/* Completed Timeframe */}
+                  {/* Days Active */}
                   <Text style={styles.statisticsDataBodyText}>
-                    {completedTimeframe}
+                    {new Date(startDate as Date) > new Date()
+                    ? 0
+                    : Math.floor(getDaysBetweenDates(startDate, new Date()))}
                   </Text>
                   {/* Completed Period */}
+                  <Text style={styles.statisticsDataBodyText}>
+                    {completedPeriod}
+                  </Text>
                 </View>
               </View>
 

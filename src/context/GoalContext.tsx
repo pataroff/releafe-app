@@ -146,9 +146,9 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       // Create the updated entry
       updatedEntry = { ...matchedGoalEntry };
       updatedEntry.completedTimeframe += 1;
+      updatedEntry.completedPeriod +=1;
 
       if (updatedEntry.completedTimeframe >= updatedEntry.targetFrequency) {
-        updatedEntry.completedPeriod += 1;
         // Don't reset `completedTimeframe' if `updatedEntry.timeframe` equals `Timeframe.Daily`
         if (updatedEntry.timeframe !== Timeframe.Daily) {
           updatedEntry.completedTimeframe = 0;
