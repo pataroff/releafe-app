@@ -14,9 +14,6 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
 
 import { Category, INoteEntry } from '../types';
@@ -31,26 +28,110 @@ import { CloseModal } from './CloseModal';
 const getCategory = (category: Category): React.ReactElement => {
   switch (category) {
     case Category.Work:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_work.png')} />;
+      return (
+        <Image
+          style={{
+            objectFit: 'contain',
+            paddingLeft: 18,
+            paddingRight: 10,
+            height: 24,
+            maxHeight: 36,
+            width: 24,
+            maxWidth: 36,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_work.png')}
+        />
+      );
     case Category.Health:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />;
+      return (
+        <Image
+          style={{
+            objectFit: 'contain',
+            paddingLeft: 18,
+            paddingRight: 10,
+            height: 24,
+            maxHeight: 36,
+            width: 24,
+            maxWidth: 36,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')}
+        />
+      );
     case Category.Relationships:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />;
+      return (
+        <Image
+          style={{
+            objectFit: 'contain',
+            paddingLeft: 18,
+            paddingRight: 10,
+            height: 24,
+            maxHeight: 36,
+            width: 24,
+            maxWidth: 36,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')}
+        />
+      );
     case Category.Education:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')} />
+      return (
+        <Image
+          style={{
+            objectFit: 'contain',
+            paddingLeft: 18,
+            paddingRight: 10,
+            height: 24,
+            maxHeight: 36,
+            width: 24,
+            maxWidth: 36,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')}
+        />
+      );
     case Category.Finance:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')} />
+      return (
+        <Image
+          style={{
+            objectFit: 'contain',
+            paddingLeft: 18,
+            paddingRight: 10,
+            height: 24,
+            maxHeight: 36,
+            width: 24,
+            maxWidth: 36,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')}
+        />
+      );
     case Category.Other:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />
-    default: 
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />
+      return (
+        <Image
+          style={{
+            objectFit: 'contain',
+            paddingLeft: 18,
+            paddingRight: 10,
+            height: 24,
+            maxHeight: 36,
+            width: 24,
+            maxWidth: 36,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')}
+        />
+      );
+    default:
+      return (
+        <Image
+          style={{
+            objectFit: 'contain',
+            paddingLeft: 18,
+            paddingRight: 10,
+            height: 24,
+            maxHeight: 36,
+            width: 24,
+            maxWidth: 36,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')}
+        />
+      );
   }
 };
 
@@ -121,7 +202,7 @@ export const NoteListItemExpandedModal: React.FC<
     },
   ];
 
-  const [modalCloseVisible,setModalCloseVisible] = useState<boolean>(false);
+  const [modalCloseVisible, setModalCloseVisible] = useState<boolean>(false);
 
   const handleReframing = async () => {
     updateWorryEntryFields(uuid, category, priority, title, description);
@@ -147,7 +228,7 @@ export const NoteListItemExpandedModal: React.FC<
 
   const handleClose = () => {
     handleDelete();
-  }
+  };
 
   return (
     <Modal
@@ -158,18 +239,18 @@ export const NoteListItemExpandedModal: React.FC<
         setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible)
       }
     >
-    <CloseModal
-      closeModalVisible={modalCloseVisible}
-      setCloseModalVisible={setModalCloseVisible}
-      parentModalVisible={modalNoteListItemExpandedVisible}
-      setParentModalVisible={setModalNoteListItemExpandedVisible}
-      title='Bericht aan jezelf verwijderen'
-      description='Je staat op het punt om het bericht aan jezelf te verwijderen. Weet je het zeker?'
-      handleClose={handleClose}
-      denyText='Nee, bewaar het bericht.'
-      confirmText='Ja, verwijder het bericht.'
-      closeButtonDisabled = {true}
-    />
+      <CloseModal
+        closeModalVisible={modalCloseVisible}
+        setCloseModalVisible={setModalCloseVisible}
+        parentModalVisible={modalNoteListItemExpandedVisible}
+        setParentModalVisible={setModalNoteListItemExpandedVisible}
+        title='Bericht aan jezelf verwijderen'
+        description='Je staat op het punt om het bericht aan jezelf te verwijderen. Weet je het zeker?'
+        handleClose={handleClose}
+        denyText='Nee, bewaar het bericht.'
+        confirmText='Ja, verwijder het bericht.'
+        closeButtonDisabled={true}
+      />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
           <View style={styles.headersContainer}>

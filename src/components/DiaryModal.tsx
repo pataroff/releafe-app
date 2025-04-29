@@ -26,7 +26,7 @@ import { ProgressBar } from 'react-native-paper';
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 
-import { IGoalEntry } from '../types';
+import { IGoalEntry, Timeframe } from '../types';
 import { sliderSteps, textSteps } from '../utils/diary';
 
 import { useNavigation } from '@react-navigation/native';
@@ -258,6 +258,23 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     addTextValue(questionIndex, value);
   };
 
+  const shouldShowGoal = (goal: IGoalEntry): boolean => {
+    if (goal.timeframe === Timeframe.Daily && goal.lastCompletedAt) {
+      const now = new Date();
+      const last = new Date(goal.lastCompletedAt);
+
+      const lastReset = new Date(last);
+      lastReset.setHours(0, 0, 0, 0);
+
+      const nextReset = new Date(lastReset);
+      nextReset.setDate(nextReset.getDate() + 1);
+
+      return now >= nextReset;
+    }
+
+    return true; // Show for weekly/monthly goals or goals not yet completed
+  };
+
   return (
     <Modal
       animationType='none'
@@ -370,7 +387,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                       styles.goalsChecklistContentContainer
                     }
                   >
-                    {goalEntries.map((goal, index) => {
+                    {goalEntries.filter(shouldShowGoal).map((goal, index) => {
                       return (
                         <GoalsChecklistItem
                           key={index}

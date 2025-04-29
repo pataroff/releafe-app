@@ -81,7 +81,9 @@ export const GoalsOverview = () => {
           columnGap: 10,
         }}
       >
-        <Text style={styles.overviewGoalsHeadingText}>Overzicht persoonlijke doelen</Text>
+        <Text style={styles.overviewGoalsHeadingText}>
+          Overzicht persoonlijke doelen
+        </Text>
       </View>
 
       {/* Goal Headers Container */}
@@ -154,18 +156,20 @@ export const GoalsOverview = () => {
               </Text>
 
               <Text style={styles.completedTimeframeText}>
-                {completedTimeframe}/
-                {targetFrequency}
+                {completedTimeframe}/{targetFrequency}
               </Text>
             </View>
             <ProgressBar
-              progress={completedTimeframe/targetFrequency}
+              progress={completedTimeframe / targetFrequency}
               color='#A9C1A1'
               style={styles.progressBar}
             />
             {/* Timeframe Percentage Text */}
             <Text style={styles.percentageText}>
-              {Math.round((completedTimeframe/targetFrequency) * 100)}%
+              {completedTimeframe >= targetFrequency
+                ? 100
+                : Math.round((completedTimeframe / targetFrequency) * 100)}
+              %
             </Text>
           </View>
 
@@ -184,9 +188,7 @@ export const GoalsOverview = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}
-            >
-
-            </View>
+            ></View>
           </View>
         </View>
 
@@ -214,7 +216,9 @@ export const GoalsOverview = () => {
           >
             <Text style={styles.statisticsDataHeadingText}>Startdatum</Text>
             <Text style={styles.statisticsDataHeadingText}>Dagen actief</Text>
-            <Text style={styles.statisticsDataHeadingText}>Aantal keer gedaan</Text>
+            <Text style={styles.statisticsDataHeadingText}>
+              Aantal keer gedaan
+            </Text>
           </View>
 
           <View
@@ -235,9 +239,7 @@ export const GoalsOverview = () => {
                 : Math.floor(getDaysBetweenDates(startDate, new Date()))}
             </Text>
             {/* Completed Period */}
-            <Text style={styles.statisticsDataBodyText}>
-                {completedTimeframe}
-            </Text>
+            <Text style={styles.statisticsDataBodyText}>{completedPeriod}</Text>
           </View>
         </View>
       </View>

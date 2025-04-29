@@ -19,7 +19,7 @@ export const GoalContext = createContext<IGoalContext>({
   timeframe: Timeframe.Daily,
   targetFrequency: 0,
   startDate: new Date(),
-  //endDate: new Date(),
+  lastCompletedAt: null,
   completedTimeframe: 0,
   completedPeriod: 0,
   setGoalEntries: () => {},
@@ -32,7 +32,7 @@ export const GoalContext = createContext<IGoalContext>({
   setTimeframe: () => {},
   setTargetFrequency: () => {},
   setStartDate: () => {},
-  //setEndDate: () => {},
+  setLastCompletedAt: () => {},
   setCompletedTimeframe: () => {},
   setCompletedPeriod: () => {},
   createGoalEntry: () => {},
@@ -55,7 +55,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
   const [timeframe, setTimeframe] = useState<Timeframe>(Timeframe.Daily);
   const [targetFrequency, setTargetFrequency] = useState<number>(1);
   const [startDate, setStartDate] = useState<Date | null>(null);
-  //const [endDate, setEndDate] = useState<Date | null>(null);
+  const [lastCompletedAt, setLastCompletedAt] = useState<Date | null>(null);
   const [completedTimeframe, setCompletedTimeframe] = useState<number>(0);
   const [completedPeriod, setCompletedPeriod] = useState<number>(0);
 
@@ -75,8 +75,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       timeframe,
       targetFrequency,
       startDate,
-      //endDate,
-      // @TODO: Are these necessary on goal creation or only on update?
+      lastCompletedAt,
       completedTimeframe,
       completedPeriod,
     };
@@ -94,8 +93,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       timeframe,
       targetFrequency,
       startDate,
-      //endDate,
-      // @TODO: Are these necessary on goal creation or only on update?
+      lastCompletedAt,
       completedTimeframe,
       completedPeriod,
     };
@@ -134,55 +132,79 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
 
   const updateGoalEntry = async (uuid: string) => {
     const matchedGoalEntry = goalEntries.find((entry) => entry.uuid == uuid);
+    if (!matchedGoalEntry) return;
 
-    // Declare a variable to hold the updated entry
-    let updatedEntry: IGoalEntry;
+    const now = new Date();
+    const lastCompletedAt = matchedGoalEntry.lastCompletedAt
+      ? new Date(matchedGoalEntry.lastCompletedAt)
+      : null;
 
-    // Update locally
-    if (matchedGoalEntry) {
-      // Get the index of the matching entry
-      const index = goalEntries.indexOf(matchedGoalEntry);
+    const getNextResetDate = (base: Date, days: number) => {
+      const resetDate = new Date(base);
+      resetDate.setDate(resetDate.getDate() + days);
+      resetDate.setUTCHours(0, 0, 0, 0);
+      return resetDate;
+    };
 
-      // Create the updated entry
-      updatedEntry = { ...matchedGoalEntry };
-      updatedEntry.completedTimeframe += 1;
-      updatedEntry.completedPeriod +=1;
+    let canComplete = false;
 
-      if (updatedEntry.completedTimeframe >= updatedEntry.targetFrequency) {
-        // Don't reset `completedTimeframe' if `updatedEntry.timeframe` equals `Timeframe.Daily`
-        if (updatedEntry.timeframe !== Timeframe.Daily) {
-          updatedEntry.completedTimeframe = 0;
+    switch (matchedGoalEntry.timeframe) {
+      case Timeframe.Daily:
+        if (!lastCompletedAt || now >= getNextResetDate(lastCompletedAt, 1)) {
+          matchedGoalEntry.completedTimeframe = 0;
+          canComplete = true;
         }
-      }
+        break;
 
-      // Update the existing entry at the found index
-      setGoalEntries((prev) => {
-        const updatedEntries = [...prev];
-        updatedEntries[index] = updatedEntry;
-        return updatedEntries;
+      case Timeframe.Weekly:
+        if (!lastCompletedAt || now >= getNextResetDate(lastCompletedAt, 7)) {
+          matchedGoalEntry.completedTimeframe = 0;
+        }
+        canComplete = true;
+        break;
+
+      case Timeframe.Monthly:
+        if (!lastCompletedAt || now >= getNextResetDate(lastCompletedAt, 30)) {
+          matchedGoalEntry.completedTimeframe = 0;
+        }
+        canComplete = true;
+        break;
+    }
+
+    if (!canComplete) return;
+
+    // Create the updated entry
+    const index = goalEntries.indexOf(matchedGoalEntry);
+
+    const updatedEntry = {
+      ...matchedGoalEntry,
+      completedTimeframe: matchedGoalEntry.completedTimeframe + 1,
+      completedPeriod: matchedGoalEntry.completedPeriod + 1,
+      lastCompletedAt: now,
+    };
+
+    // Local update
+    setGoalEntries((prev) => {
+      const updatedEntries = [...prev];
+      updatedEntries[index] = updatedEntry;
+      return updatedEntries;
+    });
+
+    // Update in database
+    try {
+      const matchedGoalEntryDatabase = await pb
+        .collection('goal_entries')
+        .getFirstListItem(`uuid="${matchedGoalEntry.uuid}"`, {
+          requestKey: null,
+        });
+
+      await pb.collection('goal_entries').update(matchedGoalEntryDatabase.id, {
+        completedTimeframe: updatedEntry.completedTimeframe,
+        completedPeriod: updatedEntry.completedPeriod,
+        lastCompletedAt: updatedEntry.lastCompletedAt,
       });
-
-      // Update in database
-      try {
-        // Get the existing entry from the database
-        const matchedGoalEntryDatabase = await pb
-          .collection('goal_entries')
-          .getFirstListItem(`uuid="${matchedGoalEntry.uuid}"`, {
-            requestKey: null, // prevents auto-cancelling duplicate pending requests
-          });
-
-        // Update the existing entry in the database
-        await pb
-          .collection('goal_entries')
-          .update(matchedGoalEntryDatabase.id, {
-            completedTimeframe: updatedEntry.completedTimeframe,
-            completedPeriod: updatedEntry.completedPeriod,
-          });
-      } catch (error) {
-        console.error('Error updating goal entry:', error);
-      }
-    } else {
-      return;
+    } catch (error) {
+      console.error('Error updating goal entry:', error);
     }
   };
 
@@ -212,7 +234,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     setTimeframe(Timeframe.Daily);
     setTargetFrequency(1);
     setStartDate(null);
-    //setEndDate(null);
+    setLastCompletedAt(null); // @TODO Is this necessary, cause it is not part from the UI?
   };
 
   return (
@@ -228,7 +250,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         timeframe,
         targetFrequency,
         startDate,
-        //endDate,
+        lastCompletedAt,
         completedTimeframe,
         completedPeriod,
         setGoalEntries,
@@ -241,7 +263,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         setTimeframe,
         setTargetFrequency,
         setStartDate,
-        //setEndDate,
+        setLastCompletedAt,
         setCompletedTimeframe,
         setCompletedPeriod,
         createGoalEntry,
