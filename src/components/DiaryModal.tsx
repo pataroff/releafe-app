@@ -150,55 +150,68 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
 
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handlePrevious = () => {
-    // Update slider values (0 to 5, including)
-    if (diaryModalIndex != 0 && diaryModalIndex <= sliderSteps.length - 1) {
-      sliderValue.value = 5;
-      setSliderQuestionIndex((prev) => --prev);
-    }
+    if(!loading)
+    {
+      setLoading(true);
+      // Update slider values (0 to 5, including)
+      if (diaryModalIndex != 0 && diaryModalIndex <= sliderSteps.length - 1) {
+        sliderValue.value = 5;
+        setSliderQuestionIndex((prev) => --prev);
+      }
 
-    // Update text values (7 to 10)
-    if (diaryModalIndex > 7 && diaryModalIndex <= totalStepsIndex) {
-      setTextQuestionIndex((prev) => --prev);
-    }
+      // Update text values (7 to 10)
+      if (diaryModalIndex > 7 && diaryModalIndex <= totalStepsIndex) {
+        setTextQuestionIndex((prev) => --prev);
+      }
 
-    // Update navigation, check for personal goals on index 7
-    if (goalEntries.length === 0 && diaryModalIndex === 7) {
-      setDiaryModalIndex((prev) => prev - 2);
-      setProgressValue((prev) => Math.max(0, prev - progressStep));
-    } else {
-      setDiaryModalIndex((prev) => --prev);
-      setProgressValue((prev) => Math.max(0, prev - progressStep));
+      // Update navigation, check for personal goals on index 7
+      if (goalEntries.length === 0 && diaryModalIndex === 7) {
+        setDiaryModalIndex((prev) => prev - 2);
+        setProgressValue((prev) => Math.max(0, prev - progressStep));
+      } else {
+        setDiaryModalIndex((prev) => --prev);
+        setProgressValue((prev) => Math.max(0, prev - progressStep));
+      }
+      setLoading(false);
     }
   };
 
   const handleNext = () => {
-    // Update slider values (0 to 5, excluding)
-    if (diaryModalIndex < sliderSteps.length) {
-      // @TODO Remove the rounding of the slider values, keeps the decimals!
-      addSliderValue(sliderQuestionIndex, Math.round(sliderValue.value));
-      sliderValue.value = 5;
-      // Skip slider question index increment, if on last step
-      if (diaryModalIndex !== sliderSteps.length - 1) {
-        setSliderQuestionIndex((prev) => ++prev);
+    if(!loading)
+    {
+      setLoading(true);
+      // Update slider values (0 to 5, excluding)
+      if (diaryModalIndex < sliderSteps.length) {
+        // @TODO Remove the rounding of the slider values, keeps the decimals!
+        addSliderValue(sliderQuestionIndex, Math.round(sliderValue.value));
+        sliderValue.value = 5;
+        // Skip slider question index increment, if on last step
+        if (diaryModalIndex !== sliderSteps.length - 1) {
+          setSliderQuestionIndex((prev) => ++prev);
+        }
       }
-    }
 
-    // Update text values (7 to 10)
-    if (diaryModalIndex > 6 && diaryModalIndex < totalStepsIndex) {
-      addTextValue(textQuestionIndex, textValue);
-      setTextValue('');
-      setTextQuestionIndex((prev) => ++prev);
-    }
+      // Update text values (7 to 10)
+      if (diaryModalIndex > 6 && diaryModalIndex < totalStepsIndex) {
+        addTextValue(textQuestionIndex, textValue);
+        setTextValue('');
+        setTextQuestionIndex((prev) => ++prev);
+      }
 
-    // Update navigation, check for personal goals on index 5
-    if (goalEntries.length === 0 && diaryModalIndex === 5) {
-      setDiaryModalIndex((prev) => prev + 2);
-      setProgressValue((prev) => Math.min(1, prev + progressStep));
-    } else {
-      setDiaryModalIndex((prev) => ++prev);
-      setProgressValue((prev) => Math.min(1, prev + progressStep));
+      // Update navigation, check for personal goals on index 5
+      if (goalEntries.length === 0 && diaryModalIndex === 5) {
+        setDiaryModalIndex((prev) => prev + 2);
+        setProgressValue((prev) => Math.min(1, prev + progressStep));
+      } else {
+        setDiaryModalIndex((prev) => ++prev);
+        setProgressValue((prev) => Math.min(1, prev + progressStep));
+      }
+      setLoading(false);
     }
+    else console.log("loading");
   };
 
   const resetLocalState = () => {

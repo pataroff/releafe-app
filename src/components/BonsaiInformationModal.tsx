@@ -97,7 +97,7 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                   >
                     <Image
                       source={require('../../assets/images/bonsai_tree_information_icon.png')}
-                      style={{ width: 55, height: 62 }}
+                      style={{ width: 96, height: 64 }}
                       resizeMode='contain'
                     />
                     <View style={{ rowGap: 20, marginVertical: 20 }}>
@@ -190,7 +190,10 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
             <Pressable
               style={{ position: 'absolute', top: 24, right: 24 }}
               onPress={() =>
+              {
+                setInformatiegidsIndex(0);
                 setModalBonsaiInformationVisible(!modalBonsaiInformationVisible)
+              }
               }
             >
               <Feather name='x-circle' size={24} color='gray' />

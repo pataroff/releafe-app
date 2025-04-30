@@ -127,6 +127,8 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
   const [questionMarkModalActive, setQuestionMarkModalActive] =
     useState<boolean>(false);
+  
+  const [scrollViewOffsetPoints,setScrollViewOffsetPoints] = useState([0]);
 
   // Animation values
   const animatedValues = useRef(
@@ -139,6 +141,23 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
     const newIndex = Math.round(offsetX / (windowWidth - 40)); // 40 = padding * 2
     if (newIndex !== activeIndex) setActiveIndex(newIndex);
   };
+
+  const handleScrollViewSize = () => {
+    setScrollViewOffsetPoints([]);
+    var tempOffsetPoints = [];
+    var offset = 0;
+    for(var i=0;i<nudgingItems.length;i++)
+    {
+      if(i==0)
+      {
+        offset = windowWidth / 1.25 + 30;
+      }
+      else offset += windowWidth / 1.25 + 20;
+      tempOffsetPoints.push(offset) 
+    }
+    console.log(tempOffsetPoints)
+    setScrollViewOffsetPoints(tempOffsetPoints)
+  }
 
   const handleNudgingQuestionMark = () => {
     setQuestionMarkModalActive(true);
@@ -294,9 +313,11 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
             </Pressable>
           </View>
         </View>
+        {scrollViewOffsetPoints.length != nudgingItems.length && handleScrollViewSize()}
         <ScrollView
           horizontal={true}
-          snapToInterval={windowWidth - 2 * 30 + 20}
+          //snapToInterval={windowWidth / 1.25 + 26}
+          snapToOffsets={scrollViewOffsetPoints}
           snapToAlignment={'center'}
           decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
@@ -531,7 +552,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   nudgingItemContainer: {
     height: 210,
-    width: 325,
+    width: windowWidth / 1.25,
     justifyContent: 'space-between',
     backgroundColor: 'white',
     borderRadius: 25,

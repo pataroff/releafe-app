@@ -19,6 +19,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 interface InformationModalProps {
   modalInformationVisible: boolean;
@@ -302,21 +303,21 @@ export const InformationModal: React.FC<InformationModalProps> = ({
               {/*Fourth Page*/}
               {informatiegidsIndex == 3 && (
                 <>
+                <View style={{display: 'flex', flexDirection: 'column', columnGap: 10}}>
                   <Image
                     source={require('../../assets/images/information_achievement_points_icon.png')}
                     style={{
                       objectFit: 'contain',
                       width: windowWidth / 3.2,
                       height: 36,
-                      marginVertical: 10,
                     }}
                   />
-                  <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
+                  <Text style={{ ...styles.informationBody}}>
                     Met deze punten kun je jouw eigen bonsaiboom upgraden en
                     verzorgen, door bijvoorbeeld extra bladeren of bloesems toe
                     te voegen.
                   </Text>
-                  <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
+                  <Text style={{ ...styles.informationBody}}>
                     Jouw bonsaiboom vind je door op je profiel te klikken,
                     rechtsboven in het scherm.
                   </Text>
@@ -325,9 +326,11 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                     style={{
                       objectFit: 'contain',
                       alignSelf: 'center',
-                      width: windowWidth / 1.15,
+                      width: windowWidth / 1.2,
+                      maxHeight: windowHeight /3,
                     }}
-                  />
+                    />
+                </View>
                 </>
               )}
               {/*Fifth Page*/}
@@ -377,7 +380,10 @@ export const InformationModal: React.FC<InformationModalProps> = ({
             <Pressable
               style={{ position: 'absolute', top: 24, right: 24 }}
               onPress={() =>
+              {
+                setInformatiegidsIndex(0);
                 setModalInformationVisible(!modalInformationVisible)
+              }
               }
             >
               <Feather name='x-circle' size={24} color='gray' />
