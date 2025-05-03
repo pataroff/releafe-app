@@ -217,7 +217,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     // Create diary entry
     createDiaryEntry();
     // Reward points
-    addPoints(35);
+    addPoints(10);
 
     // Update goal entries (if applicable)
     if (goalEntries.length > 0 && checkedGoals.length > 0) {

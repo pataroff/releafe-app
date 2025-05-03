@@ -56,49 +56,69 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
     selectedFlowerIndex: null,
   });
 
-  const unlockItem = (itemId: string, cost: number) => {
-    if (points >= cost && !unlockedItems.includes(itemId)) {
-      setPoints((prev) => prev - cost);
-      setUnlockedItems((prev) => [...prev, itemId]);
+  const unlockItem = async (itemId: string, price: number) => {
+    if (points < price || unlockedItems.includes(itemId)) {
+      return;
+    }
+
+    const previousPoints = points;
+    const previousUnlockedItems = [...unlockedItems];
+
+    const updatedPoints = previousPoints - price;
+    const updatedUnlockedItems = [...previousUnlockedItems, itemId];
+
+    // Optimistically update local state
+    setPoints(updatedPoints);
+    setUnlockedItems(updatedUnlockedItems);
+
+    try {
+      await updateUnlockedItemsInDatabase(updatedPoints, updatedUnlockedItems);
+    } catch (error) {
+      console.error('Error unlocking item:', error);
+
+      // Rollback local state
+      setPoints(previousPoints);
+      setUnlockedItems(previousUnlockedItems);
+
+      // @TODO Optionally: show error to user that the action has failed!
     }
   };
 
-  const addPoints = (amount: number) => {
-    setPoints((prev) => {
-      const updatedPoints = prev + amount;
-      updatePointsInDatabase(updatedPoints);
-      return updatedPoints;
-    });
+  const addPoints = async (amount: number) => {
+    const previousPoints = points;
+    const updatedPoints = previousPoints + amount;
+
+    setPoints(updatedPoints);
+
+    try {
+      await updatePointsInDatabase(updatedPoints);
+    } catch (error) {
+      console.error('Error updating points:', error);
+      // Rollback if database update fails for some reason
+      setPoints(previousPoints);
+      // @TODO Optionally: show error to user that the action has failed!
+    }
   };
 
   const updatePointsInDatabase = async (newPoints: number) => {
-    try {
-      const userRecord = await pb.collection('users').getOne(user?.id);
+    const userRecord = await pb.collection('users').getOne(user?.id);
 
-      await pb.collection('users').update(userRecord.id, {
-        points: newPoints,
-      });
-    } catch (error) {
-      console.error('Error updating points data:', error);
-    }
+    await pb.collection('users').update(userRecord.id, {
+      points: newPoints,
+    });
   };
 
   const updateUnlockedItemsInDatabase = async (
     newPoints: number,
     newUnlockedItems: string[]
   ) => {
-    try {
-      const newUnlockedItemsJSON = JSON.stringify(newUnlockedItems);
+    const newUnlockedItemsJSON = JSON.stringify(newUnlockedItems);
+    const userRecord = await pb.collection('users').getOne(user?.id);
 
-      const userRecord = await pb.collection('users').getOne(user?.id);
-
-      await pb.collection('users').update(userRecord.id, {
-        points: newPoints,
-        unlockedItems: newUnlockedItemsJSON,
-      });
-    } catch (error) {
-      console.error('Error updating unlocked items data:', error);
-    }
+    await pb.collection('users').update(userRecord.id, {
+      points: newPoints,
+      unlockedItems: newUnlockedItemsJSON,
+    });
   };
 
   const updateTreeStateInDatabase = async (

@@ -70,7 +70,7 @@ export const DiaryGreeting = ({ route }) => {
           <View style={{ display: 'flex', flexDirection: 'row', columnGap: 5 }}>
             {/* Points Container */}
             <View style={styles.pointsContainer}>
-              <Text style={styles.pointsText}>+35</Text>
+              <Text style={styles.pointsText}>+10</Text>
 
               <Image
                 style={styles.shopIcon}
