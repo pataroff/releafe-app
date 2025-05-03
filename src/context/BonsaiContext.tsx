@@ -24,11 +24,6 @@ interface BonsaiContextType {
   setTreeState: React.Dispatch<SetStateAction<TreeState>>;
   unlockItem: (itemId: string, cost: number) => void;
   addPoints: (amount: number) => void;
-  updatePointsInDatabase: (newPoints: number) => Promise<void>;
-  updateUnlockedItemsInDatabase: (
-    newPoints: number,
-    newUnlockedItems: string[]
-  ) => Promise<void>;
   updateTreeStateInDatabase: (
     selectedBranchIndex: number | null,
     selectedLeafIndex: number | null,
@@ -101,7 +96,9 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updatePointsInDatabase = async (newPoints: number) => {
-    const userRecord = await pb.collection('users').getOne(user?.id);
+    const userRecord = await pb.collection('users').getOne(user?.id, {
+      requestKey: null, // prevents auto-cancelling duplicate pending requests
+    });
 
     await pb.collection('users').update(userRecord.id, {
       points: newPoints,
@@ -154,8 +151,6 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
         setUnlockedItems,
         unlockItem,
         addPoints,
-        updatePointsInDatabase,
-        updateUnlockedItemsInDatabase,
         updateTreeStateInDatabase,
       }}
     >

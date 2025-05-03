@@ -1,10 +1,6 @@
 import { Priority, Category } from '../types';
 import { Image } from 'react-native';
 
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-
 type ReframingStep = {
   heading: string | null;
   description: string | null;
@@ -97,25 +93,81 @@ export const getPriorityColor = (priority: Priority): string => {
 export const getCategory = (category: Category): React.ReactElement => {
   switch (category) {
     case Category.Work:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_work.png')} />;
+      return (
+        <Image
+          style={{
+            height: 24,
+            width: 24,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_work.png')}
+          resizeMode='contain'
+        />
+      );
     case Category.Health:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />;
+      return (
+        <Image
+          style={{
+            height: 24,
+            width: 24,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')}
+          resizeMode='contain'
+        />
+      );
     case Category.Relationships:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />;
+      return (
+        <Image
+          style={{
+            height: 24,
+            width: 24,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')}
+          resizeMode='contain'
+        />
+      );
     case Category.Education:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')} />
+      return (
+        <Image
+          style={{
+            height: 24,
+            width: 24,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')}
+          resizeMode='contain'
+        />
+      );
     case Category.Finance:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')} />
+      return (
+        <Image
+          style={{
+            height: 24,
+            width: 24,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')}
+          resizeMode='contain'
+        />
+      );
     case Category.Other:
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />
-    default: 
-      return <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-          source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />
+      return (
+        <Image
+          style={{
+            height: 24,
+            width: 24,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')}
+          resizeMode='contain'
+        />
+      );
+    default:
+      return (
+        <Image
+          style={{
+            height: 24,
+            width: 24,
+          }}
+          source={require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')}
+          resizeMode='contain'
+        />
+      );
   }
 };

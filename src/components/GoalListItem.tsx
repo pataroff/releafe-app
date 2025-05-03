@@ -147,7 +147,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
               >
                 {/* Points Container */}
                 <View style={styles.pointsContainer}>
-                  <Text style={styles.pointsText}>+20</Text>
+                  <Text style={styles.pointsText}>+50</Text>
 
                   <Image
                     style={styles.shopIcon}

@@ -65,10 +65,13 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
         <View style={styles.headersContainer}>
           <Text style={styles.headersTitleText}>Reframen</Text>
           <Text style={styles.headersDescriptionText}>
-            Reframen helpt je om je zorgen vanuit een andere invalshoek te bekijken.
-            {'\n \n'} 
-            Door stapsgewijs je gedachten te herformuleren helpt deze oefening je om meer positieve en realistische gedachten te ontdekken. 
-            Hierdoor krijg je meer grip op je emoties en situaties waardoor je je rustiger en zelfverzekerder voelt.
+            Reframen helpt je om je zorgen vanuit een andere invalshoek te
+            bekijken.
+            {'\n \n'}
+            Door stapsgewijs je gedachten te herformuleren helpt deze oefening
+            je om meer positieve en realistische gedachten te ontdekken.
+            Hierdoor krijg je meer grip op je emoties en situaties waardoor je
+            je rustiger en zelfverzekerder voelt.
           </Text>
           <Text style={styles.headersHeadingText}>Starten</Text>
           <Text style={styles.headersDescriptionText}>
@@ -100,6 +103,29 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
                 <Text style={styles.h3Text}>{option[0]}</Text>
               </View>
               <Text style={styles.bodyText}>{option[1]}</Text>
+              {/* Reward Container */}
+              <View
+                style={{ display: 'flex', flexDirection: 'row', columnGap: 5 }}
+              >
+                {/* Points Container */}
+                <View style={styles.pointsContainer}>
+                  <Text style={styles.pointsText}>+5</Text>
+
+                  <Image
+                    style={styles.shopIcon}
+                    source={require('../../assets/images/bonsai_tree_icons/shop_icon.png')}
+                    resizeMode='contain'
+                  />
+                </View>
+                {/* Trophy Container */}
+                <View style={styles.trophyContainer}>
+                  <Image
+                    style={styles.trophyIcon}
+                    source={require('../../assets/images/bonsai_tree_icons/trophy_icon.png')}
+                    resizeMode='contain'
+                  />
+                </View>
+              </View>
               <Pressable
                 style={styles.ctaButton}
                 onPress={() =>
@@ -150,9 +176,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 20,
     width: '100%',
-    height: 180,
-    padding: 15,
-    justifyContent: 'space-between',
+    height: 240,
+    padding: 20,
+    // justifyContent: 'space-between',
+    rowGap: 20,
     backgroundColor: 'white',
     // Shadow Test
     shadowColor: '#000',
@@ -171,7 +198,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   bodyText: {
     ...Fonts.sofiaProRegular[Platform.OS],
-    fontSize: 13,
+    fontSize: 14,
   } as TextStyle,
   ctaButton: {
     width: 160,
@@ -184,6 +211,40 @@ const styles = StyleSheet.create({
   ctaButtonText: {
     ...Fonts.sofiaProBold[Platform.OS],
     color: 'white',
-    fontSize: 12,
+    fontSize: 14,
   } as TextStyle,
+  pointsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 72,
+    height: 31,
+    columnGap: 5,
+    backgroundColor: '#90A38A',
+    borderRadius: 7.5,
+    padding: 5,
+  },
+  pointsText: {
+    ...Fonts.sofiaProSemiBold[Platform.OS],
+    color: 'white',
+    fontSize: 16,
+  } as TextStyle,
+  shopIcon: {
+    width: 29,
+    height: 20,
+    marginBottom: 5,
+  },
+  trophyContainer: {
+    width: 35,
+    padding: 5,
+    borderRadius: 7.5,
+    backgroundColor: '#FCF2D0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trophyIcon: {
+    width: 23,
+    height: 20,
+  },
 });
