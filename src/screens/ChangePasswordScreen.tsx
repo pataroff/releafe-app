@@ -1,0 +1,171 @@
+import React, { useState, useContext } from 'react';
+import {
+  View,
+  TextInput,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextStyle,
+  Platform,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
+
+import { useAuth } from '../context/AuthContext';
+import { Fonts } from '../styles';
+import Toast from 'react-native-toast-message';
+
+export const ChangePasswordScreen: React.FC = () => {
+  const { changePassword } = useAuth();
+
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+  const [showOld, setShowOld] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const showToast = (
+    type: 'error' | 'success' | 'info',
+    title: string,
+    message: string
+  ) => {
+    Toast.show({
+      topOffset: 80,
+      type,
+      text1: title,
+      text2: message,
+    });
+  };
+
+  const handlePasswordChange = async () => {
+    if (!oldPassword || !newPassword || !confirmNewPassword) {
+      showToast('error', 'Leeg veld', 'Vul alle velden in.');
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      showToast(
+        'error',
+        'Wachtwoord te kort',
+        'Het nieuwe wachtwoord moet minstens 8 tekens lang zijn.'
+      );
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      showToast(
+        'error',
+        'Wachtwoorden komen niet overeen',
+        'Controleer of beide nieuwe wachtwoorden hetzelfde zijn.'
+      );
+      return;
+    }
+
+    await changePassword(oldPassword, newPassword, confirmNewPassword);
+  };
+
+  const renderPasswordInput = (
+    label: string,
+    value: string,
+    setValue: (val: string) => void,
+    show: boolean,
+    setShow: (val: boolean) => void,
+    placeholder: string
+  ) => (
+    <>
+      <Text style={styles.label}>{label}</Text>
+      <View style={styles.passwordContainer}>
+        <TextInput
+          value={value}
+          onChangeText={(value) => setValue(value)}
+          secureTextEntry={!show}
+          placeholder={placeholder}
+          style={styles.input}
+        />
+        <Pressable onPress={() => setShow(!show)} style={styles.iconContainer}>
+          <Icon name={show ? 'eye-off' : 'eye'} size={20} color='#aaa' />
+        </Pressable>
+      </View>
+    </>
+  );
+
+  return (
+    <View style={styles.container}>
+      {renderPasswordInput(
+        'Oude wachtwoord',
+        oldPassword,
+        setOldPassword,
+        showOld,
+        setShowOld,
+        'Voer je oude wachtwoord in'
+      )}
+      {renderPasswordInput(
+        'Nieuw wachtwoord',
+        newPassword,
+        setNewPassword,
+        showNew,
+        setShowNew,
+        'Minstens 8 tekens'
+      )}
+      {renderPasswordInput(
+        'Bevestig nieuw wachtwoord',
+        confirmNewPassword,
+        setConfirmNewPassword,
+        showConfirm,
+        setShowConfirm,
+        'Voer opnieuw in'
+      )}
+
+      <Pressable style={styles.button} onPress={handlePasswordChange}>
+        <Text style={styles.buttonText}>Wachtwoord wijzigen</Text>
+      </Pressable>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 30,
+    paddingTop: 40,
+    backgroundColor: '#FFFFFF',
+    flex: 1,
+  },
+  label: {
+    ...Fonts.sofiaProMedium[Platform.OS],
+    fontSize: 16,
+  } as TextStyle,
+  input: {
+    ...Fonts.sofiaProItalic[Platform.OS],
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#dedede',
+    borderRadius: 30,
+    paddingLeft: 15,
+    paddingRight: 40, // extra space for icon
+    marginTop: 10,
+    marginBottom: 15,
+  } as TextStyle,
+  passwordContainer: {
+    position: 'relative',
+    justifyContent: 'center',
+  },
+  iconContainer: {
+    position: 'absolute',
+    right: 15,
+    top: 30,
+    transform: [{ translateY: -10 }],
+  },
+  button: {
+    backgroundColor: '#A9C1A1',
+    alignItems: 'center',
+    borderRadius: 30,
+    paddingVertical: 10,
+    marginTop: 10,
+  },
+  buttonText: {
+    ...Fonts.sofiaProBold[Platform.OS],
+    fontSize: 16,
+    color: 'white',
+  } as TextStyle,
+});

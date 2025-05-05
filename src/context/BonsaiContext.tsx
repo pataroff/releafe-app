@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 
 import pb from '../lib/pocketbase';
-import { AuthContext } from './AuthContext';
+import { useAuth } from './AuthContext';
 
 interface TreeState {
   selectedBranchIndex: number | null;
@@ -41,7 +41,7 @@ export const useGamification = () => {
 };
 
 export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const [points, setPoints] = useState<number>(0);
   const [unlockedItems, setUnlockedItems] = useState<string[]>([]);

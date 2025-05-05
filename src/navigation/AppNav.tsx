@@ -1,16 +1,13 @@
-import { useContext } from 'react';
 import { View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 
-// import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 const AppNav = () => {
-  // TODO: Property does not exist on type '{}'!
-  const { isLoading, isLoggedIn } = useContext(AuthContext);
+  const { isLoading, isLoggedIn } = useAuth();
 
   if (isLoading) {
     return (

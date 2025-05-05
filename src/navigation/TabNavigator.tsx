@@ -11,8 +11,9 @@ import { DashboardScreen } from '../screens/DashboardScreen';
 import { DiaryStack } from './DiaryStack';
 import { ToolkitStack } from './ToolkitStack';
 import { BonsaiTreeStack } from './BonsaiTreeStack';
+import { SettingsStack } from './SettingsStack';
 
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { WorryContext } from '../context/WorryContext';
 import { NoteContext } from '../context/NoteContext';
 import { GoalContext } from '../context/GoalContext';
@@ -23,7 +24,7 @@ import pb from '../lib/pocketbase';
 const Tab = createBottomTabNavigator();
 
 export const TabNavigator = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { setWorryEntries } = useContext(WorryContext);
   const { setNoteEntries } = useContext(NoteContext);
   const { setGoalEntries } = useContext(GoalContext);
@@ -310,6 +311,14 @@ export const TabNavigator = () => {
       <Tab.Screen
         name='BonsaiTree'
         component={BonsaiTreeStack}
+        options={{
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tab.Screen
+        name='Settings'
+        component={SettingsStack}
         options={{
           tabBarButton: () => null,
         }}

@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   textInputField: {
     ...Fonts.sofiaProItalic[Platform.OS],
-    verticalAlign: Platform.OS == 'android'? "top" : {},
+    verticalAlign: Platform.OS == 'android' ? 'top' : {},
     height: 40,
     borderWidth: 1,
     borderColor: '#dedede',
@@ -86,7 +86,6 @@ const styles = StyleSheet.create({
   } as TextStyle,
   buttonText: {
     ...Fonts.sofiaProBold[Platform.OS],
-    textTransform: 'uppercase',
     fontSize: 16,
     color: 'white',
   } as TextStyle,
@@ -94,7 +93,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#A9C1A1',
     alignItems: 'center',
     borderRadius: 30,
-    paddingVertical: 8,
+    paddingVertical: 10,
     marginTop: 10,
   },
   signUpBox: {

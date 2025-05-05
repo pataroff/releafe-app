@@ -9,8 +9,11 @@ import { AuthModel, RecordModel } from 'pocketbase';
 
 export interface ISettingsContext {
   favouriteExercises: string[];
-  setFavouriteExercises: React.Dispatch<React.SetStateAction<string[]>>;
-  updateFavouritesInDatabase: (favouriteExercises: string[]) => void;
+  setFavouriteExercises: (exercises: string[]) => void;
+  updateFavouritesInDatabase: (exercises: string[]) => Promise<void>;
+  gamificationEnabled: boolean;
+  setGamificationEnabled: (enabled: boolean) => void;
+  updateGamificationInDatabase: (enabled: boolean) => Promise<void>;
 }
 
 export interface IDiaryEntry {
@@ -55,12 +58,23 @@ export interface IUserData {
   passwordConfirm: string;
   firstName: string;
   lastName: string;
+  telephoneNumber: string;
+  birthDate: Date;
 }
 
 export interface IAuthContext {
   signIn: (email: string, password: string) => void;
   signOut: () => void;
   register: ({}: IUserData) => void;
+  changePassword: (
+    oldPassword: string,
+    newPassword: string,
+    confirmNewPassword: string
+  ) => Promise<void>;
+  changeEmail: (newEmail: string) => Promise<void>;
+  changePhoneNumber: (newPhoneNumber: string) => Promise<void>;
+  changeBirthDate: (newBirthDate: Date) => Promise<void>;
+  deleteUser: (password: string) => Promise<void>;
   isLoading: boolean;
   isLoggedIn: boolean;
   user: AuthModel | null;

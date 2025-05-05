@@ -50,7 +50,10 @@ export const CustomDrawerContent = (props) => {
     {
       label: 'Persoonlijk profiel',
       icon: require('../../assets/images/drawer_icons/drawer_profile_icon.png'),
-      action: () => console.log('Persoonlijk profiel pressed!'),
+      action: () =>
+        navigation.navigate('Settings', {
+          screen: 'Settings1',
+        }),
     },
     {
       label: 'Bonsai boom',
@@ -72,7 +75,7 @@ export const CustomDrawerContent = (props) => {
     {
       label: 'Instellingen',
       icon: require('../../assets/images/drawer_icons/drawer_settings_icon.png'),
-      action: () => console.log('Instellingen pressed!'),
+      action: () => navigation.navigate('Settings', { screen: 'Settings1' }),
     },
     {
       label: 'Uitloggen',
