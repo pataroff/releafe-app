@@ -131,7 +131,7 @@ export const GoalsOverview = () => {
 
       {/* Statistics Container */}
       <View style={{ marginTop: 20 }}>
-        <Text style={styles.h2Text}>Statistieken:</Text>
+        <Text style={styles.h2Text}>Voortgang:</Text>
 
         {/* Progress Bars Container */}
         <View style={{ width: 220, alignSelf: 'center', marginTop: 20 }}>
@@ -152,7 +152,7 @@ export const GoalsOverview = () => {
               }}
             >
               <Text style={styles.progressBarText}>
-                Statistieken voor tijdsframe ({getTimeframeString(timeframe)})
+                Aantal keer behaald
               </Text>
 
               <Text style={styles.completedTimeframeText}>
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   overviewGoalsHeadingText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   h1Text: {

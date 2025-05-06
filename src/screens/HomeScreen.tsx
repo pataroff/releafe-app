@@ -269,7 +269,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
           <Text style={styles.greetingHeadingText}>
             Hallo {user?.firstName}
           </Text>
-          <Text style={styles.greetingBodyText}>Welkom terug,</Text>
+          <Text style={styles.greetingBodyText}>Welkom!</Text>
           <Text style={styles.dateHeadingText}>
             Het is vandaag
             <Text style={styles.dateBodyText}>
@@ -390,14 +390,14 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
             }}
           >
             <Text style={styles.performanceContainerHeadingText}>
-              Jouw prestaties
+            Jouw bonsaiboom en prestaties
             </Text>
           </View>
 
           {/* Performance Data Container */}
           <View style={styles.performanceDataContainer}>
             <Text style={styles.performanceHeadingText}>
-              Jouw bonsai boom heeft deze week
+              Jouw bonsaiboom heeft deze week
             </Text>
 
             {/* Bonsai Tree Data Container */}
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
   greetingContainer: {
     alignSelf: 'flex-start',
     marginTop: 20,
-    rowGap: 5,
+    rowGap: 10,
     paddingHorizontal: 30,
   },
   greetingHeadingText: {
@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
     rowGap: 10,
   },
   performanceContainerHeadingText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   performanceHeadingText: {
