@@ -1,21 +1,21 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 
 import pb from '../lib/pocketbase';
-import { AuthContext } from '../context/AuthContext';
-import { SettingsContext } from '../context/SettingsContext';
+
+import { useAuth } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
+import { useNotification } from '../context/NotificationContext';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { ExercisesScreen } from '../screens/ExercisesScreen';
 import { ExercisesScreen2 } from '../screens/ExercisesScreen2';
 
-import { useNotification } from '../context/NotificationContext';
-
 const Stack = createNativeStackNavigator();
 
 export const ExercisesStack: React.FC = () => {
-  const { user } = useContext(AuthContext);
-  const { setFavouriteExercises } = useContext(SettingsContext);
+  const { user } = useAuth();
+  const { setFavouriteExercises } = useSettings();
   const { scheduleExerciseInactivityNotification } = useNotification();
 
   useEffect(() => {

@@ -12,7 +12,6 @@ import {
   Dimensions,
   TextStyle,
   Platform,
-  StyleProp,
 } from 'react-native';
 
 import { useSharedValue } from 'react-native-reanimated';
@@ -25,9 +24,9 @@ import Toast from 'react-native-toast-message';
 import { DropdownComponent } from './DropdownComponent';
 import { CloseModal } from './CloseModal';
 
-import { WorryContext } from '../context/WorryContext';
-import { NoteContext } from '../context/NoteContext';
-import { AuthContext } from '../context/AuthContext';
+import { useWorry } from '../context/WorryContext';
+import { useNote } from '../context/NoteContext';
+import { useAuth } from '../context/AuthContext';
 
 import { Priority } from '../types';
 import { getCategory, getPriorityColor, reframingSteps } from '../utils/worry';
@@ -82,7 +81,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     setDescription,
     setReframed,
     resetWorryEntryFields,
-  } = useContext(WorryContext);
+  } = useWorry();
   const {
     feelingDescription,
     thoughtLikelihoodSliderOne,
@@ -102,16 +101,16 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     setAlternativePerspective,
     createNoteEntry,
     resetNoteEntryFields,
-  } = useContext(NoteContext);
+  } = useNote();
 
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const { addPoints } = useGamification();
 
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
   const [showPriorityButtons, setShowPriorityButtons] =
     useState<boolean>(false);
-  const { deleteWorryEntry } = useContext(WorryContext);
+  const { deleteWorryEntry } = useWorry();
   const [showUnreframedData, setShowUnreframedData] = useState<boolean>(false);
 
   // @TODO Is there a better way of doing this?

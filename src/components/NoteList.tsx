@@ -11,12 +11,12 @@ import {
 
 import { Fonts } from '../styles';
 
-import { NoteContext } from '../context/NoteContext';
+import { useNote } from '../context/NoteContext';
 
 import { NoteListItem } from './NoteListItem';
 
 export const NoteList: React.FC<{ route: any }> = ({ route }) => {
-  const { noteEntries } = useContext(NoteContext);
+  const { noteEntries } = useNote();
 
   return (
     <ScrollView

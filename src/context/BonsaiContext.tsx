@@ -2,6 +2,7 @@ import React, {
   createContext,
   useContext,
   useState,
+  useEffect,
   ReactNode,
   SetStateAction,
 } from 'react';
@@ -42,6 +43,34 @@ export const useGamification = () => {
 
 export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchGamification = async () => {
+      if (!user) return;
+      try {
+        const userRecord = await pb.collection('users').getOne(user.id);
+        const points = userRecord?.points ? userRecord.points : 0;
+        const unlockedItems = userRecord?.unlockedItems
+          ? userRecord.unlockedItems
+          : [];
+        const treeState = userRecord?.treeState
+          ? userRecord?.treeState
+          : {
+              selectedBranchIndex: null,
+              selectedLeafIndex: null,
+              selectedFlowerIndex: null,
+            };
+
+        setPoints(points);
+        setUnlockedItems(unlockedItems);
+        setTreeState(treeState);
+      } catch (error) {
+        console.error('Error fetching gamification data:', error);
+      }
+    };
+
+    fetchGamification();
+  }, [user]);
 
   const [points, setPoints] = useState<number>(0);
   const [unlockedItems, setUnlockedItems] = useState<string[]>([]);

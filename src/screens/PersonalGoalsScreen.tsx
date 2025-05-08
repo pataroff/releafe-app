@@ -6,23 +6,22 @@ import {
   ScrollView,
   View,
   Text,
-  Image,
   Pressable,
   Platform,
   TextStyle,
   Dimensions,
 } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
 import { useNotification } from '../context/NotificationContext';
+import { useGoal } from '../context/GoalContext';
 
 import { GoalListItemAddModal } from '../components/GoalListItemAddModal';
+import { GoalListItem } from '../components/GoalListItem';
 
 import { Fonts } from '../styles';
 import Entypo from '@expo/vector-icons/Entypo';
 
-import { GoalContext } from '../context/GoalContext';
-import GoalListItem from '../components/GoalListItem';
+import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -30,7 +29,7 @@ export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
   const { scheduleEvery3DaysNotification, scheduleReminder3DaysNotification } =
     useNotification();
-  const { goalEntries } = useContext(GoalContext);
+  const { goalEntries } = useGoal();
 
   const [modalAddGoalListItemVisible, setModalAddGoalListItemVisible] =
     useState<boolean>(false);

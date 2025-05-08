@@ -24,8 +24,8 @@ import Feather from '@expo/vector-icons/Feather';
 import { Header } from '../components/Header';
 import { GoalsOverview } from '../components/GoalsOverview';
 
-import { AuthContext } from '../context/AuthContext';
-import { GoalContext } from '../context/GoalContext';
+import { useAuth } from '../context/AuthContext';
+import { useGoal } from '../context/GoalContext';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -115,8 +115,8 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
 
   const title = 'Home';
-  const { user } = useContext(AuthContext);
-  const { goalEntries } = useContext(GoalContext);
+  const { user } = useAuth();
+  const { goalEntries } = useGoal();
 
   const [quote, setQuote] = useState<string>(
     'Wherever you are, be there totally.'

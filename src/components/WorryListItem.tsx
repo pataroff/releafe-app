@@ -15,7 +15,7 @@ import { Fonts } from '../styles';
 
 import { IWorryListItem } from '../types';
 import { getPriorityColor, getCategory } from '../utils/worry';
-import { WorryContext } from '../context/WorryContext';
+import { useWorry } from '../context/WorryContext';
 import { CloseModal } from './CloseModal';
 import Entypo from '@expo/vector-icons/Entypo';
 
@@ -44,9 +44,9 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
 }) => {
   const { uuid, category, priority, date, title, description, reframed } = item;
 
-  const { updateWorryEntryFields, deleteWorryEntry } = useContext(WorryContext);
+  const { updateWorryEntryFields, deleteWorryEntry } = useWorry();
 
-  const [modalCloseVisible,setModalCloseVisible] = useState<boolean>(false);
+  const [modalCloseVisible, setModalCloseVisible] = useState<boolean>(false);
 
   const [expandedItems, setExpandedItems] = useState<{
     [key: string]: boolean;
@@ -96,8 +96,8 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
   };
 
   const handleClose = () => {
-      handleDelete();
-  }
+    handleDelete();
+  };
 
   return (
     <Pressable
@@ -114,13 +114,11 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
       onPress={() => expandItem(uuid)}
     >
       <View>
-          <Modal
+        <Modal
           animationType='none'
           transparent={true}
           visible={modalCloseVisible}
-          onRequestClose={() =>
-            setModalCloseVisible(!modalCloseVisible)
-          }
+          onRequestClose={() => setModalCloseVisible(!modalCloseVisible)}
         >
           <CloseModal
             closeModalVisible={modalCloseVisible}
@@ -132,7 +130,7 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
             handleClose={handleClose}
             denyText='Nee, bewaar mijn zorg.'
             confirmText='Ja, verwijder mijn zorg.'
-            closeButtonDisabled = {true}
+            closeButtonDisabled={true}
           />
         </Modal>
       </View>
@@ -282,13 +280,18 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
           </View>
 
           {/* Reframe Icon */}
-            <View style={{ width: 30 }}>
-              {expandedItems[uuid] === true ? (
-              <Entypo name='chevron-up' size={32} style={styles.worryListExpandedArrow} color='#5c6b57' />
-              ) : (
+          <View style={{ width: 30 }}>
+            {expandedItems[uuid] === true ? (
+              <Entypo
+                name='chevron-up'
+                size={32}
+                style={styles.worryListExpandedArrow}
+                color='#5c6b57'
+              />
+            ) : (
               <Entypo name='chevron-down' size={32} color='#5c6b57' />
-              )}
-            </View>
+            )}
+          </View>
         </View>
       </View>
     </Pressable>
@@ -329,5 +332,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 32,
     bottom: 60,
-  }
+  },
 });

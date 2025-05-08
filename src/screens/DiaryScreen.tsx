@@ -3,12 +3,12 @@ import { StyleSheet, ScrollView } from 'react-native';
 
 import { DiaryGreeting } from '../components/DiaryGreeting';
 
-import { WorryContext } from '../context/WorryContext';
+import { useWorry } from '../context/WorryContext';
 import { DiaryContext } from '../context/DiaryContext';
 import { useNotification } from '../context/NotificationContext';
 
 export const DiaryScreen: React.FC = ({ route }) => {
-  const { worryEntries } = useContext(WorryContext);
+  const { worryEntries } = useWorry();
   const { diaryEntries } = useContext(DiaryContext);
   const { scheduleDailyNotification, scheduleReminderWorryBoxNotification } =
     useNotification();

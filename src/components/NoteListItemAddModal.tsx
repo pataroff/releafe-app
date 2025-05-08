@@ -20,8 +20,8 @@ import Feather from '@expo/vector-icons/Feather';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-import { WorryContext } from '../context/WorryContext';
-import { NoteContext } from '../context/NoteContext';
+import { useWorry } from '../context/WorryContext';
+import { useNote } from '../context/NoteContext';
 
 import { DropdownComponent } from '../components/DropdownComponent';
 import { MemoItem } from './MemoItem';
@@ -98,7 +98,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     setTitle,
     setDescription,
     resetWorryEntryFields,
-  } = useContext(WorryContext);
+  } = useWorry();
 
   const {
     uuid,
@@ -108,7 +108,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     setAudioMetering,
     createNoteEntry,
     resetNoteEntryFields,
-  } = useContext(NoteContext);
+  } = useNote();
 
   const handleStore = () => {
     createNoteEntry();

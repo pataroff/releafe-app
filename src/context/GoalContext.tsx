@@ -1,45 +1,20 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { GoalCategory, Timeframe, IGoalEntry, IGoalContext } from '../types';
 
 import pb from '../lib/pocketbase';
-import { AuthContext } from './AuthContext';
+import { useAuth } from './AuthContext';
 
 // Create context
-export const GoalContext = createContext<IGoalContext>({
-  goalEntries: [],
-  uuid: '',
-  category: GoalCategory.Releafe,
-  title: '',
-  description: '',
-  sentence: '',
-  diarySentence: '',
-  timeframe: Timeframe.Daily,
-  targetFrequency: 0,
-  startDate: new Date(),
-  lastCompletedAt: null,
-  completedTimeframe: 0,
-  completedPeriod: 0,
-  setGoalEntries: () => {},
-  setUuid: () => {},
-  setCategory: () => {},
-  setTitle: () => {},
-  setDescription: () => {},
-  setSentence: () => {},
-  setDiarySentence: () => {},
-  setTimeframe: () => {},
-  setTargetFrequency: () => {},
-  setStartDate: () => {},
-  setLastCompletedAt: () => {},
-  setCompletedTimeframe: () => {},
-  setCompletedPeriod: () => {},
-  createGoalEntry: () => {},
-  updateGoalEntry: () => {},
-  deleteGoalEntry: () => {},
-  resetGoalEntryFields: () => {},
-});
+const GoalContext = createContext<IGoalContext | undefined>(undefined);
+
+export const useGoal = () => {
+  const context = useContext(GoalContext);
+  if (!context) throw new Error('useGoal must be used within a GoalProvider');
+  return context;
+};
 
 // Provider component
 export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
@@ -59,7 +34,60 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
   const [completedTimeframe, setCompletedTimeframe] = useState<number>(0);
   const [completedPeriod, setCompletedPeriod] = useState<number>(0);
 
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchGoalEntries = async () => {
+      if (user) {
+        try {
+          const res = await pb.collection('goal_entries').getList(1, 50, {
+            filter: `user.id='${user.id}'`,
+            sort: '-created',
+            expand: 'user',
+          });
+
+          const formatted: IGoalEntry[] = res.items.map((item) => {
+            const {
+              id,
+              uuid,
+              category,
+              title,
+              description,
+              sentence,
+              diarySentence,
+              timeframe,
+              targetFrequency,
+              startDate,
+              endDate,
+              completedTimeframe,
+              completedPeriod,
+            } = item;
+            return {
+              id,
+              uuid,
+              category,
+              title,
+              description,
+              sentence,
+              diarySentence,
+              timeframe,
+              targetFrequency,
+              startDate,
+              endDate,
+              completedTimeframe,
+              completedPeriod,
+            };
+          });
+
+          setGoalEntries(formatted);
+        } catch (error) {
+          console.error('Error fetching goal entries:', error);
+        }
+      }
+    };
+
+    fetchGoalEntries();
+  }, [user]);
 
   const createGoalEntry = async () => {
     const matchedGoalEntry = goalEntries.find((entry) => entry.uuid == uuid);

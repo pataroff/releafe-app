@@ -27,10 +27,10 @@ import {
 
 import Entypo from '@expo/vector-icons/Entypo';
 
-import { GoalContext } from '../context/GoalContext';
+import { useGoal } from '../context/GoalContext';
 import { CloseModal } from './CloseModal';
 
-const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
+export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
   const {
     uuid,
     category,
@@ -45,7 +45,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     completedPeriod,
   } = item;
 
-  const { deleteGoalEntry } = useContext(GoalContext);
+  const { deleteGoalEntry } = useGoal();
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [timeframeProgressValue, setTimeframeProgressValue] = useState<number>(
@@ -383,7 +383,7 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     </View>
   );
 };
-export default GoalListItem;
+
 const styles = StyleSheet.create({
   goalComponent: {
     flex: 1,

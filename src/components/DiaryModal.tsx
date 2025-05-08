@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { DiaryContext } from '../context/DiaryContext';
-import { GoalContext } from '../context/GoalContext';
+import { useGoal } from '../context/GoalContext';
 import { useGamification } from '../context/BonsaiContext';
 
 import { useSharedValue } from 'react-native-reanimated';
@@ -126,7 +126,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
 
   const navigation = useNavigation();
 
-  const { goalEntries, updateGoalEntry } = useContext(GoalContext);
+  const { goalEntries, updateGoalEntry } = useGoal();
   const { addPoints } = useGamification();
 
   const totalSteps =

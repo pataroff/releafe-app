@@ -27,10 +27,10 @@ import {
   formatDateString,
   getTimeframeString,
 } from '../utils/goal';
-import { GoalContext } from '../context/GoalContext';
+import { useGoal } from '../context/GoalContext';
 
 export const GoalsOverview = () => {
-  const { goalEntries } = useContext(GoalContext);
+  const { goalEntries } = useGoal();
 
   const [goalIndex, setGoalIndex] = useState<number>(0);
 
