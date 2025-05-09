@@ -111,8 +111,8 @@ const nudgingItems = [
 
 export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
-
   const title = 'Home';
+
   const { user } = useAuth();
   const { goalEntries } = useGoal();
 
@@ -323,9 +323,6 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
             return (
               <Animated.View
-                onLayout={(e) =>
-                  console.log('Item width:', e.nativeEvent.layout.width)
-                }
                 key={index}
                 style={[
                   styles.nudgingItemContainer,

@@ -417,8 +417,8 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   position: 'absolute',
-                  bottom: 100,
-                  height: 110,
+                  bottom: 120,
+                  height: 100,
                   width: '100%',
                   paddingHorizontal: 25,
                   zIndex: 3,
@@ -428,8 +428,8 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                 <Pressable
                   onPress={() => navigation.navigate('BonsaiTreeShop')}
                   style={{
-                    height: 110,
-                    width: 110,
+                    height: 100,
+                    width: 100,
                     borderRadius: 9999,
                     backgroundColor: '#5C6B57',
                     justifyContent: 'center',
@@ -446,7 +446,6 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                     style={
                       {
                         ...Fonts.sofiaProBold[Platform.OS],
-                        fontSize: 16,
                         color: 'white',
                       } as TextStyle
                     }
@@ -459,8 +458,8 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                 {/* Achievements Button */}
                 <Pressable
                   style={{
-                    height: 110,
-                    width: 110,
+                    height: 100,
+                    width: 100,
                     borderRadius: 9999,
                     backgroundColor: '#FCF2D0',
                     justifyContent: 'center',
@@ -477,7 +476,6 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                     style={
                       {
                         ...Fonts.sofiaProBold[Platform.OS],
-                        fontSize: 16,
                         color: '#FFC700',
                       } as TextStyle
                     }

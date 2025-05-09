@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,12 +12,13 @@ import {
   Linking,
 } from 'react-native';
 
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 const windowWidth = Dimensions.get('window').width;
 
 interface InformationModalProps {
@@ -29,7 +30,7 @@ export const InformationModal: React.FC<InformationModalProps> = ({
   modalInformationVisible,
   setModalInformationVisible,
 }) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [informatiegidsIndex, setInformatiegidsIndex] = useState<number>(0);
   const informatiegidsLength = 5;
 
