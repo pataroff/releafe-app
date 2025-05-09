@@ -1,44 +1,21 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { MediaFile, INoteContext, INoteEntry } from '../types';
 
 import pb from '../lib/pocketbase';
-import { AuthContext } from './AuthContext';
-import { WorryContext } from './WorryContext';
+import { useAuth } from './AuthContext';
+import { useWorry } from './WorryContext';
 
 // Create context
-export const NoteContext = createContext<INoteContext>({
-  noteEntries: [],
-  uuid: '',
-  feelingDescription: '',
-  thoughtLikelihoodSliderOne: 5,
-  forThoughtEvidence: '',
-  againstThoughtEvidence: '',
-  friendAdvice: '',
-  thoughtLikelihoodSliderTwo: 5,
-  thoughtLikelihood: '',
-  alternativePerspective: '',
-  mediaFile: { uri: '', type: '', name: '' },
-  audioMetering: [],
-  setNoteEntries: () => {},
-  setUuid: () => {},
-  setFeelingDescription: () => {},
-  setThoughtLikelihoodSliderOne: () => {},
-  setForThoughtEvidence: () => {},
-  setAgainstThoughtEvidence: () => {},
-  setFriendAdvice: () => {},
-  setThoughtLikelihoodSliderTwo: () => {},
-  setThoughtLikelihood: () => {},
-  setAlternativePerspective: () => {},
-  setMediaFile: () => {},
-  setAudioMetering: () => {},
-  createNoteEntry: () => {},
-  deleteNoteEntry: () => {},
-  updateNoteEntryFields: () => {},
-  resetNoteEntryFields: () => {},
-});
+const NoteContext = createContext<INoteContext | undefined>(undefined);
+
+export const useNote = () => {
+  const context = useContext(NoteContext);
+  if (!context) throw new Error('useNote must be used within a NoteProvider');
+  return context;
+};
 
 export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
@@ -65,8 +42,69 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
   });
   const [audioMetering, setAudioMetering] = useState<number[]>([]);
 
-  const { user } = useContext(AuthContext);
-  const { category, priority, title, description } = useContext(WorryContext);
+  const { user } = useAuth();
+  const { category, priority, title, description } = useWorry();
+
+  useEffect(() => {
+    const fetchNoteEntries = async () => {
+      if (!user) return;
+
+      try {
+        const res = await pb.collection('note_entries').getList(1, 50, {
+          filter: `user.id='${user.id}'`,
+          sort: '-created',
+          expand: 'user',
+        });
+
+        const formatted: INoteEntry[] = res.items.map((item) => {
+          const {
+            id,
+            uuid,
+            worry,
+            category,
+            priority,
+            title,
+            description,
+            feelingDescription,
+            thoughtLikelihoodSliderOne,
+            forThoughtEvidence,
+            againstThoughtEvidence,
+            friendAdvice,
+            thoughtLikelihoodSliderTwo,
+            thoughtLikelihood,
+            alternativePerspective,
+            mediaFile,
+            audioMetering,
+          } = item;
+          return {
+            id,
+            uuid,
+            worry,
+            category,
+            priority,
+            title,
+            description,
+            feelingDescription,
+            thoughtLikelihoodSliderOne,
+            forThoughtEvidence,
+            againstThoughtEvidence,
+            friendAdvice,
+            thoughtLikelihoodSliderTwo,
+            thoughtLikelihood,
+            alternativePerspective,
+            mediaFile,
+            audioMetering,
+          };
+        });
+
+        setNoteEntries(formatted);
+      } catch (error) {
+        console.error('Error fetching note entries:', error);
+      }
+    };
+
+    fetchNoteEntries();
+  }, [user]);
 
   const createNoteEntry = async (worryEntryUuid?: string) => {
     let worryEntry = null;

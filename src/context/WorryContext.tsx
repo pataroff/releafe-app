@@ -1,41 +1,30 @@
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Category, Priority, IWorryListItem, IWorryContext } from '../types';
 
 import pb from '../lib/pocketbase';
-import { AuthContext } from './AuthContext';
-import { NoteContext } from './NoteContext';
 
-// Create context
-export const WorryContext = createContext<IWorryContext>({
-  worryEntries: [],
-  uuid: '',
-  category: Category.Work,
-  priority: Priority.None,
-  date: new Date(),
-  title: '',
-  description: '',
-  reframed: false,
-  setWorryEntries: () => {},
-  setUuid: () => {},
-  setCategory: () => {},
-  setPriority: () => {},
-  setDate: () => {},
-  setTitle: () => {},
-  setDescription: () => {},
-  setReframed: () => {},
-  createWorryEntry: () => {},
-  deleteWorryEntry: () => {},
-  updateWorryEntryFields: () => {},
-  resetWorryEntryFields: () => {},
-});
+import { useAuth } from './AuthContext';
+import { useNote } from './NoteContext';
 
-// Provider component
+const WorryContext = createContext<IWorryContext | undefined>(undefined);
+
+export const useWorry = () => {
+  const context = useContext(WorryContext);
+  if (!context) {
+    throw new Error('useWorry must be used within a WorryProvider');
+  }
+  return context;
+};
+
 export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
+  const { user } = useAuth();
+  // const { updateNoteEntryFields } = useNote(); // @TODO How do we solve this?
+
   const [worryEntries, setWorryEntries] = useState<IWorryListItem[]>([]);
   const [uuid, setUuid] = useState<string>('');
   const [category, setCategory] = useState<Category>(Category.Work);
@@ -45,8 +34,35 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
   const [description, setDescription] = useState<string>('');
   const [reframed, setReframed] = useState<boolean>(false);
 
-  const { user } = useContext(AuthContext);
-  const { updateNoteEntryFields } = useContext(NoteContext);
+  useEffect(() => {
+    const fetchWorryEntries = async () => {
+      if (!user) return;
+
+      try {
+        const res = await pb.collection('worry_entries').getList(1, 50, {
+          filter: `user.id='${user.id}'`,
+          sort: '-date',
+        });
+
+        const formatted = res.items.map((item) => ({
+          id: item.id,
+          uuid: item.uuid,
+          category: item.category,
+          priority: item.priority,
+          date: new Date(item.date),
+          title: item.title,
+          description: item.description,
+          reframed: item.reframed,
+        }));
+
+        setWorryEntries(formatted);
+      } catch (err) {
+        console.error('Failed to fetch worry entries:', err);
+      }
+    };
+
+    fetchWorryEntries();
+  }, [user]);
 
   const createWorryEntry = async (noteEntryUuid?: string) => {
     let noteEntry = null;

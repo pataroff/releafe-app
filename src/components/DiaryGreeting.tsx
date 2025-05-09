@@ -14,17 +14,14 @@ import {
 import { Fonts } from '../styles';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 import { DiaryModal } from './DiaryModal';
 
 const windowWidth = Dimensions.get('window').width;
 
 export const DiaryGreeting = ({ route }) => {
-  const { user } = useContext(AuthContext);
-  const navigation = useNavigation();
+  const { user } = useAuth();
 
   const [modalDiaryVisible, setModalDiaryVisible] = useState<boolean>(false);
 
@@ -69,7 +66,7 @@ export const DiaryGreeting = ({ route }) => {
           <View style={{ display: 'flex', flexDirection: 'row', columnGap: 5 }}>
             {/* Points Container */}
             <View style={styles.pointsContainer}>
-              <Text style={styles.pointsText}>+35</Text>
+              <Text style={styles.pointsText}>+10</Text>
 
               <Image
                 style={styles.shopIcon}

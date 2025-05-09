@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { DiaryContext } from '../context/DiaryContext';
-import { GoalContext } from '../context/GoalContext';
+import { useGoal } from '../context/GoalContext';
 import { useGamification } from '../context/BonsaiContext';
 
 import { useSharedValue } from 'react-native-reanimated';
@@ -126,8 +126,8 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
 
   const navigation = useNavigation();
 
-  const { goalEntries, updateGoalEntry } = useContext(GoalContext);
-  const { addPoints, updatePointsInDatabase } = useGamification();
+  const { goalEntries, updateGoalEntry } = useGoal();
+  const { addPoints } = useGamification();
 
   const totalSteps =
     goalEntries.length > 0
@@ -229,14 +229,19 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const handleFinish = () => {
     // Create diary entry
     createDiaryEntry();
-    // Reward points
-    addPoints(35);
 
-    // Update goal entries (if applicable)
-    if (goalEntries.length > 0 && checkedGoals.length > 0) {
+    // Check if there are goals that need to be updated
+    if (checkedGoals.length > 0) {
       for (const checkedGoal of checkedGoals) {
         updateGoalEntry(checkedGoal);
       }
+
+      // Calculate `totalPoints` that need to be rewarded for goal completion
+      const totalPoints = checkedGoals.length * 50;
+      addPoints(totalPoints + 10); // `totalPoints` + 10 points for diary completion
+    } else {
+      // If no completed goals, reward points just for diary completion
+      addPoints(10);
     }
 
     // Close modal

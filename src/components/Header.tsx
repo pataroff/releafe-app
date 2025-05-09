@@ -68,7 +68,8 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
             >
               {/* Nested Routes */}
               {(route?.params?.toolkitStackScreen ||
-                route?.params?.bonsaiTreeStackScreen) &&
+                route?.params?.bonsaiTreeStackScreen ||
+                route?.params?.settingsStackScreen) &&
                 route?.name !== 'Toolkit1' && (
                   <Pressable onPress={() => navigation.goBack()}>
                     <MaterialCommunityIcons

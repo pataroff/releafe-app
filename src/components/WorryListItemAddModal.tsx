@@ -17,7 +17,7 @@ import { Priority } from '../types';
 import { DropdownComponent } from './DropdownComponent';
 import { CloseModal } from './CloseModal';
 
-import { WorryContext } from '../context/WorryContext';
+import { useWorry } from '../context/WorryContext';
 import { getPriorityColor } from '../utils/worry';
 
 import { Fonts } from '../styles';
@@ -52,7 +52,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setDescription,
     createWorryEntry,
     resetWorryEntryFields,
-  } = useContext(WorryContext);
+  } = useWorry();
 
   const [worryListItemAddModalIndex, setWorryListItemAddModalIndex] =
     useState<number>(0);
@@ -60,19 +60,19 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     useState<boolean>(false);
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
-      const showToast = (
-        type: 'error' | 'success' | 'info',
-        title: string,
-        message: string,
-      ) => {
-        Toast.show({
-          topOffset: 15,
-          type,
-          text1: title,
-          text2: message,
-        });
-      };
-  
+  const showToast = (
+    type: 'error' | 'success' | 'info',
+    title: string,
+    message: string
+  ) => {
+    Toast.show({
+      topOffset: 15,
+      type,
+      text1: title,
+      text2: message,
+    });
+  };
+
   const handleStore = () => {
     createWorryEntry();
     setWorryListItemAddModalIndex(1);
@@ -84,24 +84,18 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
   };
 
-
-  const handleStorePress  = () => {
-    if(!title)
-    {
-      showToast('error','Titel ontbreekt nog','Voeg een titel toe.');
-    }
-    else if (!description)
-    {
-      showToast('error','Titel ontbreekt nog', 'Voeg een titel toe.')
-    }
-    else
-    {
+  const handleStorePress = () => {
+    if (!title) {
+      showToast('error', 'Titel ontbreekt nog', 'Voeg een titel toe.');
+    } else if (!description) {
+      showToast('error', 'Titel ontbreekt nog', 'Voeg een titel toe.');
+    } else {
       title.trim();
       description.trim();
 
       handleStore();
     }
-  }
+  };
 
   const handleReframing = () => {
     // resetWorryEntryFields(); // TODO: Where should the reset happen?
@@ -192,7 +186,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                   <TextInput
                     style={
                       {
-                        verticalAlign: Platform.OS == 'android'? "top" : {},
+                        verticalAlign: Platform.OS == 'android' ? 'top' : {},
                         ...Fonts.sofiaProRegular[Platform.OS],
                         backgroundColor: '#f6f7f8',
                         borderRadius: 10,
@@ -267,7 +261,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                     <TextInput
                       style={
                         {
-                          verticalAlign: Platform.OS == 'android'? "top" : {},
+                          verticalAlign: Platform.OS == 'android' ? 'top' : {},
                           ...Fonts.sofiaProRegular[Platform.OS],
                           padding: 10,
                           borderRadius: 10,
@@ -436,7 +430,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
             </View>
           </View>
         </View>
-        <Toast/>
+        <Toast />
       </View>
     </Modal>
   );

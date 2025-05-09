@@ -2,48 +2,92 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-
 import { Category, IIcon } from '../types';
 
 const icons: IIcon[] = [
   {
     label: 'Gezin en relaties',
     value: 'gezin en relaties',
-    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-    source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')} />,
+    icon: (
+      <Image
+        style={{
+          height: 24,
+          width: 24,
+        }}
+        source={require('../../assets/images/dropdown_icons/dropdown_icon_gezin_en_relaties.png')}
+        resizeMode='contain'
+      />
+    ),
   },
   {
     label: 'Gezondheid',
     value: 'gezondheid',
-    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-    source= {require('../../assets/images/dropdown_icons/dropdown_icon_gezondheid.png')} />,
+    icon: (
+      <Image
+        style={{
+          height: 24,
+          width: 24,
+        }}
+        source={require('../../assets/images/dropdown_icons/dropdown_icon_gezondheid.png')}
+        resizeMode='contain'
+      />
+    ),
   },
   {
     label: 'Werk',
     value: 'werk',
-    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-    source= {require('../../assets/images/dropdown_icons/dropdown_icon_work.png')} />,
+    icon: (
+      <Image
+        style={{
+          height: 24,
+          width: 24,
+        }}
+        source={require('../../assets/images/dropdown_icons/dropdown_icon_work.png')}
+        resizeMode='contain'
+      />
+    ),
   },
   {
     label: 'Onderwijs',
     value: 'onderwijs',
-    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-    source= {require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')} />,
+    icon: (
+      <Image
+        style={{
+          height: 24,
+          width: 24,
+        }}
+        source={require('../../assets/images/dropdown_icons/dropdown_icon_onderwijs.png')}
+        resizeMode='contain'
+      />
+    ),
   },
   {
     label: 'Financiën',
     value: 'financiën',
-    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-    source= {require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')} />,
+    icon: (
+      <Image
+        style={{
+          height: 24,
+          width: 24,
+        }}
+        source={require('../../assets/images/dropdown_icons/dropdown_icon_financien.png')}
+        resizeMode='contain'
+      />
+    ),
   },
   {
     label: 'Overig',
-    value: 'Overig',
-    icon: <Image style = {{objectFit: 'contain', paddingLeft:18, paddingRight:10,height:24,maxHeight:36,width:24,maxWidth:36,}} 
-    source= {require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')} />,
+    value: 'overig',
+    icon: (
+      <Image
+        style={{
+          height: 24,
+          width: 24,
+        }}
+        source={require('../../assets/images/dropdown_icons/dropdown_icon_overig.png')}
+        resizeMode='contain'
+      />
+    ),
   },
 ];
 
@@ -179,5 +223,5 @@ const styles = StyleSheet.create({
   image: {
     width: 10,
     height: 10,
-  }
+  },
 });

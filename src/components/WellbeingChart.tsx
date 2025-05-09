@@ -646,15 +646,6 @@ const fillMissingWeeksForMonths = (
     // Get the Monday of the first ISO week
     const startDate = getDateOfISOWeek(firstISOWeek, targetYear);
 
-    // Log for debugging
-    console.log(
-      `Filling weeks for → Year: ${targetYear}, Month: ${targetMonth + 1}`
-    );
-    console.log(`Weeks: ${firstISOWeek} → ${lastISOWeek}`);
-    console.log(
-      `Date Range: ${startDate.toISOString()} → ${endDate.toISOString()}`
-    );
-
     // Fill missing days for the current month
     const filledData = fillMissingDays(sortedData, startDate, endDate);
     result.push(...filledData);
@@ -687,15 +678,6 @@ const fillMissingWeeksForMonths = (
 
       // Get the Monday of the first ISO week
       const startDate = getDateOfISOWeek(firstISOWeek, targetYear);
-
-      // Log for debugging
-      console.log(
-        `Filling weeks for → Year: ${targetYear}, Month: ${targetMonth + 1}`
-      );
-      console.log(`Weeks: ${firstISOWeek} → ${lastISOWeek}`);
-      console.log(
-        `Date Range: ${startDate.toISOString()} → ${endDate.toISOString()}`
-      );
 
       // Fill missing days for the current month
       const filledData = fillMissingDays(sortedData, startDate, endDate);
@@ -1034,7 +1016,6 @@ export const WellbeingChart = ({
     },
   });
 
-  // START
   const aggregatedChartData = useMemo(() => {
     const WEEKLY_DATA = aggregateWeeklyData(rawChartData);
     const MONTHLY_DATA = aggregateMonthlyData(rawChartData);
@@ -1204,8 +1185,6 @@ export const WellbeingChart = ({
     return PAGE_SIZES[chartTimeframe];
   }, [chartTimeframe, currentChartData]);
 
-  console.log('Initial pageSize:', pageSize);
-
   // Step 2: Calculate startIndex (dynamically based on currentPage * pageSize)
   const currentPage = pageIndices[chartTimeframe];
 
@@ -1215,13 +1194,8 @@ export const WellbeingChart = ({
 
   const endIndex = startIndex + pageSize;
 
-  console.log('START INDEX:', startIndex);
-  console.log('END INDEX:', endIndex);
-  // END
-
   const totalDataLength = currentChartData.length;
   const maxPages = Math.ceil(totalDataLength / PAGE_SIZES[chartTimeframe]) - 1;
-  console.log('MAX PAGES:', maxPages);
 
   let paginatedData = null;
 

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
 import {
   StyleSheet,
@@ -16,10 +16,9 @@ import {
 
 import { Dropdown } from 'react-native-element-dropdown';
 import '../utils/localeConfig';
-import { Calendar, DateData } from 'react-native-calendars';
 
 import { Timeframe } from '../types';
-import { GoalContext } from '../context/GoalContext';
+import { useGoal } from '../context/GoalContext';
 import {
   categories,
   categoryGoals,
@@ -36,7 +35,6 @@ import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
 
 import { CloseModal } from './CloseModal';
-import Day from 'react-native-calendars/src/calendar/day';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -76,7 +74,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     //setEndDate,
     createGoalEntry,
     resetGoalEntryFields,
-  } = useContext(GoalContext);
+  } = useGoal();
 
   const [goalListItemAddModalIndex, setGoalListItemAddModalIndex] =
     useState<number>(0);
@@ -112,7 +110,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
       }
     >;*/
 
-    /* Helper function to get all dates between two dates
+  /* Helper function to get all dates between two dates
     const getDatesInRange = (start: Date, end: Date) => {
       const dates: string[] = [];
       let currentDate = new Date(start);
@@ -129,7 +127,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
       return dates;
     };*/
 
-    /*if (startDate === null) {
+  /*if (startDate === null) {
       // Set the start date
       setStartDate(new Date(day));
       setMarkedDates((prevMarkedDates) => ({
@@ -232,13 +230,13 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
 
   const handleGoalSentences = () => {
     setStartDate(new Date());
-      setSentence(
-        `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
-          specialDropdownValue ? ` ${specialDropdownValue}` : ``
-        } ${goalEndText}`
-      );
-      setDiarySentence(modifyDiarySentence(diarySentence, specialDropdownValue));
-      setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
+    setSentence(
+      `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
+        specialDropdownValue ? ` ${specialDropdownValue}` : ``
+      } ${goalEndText}`
+    );
+    setDiarySentence(modifyDiarySentence(diarySentence, specialDropdownValue));
+    setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
   };
 
   const handleBack = () => {
@@ -248,9 +246,8 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   };
 
   const handleFinish = () => {
-    if(timeframe === Timeframe.Daily)
-    {
-    setTargetFrequency(1);
+    if (timeframe === Timeframe.Daily) {
+      setTargetFrequency(1);
     }
     createGoalEntry();
     resetGoalEntryFields();

@@ -20,8 +20,8 @@ import Feather from '@expo/vector-icons/Feather';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-import { WorryContext } from '../context/WorryContext';
-import { NoteContext } from '../context/NoteContext';
+import { useWorry } from '../context/WorryContext';
+import { useNote } from '../context/NoteContext';
 
 import { DropdownComponent } from '../components/DropdownComponent';
 import { MemoItem } from './MemoItem';
@@ -98,7 +98,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     setTitle,
     setDescription,
     resetWorryEntryFields,
-  } = useContext(WorryContext);
+  } = useWorry();
 
   const {
     uuid,
@@ -108,7 +108,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     setAudioMetering,
     createNoteEntry,
     resetNoteEntryFields,
-  } = useContext(NoteContext);
+  } = useNote();
 
   const handleStore = () => {
     createNoteEntry();
@@ -116,18 +116,15 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     resetWorryEntryFields();
     setModalAddNoteListItemVisible(!modalAddNoteListItemVisible);
   };
-  
+
   const handleStorePress = () => {
-    if(title)
-    {
+    if (title) {
       title.trim();
       handleStore();
+    } else {
+      showToast('error', 'Titel ontbreekt nog', 'Voeg een titel toe.');
     }
-    else
-    {
-      showToast('error','Titel ontbreekt nog','Voeg een titel toe.');
-    }
-  }
+  };
 
   const handleClose = () => {
     resetNoteEntryFields();
@@ -191,15 +188,15 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
   const showToast = (
     type: 'error' | 'success' | 'info',
     title: string,
-    message: string,
-    ) => {
-      Toast.show({
+    message: string
+  ) => {
+    Toast.show({
       topOffset: 15,
       type,
       text1: title,
       text2: message,
-      });
-    };
+    });
+  };
 
   const generateVideoThumbnail = async (videoUri: string) => {
     try {
@@ -336,7 +333,6 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
 
         setAudio(recording);
         console.log('Recording started...');
-
 
         recording.setOnRecordingStatusUpdate((status) => {
           if (status.metering) {
@@ -604,7 +600,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                       style={
                         {
                           ...Fonts.sofiaProRegular[Platform.OS],
-                          verticalAlign: Platform.OS == 'android'? "top" : {},
+                          verticalAlign: Platform.OS == 'android' ? 'top' : {},
                           backgroundColor: '#F6F7F8',
                           //fontStyle: 'italic',
                           borderRadius: 10,
@@ -634,7 +630,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                       style={
                         {
                           ...Fonts.sofiaProRegular[Platform.OS],
-                          verticalAlign: Platform.OS == 'android'? "top" : {},
+                          verticalAlign: Platform.OS == 'android' ? 'top' : {},
                           backgroundColor: '#F6F7F8',
                           //fontStyle: 'italic',
                           position: 'relative',
@@ -678,9 +674,15 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                           >
                             <Image
                               resizeMode='contain'
-                              style={{height: 35, width: 35 }}
+                              style={{ height: 35, width: 35 }}
                               //TODO: Is there a better way to do this? - Luna
-                              source={index===2? isAudioRecording? voiceMemoRedIcon : icon : icon}
+                              source={
+                                index === 2
+                                  ? isAudioRecording
+                                    ? voiceMemoRedIcon
+                                    : icon
+                                  : icon
+                              }
                             ></Image>
                           </Pressable>
                         );
@@ -756,7 +758,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                         alignSelf: 'center',
                         width: 215,
                         borderRadius: 10,
-                        backgroundColor:'#A9C1A1' ,
+                        backgroundColor: '#A9C1A1',
                         paddingVertical: 12,
                       }}
                     >

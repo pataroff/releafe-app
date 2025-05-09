@@ -18,8 +18,8 @@ import Feather from '@expo/vector-icons/Feather';
 
 import { Category, INoteEntry } from '../types';
 
-import { NoteContext } from '../context/NoteContext';
-import { WorryContext } from '../context/WorryContext';
+import { useNote } from '../context/NoteContext';
+import { useWorry } from '../context/WorryContext';
 
 import { Video, ResizeMode } from 'expo-av';
 import { MemoItem } from './MemoItem';
@@ -157,8 +157,8 @@ export const NoteListItemExpandedModal: React.FC<
   item,
 }) => {
   const [showUnreframedData, setShowUnreframedData] = useState<boolean>(false);
-  const { updateNoteEntryFields, deleteNoteEntry } = useContext(NoteContext);
-  const { updateWorryEntryFields } = useContext(WorryContext);
+  const { updateNoteEntryFields, deleteNoteEntry } = useNote();
+  const { updateWorryEntryFields } = useWorry();
 
   const {
     id,

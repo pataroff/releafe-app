@@ -25,9 +25,7 @@ const windowWidth = Dimensions.get('window').width;
 
 export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
   const title = '';
-
-  const { points, unlockedItems, unlockItem, updateUnlockedItemsInDatabase, addPoints } =
-    useGamification();
+  const { points, unlockedItems, unlockItem } = useGamification();
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<{
@@ -37,6 +35,7 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
 
   const handleIconPress = (itemId: string, price: number) => {
     if (unlockedItems.includes(itemId)) {
+      // @TODO Show toast message/modal to the user!
       return;
     }
 
@@ -58,20 +57,23 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
 
 
   const handleConfirmPurchase = () => {
-    if (!selectedItem) {
+    if (!selectedItem) return; // @TODO Is this check necessary?
+
+    const { itemId, price } = selectedItem;
+
+    if (points < price || unlockedItems.includes(itemId)) {
+      // @TODO Show toast message/modal to the user!
       return;
     }
 
-    const updatedPoints = points - selectedItem.price;
+  const updatedPoints = points - selectedItem.price;
     if(updatedPoints<=0)
     {
       showToast("error","Te weinig Releafe-punten","Je hebt nog niet genoeg punten om dit te kopen. Blijf goed voor jezelf zorgen en spaar verder!");
       return;
     }
-    const updatedUnlockedItems = [...unlockedItems, selectedItem.itemId];
 
-    unlockItem(selectedItem.itemId, selectedItem.price);
-    updateUnlockedItemsInDatabase(updatedPoints, updatedUnlockedItems);
+    unlockItem(itemId, price);
     setModalVisible(false);
   };
 

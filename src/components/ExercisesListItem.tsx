@@ -84,6 +84,28 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
           }}
         >
           <Text style={styles.exerciseHeadingText}>{title}</Text>
+          {/* Reward Container */}
+          <View style={{ display: 'flex', flexDirection: 'row', columnGap: 5 }}>
+            {/* Points Container */}
+            <View style={styles.pointsContainer}>
+              <Text style={styles.pointsText}>+15</Text>
+
+              <Image
+                style={styles.shopIcon}
+                source={require('../../assets/images/bonsai_tree_icons/shop_icon.png')}
+                resizeMode='contain'
+              />
+            </View>
+            {/* Trophy Container */}
+            <View style={styles.trophyContainer}>
+              <Image
+                style={styles.trophyIcon}
+                source={require('../../assets/images/bonsai_tree_icons/trophy_icon.png')}
+                resizeMode='contain'
+              />
+            </View>
+          </View>
+          <Text style={styles.exerciseBodyText}>{description}</Text>
           <Text style={styles.durationHeadingText}>
             Duur: <Text style={styles.durationBodyText}>{duration}</Text>
           </Text>
@@ -91,7 +113,10 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
 
         {/* Favourite Button */}
         {/*TODO: Is this correct styling? - Luna*/}
-        <Pressable onPress={() => handleFavourite(id)} style={{width: 36, height:36, paddingTop:5, paddingLeft:10}}> 
+        <Pressable
+          onPress={() => handleFavourite(id)}
+          style={{ width: 36, height: 36, paddingTop: 5, paddingLeft: 10 }}
+        >
           {isFavourite ? (
             <Image
               source={require('../../assets/images/favourite_button_on_icon.png')}
@@ -135,4 +160,38 @@ const styles = StyleSheet.create({
   durationBodyText: {
     ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
+  pointsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 72,
+    height: 31,
+    columnGap: 5,
+    backgroundColor: '#90A38A',
+    borderRadius: 7.5,
+    padding: 5,
+  },
+  pointsText: {
+    ...Fonts.sofiaProSemiBold[Platform.OS],
+    color: 'white',
+    fontSize: 16,
+  } as TextStyle,
+  shopIcon: {
+    width: 29,
+    height: 20,
+    marginBottom: 5,
+  },
+  trophyContainer: {
+    width: 35,
+    padding: 5,
+    borderRadius: 7.5,
+    backgroundColor: '#FCF2D0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trophyIcon: {
+    width: 23,
+    height: 20,
+  },
 });

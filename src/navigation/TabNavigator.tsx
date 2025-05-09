@@ -1,7 +1,4 @@
-import React, { useEffect, useContext } from 'react';
 import { Image } from 'react-native';
-
-import { IWorryListItem, INoteEntry, IGoalEntry } from '../types';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -11,198 +8,11 @@ import { DashboardScreen } from '../screens/DashboardScreen';
 import { DiaryStack } from './DiaryStack';
 import { ToolkitStack } from './ToolkitStack';
 import { BonsaiTreeStack } from './BonsaiTreeStack';
-
-import { AuthContext } from '../context/AuthContext';
-import { WorryContext } from '../context/WorryContext';
-import { NoteContext } from '../context/NoteContext';
-import { GoalContext } from '../context/GoalContext';
-import { useGamification } from '../context/BonsaiContext';
-
-import pb from '../lib/pocketbase';
+import { SettingsStack } from './SettingsStack';
 
 const Tab = createBottomTabNavigator();
 
 export const TabNavigator = () => {
-  const { user } = useContext(AuthContext);
-  const { setWorryEntries } = useContext(WorryContext);
-  const { setNoteEntries } = useContext(NoteContext);
-  const { setGoalEntries } = useContext(GoalContext);
-  const { setPoints } = useGamification();
-
-  useEffect(() => {
-    const fetchWorryEntries = async () => {
-      if (user) {
-        try {
-          const worryEntriesList = await pb
-            .collection('worry_entries')
-            .getList(1, 50, {
-              filter: `user.id='${user.id}'`,
-              sort: '-date', // desc order
-              expand: 'user',
-            });
-
-          const modifiedWorryEntriesList: IWorryListItem[] =
-            worryEntriesList.items.map((item) => {
-              const {
-                id,
-                uuid,
-                category,
-                priority,
-                date,
-                title,
-                description,
-                reframed,
-              } = item;
-              return {
-                id,
-                uuid,
-                category,
-                date: new Date(date),
-                priority,
-                title,
-                description,
-                reframed,
-              };
-            });
-
-          setWorryEntries(modifiedWorryEntriesList);
-        } catch (error) {
-          console.error('Error fetching worry entries:', error);
-        }
-      }
-    };
-
-    const fetchNoteEntries = async () => {
-      if (user) {
-        try {
-          const noteEntriesList = await pb
-            .collection('note_entries')
-            .getList(1, 50, {
-              filter: `user.id='${user.id}'`,
-              sort: '-created',
-              expand: 'user',
-            });
-
-          const modifiedNoteEntriesList: INoteEntry[] =
-            noteEntriesList.items.map((item) => {
-              const {
-                id,
-                uuid,
-                worry,
-                category,
-                priority,
-                title,
-                description,
-                feelingDescription,
-                thoughtLikelihoodSliderOne,
-                forThoughtEvidence,
-                againstThoughtEvidence,
-                friendAdvice,
-                thoughtLikelihoodSliderTwo,
-                thoughtLikelihood,
-                alternativePerspective,
-                mediaFile,
-                audioMetering,
-              } = item;
-              return {
-                id,
-                uuid,
-                worry,
-                category,
-                priority,
-                title,
-                description,
-                feelingDescription,
-                thoughtLikelihoodSliderOne,
-                forThoughtEvidence,
-                againstThoughtEvidence,
-                friendAdvice,
-                thoughtLikelihoodSliderTwo,
-                thoughtLikelihood,
-                alternativePerspective,
-                mediaFile,
-                audioMetering,
-              };
-            });
-
-          setNoteEntries(modifiedNoteEntriesList);
-        } catch (error) {
-          console.error('Error fetching note entries:', error);
-        }
-      }
-    };
-
-    const fetchGoalEntries = async () => {
-      if (user) {
-        try {
-          const goalEntriesList = await pb
-            .collection('goal_entries')
-            .getList(1, 50, {
-              filter: `user.id='${user.id}'`,
-              sort: '-created',
-              expand: 'user',
-            });
-
-          const modifiedGoalEntriesList: IGoalEntry[] =
-            goalEntriesList.items.map((item) => {
-              const {
-                id,
-                uuid,
-                category,
-                title,
-                description,
-                sentence,
-                diarySentence,
-                timeframe,
-                targetFrequency,
-                startDate,
-                endDate,
-                completedTimeframe,
-                completedPeriod,
-              } = item;
-              return {
-                id,
-                uuid,
-                category,
-                title,
-                description,
-                sentence,
-                diarySentence,
-                timeframe,
-                targetFrequency,
-                startDate,
-                endDate,
-                completedTimeframe,
-                completedPeriod,
-              };
-            });
-
-          setGoalEntries(modifiedGoalEntriesList);
-        } catch (error) {
-          console.error('Error fetching goal entries:', error);
-        }
-      }
-    };
-
-    // @TODO: Is this where this should happen?
-    const fetchUserPoints = async () => {
-      if (user) {
-        setPoints(user.points);
-        // try {
-        //   const userRecord = await pb.collection('users').getOne(user?.id);
-        //   setPoints(userRecord.points || 0);
-        // } catch (error) {
-        //   console.error('Error fetching points:', error);
-        // }
-      }
-    };
-
-    fetchWorryEntries();
-    fetchNoteEntries();
-    fetchGoalEntries();
-    fetchUserPoints();
-  }, [user]);
-
   return (
     <Tab.Navigator
       initialRouteName='Home'
@@ -310,6 +120,14 @@ export const TabNavigator = () => {
       <Tab.Screen
         name='BonsaiTree'
         component={BonsaiTreeStack}
+        options={{
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tab.Screen
+        name='Settings'
+        component={SettingsStack}
         options={{
           tabBarButton: () => null,
         }}

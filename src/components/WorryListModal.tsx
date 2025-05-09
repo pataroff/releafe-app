@@ -17,7 +17,7 @@ import Feather from '@expo/vector-icons/Feather';
 
 import { WorryListItem } from './WorryListItem';
 
-import { WorryContext } from '../context/WorryContext';
+import { useWorry } from '../context/WorryContext';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -43,7 +43,7 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
   setModalReframingVisible,
   handleDrawer,
 }) => {
-  const { worryEntries } = useContext(WorryContext);
+  const { worryEntries } = useWorry();
 
   return (
     <Modal

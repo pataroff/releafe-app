@@ -2,7 +2,6 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { TabNavigator } from './TabNavigator';
 
 import { CustomDrawerContent } from '../components/CustomDrawerContent';
-import { BonsaiTreeScreen } from '../screens/BonsaiTreeScreen';
 
 const Drawer = createDrawerNavigator();
 

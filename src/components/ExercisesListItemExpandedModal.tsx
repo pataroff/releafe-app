@@ -18,6 +18,8 @@ import { Exercise } from '../types';
 
 import Feather from '@expo/vector-icons/Feather';
 
+import { useGamification } from '../context/BonsaiContext';
+
 interface ExercisesListItemExpandedModalProps {
   modalExercisesListItemExpandedVisible: boolean;
   setModalExercisesListItemExpandedVisible: React.Dispatch<
@@ -36,17 +38,18 @@ export const ExercisesListItemExpandedModal: React.FC<
   exercise,
 }) => {
   const { icon, title, description, link } = exercise;
+  const { addPoints } = useGamification();
 
   return (
     <Modal
       animationType='none'
       transparent={true}
       visible={modalExercisesListItemExpandedVisible}
-      onRequestClose={() =>
+      onRequestClose={() => {
         setModalExercisesListItemExpandedVisible(
           !modalExercisesListItemExpandedVisible
-        )
-      }
+        );
+      }}
     >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
@@ -90,11 +93,12 @@ export const ExercisesListItemExpandedModal: React.FC<
               </View>
               <Pressable
                 style={{ position: 'absolute', right: 0 }}
-                onPress={() =>
+                onPress={() => {
                   setModalExercisesListItemExpandedVisible(
                     !modalExercisesListItemExpandedVisible
-                  )
-                }
+                  );
+                  addPoints(10); // @TODO This is easy to cheat, how to prevent cheating?
+                }}
               >
                 <Feather name='x-circle' size={24} color='gray' />
               </Pressable>
@@ -117,6 +121,7 @@ export const ExercisesListItemExpandedModal: React.FC<
             </View>
 
             <WebView
+              on
               bounces={false}
               javaScriptEnabled
               contentMode='desktop'
