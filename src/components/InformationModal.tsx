@@ -16,7 +16,6 @@ import { useAuth } from '../context/AuthContext';
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const windowWidth = Dimensions.get('window').width;
@@ -136,7 +135,7 @@ export const InformationModal: React.FC<InformationModalProps> = ({
   ];
 
   return (
-    <SafeAreaView>
+    <View>
       <Modal
         animationType='none'
         transparent={true}
@@ -448,7 +447,7 @@ export const InformationModal: React.FC<InformationModalProps> = ({
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 };
 const styles = StyleSheet.create({

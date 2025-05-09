@@ -45,7 +45,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
   const showBackButton = isNestedScreen && route?.name !== 'Toolkit1';
 
   const showAvatar =
-    route?.name !== 'BonsaiTreeShop' && route?.name !== 'Settings1';
+    route?.name !== 'BonsaiTreeShop' || route?.name !== 'Settings1';
 
   return (
     <>
