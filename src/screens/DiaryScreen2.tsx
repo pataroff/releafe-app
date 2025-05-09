@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { DiaryFarewell } from '../components/DiaryFarewell';
 
 export const DiaryScreen2: React.FC = () => {

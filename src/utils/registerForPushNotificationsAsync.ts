@@ -3,6 +3,16 @@ import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export const debugAsyncStorage = async () => {
+  const keys = await AsyncStorage.getAllKeys();
+  const stores = await AsyncStorage.multiGet(keys);
+  stores.forEach(([key, value]) =>
+    console.log(`[AsyncStorage] ${key}: ${value}`)
+  );
+};
+
 export async function registerForPushNotificationsAsync() {
   if (Platform.OS === 'android') {
     Notifications.setNotificationChannelAsync('default', {

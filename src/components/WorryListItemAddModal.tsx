@@ -66,7 +66,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     message: string
   ) => {
     Toast.show({
-      topOffset: 15,
+      topOffset: 80,
       type,
       text1: title,
       text2: message,

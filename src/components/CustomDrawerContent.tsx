@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,11 +7,12 @@ import {
   Pressable,
   TextStyle,
   Platform,
-  Modal,
   Dimensions,
 } from 'react-native';
 
-import { AuthContext } from '../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { useAuth } from '../context/AuthContext';
 
 import {
   DrawerContentScrollView,
@@ -22,29 +23,24 @@ import {
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 import { Avatar } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { topLeft } from '@shopify/react-native-skia';
-import { useSharedValue } from 'react-native-reanimated';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 import { InformationModal } from './InformationModal';
 import { BonsaiInformationModal } from './BonsaiInformationModal';
+
 const windowWidth = Dimensions.get('window').width;
 
-export const CustomDrawerContent = (props) => {
-  const { user, signOut } = useContext(AuthContext);
+const HAS_SEEN_HOME_GUIDE_KEY = 'hasSeenHomeGuide';
+const HAS_SEEN_BONSAI_GUIDE_KEY = 'hasSeenBonsaiGuide';
+
+export const CustomDrawerContent: React.FC = (props) => {
+  const { user, signOut } = useAuth();
   const { navigation, state } = props;
 
-  {
-    /*TODO: Need to save these variables more permanently - Luna*/
-  }
-  const [firstBootHome, setFirstBootHome] = useState<Boolean>(true);
-  const [firstBootBonsai, setFirstBootBonsai] = useState<Boolean>(true);
+  const [isInformationModalVisible, setIsInformationModalVisible] =
+    useState<boolean>(false);
 
   const currentRoute = state.routes[state.index];
   const nestedRoute = currentRoute.state?.routes?.[currentRoute.state.index];
-
-  const [informatiegidsModalActive, setInformatiegidsModalActive] =
-    useState<boolean>(false);
 
   const menuConfigGroup1 = [
     {
@@ -68,15 +64,10 @@ export const CustomDrawerContent = (props) => {
       label: 'Informatiegids',
       icon: require('../../assets/images/drawer_icons/drawer_info_icon.png'),
       action: () => {
-        console.log('Informatiegids pressed!');
-        setInformatiegidsModalActive(!informatiegidsModalActive);
+        setIsInformationModalVisible(true);
       },
     },
-    {
-      label: 'Instellingen',
-      icon: require('../../assets/images/drawer_icons/drawer_settings_icon.png'),
-      action: () => navigation.navigate('Settings', { screen: 'Settings1' }),
-    },
+
     {
       label: 'Uitloggen',
       icon: require('../../assets/images/drawer_icons/drawer_sign_out_icon.png'),
@@ -85,30 +76,43 @@ export const CustomDrawerContent = (props) => {
     },
   ];
 
-  const handleFirstBoot = () => {
-    if (nestedRoute?.name == 'BonsaiTree') {
-      if (firstBootBonsai) {
-        setInformatiegidsModalActive(true);
-        setFirstBootBonsai(false);
+  const checkAndShowGuideModal = async () => {
+    if (nestedRoute?.name === 'BonsaiTree') {
+      const hasSeenBonsaiGuide = await AsyncStorage.getItem(
+        HAS_SEEN_BONSAI_GUIDE_KEY
+      );
+      if (!hasSeenBonsaiGuide) {
+        setIsInformationModalVisible(true);
+        await AsyncStorage.setItem(HAS_SEEN_BONSAI_GUIDE_KEY, 'true');
       }
-    } else if (firstBootHome) {
-      setInformatiegidsModalActive(true);
-      setFirstBootHome(false);
+    } else if (nestedRoute?.name === 'Home') {
+      const hasSeenHomeGuide = await AsyncStorage.getItem(
+        HAS_SEEN_HOME_GUIDE_KEY
+      );
+      if (!hasSeenHomeGuide) {
+        setIsInformationModalVisible(true);
+        await AsyncStorage.setItem(HAS_SEEN_HOME_GUIDE_KEY, 'true');
+      }
     }
   };
 
+  useEffect(() => {
+    if (nestedRoute?.name) {
+      checkAndShowGuideModal();
+    }
+  }, [nestedRoute?.name]);
+
   return (
     <>
-      {(firstBootBonsai || firstBootHome) && handleFirstBoot()}
-      {nestedRoute?.name == 'BonsaiTree' ? (
+      {nestedRoute?.name === 'BonsaiTree' ? (
         <BonsaiInformationModal
-          modalBonsaiInformationVisible={informatiegidsModalActive}
-          setModalBonsaiInformationVisible={setInformatiegidsModalActive}
+          modalBonsaiInformationVisible={isInformationModalVisible}
+          setModalBonsaiInformationVisible={setIsInformationModalVisible}
         />
       ) : (
         <InformationModal
-          modalInformationVisible={informatiegidsModalActive}
-          setModalInformationVisible={setInformatiegidsModalActive}
+          modalInformationVisible={isInformationModalVisible}
+          setModalInformationVisible={setIsInformationModalVisible}
         />
       )}
       <View style={{ flex: 1 }}>

@@ -22,10 +22,10 @@ export const TabNavigator = () => {
         tabBarStyle: {
           position: 'absolute',
           borderColor: '#dedede',
-          borderWidth: 1,
+          borderWidth: 2,
           borderTopStartRadius: 30,
           borderTopEndRadius: 30,
-          height: 80,
+          height: 100,
           paddingTop: 10,
         },
       }}

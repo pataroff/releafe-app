@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
@@ -30,7 +30,7 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
   modalBonsaiInformationVisible,
   setModalBonsaiInformationVisible,
 }) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [informatiegidsIndex, setInformatiegidsIndex] = useState<number>(0);
 
   const handleNext = () => {

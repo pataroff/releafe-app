@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
-import { settingsData } from '../utils/settings';
 
 import { useNavigation } from '@react-navigation/native';
 import { useSettings } from '../context/SettingsContext';
@@ -22,53 +21,7 @@ import { useSettings } from '../context/SettingsContext';
 const windowWidth = Dimensions.get('window').width;
 
 export const SettingsScreen: React.FC = ({ route }) => {
-  const {
-    gamificationEnabled,
-    setGamificationEnabled,
-    updateGamificationInDatabase,
-  } = useSettings();
-
-  const toggleGamification = async (value: boolean) => {
-    setGamificationEnabled(value);
-    await updateGamificationInDatabase(value);
-  };
-
-  const [isNotificationsEnabled, setIsNotificationsEnabled] =
-    useState<boolean>(false);
-  const [isGamificationEnabled, setIsGamificationEnabled] =
-    useState<boolean>(false);
-
-  const toggleState = {
-    notifications: {
-      value: isNotificationsEnabled,
-      setter: setIsNotificationsEnabled,
-    },
-    gamification: {
-      value: isGamificationEnabled,
-      setter: setIsGamificationEnabled,
-    },
-  };
-
   const navigation = useNavigation();
-
-  const handleNavigation = (title: string) => {
-    switch (title) {
-      case 'Wachtwoord wijzigen':
-        navigation.navigate('ChangePassword');
-        break;
-      case 'E-mailadres bijwerken':
-        navigation.navigate('ChangeEmail');
-        break;
-      case 'Telefoonnummer wijzigen':
-        navigation.navigate('ChangePhoneNumber');
-        break;
-      case 'Extra profielinstellingen':
-        navigation.navigate('Settings2');
-        break;
-      default:
-        return;
-    }
-  };
 
   return (
     <ScrollView
@@ -79,80 +32,29 @@ export const SettingsScreen: React.FC = ({ route }) => {
     >
       {/* Settings Wrapper */}
       <View style={styles.settingsWrapper}>
-        {settingsData.map((settingsGroup, index) => {
-          const { heading, data } = settingsGroup;
+        <View>
+          {/* Heading */}
+          <Text style={styles.headingText}>A</Text>
 
-          return (
-            <View key={index}>
-              {/* Heading */}
-              <Text style={styles.headingText}>{heading}</Text>
-
-              {/* Settings Data Container */}
-              <View
-                style={{
-                  marginTop: 20,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  rowGap: 25,
-                }}
-              >
-                {data.map((setting, idx) => {
-                  const { icon, title, isToggle, key } = setting;
-
-                  return (
-                    <Pressable
-                      onPress={() => handleNavigation(title)}
-                      key={idx}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      {/* Icon + Title */}
-                      <View style={styles.iconContainer}>
-                        <Image
-                          source={icon}
-                          width={32}
-                          height={32}
-                          resizeMode='contain'
-                        />
-                        <Text style={styles.bodyText}>{title}</Text>
-                      </View>
-                      {isToggle && key && toggleState[key] && (
-                        <Switch
-                          trackColor={{ false: '#FFFFFF', true: '#5C6B57' }}
-                          onValueChange={(val) =>
-                            key === 'gamification'
-                              ? toggleGamification(val)
-                              : toggleState[key].setter(val)
-                          }
-                          value={
-                            key === 'gamification'
-                              ? gamificationEnabled
-                              : toggleState[key].value
-                          }
-                        />
-                      )}
-                    </Pressable>
-                  );
-                })}
-              </View>
-              {/* Dividing Line */}
-              {index !== settingsData.length - 1 && (
-                <View
-                  style={{
-                    width: '100%',
-                    height: 1,
-                    backgroundColor: 'gainsboro',
-                    marginVertical: 20,
-                  }}
-                ></View>
-              )}
-            </View>
-          );
-        })}
+          {/* Settings Data Container */}
+          <View
+            style={{
+              marginTop: 20,
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: 25,
+            }}
+          ></View>
+          {/* Dividing Line */}
+          <View
+            style={{
+              width: '100%',
+              height: 1,
+              backgroundColor: 'gainsboro',
+              marginVertical: 20,
+            }}
+          ></View>
+        </View>
       </View>
     </ScrollView>
   );

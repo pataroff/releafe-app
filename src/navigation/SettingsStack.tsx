@@ -17,7 +17,7 @@ export const SettingsStack: React.FC = () => {
       initialRouteName='Settings1'
       screenOptions={{
         header: ({ route }) => {
-          const title = 'Instellingen';
+          const title = 'Personlijk profiel';
           return <Header title={title} route={route} />;
         },
       }}
@@ -25,31 +25,6 @@ export const SettingsStack: React.FC = () => {
       <Stack.Screen
         name='Settings1'
         component={SettingsScreen}
-        initialParams={{ settingsStackScreen: true }}
-      />
-      <Stack.Screen
-        name='ChangePassword'
-        component={ChangePasswordScreen}
-        initialParams={{ settingsStackScreen: true }}
-      />
-      <Stack.Screen
-        name='ChangeEmail'
-        component={ChangeEmailScreen}
-        initialParams={{ settingsStackScreen: true }}
-      />
-      <Stack.Screen
-        name='ChangePhoneNumber'
-        component={ChangePhoneNumberScreen}
-        initialParams={{ settingsStackScreen: true }}
-      />
-      <Stack.Screen
-        name='Settings2'
-        component={SettingsScreen2}
-        initialParams={{ settingsStackScreen: true }}
-      />
-      <Stack.Screen
-        name='ChangeBirthDate'
-        component={ChangeBirthDateScreen}
         initialParams={{ settingsStackScreen: true }}
       />
     </Stack.Navigator>

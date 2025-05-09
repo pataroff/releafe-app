@@ -43,42 +43,6 @@ export const extraProfileSettingsData: SettingsData[] = [
   },
 ];
 
-export const notificationsSettinsData: SettingsData[] = [
-  {
-    icon: require('../../assets/images/settings_icons/notifications_icon.png'),
-    title: 'Pushmeldingen',
-    isToggle: true,
-    key: 'notifications',
-  },
-  {
-    icon: require('../../assets/images/settings_icons/settings_icon.png'),
-    title: 'Extra voorkeuren',
-  },
-];
-
-export const appSettingsData: SettingsData[] = [
-  {
-    icon: require('../../assets/images/settings_icons/language_icon.png'),
-    title: 'Taal',
-  },
-  {
-    icon: require('../../assets/images/settings_icons/theme_icon.png'),
-    title: 'Thema',
-  },
-  {
-    icon: require('../../assets/images/settings_icons/accessibility_icon.png'),
-    title: 'Lettergrotte en opmaak',
-  },
-  {
-    icon: require('../../assets/images/settings_icons/gamification_icon.png'),
-    title: 'Bonsai',
-    isToggle: true,
-    key: 'gamification',
-  },
-];
-
 export const settingsData = [
   { heading: 'Profiel instellingen', data: profileSettingsData },
-  { heading: 'Meldingen', data: notificationsSettinsData },
-  { heading: 'App-instellingen', data: appSettingsData },
 ];
