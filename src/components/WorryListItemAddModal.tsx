@@ -248,7 +248,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                   {/* Description + Priority [1] */}
                   <View>
                     <Text style={styles.headersHeadingText}>
-                      Situatieomschrijving
+                      Omschrijving
                     </Text>
                   </View>
 
