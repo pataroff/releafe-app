@@ -16,17 +16,16 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
-
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
+
+import { useNavigation } from '@react-navigation/native';
 
 import { Header } from '../components/Header';
 import { GoalsOverview } from '../components/GoalsOverview';
 
 import { useAuth } from '../context/AuthContext';
 import { useGoal } from '../context/GoalContext';
-
-import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -156,11 +155,13 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
         break;
       case 3:
         navigation.navigate('Toolkit', { screen: 'WorryBox' });
+        break;
       case 4:
         navigation.navigate('Toolkit', { screen: 'Reframing' });
         break;
       case 5:
         navigation.navigate('Toolkit', { screen: 'Exercises' });
+        break;
     }
   };
 
@@ -199,6 +200,9 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
   //   fetchQuote();
   // }, []);
+
+  const itemWidth = windowWidth * 0.8;
+  const sidePadding = (windowWidth - itemWidth) / 2;
 
   return (
     <>
@@ -293,16 +297,16 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
           </View>
         </View>
         <ScrollView
-          horizontal={true}
-          snapToInterval={windowWidth - 2 * 30 + 20}
-          snapToAlignment={'center'}
-          decelerationRate={'fast'}
+          horizontal
+          snapToInterval={itemWidth + 20}
+          decelerationRate='fast'
+          snapToAlignment='start'
           showsHorizontalScrollIndicator={false}
           style={{
             marginVertical: 20,
           }}
           contentContainerStyle={{
-            paddingHorizontal: 30,
+            paddingHorizontal: sidePadding,
             columnGap: 20,
           }}
           onScroll={handleScroll}
@@ -319,13 +323,14 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
             return (
               <Animated.View
-                // onLayout={(e) =>
-                //   console.log('Item width:', e.nativeEvent.layout.width)
-                // }
+                onLayout={(e) =>
+                  console.log('Item width:', e.nativeEvent.layout.width)
+                }
                 key={index}
                 style={[
                   styles.nudgingItemContainer,
                   {
+                    width: itemWidth,
                     backgroundColor,
                   },
                 ]}
@@ -529,7 +534,6 @@ const styles = StyleSheet.create({
   } as TextStyle,
   nudgingItemContainer: {
     height: 210,
-    width: 325,
     justifyContent: 'space-between',
     backgroundColor: 'white',
     borderRadius: 25,
@@ -552,7 +556,9 @@ const styles = StyleSheet.create({
   nudgingButton: {
     borderRadius: 15,
     width: 200,
-    paddingVertical: 7,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#A5B79F',
   },
   nudgingButtonText: {
