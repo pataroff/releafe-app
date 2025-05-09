@@ -12,60 +12,60 @@ type ReframingStep = {
 export const reframingSteps: ReframingStep[] = [
   {
     heading: 'Stap 1: Situatieomschrijving',
-    description:
-      "Het resultaat van deze methode is een 'bericht aan jezelf'. Dit bericht zal worden opgeslagen in de lijst met berichten aan jezelf. Deze zorg zal na het reframen automatisch worden verwijderd uit je Zorgenbakje.",
+    description:"",
     placeholder: 'Omschrijf hier jouw zorg...',
   },
   {
-    heading: 'Stap 2: Gevoelsomschrijving',
+    heading: 'Stap 2: Gevoel',
     description:
-      'Omschrijf hier hoe je je voelt door deze situatie, zodat we er mee aan de slag kunnen.',
+      'Schrijf op hoe je je voelt door deze gedachte. Dat helpt ons om er goed mee aan de slag te gaan.',
     placeholder: 'Omschrijf hier hoe jij je daarbij voelt...',
   },
   {
     heading: 'Stap 3: Bewijs',
     description: 'Omschrijf hier jouw antwoord op de volgende vraag.',
-    question: 'Welk bewijs heb ik dat deze gedachte echt waar is?',
+    question: 'Wat maakt dat je denkt dat deze gedachte klopt?',
     instruction:
-      'Noteer feiten en observaties die jouw gedachte ondersteunen. Dit helpt je om na te gaan of er concreet bewijs is dat jouw zorg ondersteunt.',
+      'Noem feiten of dingen die je hebt gezien of meegemaakt. Zo ontdek je of je zorg echt ergens op is gebaseerd.',
     placeholder: 'Omschrijf hier jouw bewijs...',
   },
   {
     heading: 'Stap 4: Tegenbewijs',
     description: 'Omschrijf hier jouw antwoord op de volgende vraag.',
-    question: 'Welk bewijs heb ik dat deze gedachte niet waar is?',
+    question: 'Waarom zou deze gedachte misschien niet kloppen?',
     instruction:
-      'Denk aan tegenvoorbeelden en feiten die jouw gedachte weerleggen. Dit helpt je om een evenwichtiger beeld te krijgen en je gedachten te relativeren.',
+      'Denk aan dingen die laten zien dat het misschien anders zit. Dat helpt je om je zorg van meerdere kanten te bekijken.',
     placeholder: 'Omschrijf hier jouw bewijs...',
   },
   {
     heading: 'Stap 5: Advies',
     description: '',
-    question: 'Wat zou ik tegen een vriend(in) zeggen die deze gedachte heeft?',
+    question: 'Wat zou je zeggen tegen een vriend(in) die dit denkt?',
     instruction:
-      'Bedenk welk advies of welke troostende woorden je aan een vriend(in) zou geven in dezelfde situatie. Dit perspectief helpt je om milder en realistischer naar je eigen gedachten te kijken.',
+      'Bedenk welk advies je zou geven. Dat helpt je om ook vriendelijker en realistischer naar je eigen gedachten te kijken.',
     placeholder: 'Omschrijf hier wat jij tegen jouw vriend(in) zou zeggen...',
   },
   {
     heading: 'Stap 5: Advies',
-    description: 'Omschrijf hier jouw antwoord op de volgende vraag.',
+    description: '',
+    question: 'Lees dit nog eens goed door:',
   },
   {
-    heading: 'Stap 6: Inschatting waarschijnlijkheid',
+    heading: 'Stap 6: Hoe groot is de kans?',
     description: 'Probeer antwoord te geven op de volgende vraag.',
     question:
-      'Hoe groot denk je dat de kans nu is dat de  omschreven, negatieve gedachte realiteit wordt?',
+      'Hoe groot denk je nu dat de kans is dat je negatieve gedachte echt uitkomt?',
     instruction:
-      'Gebruik de schuifbalk om aan te geven hoe waarschijnlijk je jouw (negatieve) gedachte nu inschat. Dit helpt je om in te schatten hoe groot de kans echt is dat het gebeurt en om minder bang te zijn voor dingen die misschien niet gebeuren.',
+      'Gebruik de schuifbalk om dit in te schatten. Dat helpt je om rustiger te kijken naar je gedachte – en om minder bang te zijn voor dingen die misschien niet gebeuren.',
     placeholder: 'En waarom...?',
   },
   {
-    heading: 'Stap 7: Alternatieve verklaring',
+    heading: 'Stap 7: Andere uitleg',
     description: 'Omschrijf hier jouw antwoord op de volgende vraag.',
     question:
-      'Wat is een alternatieve, realistische verklaring die ik bij deze situatie heb?',
+      'Wat is een andere en minder negatieve uitleg voor deze situatie?',
     instruction:
-      'Zoek naar andere verklaringen of interpretaties van de situatie die realistischer en minder negatief zijn. Dit helpt je om je perspectief te verschuiven naar een meer evenwichtige en constructieve mindset.',
+      'Probeer redenen te bedenken die ook kunnen kloppen, maar minder negatief zijn. Dat helpt je om anders naar de situatie te kijken en je rustiger te voelen.',
     placeholder: 'Omschrijf hier jouw alternatieve verklaring...',
   },
   // This is the `ReframingSuccessModal` placeholder index!
