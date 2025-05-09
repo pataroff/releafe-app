@@ -125,6 +125,8 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
   const [questionMarkModalActive, setQuestionMarkModalActive] =
     useState<boolean>(false);
+  
+  const [scrollViewOffsetPoints,setScrollViewOffsetPoints] = useState([0]);
 
   // Animation values
   const animatedValues = useRef(
@@ -137,6 +139,23 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
     const newIndex = Math.round(offsetX / (windowWidth - 40)); // 40 = padding * 2
     if (newIndex !== activeIndex) setActiveIndex(newIndex);
   };
+
+  const handleScrollViewSize = () => {
+    setScrollViewOffsetPoints([]);
+    var tempOffsetPoints = [];
+    var offset = 0;
+    for(var i=0;i<nudgingItems.length;i++)
+    {
+      if(i==0)
+      {
+        offset = windowWidth / 1.25 + 30;
+      }
+      else offset += windowWidth / 1.25 + 20;
+      tempOffsetPoints.push(offset) 
+    }
+    console.log(tempOffsetPoints)
+    setScrollViewOffsetPoints(tempOffsetPoints)
+  }
 
   const handleNudgingQuestionMark = () => {
     setQuestionMarkModalActive(true);
@@ -252,7 +271,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
           <Text style={styles.greetingHeadingText}>
             Hallo {user?.firstName}
           </Text>
-          <Text style={styles.greetingBodyText}>Welkom terug,</Text>
+          <Text style={styles.greetingBodyText}>Welkom!</Text>
           <Text style={styles.dateHeadingText}>
             Het is vandaag
             <Text style={styles.dateBodyText}>
@@ -296,6 +315,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
             </Pressable>
           </View>
         </View>
+        {scrollViewOffsetPoints.length != nudgingItems.length && handleScrollViewSize()}
         <ScrollView
           horizontal
           snapToInterval={itemWidth + 20}
@@ -369,14 +389,14 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
             }}
           >
             <Text style={styles.performanceContainerHeadingText}>
-              Jouw prestaties
+            Jouw bonsaiboom en prestaties
             </Text>
           </View>
 
           {/* Performance Data Container */}
           <View style={styles.performanceDataContainer}>
             <Text style={styles.performanceHeadingText}>
-              Jouw bonsai boom heeft deze week
+              Jouw bonsaiboom heeft deze week
             </Text>
 
             {/* Bonsai Tree Data Container */}
@@ -469,7 +489,7 @@ const styles = StyleSheet.create({
   greetingContainer: {
     alignSelf: 'flex-start',
     marginTop: 20,
-    rowGap: 5,
+    rowGap: 10,
     paddingHorizontal: 30,
   },
   greetingHeadingText: {
@@ -589,7 +609,7 @@ const styles = StyleSheet.create({
     rowGap: 10,
   },
   performanceContainerHeadingText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   performanceHeadingText: {

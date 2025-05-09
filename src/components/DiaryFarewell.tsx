@@ -49,8 +49,7 @@ export const DiaryFarewell: React.FC = () => {
       >
         <FontAwesome name='thumbs-up' size={36} color='#5C6B57' />
         <Text style={styles.greetingText}>
-          Goed gedaan, {user?.firstName}.{'\n'}Je hebt jouw dagboek met succes
-          ingevuld.
+          Goed gedaan, {user?.firstName}!
         </Text>
       </View>
 
@@ -64,11 +63,7 @@ export const DiaryFarewell: React.FC = () => {
         }}
       >
         <Text style={styles.diaryDescriptionText}>
-          <Text style={{ ...(Fonts.sofiaProMedium[Platform.OS] as TextStyle) }}>
-            Hou dit vol!
-          </Text>{' '}
-          Door elke dag je dagboek in te vullen, worden de meest waardevolle
-          gegevens verzameld. Deze worden opgeslagen in jouw welzijnsoverzicht.
+          Als je je dagboek vaak invult, krijg je meer inzicht in hoe het met je gaat. Je ziet dit terug in je welzijnsoverzicht.
         </Text>
       </View>
 
@@ -77,7 +72,7 @@ export const DiaryFarewell: React.FC = () => {
         style={styles.dashboardButton}
       >
         <Text style={styles.dashboardButtonText}>
-          Ga door naar welzijnsoverzicht
+          Bekijk mijn welzijnsoverzicht
         </Text>
       </Pressable>
 

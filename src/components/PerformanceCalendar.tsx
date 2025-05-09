@@ -252,7 +252,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             },
           }}
           monthFormat='MMMM yyyy'
-          hideArrows={isOpen ? false : true}
+          //hideArrows={isOpen ? false : true}
           firstDay={1}
           closeOnDayPress={true}
           onCalendarToggled={(isOpen) => setIsOpen(isOpen)}
@@ -322,9 +322,6 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
           <View style={styles.dataSlidersContainer}>
             <Text style={styles.dataHeadingText}>
               {sliderTitlesAndDescriptions[sliderQuestionIndex][0]}
-            </Text>
-            <Text style={styles.dataDescriptionText}>
-              {sliderTitlesAndDescriptions[sliderQuestionIndex][1]}
             </Text>
             <Slider
               disabled={true}

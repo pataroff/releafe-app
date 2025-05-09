@@ -340,9 +340,22 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                     </View>
 
                     {/* Description */}
-                    <Text style={styles.headersDescriptionText}>
-                      {reframingSteps[reframingModalIndex].description}
-                    </Text>
+                    {reframingModalIndex == 1 ? (
+                      <Text style={styles.headersDescriptionText}>
+                        {reframingSteps[reframingModalIndex].description}
+                      </Text>
+                    )
+                      :
+                      (
+                        <>
+                          <Text style={{ ...Fonts.sofiaProSemiBold[Platform.OS] } as TextStyle}>
+                            {reframingSteps[reframingModalIndex].question}
+                          </Text>
+                          <Text style={styles.headersDescriptionText}>
+                            {reframingSteps[reframingModalIndex].instruction}
+                          </Text>
+                        </>
+                      )}
                   </View>
                 )}
 
@@ -432,15 +445,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         rowGap: 10,
                       }}
                     >
-                      <Text
-                        style={
-                          {
-                            ...Fonts.sofiaProSemiBold[Platform.OS],
-                          } as TextStyle
-                        }
-                      >
-                        Lees dit nog eens goed door:
-                      </Text>
+
                       <Text
                         style={
                           {
@@ -674,7 +679,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                     reframingModalIndex !== 5 &&
                     reframingModalIndex <= 7 && (
                       <View style={styles.textInputContainer}>
-                        {/* Question */}
+                        {/* Question }
                         {reframingModalIndex !== 1 && (
                           <View style={{ rowGap: 10 }}>
                             <Text
@@ -684,7 +689,6 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                                 } as TextStyle
                               }
                             >
-                              {reframingSteps[reframingModalIndex].question}
                             </Text>
 
                             <Text
@@ -695,7 +699,6 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                                 } as TextStyle
                               }
                             >
-                              {reframingSteps[reframingModalIndex].instruction}
                             </Text>
                           </View>
                         )}
@@ -704,8 +707,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         <View
                           style={
                             reframingModalIndex === 6
-                              ? { flexDirection: 'column-reverse' }
-                              : {}
+                              ? { flexDirection: 'column-reverse', width: windowWidth - 2 *40 }
+                              : {width: windowWidth - 2 * 40}
                           }
                         >
                           {/* Dynamic TextInput Component */}

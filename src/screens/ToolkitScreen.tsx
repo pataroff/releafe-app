@@ -21,24 +21,24 @@ const windowWidth = Dimensions.get('window').width;
 
 const tools = [
   [
-    'Persoonlijke doelen stellen',
-    'Stel persoonlijke doelen en volg jouw groeiproces.',
+    'Persoonlijke doelen',
+    'Stel een doel dat bij jou past en volg hoe je groeit.',
   ],
   [
-    'Jouw zorgenbakje',
-    'Schrijf je zorgen van je af en berg ze tijdelijk op in het zorgenbakje.',
+    'Zorgenbakje',
+    'Schrijf je zorgen van je af en bewaar ze tijdelijk in je zorgenbakje.',
   ],
   [
     'Reframen',
-    'Leer anders naar je negatieve gedachten te kijken door ze te reframen.',
+    'Leer op een andere en positieve manier naar je gedachten te kijken.',
   ],
   [
     'Berichten aan jezelf',
-    'Schrijf berichten aan jezelf en bekijk ze later terug wanneer je maar wilt',
+    'Schrijf berichten aan jezelf en lees ze later terug als je dat nodig hebt.',
   ],
   [
     'Ontspanning',
-    'Voer hier oefeningen uit die je helpen ontspannen of om in beweging te komen.',
+    'Doe oefeningen die je helpen ontspannen en tot rust te komen.',
   ],
 ];
 
@@ -104,7 +104,7 @@ export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
         <View style={styles.headersContainer}>
           <Text style={styles.headersTitleText}>Toolkit</Text>
           <Text style={styles.headersDescriptionText}>
-            Kies met welke tool jij vandaag aan de slag wilt gaan.
+            Kies met welke tool je aan de slag wilt.
           </Text>
         </View>
         {/* Toolkit Tools Container */}

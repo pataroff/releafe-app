@@ -73,7 +73,7 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
             >
               <Text style={styles.modalTitleText}>Mijn zorgen</Text>
               <Text style={styles.modalDescriptionText}>
-                Klik op een zorg om deze volledig te bekijken
+                Klik op een zorg om deze volledig te bekijken.
               </Text>
             </View>
             {/* Close Button */}
@@ -111,10 +111,9 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
             ) : (
               <>
                 <View style={styles.noDataContainer}>
-                  <Text style={styles.noDataTitleText}>Zorgenbakje leeg</Text>
+                  <Text style={styles.noDataTitleText}>Je zorgenbakje is leeg</Text>
                   <Text style={styles.noDataDescriptionText}>
-                    Er staat geen zorgen in jouw zorgenbakje. Keer terug als je
-                    een zorg wilt toevoegen.
+                    Je hebt op dit moment geen zorgen opgeslagen.
                   </Text>
                 </View>
               </>

@@ -51,17 +51,17 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
     {
       title: 'Releafe-Puten',
       description:
-        'Met de mobiele app kun je op verschillende manieren Releafe-punten verdienen, zoals door een zorg te reframen of een persoonlijk doel te behalen.',
+        'In de app kun je op verschillende manieren Releafe-punten verdienen. Bijvoorbeeld door je dagboek in te vullen, een zorg anders te bekijken of een persoonlijk doel te behalen.',
     },
     {
       title: 'Bonsaiboom upgraden',
       description:
-        'Je kunt jouw bonsaiboom op drie manieren upgraden: door de takken, bladeren of bloesems aan te passen.',
+        'Je kunt jouw bonsaiboom op drie manieren aanpassen en laten groeien: door takken, bladeren of bloesems toe te voegen.',
     },
     {
       title: 'Punten en prestaties',
       description:
-        'Linksonder zie je hoeveel Releafe-punten je momenteel hebt. Klik hierop om upgrades te kopen voor de takken, bladeren en bloesems van jouw bonsaiboom.',
+        'Linksonder zie je hoeveel Releafe-punten je hebt. Klik hierop om takken, bladeren of bloesems voor jouw bonsaiboom te kopen.',
     },
   ];
 
@@ -97,7 +97,7 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                   >
                     <Image
                       source={require('../../assets/images/bonsai_tree_information_icon.png')}
-                      style={{ width: 55, height: 62 }}
+                      style={{ width: 96, height: 64 }}
                       resizeMode='contain'
                     />
                     <View style={{ rowGap: 20, marginVertical: 20 }}>
@@ -105,9 +105,10 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                         Hi {user?.firstName}, welkom bij je bonsaiboom.
                       </Text>
                       <Text style={{ ...styles.informationBody }}>
-                        Hier kun je jouw persoonlijke bonsaiboom aanpassen en
-                        upgraden helemaal naar jouw wensen. Ontdek hier alle
-                        mogelijkheden!
+                        Hier kun je jouw eigen bonsaiboom verzorgen en aanpassen zoals 
+                        jij dat wilt.
+                        Ontdek wat er allemaal mogelijk is!
+
                       </Text>
                     </View>
                   </View>
@@ -136,8 +137,7 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
               {informatiegidsIndex == 1 && (
                 <>
                   <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
-                    Op plekken waar je Releafe-punten kunt verdienen én badges
-                    kunt behalen, zie je deze symbolen:
+                    Op plekken waar je punten en badges kunt verdienen, zie je deze symbolen:
                   </Text>
                   <View
                     style={{ width: windowWidth / 3.2, paddingVertical: 10 }}
@@ -171,8 +171,8 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
               {informatiegidsIndex == 3 && (
                 <>
                   <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
-                    Rechtsonder vind je jouw prestaties: de badges die je hebt
-                    verdiend, bijvoorbeeld door een streak te behalen.
+                    Rechtsonder vind je je prestaties: de badges die je hebt 
+                    verdiend door actief bezig te zijn met je mentale gezondheid.
                   </Text>
                   <Image
                     source={require('../../assets/images/bonsai_points_achievements_information_icons.png')}
@@ -190,7 +190,10 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
             <Pressable
               style={{ position: 'absolute', top: 24, right: 24 }}
               onPress={() =>
+              {
+                setInformatiegidsIndex(0);
                 setModalBonsaiInformationVisible(!modalBonsaiInformationVisible)
+              }
               }
             >
               <Feather name='x-circle' size={24} color='gray' />

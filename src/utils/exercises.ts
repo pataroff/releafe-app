@@ -23,12 +23,12 @@ export const categories = [
   {
     title: 'Lichaamsbeweging',
     description:
-      'Voldoende bewegen heeft invloed op het gewicht en zorgt verbetert de motoriek. Ook is het goed voor de ontwikkeling van de hersenen en de mentale gezondheid, onder andere omdat bewegen stressregulatie verbetert.',
+      'Bewegen helpt je om je fitter te voelen, je hoofd leeg te maken en spanning los te laten. Zelfs een klein beetje beweging doet al iets goeds voor je lichaam én je geest.',
   },
   {
     title: 'Ademhaling',
     description:
-      'Voldoende bewegen heeft invloed op het gewicht en zorgt verbetert de motoriek. Ook is het goed voor de ontwikkeling van de hersenen en de mentale gezondheid, onder andere omdat bewegen stressregulatie verbetert.',
+      'Je adem is altijd bij je. Door bewust te ademen, geef je jezelf rust. Ademhalingsoefeningen helpen om spanning los te laten en meer in het moment te zijn. Goed voor je lijf én je hoofd.',
   },
 ];
 

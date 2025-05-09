@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     ...Fonts.sofiaProBold[Platform.OS],
-    fontSize: 24,
+    fontSize: 28,
     color: 'white',
     textAlign: 'left',
     textShadowColor: 'black',

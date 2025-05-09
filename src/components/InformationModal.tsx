@@ -19,6 +19,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 interface InformationModalProps {
   modalInformationVisible: boolean;
@@ -63,74 +64,78 @@ export const InformationModal: React.FC<InformationModalProps> = ({
     {
       title: 'Onderdelen',
       description:
-        'Deze mobiele applicatie bevat verschillende onderdelen die je kunt gebruiken:',
+        'Releafe heeft verschillende onderdelen die je kunt gebruiken.',
     },
     {
       title: 'Toolkit',
       description:
-        'Binnen de toolkit vind je meerdere tools die je kunt gebruiken:',
+        'In de toolkit vind je verschillende oefeningen en hulpmiddelen die je kunnen helpen.',
     },
     {
       title: 'Bonsaiboom',
       description:
-        'Op verschillende plekken kun je Releafe-punten verdienen, bijvoorbeeld door een oefening te doen of een zorg te reframen.',
+        'Op verschillende plekken in de app kun je Releafe-punten verdienen, bijvoorbeeld door je dagboek in te vullen of aan een persoonlijk doel te werken.',
     },
     {
       title: 'Notificaties',
       description:
-        'Binnen Releafe. kun je pushmeldingen ontvangen, bijvoorbeeld wanneer het tijd is om je dagboek in te vullen of een oefening uit te voeren, afhankelijk van hoe jij dit instelt.',
+        'Releafe kan je meldingen sturen. Bijvoorbeeld om je te herinneren je dagboek in te vullen of een oefening te doen. Wat je ontvangt, hangt af van hoe jij dit instelt.',
       icon: require('../../assets/images/bell_icon.png'),
     },
     {
       title: 'Feedback',
       description:
-        'Zijn er onduidelijkheden of heb je iets onjuist waargenomen binnen de mobiele applicatie?',
+        'Heb je een vraag, is iets niet duidelijk of werkt de app niet goed? Laat het ons weten! Op onze website vind je meer informatie over mentale gezondheid en over de Releafe-app. Je kunt daar ook contact met ons opnemen.',
       icon: require('../../assets/images/information_icon.png'),
     },
   ];
   const informatiegidsNavigationElements = [
     {
       icon: require('../../assets/images/navigation_bar/home_icon.png'),
-      boldtext: 'Het hoofdscherm',
-      text: ' biedt een overzicht van je opgeslagen gegevens, zodat je snel een samenvatting van je data kunt inzien.',
+      boldtext: 'Hoofdscherm',
+      text: 'Hier zie je wat je al hebt gedaan en wat een goede volgende stap kan zijn. Zo weet je altijd waar je staat en hoe je verder kunt.',
     },
     {
       icon: require('../../assets/images/navigation_bar/diary_icon.png'),
-      specialtext: 'In ',
-      boldtext: 'het dagboek',
-      text: ' kun je dagelijks je algehele gevoel en andere factoren rondom je mentale gezondheid bijhouden, evenals het beoordelen van jouw gestelde persoonlijke doelen.',
+      boldtext: 'Dagboek',
+      text: 'In het dagboek geef je elke dag aan hoe je je voelt en wat er is gebeurd. Je houdt ook bij hoe het gaat met je persoonlijke doelen.',
     },
     {
       icon: require('../../assets/images/navigation_bar/wellbeing_overview_icon.png'),
-      boldtext: 'Het welzijnsoverzicht',
-      text: ' toont je welzijnstoestand zoals beschreven in je dagboek. Ook kun je hier gegevens van andere dagen terugvinden.',
+      boldtext: 'Welzijnsoverzicht',
+      text: 'Hier zie je hoe het met je gaat op basis van je dagboek. Ook kun je terugkijken naar eerdere dagen.',
     },
     {
       icon: require('../../assets/images/navigation_bar/toolkit_icon.png'),
-      boldtext: 'De toolkit',
-      text: ' biedt verschillende tools ter ondersteuning van het verbeteren van je mentale gezondheid.',
+      boldtext: 'Toolkit',
+      text: 'De toolkit bevat oefeningen en hulpmiddelen die je helpen om goed voor je mentale gezondheid te zorgen.',
     },
   ];
   const informatiegidsExerciseElements = [
     {
       icon: require('../../assets/images/custom_icons/persoonlijke_doelen_icon.png'),
-      text: 'Bij de persoonlijke doelen kun je doelen stellen in verschillende richtingen, die je kunt personaliseren en waaraan je herinneringen kunt koppelen.',
+      title: "Persoonlijke doelen",
+      text: 'Stel doelen die goed zijn voor je mentale gezondheid en belangrijk voor jou zijn. Je kunt ze aanpassen zoals jij dat wilt.',
     },
     {
       icon: require('../../assets/images/custom_icons/zorgenbakje_icon.png'),
-      text: 'In het zorgenbakje kun je tijdelijk je zorgen opbergen, zodat je deze van je af kunt schrijven.',
+      title: "Zorgenbakje",
+      text: 'Schrijf je zorgen op en bewaar ze tijdelijk in het Zorgenbakje. Zo zet je ze even van je af.',
     },
     {
       icon: require('../../assets/images/custom_icons/reframing_icon.png'),
-      text: 'De eerder omschreven of nieuwe zorgen kun je reframen, zodat je leert op een andere manier naar negatieve gedachten te kijken.',
+      title: "Reframen",
+      text: 'Kijk op een andere manier naar je zorgen. Zo leer je omgaan met negatieve gedachten.',
     },
     {
       icon: require('../../assets/images/custom_icons/berichten_aan_jezelf_icon.png'),
-      text: 'Je kunt berichten voor jezelf uitschrijven als notities, die je later kunt teruglezen en waaraan je media, zoals audio-opnamen, kunt koppelen.',
+      title: "Bericht aan jezelf",
+      text: 'Schrijf een bericht aan jezelf dat je erbij kunt pakken als je het nodig hebt.\nTip: vraag iemand die je lief is om een bericht voor je te maken.',
     },
     {
       icon: require('../../assets/images/custom_icons/oefeningen_icon.png'),
-      text: 'Met onze vele oefeningen kun je aan de slag met mindfulness, meditatie, ontspanning, lichaamsbeweging en ademhaling.',
+      title: "Ontspanningsoefeningen",
+      text: 'Doe oefeningen zoals mindfulness, meditatie, bewegen en ademhalen. Ze helpen je om te ontspannen en tot rust te komen.',
     },
   ];
 
@@ -173,13 +178,12 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                   {/* Body Container */}
                   <View style={{ marginTop: 20, rowGap: 20 }}>
                     <Text style={styles.informationBody}>
-                      Releafe. biedt je de mogelijkheid om actief aan je mentale
-                      gezondheid te werken en ondersteuning te krijgen bij je
-                      mentale klachten.
+                      Fijn dat je er bent.
                     </Text>
                     <Text style={styles.informationBody}>
-                      Volg deze informatiegids om te ontdekken hoe de mobiele
-                      applicatie werkt en wat wij voor jou kunnen betekenen.
+                    Releafe helpt je stap voor stap om goed voor je mentale gezondheid te zorgen. Je leert omgaan met zorgen en gevoelens zoals stress. Ook ontdek je hoe je meer aandacht kunt geven aan de positieve dingen in je leven.
+                    {"\n"} {"\n"}
+                    Volg deze korte uitleg om te zien hoe de app werkt en wat die voor jou kan betekenen.
                     </Text>
                   </View>
                 </>
@@ -259,7 +263,7 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                           <Text style={styles.informationBodyBold}>
                             {informatiegidsNavigationElements[index].boldtext}
                             <Text style={styles.informationBody}>
-                              {' '}
+                              {'\n'}
                               {informatiegidsNavigationElements[index].text}
                             </Text>
                           </Text>
@@ -291,9 +295,14 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                             style={styles.navigationScreenIcon}
                           ></Image>
                         </View>
+                        <View style = {{display: 'flex', flexDirection: 'column'}}>
+                        <Text style = {styles.informationBodyBold}>
+                          {informatiegidsExerciseElements[index].title}
+                        </Text>
                         <Text style={styles.informationBody}>
                           {informatiegidsExerciseElements[index].text}
                         </Text>
+                        </View>
                       </View>
                     );
                   })}
@@ -302,41 +311,39 @@ export const InformationModal: React.FC<InformationModalProps> = ({
               {/*Fourth Page*/}
               {informatiegidsIndex == 3 && (
                 <>
+                <View style={{display: 'flex', flexDirection: 'column', columnGap: 10}}>
                   <Image
                     source={require('../../assets/images/information_achievement_points_icon.png')}
                     style={{
                       objectFit: 'contain',
                       width: windowWidth / 3.2,
                       height: 36,
-                      marginVertical: 10,
                     }}
                   />
-                  <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
-                    Met deze punten kun je jouw eigen bonsaiboom upgraden en
-                    verzorgen, door bijvoorbeeld extra bladeren of bloesems toe
-                    te voegen.
+                  <Text style={{ ...styles.informationBody}}>
+                    Met deze punten kun je jouw eigen bonsaiboom verzorgen en laten groeien – 
+                    bijvoorbeeld door extra bladeren of bloesems toe te voegen.
                   </Text>
-                  <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
-                    Jouw bonsaiboom vind je door op je profiel te klikken,
-                    rechtsboven in het scherm.
+                  <Text style={{ ...styles.informationBody}}>
+                    Je vindt je bonsaiboom door rechtsboven op je profiel te klikken.
                   </Text>
                   <Image
                     source={require('../../assets/images/bonsai_tree_tree.png')}
                     style={{
                       objectFit: 'contain',
                       alignSelf: 'center',
-                      width: windowWidth / 1.15,
+                      width: windowWidth / 1.2,
+                      maxHeight: windowHeight /3,
                     }}
-                  />
+                    />
+                </View>
                 </>
               )}
               {/*Fifth Page*/}
               {informatiegidsIndex == 4 && (
                 <>
                   <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
-                    Alle meldingen zijn standaard ingeschakeld. Wil je dit
-                    wijzigen? Dan kun je de meldingen aanpassen via de
-                    instellingen, onderdelen "
+                  Meldingen staan standaard aan. Wil je dat veranderen? Je kunt dit aanpassen via je instellingen. Ga naar het onderdeel ‘
                     <View style={{ width: windowWidth / 34 }}>
                       <Image
                         source={require('../../assets/images/drawer_icons/drawer_settings_icon.png')}
@@ -347,21 +354,16 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                         }}
                       />
                     </View>
-                    extra meldingen" in het "Meldingen"-venster.
+                    Extra meldingen’ in het scherm ‘Meldingen’.
                   </Text>
                   <Text style={styles.informationBody}>
-                    De instellingen vind je door op je profiel te klikken,
-                    rechtsboven in het scherm.
+                    Je instellingen vind je door rechtsboven op je profiel te klikken.
                   </Text>
                 </>
               )}
               {/*Sixth Page*/}
               {informatiegidsIndex == 5 && (
                 <>
-                  <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
-                    Veelgestelde vragen kun je vinden op onze website. Ook kun
-                    je hier contact met ons opnemen.
-                  </Text>
                   <Pressable
                     onPress={() => handleWebsitePress()}
                     style={styles.websiteButton}
@@ -377,7 +379,10 @@ export const InformationModal: React.FC<InformationModalProps> = ({
             <Pressable
               style={{ position: 'absolute', top: 24, right: 24 }}
               onPress={() =>
+              {
+                setInformatiegidsIndex(0);
                 setModalInformationVisible(!modalInformationVisible)
+              }
               }
             >
               <Feather name='x-circle' size={24} color='gray' />

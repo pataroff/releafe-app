@@ -19,12 +19,12 @@ import { PurchaseModal } from '../components/PurchaseModal';
 
 import { bonsaiShopCategories } from '../utils/bonsai';
 import { useGamification } from '../context/BonsaiContext';
+import Toast from 'react-native-toast-message';
 
 const windowWidth = Dimensions.get('window').width;
 
 export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
   const title = '';
-
   const { points, unlockedItems, unlockItem } = useGamification();
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -42,6 +42,19 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
     setSelectedItem({ itemId, price });
     setModalVisible(true);
   };
+  const showToast = (
+    type: 'error' | 'success' | 'info',
+    title: string,
+    message: string,
+  ) => {
+    Toast.show({
+      topOffset: 20,
+      type,
+      text1: title,
+      text2: message,
+    });
+  };
+
 
   const handleConfirmPurchase = () => {
     if (!selectedItem) return; // @TODO Is this check necessary?
@@ -50,6 +63,13 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
 
     if (points < price || unlockedItems.includes(itemId)) {
       // @TODO Show toast message/modal to the user!
+      return;
+    }
+
+  const updatedPoints = points - selectedItem.price;
+    if(updatedPoints<=0)
+    {
+      showToast("error","Te weinig Releafe-punten","Je hebt nog niet genoeg punten om dit te kopen. Blijf goed voor jezelf zorgen en spaar verder!");
       return;
     }
 

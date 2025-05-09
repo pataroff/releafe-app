@@ -46,8 +46,7 @@ export const DiaryGreeting = ({ route }) => {
         >
           <FontAwesome name='heart' size={36} color='#5C6B57' />
           <Text style={styles.greetingText}>
-            Hi {user?.firstName}, wat goed dat je er weer bent. Laten we gelijk
-            beginnen.
+            Hoi {user?.firstName}, welkom!
           </Text>
         </View>
         {/* Body Container */}
@@ -60,8 +59,8 @@ export const DiaryGreeting = ({ route }) => {
           }}
         >
           <Text style={styles.diaryDescriptionText}>
-            Door dagelijks je dagboek bij te houden, volg je zorgvuldig jouw
-            groeiproces.
+            Door elke dag je dagboek in te vullen, krijg je inzicht in hoe het met je 
+            gaat en hoe je groeit.
           </Text>
           {/* Reward Container */}
           <View style={{ display: 'flex', flexDirection: 'row', columnGap: 5 }}>
@@ -101,7 +100,7 @@ export const DiaryGreeting = ({ route }) => {
           onPress={() => setModalDiaryVisible(!modalDiaryVisible)}
           style={styles.startButton}
         >
-          <Text style={styles.startButtonText}>Start met dagboek</Text>
+          <Text style={styles.startButtonText}>Vul dagboek in</Text>
         </Pressable>
       </View>
     </>

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
+import Toast from 'react-native-toast-message';
 
 interface PurchaseModalProps {
   visible: boolean;
@@ -44,6 +45,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
           </View>
         </View>
       </View>
+      <Toast/>
     </Modal>
   );
 };

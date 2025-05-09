@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#f9f9f9',
     rowGap: 15,
-    marginBottom: 100,
+    marginBottom: 200,
   },
   categoryText: {
     fontSize: 18,

@@ -11,8 +11,8 @@ interface TextStep {
 
 export const sliderSteps: SliderStep[] = [
   {
-    heading: 'Vraag 1. Algeheel gevoel',
-    question: 'Hoe zou je je algemene stemming vandaag beschrijven?',
+    heading: 'Vraag 1. Algehele gevoel',
+    question: 'Hoe zou je je algehele gevoel vandaag beschrijven?',
     options: ['Zeer slecht', 'Zeer goed'],
   },
   {
@@ -22,17 +22,17 @@ export const sliderSteps: SliderStep[] = [
   },
   {
     heading: 'Vraag 3. Stress',
-    question: 'Hoe gestrest voelde je je vandaag?',
+    question: 'Hoeveel stress heb je vandaag gehad?',
     options: ['Geen', 'Zeer veel'],
   },
   {
     heading: 'Vraag 4. Energie',
-    question: 'Hoe zou je je energieniveau vandaag beoordelen?',
+    question: 'Hoeveel energie heb je vandaag?',
     options: ['Geen', 'Zeer veel'],
   },
   {
     heading: 'Vraag 5. Concentratie',
-    question: 'Hoe goed kon je je vandaag concentreren op dingen die je deed?',
+    question: 'Hoe goed kon je je vandaag concentreren?',
     options: ['Zeer slecht', 'Zeer goed'],
   },
   {
