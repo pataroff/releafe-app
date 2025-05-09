@@ -22,12 +22,12 @@ const windowWidth = Dimensions.get('window').width;
 
 const reframingOptionsData = [
   [
-    'Reframen van een bestaande zorg',
-    'Wil je een bestaande zorg die je in je Zorgenbakje hebt vastgelegd reframen? Ga dan naar het Zorgenbakje.',
+    'Reframe een bestaande zorg',
+    'Wil je een zorg uit je Zorgenbakje reframen?\nGa dan naar je Zorgenbakje.',
   ],
   [
-    'Reframen van een nieuwe zorg',
-    'Heb je een zorg die je nog niet aan je Zorgenbakje hebt toegevoegd, maar die je direct wilt reframen? Begin dan meteen.',
+    'Reframe een nieuwe zorg',
+    'Heb je een zorg die nog niet in je Zorgenbakje staat, maar wil je er meteen mee aan de slag?\nBegin dan direct.',
   ],
 ];
 
@@ -65,14 +65,14 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
         <View style={styles.headersContainer}>
           <Text style={styles.headersTitleText}>Reframen</Text>
           <Text style={styles.headersDescriptionText}>
-            Reframen helpt je om je zorgen vanuit een andere invalshoek te bekijken.
+            Reframen helpt je om anders naar je zorgen te kijken.
             {'\n \n'} 
-            Door stapsgewijs je gedachten te herformuleren helpt deze oefening je om meer positieve en realistische gedachten te ontdekken. 
-            Hierdoor krijg je meer grip op je emoties en situaties waardoor je je rustiger en zelfverzekerder voelt.
+            Je leert stap voor stap om negatieve gedachten om te zetten in positievere of realistischere gedachten. 
+            Zo krijg je meer grip op je gevoelens en voel je je rustiger en zekerder.
           </Text>
           <Text style={styles.headersHeadingText}>Starten</Text>
           <Text style={styles.headersDescriptionText}>
-            Het toepassen van reframen kan op twee manieren.
+            Reframen kan op twee manieren.
           </Text>
         </View>
 

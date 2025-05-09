@@ -343,8 +343,8 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
         title='Stoppen met doel toevoegen'
         description='Je staat op het punt te stoppen met het aanmaken van dit persoonlijk doel. Weet je het zeker?'
         handleClose={handleClose}
-        denyText='Nee, bewaar mijn doel.'
-        confirmText='Ja, verwijder mijn doel'
+        denyText='Nee, ga door met aanmaken.'
+        confirmText='Ja, stop met aanmaken'
       />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
@@ -737,6 +737,9 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       </Text>
                     </Text>
                     */}
+                    <Text>
+                      AAAAAAA
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -1004,7 +1007,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#a8c1a0',
   },
   finishButton: {
-    width: 170,
+    width: 150,
     alignItems: 'center',
     borderRadius: 10,
     borderColor: 'black',

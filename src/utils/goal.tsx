@@ -467,7 +467,7 @@ export const getDescription = (index: number): string => {
     case 1:
       return 'Kies een doel';
     case 2:
-      return 'Personaliseer jouw doel';
+      return 'Pas je doel aan';
     case 3:
       return 'Jouw nieuwe persoonlijke doel';
     default:

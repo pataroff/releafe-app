@@ -125,5 +125,6 @@ const styles = StyleSheet.create({
   titleText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
+    flexShrink: 1,
   } as TextStyle,
 });

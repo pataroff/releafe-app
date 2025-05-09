@@ -235,8 +235,8 @@ export const GoalsOverview = () => {
             {/* Completed Timeframe */}
             <Text style={styles.statisticsDataBodyText}>
               {new Date(startDate as Date) > new Date()
-                ? 0
-                : Math.floor(getDaysBetweenDates(startDate, new Date()))}
+                ? 1
+                : Math.ceil(getDaysBetweenDates(startDate, new Date()))}
             </Text>
             {/* Completed Period */}
             <Text style={styles.statisticsDataBodyText}>{completedPeriod}</Text>

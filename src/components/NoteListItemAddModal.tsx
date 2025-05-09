@@ -652,7 +652,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
 
                     <Text
                       style={{
-                        ...(Fonts.poppinsMedium[Platform.OS] as TextStyle),
+                        ...(Fonts.sofiaProMedium[Platform.OS] as TextStyle),
                         marginTop: 20,
                       }}
                     >

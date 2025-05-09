@@ -83,8 +83,8 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
           title='Persoonlijk doel verwijderen'
           description='Je staat op het punt om je persoonlijke doel te verwijderen. Weet je het zeker?'
           handleClose={handleClose}
-          denyText='Nee, ik wil doorgaan'
-          confirmText='Ja, ik wil afsluiten'
+          denyText='Nee, niet verwijderen'
+          confirmText='Ja, verwijder dit doel'
           closeButtonDisabled={true}
         />
       </Modal>
@@ -346,8 +346,8 @@ const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   {/* Days Active */}
                   <Text style={styles.statisticsDataBodyText}>
                     {new Date(startDate as Date) > new Date()
-                      ? 0
-                      : Math.floor(getDaysBetweenDates(startDate, new Date()))}
+                      ? 1
+                      : Math.ceil(getDaysBetweenDates(startDate, new Date()))}
                   </Text>
                   {/* Completed Period */}
                   <Text style={styles.statisticsDataBodyText}>

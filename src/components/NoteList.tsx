@@ -31,10 +31,9 @@ export const NoteList: React.FC<{ route: any }> = ({ route }) => {
       ) : (
         <>
           <View style={styles.noDataContainer}>
-            <Text style={styles.noDataTitleText}>Geen notities</Text>
+            <Text style={styles.noDataTitleText}>Geen berichten</Text>
             <Text style={styles.noDataDescriptionText}>
-              Je hebt nog geen notities opgeslagen. Klik hieronder om je eerste
-              notitie te maken.
+              Je hebt op dit moment geen opgeslagen berichten. 
             </Text>
           </View>
         </>

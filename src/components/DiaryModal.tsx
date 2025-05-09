@@ -394,7 +394,6 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                   </Text>
                   {/* Goal Check Item */}
                   <ScrollView
-                    showsVerticalScrollIndicator={false}
                     style={styles.goalsChecklistContainer}
                     contentContainerStyle={
                       styles.goalsChecklistContentContainer

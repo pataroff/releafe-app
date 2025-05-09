@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
   headersTitleText: {
     ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 18,
+    flexShrink: 1,
   } as TextStyle,
   mainContainer: {
     flex: 1,
