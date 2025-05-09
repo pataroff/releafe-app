@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
-import { StatusBar } from 'expo-status-bar';
 import {
   View,
   Text,
@@ -237,7 +236,6 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
           </View>
         </View>
       </Modal>
-      <StatusBar />
       <Header title={title} route={route} />
       <ScrollView
         bounces={false}

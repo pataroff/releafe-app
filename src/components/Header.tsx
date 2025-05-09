@@ -9,40 +9,57 @@ import {
   Platform,
   TextStyle,
   Pressable,
-  Dimensions,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AuthContext } from '../context/AuthContext';
-
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Fonts } from '../styles';
 import { Avatar } from 'react-native-paper';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
+import { useAuth } from '../context/AuthContext';
 import { useGamification } from '../context/BonsaiContext';
-
-const windowHeight = Dimensions.get('window').height;
 
 export const Header: React.FC<{ title: string; route?: any }> = ({
   title,
   route,
 }) => {
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const { user } = useContext(AuthContext);
 
+  const { user } = useAuth();
   const { points } = useGamification();
+
+  const insets = useSafeAreaInsets();
+
+  const backgroundColor =
+    route?.params?.bonsaiTreeStackScreen || route?.params?.settingsStackScreen
+      ? '#829B7A'
+      : '#C1D6BA';
+
+  const isNestedScreen =
+    route?.params?.toolkitStackScreen ||
+    route?.params?.bonsaiTreeStackScreen ||
+    route?.params?.settingsStackScreen;
+
+  const showBackButton = isNestedScreen && route?.name !== 'Toolkit1';
+
+  const showAvatar =
+    route?.name !== 'BonsaiTreeShop' && route?.name !== 'Settings1';
 
   return (
     <>
-      <StatusBar style='light' />
+      <StatusBar style='light' backgroundColor={backgroundColor} />
       {/* SafeAreaView */}
       <View
         style={{
-          backgroundColor: '#F9F9F9',
+          backgroundColor,
           paddingLeft: insets.left,
           paddingRight: insets.right,
+          paddingTop: insets.top,
+          borderTopWidth: 0,
+          borderBottomStartRadius: 30,
+          borderBottomEndRadius: 30,
         }}
       >
         {/* Main Container */}
@@ -50,9 +67,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
           style={[
             styles.container,
             {
-              backgroundColor: route?.params?.bonsaiTreeStackScreen
-                ? '#829B7A'
-                : '#C1D6BA',
+              backgroundColor,
             },
           ]}
         >
@@ -67,19 +82,16 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
               }}
             >
               {/* Nested Routes */}
-              {(route?.params?.toolkitStackScreen ||
-                route?.params?.bonsaiTreeStackScreen ||
-                route?.params?.settingsStackScreen) &&
-                route?.name !== 'Toolkit1' && (
-                  <Pressable onPress={() => navigation.goBack()}>
-                    <MaterialCommunityIcons
-                      name='chevron-left-circle-outline'
-                      size={30}
-                      color='white'
-                    />
-                  </Pressable>
-                )}
-              {/* Home Route */}
+              {showBackButton && (
+                <Pressable onPress={() => navigation.goBack()}>
+                  <MaterialCommunityIcons
+                    name='chevron-left-circle-outline'
+                    size={30}
+                    color='white'
+                  />
+                </Pressable>
+              )}
+              {/* Title */}
               {route?.name !== 'Home' ? (
                 <Text style={styles.headerTitle}> {title} </Text>
               ) : (
@@ -93,18 +105,16 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                 />
               )}
             </View>
-            {route?.name !== 'BonsaiTreeShop' ? (
+            {showAvatar ? (
               <Pressable onPress={() => navigation.openDrawer()}>
                 <Avatar.Text
                   style={{
-                    backgroundColor: route?.params?.bonsaiTreeStackScreen
-                      ? '#829B7A'
-                      : '#C1D6BA',
+                    backgroundColor,
                     borderWidth: 2,
                     borderColor: 'white',
                   }}
                   color='white'
-                  size={60}
+                  size={65}
                   label={user?.firstName[0] + user?.lastName[0]}
                 />
               </Pressable>
@@ -155,7 +165,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: windowHeight <= 667 ? 145 : 165,
+    height: 125,
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
@@ -168,7 +178,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: windowHeight <= 667 ? 20 : 40,
     paddingHorizontal: 30,
     alignItems: 'center',
     columnGap: 30,

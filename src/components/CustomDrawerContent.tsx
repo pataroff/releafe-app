@@ -72,11 +72,7 @@ export const CustomDrawerContent = (props) => {
         setInformatiegidsModalActive(!informatiegidsModalActive);
       },
     },
-    {
-      label: 'Instellingen',
-      icon: require('../../assets/images/drawer_icons/drawer_settings_icon.png'),
-      action: () => navigation.navigate('Settings', { screen: 'Settings1' }),
-    },
+
     {
       label: 'Uitloggen',
       icon: require('../../assets/images/drawer_icons/drawer_sign_out_icon.png'),
