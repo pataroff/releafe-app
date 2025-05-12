@@ -40,7 +40,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       // Jan's Input Start
       {
         id: '1',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Mindfulness Bodyscan',
         description: 'Bodyscan meditatie oefening',
         duration: '40 minuten',
@@ -48,7 +48,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '2',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Zitten in aandacht',
         description: 'Zitten in aandacht meditatie oefening',
         duration: '17 minuten',
@@ -56,7 +56,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '3',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Aandacht voor adem, lichaam en geluiden',
         description:
           'Aandacht voor adem, lichaam en geluiden meditatie oefening',
@@ -65,7 +65,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '4',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title:
           'Aandacht voor onaangename gevoelens - zitten met een moeilijkheid',
         description:
@@ -75,7 +75,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '5',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Keuzeloze aandacht',
         description: 'Keuzeloze aandacht meditatie oefening',
         duration: '12 minuten',
@@ -83,7 +83,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '6',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Bergmeditatie',
         description: 'Berrmeditatie oefening',
         duration: '19 minuten',
@@ -91,7 +91,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
       id: '7',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Lichaamsbewustzijn - Bekken, borst en onderrug',
         description: 'Lichaamsbewustzijn - Bekken, borst en onderrug',
         duration: '6 minuten',
@@ -99,7 +99,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '8',
-          icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+          icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
           title: 'Lichaamsbewustzijn - borstgebied en bovenrug',
           description: 'Lichaamsbewustzijn - borstgebied en bovenrug',
           duration: '7 minuten',
@@ -107,7 +107,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '9',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Lichaamsbewustzijn - voeten en benen',
         description: 'Lichaamsbewustzijn - voeten en benen',
         duration: '10 minuten',
@@ -115,7 +115,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '10',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Lichaamsbewustzijn - schouders en armen',
         description: 'Lichaamsbewustzijn - schouders en armen',
         duration: '6 minuten',
@@ -123,7 +123,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '11',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Verleggen van de aandacht',
         description: 'Verleggen van de aandacht',
         duration: '7 minuten',
@@ -131,7 +131,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '12',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Vasthouden van de aandacht',
         description: 'Vasthouden van de aandacht',
         duration: '9 minuten',
@@ -139,7 +139,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '13',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Alle elementen van de aandacht',
         description: 'Alle elementen van de aandacht',
         duration: '9 minuten',
@@ -147,7 +147,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '14',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Vernauwen van de aandacht',
         description: 'Vernauwen van de aandacht',
         duration: '5 minuten',
@@ -155,7 +155,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '15',
-        icon: require('../../assets/images/exercises_icons/mindfulness_bodyscan_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Verwijden van de aandacht',
         description: 'Verwijden van de aandacht',
         duration: '6 minuten',
@@ -305,7 +305,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
     [
       {
         id: '20',
-        icon: require('../../assets/images/exercises_icons/ademhaling_ademhaling_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
         title: 'Aandacht voor de adem',
         description: 'Aandacht voor de adem meditatie oefening',
         duration: '14 minuten',
@@ -340,7 +340,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },*/
       {
         id: '24',
-        icon: require('../../assets/images/exercises_icons/ademhaling_ademhaling_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
         title: 'De ademstroom',
         description: 'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
         duration: '6 minuten',
@@ -356,7 +356,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '26',
-        icon: require('../../assets/images/exercises_icons/ademhaling_ademhaling_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
         title: 'De ademhaling en het buikgebied',
         description: 'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
         duration: '4 minuten',
@@ -364,7 +364,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '27',
-        icon: require('../../assets/images/exercises_icons/ademhaling_ademhaling_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
         title: 'De ademhaling en stilte',
         description: 'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
         duration: '5 minuten',
@@ -372,7 +372,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
       },
       {
         id: '28',
-        icon: require('../../assets/images/exercises_icons/ademhaling_ademhaling_icon.png'),
+        icon: require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
         title: 'De ademhaling als geheel',
         description: 'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
         duration: '5 minuten',
@@ -384,10 +384,10 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
 
 export const categoryIcons = [
   require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
+  require('../../assets/images/exercises_icons/lichaamsbeweging_wandelen_icon.png'),
+  require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
   require('../../assets/images/exercises_categories_icons/meditation_icon.png'),
   require('../../assets/images/exercises_categories_icons/relaxation_icon.png'),
-  require('../../assets/images/exercises_categories_icons/exercise_icon.png'),
-  require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
 ];
 
 export const getExerciseCategory = (category: string) => {
