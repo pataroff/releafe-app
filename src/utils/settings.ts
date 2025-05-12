@@ -1,4 +1,5 @@
 import { ImageSourcePropType } from 'react-native';
+import { Gender } from '../types';
 
 type ToggleKey = 'notifications' | 'gamification';
 
@@ -46,3 +47,14 @@ export const extraProfileSettingsData: SettingsData[] = [
 export const settingsData = [
   { heading: 'Profiel instellingen', data: profileSettingsData },
 ];
+
+export const getGenderString = (gender: Gender) => {
+  switch (gender) {
+    case Gender.Male:
+      return 'Man';
+    case Gender.Female:
+      return 'Vrouw';
+    case Gender.Other:
+      return 'Anders';
+  }
+};

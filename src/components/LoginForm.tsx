@@ -13,13 +13,13 @@ import {
 
 import { Fonts } from '../styles';
 
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
 export const LoginForm = () => {
-  const { signIn } = useContext(AuthContext);
+  const { signIn } = useAuth();
   const navigation = useNavigation();
 
   const [email, setEmail] = useState<string>('');
@@ -34,7 +34,7 @@ export const LoginForm = () => {
           <Text style={styles.textInputLabelText}>E-mail</Text>
           <TextInput
             style={styles.textInputField}
-            placeholder='Enter your email...'
+            placeholder='Vul je e-mailadres in...'
             autoCapitalize='none'
             onChangeText={(value) => setEmail(value)}
             value={email}
@@ -43,7 +43,7 @@ export const LoginForm = () => {
           <Text style={styles.textInputLabelText}>Wachtwoord</Text>
           <TextInput
             style={styles.textInputField}
-            placeholder='Enter your password...'
+            placeholder='Vul je wachtwoord in...'
             autoCapitalize='none'
             secureTextEntry={true}
             onChangeText={(value) => setPassword(value)}
@@ -60,7 +60,7 @@ export const LoginForm = () => {
         <View style={styles.signUpBox}>
           <Text>Nog geen account?</Text>
           <Pressable onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.signUpText}> Account aanmaken</Text>
+            <Text style={styles.signUpText}> Account activieren</Text>
           </Pressable>
         </View>
       </View>
@@ -87,13 +87,15 @@ const styles = StyleSheet.create({
   buttonText: {
     ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 16,
+    textTransform: 'uppercase',
     color: 'white',
   } as TextStyle,
   signInButton: {
     backgroundColor: '#A9C1A1',
+    justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 30,
-    paddingVertical: 10,
+    height: 35,
     marginTop: 10,
   },
   signUpBox: {

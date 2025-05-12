@@ -45,7 +45,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
   const showBackButton = isNestedScreen && route?.name !== 'Toolkit1';
 
   const showAvatar =
-    route?.name !== 'BonsaiTreeShop' || route?.name !== 'Settings1';
+    route?.name !== 'BonsaiTreeShop' && route?.name !== 'Settings1';
 
   return (
     <>
@@ -105,7 +105,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                 />
               )}
             </View>
-            {showAvatar ? (
+            {showAvatar && (
               <Pressable onPress={() => navigation.openDrawer()}>
                 <Avatar.Text
                   style={{
@@ -118,7 +118,9 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                   label={user?.firstName[0] + user?.lastName[0]}
                 />
               </Pressable>
-            ) : (
+            )}
+            {/* Bonsai Tree Shop */}
+            {route?.name === 'BonsaiTreeShop' && (
               <View
                 style={{
                   display: 'flex',

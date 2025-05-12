@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
 import {
   View,
@@ -12,21 +12,28 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
-import { IUserData } from '../types';
+import { Gender, IUserData } from '../types';
 
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 import { useNavigation } from '@react-navigation/native';
 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { Dropdown } from 'react-native-element-dropdown';
 import Toast from 'react-native-toast-message';
 
 import { FormInput } from './FormInput';
 
 const windowWidth = Dimensions.get('window').width;
 
+const genderOptions = [
+  { label: 'Man', value: Gender.Male },
+  { label: 'Vrouw', value: Gender.Female },
+  { label: 'Anders', value: Gender.Other },
+];
+
 export const RegisterForm = () => {
-  const { register } = useContext(AuthContext);
+  const { register } = useAuth();
   const navigation = useNavigation();
 
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
@@ -34,8 +41,9 @@ export const RegisterForm = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [telephoneNumber, setTelephoneNumber] = useState<string>('');
   const [birthDate, setBirthDate] = useState<Date | null>(null);
+  const [gender, setGender] = useState<Gender | null>(null);
+  const [postcode, setPostcode] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
 
@@ -58,19 +66,12 @@ export const RegisterForm = () => {
       !lastName ||
       !email ||
       !birthDate ||
-      !telephoneNumber ||
+      !gender ||
+      !postcode ||
       !password ||
       !passwordConfirm
     ) {
       return showToast('error', 'Ongeldige invoer', 'Vul alle velden in.');
-    }
-
-    if (!/^\+?\d{8,15}$/.test(telephoneNumber)) {
-      return showToast(
-        'error',
-        'Ongeldig nummer',
-        'Vul een geldig telefoonnummer in.'
-      );
     }
 
     if (password.length < 8) {
@@ -95,8 +96,9 @@ export const RegisterForm = () => {
       passwordConfirm,
       firstName,
       lastName,
-      telephoneNumber,
       birthDate,
+      gender,
+      postcode,
     };
 
     register(userData);
@@ -113,6 +115,7 @@ export const RegisterForm = () => {
       <DateTimePickerModal
         isVisible={showDatePicker}
         mode='date'
+        maximumDate={new Date()}
         onConfirm={(date) => handleConfirmDate(date)}
         onCancel={() => setShowDatePicker(false)}
       />
@@ -139,18 +142,34 @@ export const RegisterForm = () => {
         editable={false}
       />
 
+      <Text style={styles.textInputLabelText}>Geslacht</Text>
+      <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderTextStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        itemTextStyle={styles.label}
+        data={genderOptions}
+        labelField='label'
+        valueField='value'
+        placeholder='Selecteer je geslacht...'
+        value={gender}
+        onChange={(item) => setGender(item.value)}
+      />
+
+      <FormInput
+        label='Postcode'
+        placeholder='Vul je postcode in...'
+        value={postcode}
+        onChangeText={setPostcode}
+        keyboardType='default'
+        maxLength={6}
+      />
+
       <FormInput
         label='E-mail'
         placeholder='Vul je e-mailadres in...'
         value={email}
         onChangeText={setEmail}
-      />
-
-      <FormInput
-        label='Telefoonnummer'
-        placeholder='Vul je telefoonnummer in...'
-        value={telephoneNumber}
-        onChangeText={setTelephoneNumber}
       />
 
       <FormInput
@@ -170,7 +189,7 @@ export const RegisterForm = () => {
       />
 
       <Pressable style={styles.signInButton} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Account aanmaken</Text>
+        <Text style={styles.buttonText}>Account activieren</Text>
       </Pressable>
 
       <View style={styles.signUpBox}>
@@ -207,13 +226,16 @@ const styles = StyleSheet.create({
   buttonText: {
     ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 16,
+    textTransform: 'uppercase',
     color: 'white',
   } as TextStyle,
   signInButton: {
     backgroundColor: '#A9C1A1',
+    justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 30,
-    paddingVertical: 10,
+    width: '100%',
+    height: 35,
     marginTop: 10,
   },
   signUpBox: {
@@ -231,5 +253,28 @@ const styles = StyleSheet.create({
   signUpText: {
     color: '#A9C1A1',
     ...Fonts.sofiaProMedium[Platform.OS],
+  } as TextStyle,
+  dropdown: {
+    height: 40,
+    borderColor: '#dedede',
+    borderWidth: 1,
+    borderRadius: 30,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 15,
+  },
+  placeholderTextStyle: {
+    ...Fonts.sofiaProItalic[Platform.OS],
+    fontSize: 14,
+    color: '#999',
+  } as TextStyle,
+  selectedTextStyle: {
+    ...Fonts.sofiaProItalic[Platform.OS],
+    fontSize: 14,
+  } as TextStyle,
+  label: {
+    zIndex: 999,
+    fontSize: 14,
+    ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
 });

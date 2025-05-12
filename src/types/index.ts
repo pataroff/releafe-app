@@ -11,9 +11,6 @@ export interface ISettingsContext {
   favouriteExercises: string[];
   setFavouriteExercises: (exercises: string[]) => void;
   updateFavouritesInDatabase: (exercises: string[]) => Promise<void>;
-  gamificationEnabled: boolean;
-  setGamificationEnabled: (enabled: boolean) => void;
-  updateGamificationInDatabase: (enabled: boolean) => Promise<void>;
 }
 
 export interface IDiaryEntry {
@@ -52,14 +49,21 @@ export type RootStackParamList = {
   Chat: undefined;
 };
 
+export enum Gender {
+  Male = 'MAN',
+  Female = 'VROUW',
+  Other = 'ANDERS',
+}
+
 export interface IUserData {
   email: string;
   password: string;
   passwordConfirm: string;
   firstName: string;
   lastName: string;
-  telephoneNumber: string;
   birthDate: Date;
+  gender: Gender;
+  postcode: string;
 }
 
 export interface IAuthContext {
@@ -72,8 +76,8 @@ export interface IAuthContext {
     confirmNewPassword: string
   ) => Promise<void>;
   changeEmail: (newEmail: string) => Promise<void>;
-  changePhoneNumber: (newPhoneNumber: string) => Promise<void>;
   changeBirthDate: (newBirthDate: Date) => Promise<void>;
+  updateUser: (updatedFields: Partial<IUserData>) => Promise<void>;
   deleteUser: (password: string) => Promise<void>;
   isLoading: boolean;
   isLoggedIn: boolean;
