@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import {
   StyleSheet,
@@ -99,6 +99,8 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
 
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
+  const scrollView = useRef();
+
   /*const handleCalendarPeriodSelect = (day: string) => {
     type MarkedDatesType = Record<
       string,
@@ -198,6 +200,10 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   const handleCategorySelect = (index: number) => {
     setCategory(getGoalCategory(index));
     setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
+    scrollView.current?.scrollTo({
+      y: 0,
+      animated: false,
+    });
   };
 
   const handleGoalSelect = (
@@ -243,6 +249,10 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     if (goalListItemAddModalIndex !== 0) {
       setGoalListItemAddModalIndex(goalListItemAddModalIndex - 1);
     }
+    scrollView.current?.scrollTo({
+      y: 0,
+      animated: false
+    });
   };
 
   const handleFinish = () => {
@@ -414,6 +424,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
             showsVerticalScrollIndicator={false}
             style={styles.goalContainer}
             contentContainerStyle={styles.goalContentContainerStyles}
+            ref={scrollView}
           >
             {goalListItemAddModalIndex === 0 && (
               <View style={styles.categoriesContainer}>
@@ -734,9 +745,6 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       </Text>
                     </Text>
                     */}
-                    <Text>
-                      AAAAAAA
-                    </Text>
                   </View>
                 </View>
               </View>
