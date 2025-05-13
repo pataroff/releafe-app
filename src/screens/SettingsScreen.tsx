@@ -31,6 +31,7 @@ import { DeleteAccountModal } from '../components/DeleteAccountModal';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+const isSmallerScreen = windowHeight <= 667;
 
 const settings = ['Wachtword wijzigen', 'Profiel verwijderen'];
 
@@ -86,7 +87,7 @@ export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
         navigation.navigate('ChangePassword');
         break;
       case 1:
-        setModalVisible(true);
+        setDeleteModalVisible(true);
         break;
       default:
         return;
@@ -116,7 +117,7 @@ export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
   }, [firstName, lastName, birthDate, gender, postcode]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, position: 'relative' }}>
       <DeleteAccountModal
         visible={deleteModalVisible}
         onConfirm={handleDeleteConfirm}
@@ -357,6 +358,7 @@ export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
             {settings.map((setting, index) => {
               return (
                 <Pressable
+                  key={index}
                   onPress={() => handleNavigation(index)}
                   style={styles.navigationButton}
                 >
@@ -377,14 +379,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: -20,
-    height: windowHeight / 2,
-    zIndex: 10,
+    top: 0,
+    height: windowHeight,
   },
   container: {
     flex: 1,
+    paddingTop: isSmallerScreen ? 105 : 145,
     backgroundColor: 'transparent',
-    zIndex: 20,
   },
   contentContainerStyles: {
     flexGrow: 1,
@@ -422,7 +423,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     marginTop: 25,
-    marginBottom: 120,
+    marginBottom: 120, // @TODO This is not right!
     width: 325,
     // Shadow Test
     shadowColor: '#000',

@@ -146,17 +146,17 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
       <View style={styles.headersContainer}>
         <Text style={styles.headersTitleText}>Zorgenbakje</Text>
         <Text style={styles.headersDescriptionText}>
-          Het Zorgenbakje is een veilige plek om je zorgen en angsten op te schrijven en
-          even los te laten. Door ze hier op te bergen, geef je jezelf even ruimte en 
-          rust. Dit helpt om je hoofd leeg te maken.
+          Het Zorgenbakje is een veilige plek om je zorgen en angsten op te
+          schrijven en even los te laten. Door ze hier op te bergen, geef je
+          jezelf even ruimte en rust. Dit helpt om je hoofd leeg te maken.
         </Text>
         {/* Headers Inner Container */}
         <View style={styles.headersInnerContainer}>
           <View style={{ width: '80%' }}>
             <Text style={styles.headersHeadingText}>Mijn zorgen</Text>
             <Text style={styles.headersDescriptionText}>
-              Klik op de lade hieronder om je opgeborgen zorgen te bekijken. 
-              Wil je iets nieuws toevoegen? Gebruik dan de + knop.
+              Klik op de lade hieronder om je opgeborgen zorgen te bekijken. Wil
+              je iets nieuws toevoegen? Gebruik dan de + knop.
             </Text>
           </View>
           {/* Add Button */}
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
     marginTop: 5,
   } as TextStyle,
   addButton: {

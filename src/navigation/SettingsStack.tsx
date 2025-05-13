@@ -16,6 +16,7 @@ export const SettingsStack: React.FC = () => {
           const title = 'Personlijk profiel';
           return <Header title={title} route={route} />;
         },
+        headerTransparent: true,
       }}
     >
       <Stack.Screen
