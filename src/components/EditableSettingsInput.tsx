@@ -15,13 +15,35 @@ import { Fonts } from '../styles';
 import { Gender } from '../types';
 
 import { Dropdown } from 'react-native-element-dropdown';
-type EditableSettingsInputProps = {
+
+type BaseProps = {
   label: string;
-  value: string | Gender | null;
-  onChangeText?: (val: string) => void;
-  onPress?: () => void;
-  type?: 'text' | 'date' | 'dropdown';
+  type: 'text' | 'date' | 'dropdown';
+  editable?: boolean;
 };
+
+type TextProps = BaseProps & {
+  type: 'text';
+  value: string;
+  onChangeText?: (text: string) => void;
+  onPress?: never;
+};
+
+type DateProps = BaseProps & {
+  type: 'date';
+  value: string | null;
+  onPress: () => void;
+  onChangeText?: never;
+};
+
+type DropdownProps = BaseProps & {
+  type: 'dropdown';
+  value: Gender | null | string;
+  onPress: (value: Gender | null) => void;
+  onChangeText?: never;
+};
+
+type EditableSettingsInputProps = TextProps | DateProps | DropdownProps;
 
 const genderOptions = [
   { label: 'Man', value: Gender.Male },
@@ -35,13 +57,14 @@ export const EditableSettingsInput: React.FC<EditableSettingsInputProps> = ({
   onChangeText,
   onPress,
   type,
+  editable,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEdit = () => {
     switch (type) {
       case 'date':
-        onPress?.();
+        onPress();
         break;
       case 'dropdown':
         setIsEditing(!isEditing);
@@ -53,11 +76,7 @@ export const EditableSettingsInput: React.FC<EditableSettingsInputProps> = ({
   };
 
   const renderIcon = () => {
-    if (type === 'dropdown') {
-      return (
-        <MaterialCommunityIcons name='chevron-down' size={20} color='black' />
-      );
-    }
+    if (!editable) return null;
 
     return (
       <MaterialCommunityIcons
@@ -71,7 +90,8 @@ export const EditableSettingsInput: React.FC<EditableSettingsInputProps> = ({
   return (
     <View style={styles.container}>
       <Text style={styles.textInputLabelText}>{label}</Text>
-      {type == 'dropdown' ? (
+
+      {type === 'dropdown' && (
         <Dropdown
           style={[styles.dropdown, { backgroundColor: '#F7F7F7' }]}
           placeholderStyle={styles.placeholderTextStyle}
@@ -83,21 +103,24 @@ export const EditableSettingsInput: React.FC<EditableSettingsInputProps> = ({
           valueField='value'
           placeholder='Selecteer je geslacht...'
           value={value}
-          onChange={(item) => onPress?.(item.value)}
+          onChange={(item) => onPress(item.value)}
         />
-      ) : (
+      )}
+
+      {type === 'text' && (
         <View>
           <TextInput
             style={[
               styles.textInputField,
               { backgroundColor: isEditing ? '#FFFFFF' : '#F7F7F7' },
+              { color: editable ? 'black' : 'gray' },
             ]}
             value={value}
             onChangeText={onChangeText}
             autoCapitalize='none'
             editable={isEditing}
           />
-          {/* Edit Button */}
+
           <Pressable
             onPress={handleEdit}
             style={[styles.iconWrapper, isEditing && styles.iconWrapperEditing]}
@@ -105,6 +128,25 @@ export const EditableSettingsInput: React.FC<EditableSettingsInputProps> = ({
             {renderIcon()}
           </Pressable>
         </View>
+      )}
+
+      {type === 'date' && (
+        <Pressable onPress={onPress}>
+          <View>
+            <TextInput
+              style={[styles.textInputField, { backgroundColor: '#F7F7F7' }]}
+              value={value ?? ''}
+              editable={false}
+            />
+          </View>
+
+          <Pressable
+            onPress={handleEdit}
+            style={[styles.iconWrapper, isEditing && styles.iconWrapperEditing]}
+          >
+            {renderIcon()}
+          </Pressable>
+        </Pressable>
       )}
     </View>
   );
@@ -121,7 +163,7 @@ const styles = StyleSheet.create({
     color: 'gray',
   } as TextStyle,
   textInputField: {
-    ...Fonts.sofiaProItalic[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     verticalAlign: Platform.OS == 'android' ? 'top' : {},
     height: 40,
     width: '100%',
@@ -159,12 +201,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   placeholderTextStyle: {
-    ...Fonts.sofiaProItalic[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
     color: '#999',
   } as TextStyle,
   selectedTextStyle: {
-    ...Fonts.sofiaProItalic[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   label: {

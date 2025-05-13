@@ -61,8 +61,8 @@ export interface IUserData {
   passwordConfirm: string;
   firstName: string;
   lastName: string;
-  birthDate: Date;
-  gender: Gender;
+  birthDate: Date | null;
+  gender: Gender | null;
   postcode: string;
 }
 

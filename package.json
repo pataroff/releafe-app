@@ -58,7 +58,8 @@
     "react-native-webview": "^13.12.5",
     "uuid": "^9.0.1",
     "victory": "^37.0.2",
-    "victory-native": "^40.1.0"
+    "victory-native": "^40.1.0",
+    "expo-linear-gradient": "~14.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
