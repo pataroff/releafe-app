@@ -18,8 +18,8 @@ const windowWidth = Dimensions.get('window').width;
 interface CloseModalProps {
   closeModalVisible: boolean;
   setCloseModalVisible: React.Dispatch<SetStateAction<boolean>>;
-  parentModalVisible: boolean;
-  setParentModalVisible: React.Dispatch<SetStateAction<boolean>>;
+  parentModalVisible?: boolean;
+  setParentModalVisible?: React.Dispatch<SetStateAction<boolean>>;
   title: string;
   description: string;
   handleClose?: (index?: number) => void;
