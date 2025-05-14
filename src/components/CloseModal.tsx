@@ -69,7 +69,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
 
   return (
     <Modal
-      animationType='none'
+      animationType='fade'
       transparent={true}
       visible={closeModalVisible}
       onRequestClose={() => setCloseModalVisible(!setCloseModalVisible)}
@@ -84,8 +84,8 @@ export const CloseModal: React.FC<CloseModalProps> = ({
             }}
           >
             <View style={{ rowGap: 20 }}>
-              <Text style={styles.modalTitleText}>{title}</Text>
-              <Text style={styles.modalDescriptionText}>{description}</Text>
+              <Text style={styles.title}>{title}</Text>
+              <Text style={styles.description}>{description}</Text>
             </View>
 
             {route?.name == 'Diary1' && (
@@ -105,14 +105,14 @@ export const CloseModal: React.FC<CloseModalProps> = ({
           <View style={{ rowGap: 15 }}>
             <Pressable
               disabled = {closeButtonDisabled}
-              style={styles.closeButton}
+              style={styles.confirmButton}
               onPress={() =>
                 route?.name === 'Diary1'
                   ? handleDiaryCloseModal(0) // Save and Close
                   : setCloseModalVisible(!closeModalVisible)
               }
             >
-              <Text style={styles.closeButtonText}>
+              <Text style={styles.confirmText}>
                 {denyText}
               </Text>
             </Pressable>
@@ -126,7 +126,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
                   : handleParentCloseModal()
               }
             >
-              <Text style={styles.cancelButtonText}>
+              <Text style={styles.cancelText}>
                 {confirmText}
               </Text>
             </Pressable>
@@ -142,48 +142,49 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    padding: 20,
   },
   modalContainer: {
-    borderRadius: 30,
-    height: 270,
-    width: windowWidth - 2 * 15,
+    width: '100%',
     backgroundColor: 'white',
+    borderRadius: 20,
     padding: 25,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    gap: 20,
   },
-  modalTitleText: {
-    ...Fonts.sofiaProSemiBold[Platform.OS],
-    fontSize: 18,
+  title: {
+    ...Fonts.sofiaProBold[Platform.OS],
+    fontSize: 20,
+    color: '#333',
   } as TextStyle,
-  modalDescriptionText: {
+  description: {
     ...Fonts.sofiaProRegular[Platform.OS],
-    fontSize: 14,
+    fontSize: 16,
+    color: '#666',
   } as TextStyle,
-  closeButton: {
-    borderRadius: 10,
-    alignSelf: 'flex-start',
-    alignItems: 'center',
-    width: 220,
-    paddingVertical: 6,
-    backgroundColor: '#5c6b57',
+  buttonWrapper: {
+    gap: 15,
   },
+  confirmButton: {
+    backgroundColor: '#C1DEBE',
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  confirmText: {
+    ...Fonts.sofiaProSemiBold[Platform.OS],
+    fontSize: 16,
+    color: '#333',
+  } as TextStyle,
   cancelButton: {
-    borderWidth: 1,
-    borderRadius: 10,
-    alignSelf: 'flex-start',
+    borderRadius: 12,
+    paddingVertical: 12,
     alignItems: 'center',
-    width: 220,
-    paddingVertical: 6,
-    backgroundColor: 'white',
+    backgroundColor: '#eee',
   },
-  closeButtonText: {
-    ...Fonts.sofiaProSemiBold[Platform.OS],
-    color: 'white',
-  } as TextStyle,
-  cancelButtonText: {
-    ...Fonts.sofiaProSemiBold[Platform.OS],
+  cancelText: {
+    ...Fonts.sofiaProRegular[Platform.OS],
+    fontSize: 16,
+    color: '#666',
   } as TextStyle,
 });
