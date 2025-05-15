@@ -7,12 +7,16 @@ import {
   Text,
   TextStyle,
   Platform,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
 import { useAuth } from '../context/AuthContext';
 import { Fonts } from '../styles';
 import Toast from 'react-native-toast-message';
+
+const windowHeight = Dimensions.get('window').height;
+const isSmallerScreen = windowHeight <= 667;
 
 export const ChangePasswordScreen: React.FC = () => {
   const { changePassword } = useAuth();
@@ -126,9 +130,10 @@ export const ChangePasswordScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 40,
     paddingHorizontal: 30,
-    paddingTop: 40,
-    backgroundColor: '#FFFFFF',
+    paddingTop: isSmallerScreen ? 105 : 145,
+    backgroundColor: 'trasnparent',
     flex: 1,
   },
   label: {
@@ -138,9 +143,10 @@ const styles = StyleSheet.create({
   input: {
     ...Fonts.sofiaProItalic[Platform.OS],
     height: 40,
+    backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#dedede',
-    borderRadius: 30,
+    borderRadius: 10,
     paddingLeft: 15,
     paddingRight: 40, // extra space for icon
     marginTop: 10,

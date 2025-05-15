@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
@@ -28,7 +28,7 @@ import {
 } from '../utils/bonsai';
 
 import { useGamification } from '../context/BonsaiContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 // @TODO: Is there a better way to handle smaller screen sizes?
@@ -72,17 +72,20 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
   }, [treeState]);
 
   // 2. Save `treeState` to database when user leaves the screen
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('blur', () => {
-      updateTreeStateInDatabase(
-        selectedBranchIndex,
-        selectedLeafIndex,
-        selectedFlowerIndex
-      );
-    });
+  useFocusEffect(
+    useCallback(() => {
+      // On focus: do nothing
 
-    return unsubscribe;
-  }, [navigation, selectedBranchIndex, selectedLeafIndex, selectedFlowerIndex]);
+      return () => {
+        // On blur: save treeState
+        updateTreeStateInDatabase(
+          selectedBranchIndex,
+          selectedLeafIndex,
+          selectedFlowerIndex
+        );
+      };
+    }, [selectedBranchIndex, selectedLeafIndex, selectedFlowerIndex])
+  );
 
   const handleBonsaiStateDropdown = (index: number) => {
     switch (index) {

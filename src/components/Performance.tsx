@@ -47,7 +47,8 @@ export const Performance: React.FC<{ diaryData: IDiaryEntry[] }> = ({
         <View style={styles.headersContainer}>
           <Text style={styles.performanceTitleText}>Persoonlijk overzicht</Text>
           <Text style={styles.performanceDescriptionText}>
-            Hier zie je hoe het met je gaat. Het is een overzicht van je dagboekgegevens per week, maand of jaar.
+            Hier zie je hoe het met je gaat. Het is een overzicht van je
+            dagboekgegevens per week, maand of jaar.
           </Text>
         </View>
 
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
   } as TextStyle,
   performanceDescriptionText: {
-    ...Fonts.sofiaProMedium[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
     fontSize: 13,
     marginTop: 5,
   } as TextStyle,

@@ -26,8 +26,14 @@ import { GoalsOverview } from '../components/GoalsOverview';
 
 import { useAuth } from '../context/AuthContext';
 import { useGoal } from '../context/GoalContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { debugAsyncStorage } from '../utils/registerForPushNotificationsAsync';
 
 const windowWidth = Dimensions.get('window').width;
+
+const RANGE = 'Blad1!A2:C';
+const QUOTE_KEY = 'QUOTE_ID';
 
 const nudgingItems = [
   {
@@ -116,17 +122,16 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
   const { user } = useAuth();
   const { goalEntries } = useGoal();
 
-  const [quote, setQuote] = useState<string>(
-    'Wherever you are, be there totally.'
-  );
-  const [author, setAuthor] = useState<string>('Eckhart Tolle');
+  const [quote, setQuote] = useState<{
+    id: string;
+    text: string;
+    author: string;
+  }>({ id: '', text: '', author: '' });
 
   const [activeIndex, setActiveIndex] = useState(0);
 
   const [questionMarkModalActive, setQuestionMarkModalActive] =
     useState<boolean>(false);
-  
-  const [scrollViewOffsetPoints,setScrollViewOffsetPoints] = useState([0]);
 
   // Animation values
   const animatedValues = useRef(
@@ -139,23 +144,6 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
     const newIndex = Math.round(offsetX / (windowWidth - 40)); // 40 = padding * 2
     if (newIndex !== activeIndex) setActiveIndex(newIndex);
   };
-
-  const handleScrollViewSize = () => {
-    setScrollViewOffsetPoints([]);
-    var tempOffsetPoints = [];
-    var offset = 0;
-    for(var i=0;i<nudgingItems.length;i++)
-    {
-      if(i==0)
-      {
-        offset = windowWidth / 1.25 + 30;
-      }
-      else offset += windowWidth / 1.25 + 20;
-      tempOffsetPoints.push(offset) 
-    }
-    console.log(tempOffsetPoints)
-    setScrollViewOffsetPoints(tempOffsetPoints)
-  }
 
   const handleNudgingQuestionMark = () => {
     setQuestionMarkModalActive(true);
@@ -202,23 +190,59 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
     });
   }, [activeIndex]);
 
-  // QUOTES API
-  // useEffect(() => {
-  //   const fetchQuote = async () => {
-  //     const res = await axios.get(process.env.API_NINJAS_API_URL as string, {
-  //       headers: {
-  //         'X-Api-Key': process.env.API_NINJAS_API_KEY,
-  //       },
-  //     });
+  useEffect(() => {
+    const fetchQuote = async () => {
+      const today = new Date().toISOString().split('T')[0];
 
-  //     const { data } = res;
+      try {
+        const stored = await AsyncStorage.getItem(QUOTE_KEY);
 
-  //     setQuote(data[0].quote);
-  //     setAuthor(data[0].author);
-  //   };
+        if (stored) {
+          const { date, quote } = JSON.parse(stored);
 
-  //   fetchQuote();
-  // }, []);
+          if (date === today) {
+            setQuote(quote);
+            return; // ✅ already up to date
+          }
+        }
+
+        // Either no quote stored or it's a new day
+        const res = await fetch(
+          `https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEETS_ID}/values/${RANGE}?key=${process.env.GOOGLE_SHEETS_API_KEY}`
+        );
+
+        const data = await res.json();
+
+        if (!data.values || data.values.length === 0) return;
+
+        const quotes = data.values.map(([id, text, author]: string[]) => ({
+          id,
+          text,
+          author,
+        }));
+
+        let nextIndex = 0;
+
+        if (stored) {
+          const { index } = JSON.parse(stored);
+          nextIndex = (index + 1) % quotes.length; // ✅ wrap around if past last
+        }
+
+        const newQuote = quotes[nextIndex];
+
+        await AsyncStorage.setItem(
+          QUOTE_KEY,
+          JSON.stringify({ date: today, index: nextIndex, quote: newQuote })
+        );
+
+        setQuote(newQuote);
+      } catch (error) {
+        console.error('Failed to fetch quote of the day:', error);
+      }
+    };
+
+    fetchQuote();
+  }, []);
 
   const itemWidth = windowWidth * 0.8;
   const sidePadding = (windowWidth - itemWidth) / 2;
@@ -294,8 +318,8 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
               rowGap: 10,
             }}
           >
-            <Text style={styles.quoteBodyText}>"{quote}"</Text>
-            <Text style={styles.quoteAuthorText}>- {author}</Text>
+            <Text style={styles.quoteBodyText}>"{quote.text}"</Text>
+            <Text style={styles.quoteAuthorText}>- {quote.author}</Text>
           </View>
         </View>
 
@@ -315,7 +339,6 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
             </Pressable>
           </View>
         </View>
-        {scrollViewOffsetPoints.length != nudgingItems.length && handleScrollViewSize()}
         <ScrollView
           horizontal
           snapToInterval={itemWidth + 20}
@@ -389,7 +412,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
             }}
           >
             <Text style={styles.performanceContainerHeadingText}>
-            Jouw bonsaiboom en prestaties
+              Jouw bonsaiboom en prestaties
             </Text>
           </View>
 
@@ -483,7 +506,6 @@ const styles = StyleSheet.create({
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'space-around',
     backgroundColor: '#f9f9f9',
   },
   greetingContainer: {
@@ -533,6 +555,12 @@ const styles = StyleSheet.create({
     width: 325,
     backgroundColor: '#829B7A',
     rowGap: 10,
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 1,
   },
   quoteHeadingText: {
     textAlign: 'center',
@@ -555,6 +583,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 25,
     padding: 20,
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 1,
   },
   nudgingTitleText: {
     ...Fonts.sofiaProBold[Platform.OS],
@@ -571,7 +605,7 @@ const styles = StyleSheet.create({
     ...Fonts.sofiaProRegular[Platform.OS],
   } as TextStyle,
   nudgingButton: {
-    borderRadius: 15,
+    borderRadius: 10,
     width: 200,
     height: 30,
     justifyContent: 'center',
@@ -592,7 +626,13 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 20,
     marginTop: 20,
-    marginBottom: 100,
+    marginBottom: 120,
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 1,
   },
   performanceDataContainer: {
     marginTop: 20,

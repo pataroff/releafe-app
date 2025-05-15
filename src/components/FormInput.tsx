@@ -16,6 +16,8 @@ export const FormInput = ({
   secureTextEntry = false,
   onPress,
   editable = true,
+  keyboardType = 'default',
+  maxLength,
 }: {
   label: string;
   value: string;
@@ -24,18 +26,22 @@ export const FormInput = ({
   secureTextEntry?: boolean;
   onPress?: () => void;
   editable?: boolean;
+  keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
+  maxLength?: number;
 }) => (
   <>
     <Text style={styles.textInputLabelText}>{label}</Text>
     <Pressable onPress={onPress} disabled={!onPress}>
       <TextInput
-        style={[styles.textInputField]}
+        style={styles.textInputField}
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
         autoCapitalize='none'
         editable={editable}
+        keyboardType={keyboardType}
+        maxLength={maxLength}
         pointerEvents={editable ? 'auto' : 'none'}
       />
     </Pressable>

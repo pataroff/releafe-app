@@ -6,10 +6,6 @@ import { IUserData, IAuthContext } from '../types';
 
 import Toast from 'react-native-toast-message';
 
-// TODO: Make usage of the `pb_auth` item in local storage!
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
-
 // Create context
 export const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
@@ -103,8 +99,9 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
     passwordConfirm,
     firstName,
     lastName,
-    telephoneNumber,
     birthDate,
+    gender,
+    postcode,
   }: IUserData) => {
     try {
       setIsLoading(true);
@@ -114,8 +111,9 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
         passwordConfirm,
         firstName: firstName.trim() ?? '',
         lastName: lastName.trim() ?? '',
-        telephoneNumber: telephoneNumber.trim() ?? '',
         birthDate,
+        gender,
+        postcode: postcode.trim() ?? '',
       });
 
       showToast('success', 'Account aangemaakt', 'Je kunt nu inloggen.');
@@ -209,36 +207,6 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
-  const changePhoneNumber = async (newPhoneNumber: string) => {
-    if (!pb.authStore.isValid || !user) {
-      showToast('error', 'Niet ingelogd', 'Log eerst in om door te gaan.');
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-
-      await pb.collection('users').update(user.id, {
-        telephoneNumber: newPhoneNumber.trim(),
-      });
-
-      showToast(
-        'success',
-        'Telefoonnummer gewijzigd',
-        'Je telefoonnummer is succesvol aangepast.'
-      );
-    } catch (error) {
-      console.error('Change phone number error: ', error);
-      showToast(
-        'error',
-        'Mislukt',
-        'Het wijzigen van het telefoonnummer is mislukt.'
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const changeBirthDate = async (newBirthDate: Date) => {
     if (!pb.authStore.isValid || !user) {
       showToast('error', 'Niet ingelogd', 'Log eerst in om door te gaan.');
@@ -264,6 +232,36 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
         'Mislukt',
         'Het wijzigen van de geboortedatum is mislukt.'
       );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateUser = async (updatedFields: Partial<IUserData>) => {
+    if (!pb.authStore.isValid || !user) {
+      showToast('error', 'Niet ingelogd', 'Log eerst in om door te gaan.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const updated = await pb
+        .collection('users')
+        .update(user.id, updatedFields);
+
+      console.log(updated);
+
+      setUser(updated); // update context with latest user data
+
+      showToast(
+        'success',
+        'Profiel bijgewerkt',
+        'Je gegevens zijn succesvol aangepast.'
+      );
+    } catch (error) {
+      console.error('Update user error:', error);
+      showToast('error', 'Mislukt', 'Het bijwerken van je profiel is mislukt.');
     } finally {
       setIsLoading(false);
     }
@@ -324,8 +322,8 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
         register,
         changePassword,
         changeEmail,
-        changePhoneNumber,
         changeBirthDate,
+        updateUser,
         deleteUser,
         isLoading,
         isLoggedIn,

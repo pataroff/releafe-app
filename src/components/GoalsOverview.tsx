@@ -151,9 +151,7 @@ export const GoalsOverview = () => {
                 justifyContent: 'space-between',
               }}
             >
-              <Text style={styles.progressBarText}>
-                Aantal keer behaald
-              </Text>
+              <Text style={styles.progressBarText}>Aantal keer behaald</Text>
 
               <Text style={styles.completedTimeframeText}>
                 {completedTimeframe}/{targetFrequency}
@@ -305,6 +303,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 25,
     padding: 20,
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 1,
   },
   overviewGoalsHeadingText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],

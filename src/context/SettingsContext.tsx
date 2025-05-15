@@ -21,7 +21,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { user } = useAuth();
   const [favouriteExercises, setFavouriteExercises] = useState<string[]>([]);
-  const [gamificationEnabled, setGamificationEnabled] = useState<boolean>(true);
 
   const updateFavouritesInDatabase = async (favouriteExercises: string[]) => {
     try {
@@ -34,25 +33,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const updateGamificationInDatabase = async (enabled: boolean) => {
-    try {
-      await pb.collection('users').update(user?.id, {
-        gamificationEnabled: enabled,
-      });
-    } catch (error) {
-      console.error('Error updating gamification setting:', error);
-    }
-  };
-
   return (
     <SettingsContext.Provider
       value={{
         favouriteExercises,
         setFavouriteExercises,
         updateFavouritesInDatabase,
-        gamificationEnabled,
-        setGamificationEnabled,
-        updateGamificationInDatabase,
       }}
     >
       {children}

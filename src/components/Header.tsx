@@ -44,12 +44,9 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
 
   const showBackButton = isNestedScreen && route?.name !== 'Toolkit1';
 
-  const showAvatar =
-    route?.name !== 'BonsaiTreeShop' && route?.name !== 'Settings1';
-
   return (
     <>
-      <StatusBar style='light' backgroundColor={backgroundColor} />
+      <StatusBar style='light' backgroundColor='transparent' />
       {/* SafeAreaView */}
       <View
         style={{
@@ -60,6 +57,12 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
           borderTopWidth: 0,
           borderBottomStartRadius: 30,
           borderBottomEndRadius: 30,
+          // Shadow Test
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.1,
+          shadowRadius: 1,
+          elevation: 1,
         }}
       >
         {/* Main Container */}
@@ -78,15 +81,15 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                columnGap: 10,
               }}
             >
               {/* Nested Routes */}
               {showBackButton && (
                 <Pressable onPress={() => navigation.goBack()}>
                   <MaterialCommunityIcons
+                    style={{ marginBottom: 5 }}
                     name='chevron-left-circle-outline'
-                    size={30}
+                    size={35}
                     color='white'
                   />
                 </Pressable>
@@ -99,13 +102,14 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                   style={{
                     height: 90,
                     width: 90,
+                    marginBottom: 10,
                   }}
                   resizeMode='contain'
                   source={require('../../assets/images/logo_releafe_white.png')}
                 />
               )}
             </View>
-            {showAvatar ? (
+            {!isNestedScreen && (
               <Pressable onPress={() => navigation.openDrawer()}>
                 <Avatar.Text
                   style={{
@@ -114,11 +118,13 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                     borderColor: 'white',
                   }}
                   color='white'
-                  size={65}
+                  size={60}
                   label={user?.firstName[0] + user?.lastName[0]}
                 />
               </Pressable>
-            ) : (
+            )}
+            {/* Bonsai Tree Shop */}
+            {route?.name === 'BonsaiTreeShop' && (
               <View
                 style={{
                   display: 'flex',
@@ -165,7 +171,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: 125,
+    height: 100,
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
@@ -180,15 +186,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 30,
     alignItems: 'center',
-    columnGap: 30,
     width: '100%',
   },
   headerTitle: {
     ...Fonts.sofiaProBold[Platform.OS],
-    fontSize: 28,
+    fontSize: 30,
     color: 'white',
-    textAlign: 'left',
-    textShadowColor: 'black',
-    textShadowRadius: 6,
   } as TextStyle,
 });

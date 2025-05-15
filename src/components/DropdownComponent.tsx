@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Platform,
+  TextStyle,
+} from 'react-native';
+
 import { Dropdown } from 'react-native-element-dropdown';
 
+import { Fonts } from '../styles';
 import { Category, IIcon } from '../types';
 
 const icons: IIcon[] = [
@@ -209,7 +218,8 @@ const styles = StyleSheet.create({
     zIndex: 999,
     paddingLeft: 12,
     fontSize: 14,
-  },
+    ...Fonts.sofiaProRegular[Platform.OS],
+  } as TextStyle,
   icon: {
     position: 'absolute',
     right: -35,
