@@ -49,7 +49,7 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
       description: '',
     },
     {
-      title: 'Releafe-Puten',
+      title: 'Releafe-Punten',
       description:
         'In de app kun je op verschillende manieren Releafe-punten verdienen. Bijvoorbeeld door je dagboek in te vullen, een zorg anders te bekijken of een persoonlijk doel te behalen.',
     },

@@ -26,6 +26,8 @@ import { Avatar } from 'react-native-paper';
 
 import { InformationModal } from './InformationModal';
 import { BonsaiInformationModal } from './BonsaiInformationModal';
+import { CloseModal } from './CloseModal';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -38,6 +40,8 @@ export const CustomDrawerContent: React.FC = (props) => {
 
   const [isInformationModalVisible, setIsInformationModalVisible] =
     useState<boolean>(false);
+  
+  const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
   const currentRoute = state.routes[state.index];
   const nestedRoute = currentRoute.state?.routes?.[currentRoute.state.index];
@@ -72,7 +76,7 @@ export const CustomDrawerContent: React.FC = (props) => {
       label: 'Uitloggen',
       icon: require('../../assets/images/drawer_icons/drawer_sign_out_icon.png'),
       // @TODO: In case of a component clear up, the `signOut` function would need to be passed as a param as it is destructured from the `useContext` hook!
-      action: () => signOut(),
+      action: () => setCloseModalVisible(true),
     },
   ];
 
@@ -115,6 +119,17 @@ export const CustomDrawerContent: React.FC = (props) => {
           setModalInformationVisible={setIsInformationModalVisible}
         />
       )}
+      <SafeAreaView>
+        <CloseModal
+          closeModalVisible={closeModalVisible}
+          setCloseModalVisible={setCloseModalVisible}
+          title='Uitloggen'
+          description={'Je staat op het punt om uit te loggen.\nWeet je het zeker?'}
+          denyText='Nee, annuleren'
+          confirmText='Ja, ik wil uitloggen'
+          handleClose={signOut}
+        />
+      </SafeAreaView>
       <View style={{ flex: 1 }}>
         <View style={styles.headersContainer}>
           <View
