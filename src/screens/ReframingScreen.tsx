@@ -66,9 +66,10 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
           <Text style={styles.headersTitleText}>Reframen</Text>
           <Text style={styles.headersDescriptionText}>
             Reframen helpt je om anders naar je zorgen te kijken.
-            {'\n \n'} 
-            Je leert stap voor stap om negatieve gedachten om te zetten in positievere of realistischere gedachten. 
-            Zo krijg je meer grip op je gevoelens en voel je je rustiger en zekerder.
+            {'\n \n'}
+            Je leert stap voor stap om negatieve gedachten om te zetten in
+            positievere of realistischere gedachten. Zo krijg je meer grip op je
+            gevoelens en voel je je rustiger en zekerder.
           </Text>
           <Text style={styles.headersHeadingText}>Starten</Text>
           <Text style={styles.headersDescriptionText}>
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   headersDescriptionText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
     marginTop: 5,
   } as TextStyle,
   h3Text: {
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   } as TextStyle,
   bodyText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   ctaButton: {

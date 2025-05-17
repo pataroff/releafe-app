@@ -87,6 +87,7 @@ export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
       <StatusBar />
       <ScrollView
         bounces={false}
+        showsVerticalScrollIndicator={false}
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingHorizontal: 25,
-    marginBottom: 100,
+    marginBottom: 120,
   },
   toolkitToolComponent: {
     marginTop: 20,

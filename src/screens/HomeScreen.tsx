@@ -345,12 +345,10 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
           decelerationRate='fast'
           snapToAlignment='start'
           showsHorizontalScrollIndicator={false}
-          style={{
-            marginVertical: 20,
-          }}
           contentContainerStyle={{
             paddingHorizontal: sidePadding,
             columnGap: 20,
+            marginVertical: 20,
           }}
           onScroll={handleScroll}
           scrollEventThrottle={16}
@@ -510,7 +508,7 @@ const styles = StyleSheet.create({
   },
   greetingContainer: {
     alignSelf: 'flex-start',
-    marginTop: 20,
+    marginTop: 30,
     rowGap: 10,
     paddingHorizontal: 30,
   },
@@ -569,12 +567,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
   } as TextStyle,
   quoteBodyText: {
-    ...Fonts.sofiaProMediumItalic[Platform.OS],
-    fontStyle: 'italic',
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     color: 'white',
   } as TextStyle,
   quoteAuthorText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     color: 'white',
   } as TextStyle,
   nudgingItemContainer: {
