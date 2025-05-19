@@ -13,20 +13,16 @@ import { DiaryProvider } from './src/context/DiaryContext';
 import { WorryProvider } from './src/context/WorryContext';
 import { NoteProvider } from './src/context/NoteContext';
 import { GoalProvider } from './src/context/GoalContext';
+import { NotificationProvider } from './src/context/NotificationContext';
+import { GamificationProvider } from './src/context/GamificationContext';
 
 import AppNav from './src/navigation/AppNav';
 
 import Toast from 'react-native-toast-message';
 
-import { NotificationProvider } from './src/context/NotificationContext';
-import * as Notifications from 'expo-notifications';
-import { BonsaiProvider } from './src/context/BonsaiContext';
-
 import { NavigationContainer } from '@react-navigation/native';
 
-// import { WithSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
-
-// ExponentPushToken[6JjBi7BE3q5ieVgKH4Fh3q]
+import * as Notifications from 'expo-notifications';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -59,7 +55,7 @@ export default function App() {
           <PaperProvider>
             <NotificationProvider>
               <AuthProvider>
-                <BonsaiProvider>
+                <GamificationProvider>
                   <SettingsProvider>
                     <DiaryProvider>
                       <WorryProvider>
@@ -71,7 +67,7 @@ export default function App() {
                       </WorryProvider>
                     </DiaryProvider>
                   </SettingsProvider>
-                </BonsaiProvider>
+                </GamificationProvider>
               </AuthProvider>
             </NotificationProvider>
           </PaperProvider>

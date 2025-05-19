@@ -16,14 +16,17 @@ interface TreeState {
   selectedFlowerIndex: number | null;
 }
 
-interface BonsaiContextType {
+interface GamificationContextType {
   points: number;
   unlockedItems: string[];
+  unlockedAchievements: string[];
   treeState: TreeState;
   setPoints: React.Dispatch<SetStateAction<number>>;
   setUnlockedItems: React.Dispatch<SetStateAction<string[]>>;
+  setUnlockedAchievemnts: React.Dispatch<SetStateAction<string[]>>;
   setTreeState: React.Dispatch<SetStateAction<TreeState>>;
   unlockItem: (itemId: string, cost: number) => void;
+  unlockAchievement: (achievementId: string) => void;
   addPoints: (amount: number) => void;
   updateTreeStateInDatabase: (
     selectedBranchIndex: number | null,
@@ -32,16 +35,20 @@ interface BonsaiContextType {
   ) => Promise<void>;
 }
 
-const BonsaiContext = createContext<BonsaiContextType | undefined>(undefined);
+const GamificationContext = createContext<GamificationContextType | undefined>(
+  undefined
+);
 
 export const useGamification = () => {
-  const context = useContext(BonsaiContext);
+  const context = useContext(GamificationContext);
   if (!context)
-    throw new Error('useGamification must be used within a BonsaiProvider');
+    throw new Error(
+      'useGamification must be used within a GamificationProvider'
+    );
   return context;
 };
 
-export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
+export const GamificationProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
 
   useEffect(() => {
@@ -53,6 +60,9 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
         const unlockedItems = userRecord?.unlockedItems
           ? userRecord.unlockedItems
           : [];
+        const unlockedAchievements = userRecord?.unlockedAchievements
+          ? userRecord.unlockedAchievements
+          : [];
         const treeState = userRecord?.treeState
           ? userRecord?.treeState
           : {
@@ -63,6 +73,7 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
 
         setPoints(points);
         setUnlockedItems(unlockedItems);
+        setUnlockedAchievemnts(unlockedAchievements);
         setTreeState(treeState);
       } catch (error) {
         console.error('Error fetching gamification data:', error);
@@ -74,6 +85,7 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
 
   const [points, setPoints] = useState<number>(0);
   const [unlockedItems, setUnlockedItems] = useState<string[]>([]);
+  const [unlockedAchievements, setUnlockedAchievemnts] = useState<string[]>([]);
   const [treeState, setTreeState] = useState<TreeState>({
     selectedBranchIndex: null,
     selectedLeafIndex: null,
@@ -105,6 +117,23 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
       setUnlockedItems(previousUnlockedItems);
 
       // @TODO Optionally: show error to user that the action has failed!
+    }
+  };
+
+  const unlockAchievement = async (achievementId: string) => {
+    const previousUnlockedAchievements = [...unlockedAchievements];
+
+    const updatedUnlockedAchievements = [
+      achievementId,
+      ...previousUnlockedAchievements,
+    ];
+
+    try {
+      await updateUnlockedAchievemntsInDatabase(updatedUnlockedAchievements);
+    } catch (error) {
+      console.error('Error unoocking achievement:', error);
+
+      setUnlockedAchievemnts(previousUnlockedAchievements);
     }
   };
 
@@ -147,6 +176,17 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const updateUnlockedAchievemntsInDatabase = async (
+    newUnlockedAchievements: string[]
+  ) => {
+    const newUnlockedAchievementsJSON = JSON.stringify(newUnlockedAchievements);
+    const userRecord = await pb.collection('users').getOne(user?.id);
+
+    await pb.collection('user').update(userRecord.id, {
+      unlockedAchievements: newUnlockedAchievementsJSON,
+    });
+  };
+
   const updateTreeStateInDatabase = async (
     selectedBranchIndex: number | null,
     selectedLeafIndex: number | null,
@@ -170,20 +210,23 @@ export const BonsaiProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <BonsaiContext.Provider
+    <GamificationContext.Provider
       value={{
         points,
         unlockedItems,
+        unlockedAchievements,
         treeState,
         setTreeState,
         setPoints,
         setUnlockedItems,
+        setUnlockedAchievemnts,
         unlockItem,
+        unlockAchievement,
         addPoints,
         updateTreeStateInDatabase,
       }}
     >
       {children}
-    </BonsaiContext.Provider>
+    </GamificationContext.Provider>
   );
 };

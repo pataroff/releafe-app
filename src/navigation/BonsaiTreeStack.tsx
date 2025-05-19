@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { BonsaiTreeScreen } from '../screens/BonsaiTreeScreen';
 import { BonsaiTreeShopScreen } from '../screens/BonsaiTreeShopScreen';
+import { AchievementsScreen } from '../screens/AchievementsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,11 @@ export const BonsaiTreeStack: React.FC = () => {
       <Stack.Screen
         name='BonsaiTreeShop'
         component={BonsaiTreeShopScreen}
+        initialParams={{ bonsaiTreeStackScreen: true }}
+      />
+      <Stack.Screen
+        name='Achievements'
+        component={AchievementsScreen}
         initialParams={{ bonsaiTreeStackScreen: true }}
       />
     </Stack.Navigator>

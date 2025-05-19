@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
@@ -27,7 +27,7 @@ import {
   flowerImages,
 } from '../utils/bonsai';
 
-import { useGamification } from '../context/BonsaiContext';
+import { useGamification } from '../context/GamificationContext';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
@@ -38,8 +38,13 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
   const title = 'Bonsaiboom';
   const navigation = useNavigation();
 
-  const { points, unlockedItems, treeState, updateTreeStateInDatabase } =
-    useGamification();
+  const {
+    points,
+    unlockedItems,
+    treeState,
+    setTreeState,
+    updateTreeStateInDatabase,
+  } = useGamification();
 
   const [showBranchesOptions, setShowBranchesOptions] =
     useState<boolean>(false);
@@ -72,20 +77,24 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
   }, [treeState]);
 
   // 2. Save `treeState` to database when user leaves the screen
-  useFocusEffect(
-    useCallback(() => {
-      // On focus: do nothing
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      // Save `treeState` locally when the screen loses focus
+      setTreeState({
+        selectedBranchIndex,
+        selectedLeafIndex,
+        selectedFlowerIndex,
+      });
+      // Save `treeState` to database when the screen loses focus
+      updateTreeStateInDatabase(
+        selectedBranchIndex,
+        selectedLeafIndex,
+        selectedFlowerIndex
+      );
+    });
 
-      return () => {
-        // On blur: save treeState
-        updateTreeStateInDatabase(
-          selectedBranchIndex,
-          selectedLeafIndex,
-          selectedFlowerIndex
-        );
-      };
-    }, [selectedBranchIndex, selectedLeafIndex, selectedFlowerIndex])
-  );
+    return unsubscribe; // Clean up the listener
+  }, [navigation, selectedBranchIndex, selectedLeafIndex, selectedFlowerIndex]);
 
   const handleBonsaiStateDropdown = (index: number) => {
     switch (index) {

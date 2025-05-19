@@ -81,9 +81,7 @@ export const GoalsOverview = () => {
           columnGap: 10,
         }}
       >
-        <Text style={styles.overviewGoalsHeadingText}>
-          Overzicht persoonlijke doelen
-        </Text>
+        <Text style={styles.overviewGoalsHeadingText}>Overzicht doelen</Text>
       </View>
 
       {/* Goal Headers Container */}
@@ -311,8 +309,9 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   overviewGoalsHeadingText: {
-    ...Fonts.sofiaProSemiBold[Platform.OS],
-    fontSize: 16,
+    marginTop: 10,
+    ...Fonts.sofiaProMedium[Platform.OS],
+    fontSize: 20,
   } as TextStyle,
   h1Text: {
     ...Fonts.sofiaProSemiBold[Platform.OS],

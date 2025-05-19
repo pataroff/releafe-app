@@ -1,3 +1,21 @@
+export const performanceBonsaiState = [
+  {
+    label: 'Takken',
+    icon: require('../../assets/images/bonsai_tree_icons/branches_icon.png'),
+    key: 'selectedBranchIndex',
+  },
+  {
+    label: 'Bladeren',
+    icon: require('../../assets/images/bonsai_tree_icons/leaves_icon.png'),
+    key: 'selectedLeafIndex',
+  },
+  {
+    label: 'Bloesems',
+    icon: require('../../assets/images/bonsai_tree_icons/blossom_icon.png'),
+    key: 'selectedFlowerIndex',
+  },
+];
+
 export const stateIcons = [
   require('../../assets/images/bonsai_tree_icons/branches_icon.png'),
   require('../../assets/images/bonsai_tree_icons/leaves_icon.png'),

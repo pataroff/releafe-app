@@ -27,6 +27,7 @@ interface CloseModalProps {
   denyText: string;
   confirmText: string;
   closeButtonDisabled?: boolean;
+  isSpecialModal?: boolean;
 }
 
 export const CloseModal: React.FC<CloseModalProps> = ({
@@ -41,6 +42,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
   denyText,
   confirmText,
   closeButtonDisabled = false,
+  isSpecialModal = false,
 }) => {
   const handleCloseModal = () => {
     setCloseModalVisible(!closeModalVisible);
@@ -80,44 +82,51 @@ export const CloseModal: React.FC<CloseModalProps> = ({
             style={{
               display: 'flex',
               flexDirection: 'row',
-              justifyContent: 'space-between',
             }}
           >
             <View style={{ rowGap: 20 }}>
-              <Text style={styles.title}>{title}</Text>
+              <View
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={styles.title}>{title}</Text>
+                <Pressable
+                  onPress={() => setCloseModalVisible(!closeModalVisible)}
+                >
+                  <Feather name='x-circle' size={24} color='gray' />
+                </Pressable>
+              </View>
               <Text style={styles.description}>{description}</Text>
             </View>
-
-            {route?.name == 'Diary1' && (
-              <Pressable
-                onPress={() =>
-                  // @TODO: This could b made less explicit!
-                  route?.name === 'Diary1'
-                    ? handleDiaryCloseModal(1) // Don't Save and Close
-                    : setCloseModalVisible(!closeModalVisible)
-                }
-              >
-                <Feather name='x-circle' size={24} color='gray' />
-              </Pressable>
-            )}
           </View>
 
           <View style={{ rowGap: 15 }}>
             <Pressable
-              disabled = {closeButtonDisabled}
-              style={styles.confirmButton}
+              disabled={closeButtonDisabled}
+              style={
+                isSpecialModal
+                  ? [styles.confirmButton, { backgroundColor: '#eee' }]
+                  : styles.confirmButton
+              }
               onPress={() =>
                 route?.name === 'Diary1'
                   ? handleDiaryCloseModal(0) // Save and Close
                   : setCloseModalVisible(!closeModalVisible)
               }
             >
-              <Text style={styles.confirmText}>
-                {denyText}
-              </Text>
+              <Text style={styles.confirmText}>{denyText}</Text>
             </Pressable>
             <Pressable
-              style={styles.cancelButton}
+              style={
+                isSpecialModal
+                  ? [styles.cancelButton, { backgroundColor: '#F08080' }]
+                  : styles.cancelButton
+              }
               onPress={() =>
                 handleClose !== undefined
                   ? route?.name === 'Diary1'
@@ -126,7 +135,13 @@ export const CloseModal: React.FC<CloseModalProps> = ({
                   : handleParentCloseModal()
               }
             >
-              <Text style={styles.cancelText}>
+              <Text
+                style={
+                  isSpecialModal
+                    ? [styles.cancelText, { color: '#eee' }]
+                    : styles.cancelText
+                }
+              >
                 {confirmText}
               </Text>
             </Pressable>
@@ -183,7 +198,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   cancelText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
     color: '#666',
   } as TextStyle,
