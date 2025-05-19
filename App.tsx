@@ -45,6 +45,7 @@ export default function App() {
     'SofiaPro-MediumItalic': require('./assets/fonts/SofiaProMedium-Italic.ttf'),
     'SofiaPro-SemiBold': require('./assets/fonts/SofiaProSemiBold.ttf'),
     'SofiaPro-Bold': require('./assets/fonts/SofiaProBold.ttf'),
+    'SofiaPro-Black': require('./assets/fonts/SofiaProBlack.ttf'),
   });
 
   if (!fontsLoaded && !fontError) {

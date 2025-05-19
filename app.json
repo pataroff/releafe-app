@@ -45,7 +45,8 @@
             "./assets/fonts/SofiaProMedium.ttf",
             "./assets/fonts/SofiaProMedium-Italic.ttf",
             "./assets/fonts/SofiaProSemiBold.ttf",
-            "./assets/fonts/SofiaProBold.ttf"
+            "./assets/fonts/SofiaProBold.ttf",
+            "./assets/fonts/SofiaProBlack.ttf"
           ]
         }
       ],

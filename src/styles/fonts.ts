@@ -138,3 +138,23 @@ export const sofiaProBold = {
     fontWeight: '700',
   },
 };
+export const sofiaProBlack = {
+  ios: {
+    fontFamily: 'SofiaPro-Black',
+  },
+  android: {
+    fontFamily: 'SofiaPro-Black',
+  },
+  web: {
+    fontFamily: 'SofiaPro-Black',
+    fontWeight: '800',
+  },
+  windows: {
+    fontFamily: 'SofiaPro-Black',
+    fontWeight: '800',
+  },
+  macos: {
+    fontFamily: 'SofiaPro-Black',
+    fontWeight: '800',
+  },
+};
