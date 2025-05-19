@@ -18,7 +18,7 @@ import { Exercise } from '../types';
 
 import Feather from '@expo/vector-icons/Feather';
 
-import { useGamification } from '../context/BonsaiContext';
+import { useGamification } from '../context/GamificationContext';
 
 interface ExercisesListItemExpandedModalProps {
   modalExercisesListItemExpandedVisible: boolean;

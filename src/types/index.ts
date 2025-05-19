@@ -303,3 +303,18 @@ export interface INoteContext {
   ) => void;
   resetNoteEntryFields: () => void;
 }
+
+export type Achievement = {
+  id: string;
+  icon: ImageSourcePropType;
+  points: number;
+  description: string;
+};
+
+export type AchievementGroup = {
+  title: string;
+  description: string;
+  achievements: Achievement[];
+};
+
+export type SelectedAchievement = Achievement & { parentTitle: string };

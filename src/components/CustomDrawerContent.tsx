@@ -40,7 +40,7 @@ export const CustomDrawerContent: React.FC = (props) => {
 
   const [isInformationModalVisible, setIsInformationModalVisible] =
     useState<boolean>(false);
-  
+
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
   const currentRoute = state.routes[state.index];
@@ -60,6 +60,18 @@ export const CustomDrawerContent: React.FC = (props) => {
       icon: require('../../assets/images/drawer_icons/drawer_bonsai_tree_icon.png'),
       action: () =>
         navigation.navigate('BonsaiTree', { screen: 'BonsaiTree1' }),
+    },
+    {
+      label: 'Puntenwinkel',
+      icon: require('../../assets/images/drawer_icons/drawer_bonsai_shop_icon.png'),
+      action: () =>
+        navigation.navigate('BonsaiTree', { screen: 'BonsaiTreeShop' }),
+    },
+    {
+      label: 'Prestaties',
+      icon: require('../../assets/images/drawer_icons/drawer_achievements_icon.png'),
+      action: () =>
+        navigation.navigate('BonsaiTree', { screen: 'Achievements' }),
     },
   ];
 
@@ -119,17 +131,18 @@ export const CustomDrawerContent: React.FC = (props) => {
           setModalInformationVisible={setIsInformationModalVisible}
         />
       )}
-      <SafeAreaView>
-        <CloseModal
-          closeModalVisible={closeModalVisible}
-          setCloseModalVisible={setCloseModalVisible}
-          title='Uitloggen'
-          description={'Je staat op het punt om uit te loggen.\nWeet je het zeker?'}
-          denyText='Nee, annuleren'
-          confirmText='Ja, ik wil uitloggen'
-          handleClose={signOut}
-        />
-      </SafeAreaView>
+      <CloseModal
+        closeModalVisible={closeModalVisible}
+        setCloseModalVisible={setCloseModalVisible}
+        title='Uitloggen'
+        description={
+          'Je staat op het punt om uit te loggen.\nWeet je het zeker?'
+        }
+        denyText='Nee, annuleren'
+        confirmText='Ja, ik wil uitloggen'
+        handleClose={signOut}
+        isSpecialModal={true}
+      />
       <View style={{ flex: 1 }}>
         <View style={styles.headersContainer}>
           <View

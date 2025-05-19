@@ -23,12 +23,14 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Header } from '../components/Header';
 import { GoalsOverview } from '../components/GoalsOverview';
+import { PerformanceOverview } from '../components/PerformanceOverview';
 
 import { useAuth } from '../context/AuthContext';
 import { useGoal } from '../context/GoalContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { debugAsyncStorage } from '../utils/registerForPushNotificationsAsync';
+import { useGamification } from '../context/GamificationContext';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -399,98 +401,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
         {/* Overviw Goals Container */}
         {goalEntries.length > 0 && <GoalsOverview />}
 
-        {/* Performance Container */}
-        <View style={styles.performanceContainer}>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              columnGap: 10,
-            }}
-          >
-            <Text style={styles.performanceContainerHeadingText}>
-              Jouw bonsaiboom en prestaties
-            </Text>
-          </View>
-
-          {/* Performance Data Container */}
-          <View style={styles.performanceDataContainer}>
-            <Text style={styles.performanceHeadingText}>
-              Jouw bonsaiboom heeft deze week
-            </Text>
-
-            {/* Bonsai Tree Data Container */}
-            <View style={styles.bonsaiTreeDataContainer}>
-              {/* Bonsai Tree Data Item 1 */}
-              <View style={styles.bonsaiTreeDataItem}>
-                <Image
-                  style={{ width: 35, height: 45 }}
-                  resizeMode='contain'
-                  source={require('../../assets/images/leaf_icon.png')}
-                />
-                <Text style={styles.performanceBodyText}>
-                  Meerdere, nieuwe bladeren gekregen
-                </Text>
-              </View>
-
-              {/* Bonsai Tree Data Item 2 */}
-              <View style={styles.bonsaiTreeDataItem}>
-                <Image
-                  style={{ width: 35, height: 45 }}
-                  resizeMode='contain'
-                  source={require('../../assets/images/blossom_icon.png')}
-                />
-                <Text style={styles.performanceBodyText}>
-                  Haar eerste bloesems gekregen
-                </Text>
-              </View>
-            </View>
-
-            <Text style={styles.performanceHeadingText}>
-              Je hebt deze badges behaald
-            </Text>
-
-            {/* Badges Container */}
-            <View style={styles.badgesContainer}>
-              {/* Badge Item 1 */}
-              <View style={styles.badgeItem}>
-                <Image
-                  style={{ width: 45, height: 45 }}
-                  source={require('../../assets/images/badge_placeholder_icon.png')}
-                />
-                <Text style={styles.performanceBodyText}>Badge 1</Text>
-              </View>
-
-              {/* Badge Item 2 */}
-              <View style={styles.badgeItem}>
-                <Image
-                  style={{ width: 45, height: 45 }}
-                  source={require('../../assets/images/badge_placeholder_icon.png')}
-                />
-                <Text style={styles.performanceBodyText}>Badge 2</Text>
-              </View>
-
-              {/* Badge Item 3 */}
-              <View style={styles.badgeItem}>
-                <Image
-                  style={{ width: 45, height: 45 }}
-                  source={require('../../assets/images/badge_placeholder_icon.png')}
-                />
-                <Text style={styles.performanceBodyText}>Badge 3</Text>
-              </View>
-
-              {/* Badge Item 4 */}
-              <View style={styles.badgeItem}>
-                <Image
-                  style={{ width: 45, height: 45 }}
-                  source={require('../../assets/images/badge_placeholder_icon.png')}
-                />
-                <Text style={styles.performanceBodyText}>Badge 4</Text>
-              </View>
-            </View>
-          </View>
-        </View>
+        <PerformanceOverview />
       </ScrollView>
     </>
   );
@@ -616,60 +527,6 @@ const styles = StyleSheet.create({
     ...Fonts.sofiaProSemiBold[Platform.OS],
     textTransform: 'uppercase',
   } as TextStyle,
-  performanceContainer: {
-    height: 330,
-    width: 325,
-    backgroundColor: 'white',
-    borderRadius: 25,
-    padding: 20,
-    marginTop: 20,
-    marginBottom: 120,
-    // Shadow Test
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  performanceDataContainer: {
-    marginTop: 20,
-    rowGap: 15,
-  },
-  bonsaiTreeDataContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  bonsaiTreeDataItem: {
-    width: 125,
-    alignItems: 'center',
-    rowGap: 10,
-  },
-  performanceContainerHeadingText: {
-    ...Fonts.sofiaProSemiBold[Platform.OS],
-    fontSize: 16,
-  } as TextStyle,
-  performanceHeadingText: {
-    ...Fonts.sofiaProMedium[Platform.OS],
-    fontSize: 13,
-  } as TextStyle,
-  performanceBodyText: {
-    textAlign: 'center',
-    ...Fonts.sofiaProRegular[Platform.OS],
-    fontSize: 12,
-  } as TextStyle,
-  badgesContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    columnGap: 20,
-    justifyContent: 'center',
-  },
-  badgeItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    rowGap: 5,
-  },
   tipsHeaderContainer: {
     alignSelf: 'flex-start',
     justifyContent: 'center',

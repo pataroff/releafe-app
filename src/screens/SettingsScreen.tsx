@@ -98,15 +98,16 @@ export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
     const unsubscribe = navigation.addListener('blur', () => {
       const updatedFields: Partial<IUserData> = {};
 
-      if (user?.firstName !== firstName) updatedFields.firstName = firstName;
-      if (user?.lastName !== lastName) updatedFields.lastName = lastName;
+      if (user?.firstName !== firstName)
+        updatedFields.firstName = firstName.trim();
+      if (user?.lastName !== lastName) updatedFields.lastName = lastName.trim();
       if (
         new Date(user?.birthDate).getTime() !== new Date(birthDate!).getTime()
       )
         updatedFields.birthDate = birthDate;
 
       if (user?.gender !== gender) updatedFields.gender = gender;
-      if (user?.postcode !== postcode) updatedFields.postcode = postcode;
+      if (user?.postcode !== postcode) updatedFields.postcode = postcode.trim();
 
       if (Object.keys(updatedFields).length > 0) {
         updateUser(updatedFields);

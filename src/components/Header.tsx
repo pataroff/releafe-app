@@ -19,7 +19,7 @@ import { Avatar } from 'react-native-paper';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { useAuth } from '../context/AuthContext';
-import { useGamification } from '../context/BonsaiContext';
+import { useGamification } from '../context/GamificationContext';
 
 export const Header: React.FC<{ title: string; route?: any }> = ({
   title,

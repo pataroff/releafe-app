@@ -33,7 +33,7 @@ import { getCategory, getPriorityColor, reframingSteps } from '../utils/worry';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useGamification } from '../context/BonsaiContext';
+import { useGamification } from '../context/GamificationContext';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -344,18 +344,22 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                       <Text style={styles.headersDescriptionText}>
                         {reframingSteps[reframingModalIndex].description}
                       </Text>
-                    )
-                      :
-                      (
-                        <>
-                          <Text style={{ ...Fonts.sofiaProSemiBold[Platform.OS] } as TextStyle}>
-                            {reframingSteps[reframingModalIndex].question}
-                          </Text>
-                          <Text style={styles.headersDescriptionText}>
-                            {reframingSteps[reframingModalIndex].instruction}
-                          </Text>
-                        </>
-                      )}
+                    ) : (
+                      <>
+                        <Text
+                          style={
+                            {
+                              ...Fonts.sofiaProSemiBold[Platform.OS],
+                            } as TextStyle
+                          }
+                        >
+                          {reframingSteps[reframingModalIndex].question}
+                        </Text>
+                        <Text style={styles.headersDescriptionText}>
+                          {reframingSteps[reframingModalIndex].instruction}
+                        </Text>
+                      </>
+                    )}
                   </View>
                 )}
 
@@ -445,7 +449,6 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         rowGap: 10,
                       }}
                     >
-
                       <Text
                         style={
                           {
@@ -707,8 +710,11 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         <View
                           style={
                             reframingModalIndex === 6
-                              ? { flexDirection: 'column-reverse', width: windowWidth - 2 *40 }
-                              : {width: windowWidth - 2 * 40}
+                              ? {
+                                  flexDirection: 'column-reverse',
+                                  width: windowWidth - 2 * 40,
+                                }
+                              : { width: windowWidth - 2 * 40 }
                           }
                         >
                           {/* Dynamic TextInput Component */}

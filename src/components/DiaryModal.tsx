@@ -15,7 +15,7 @@ import {
 
 import { DiaryContext } from '../context/DiaryContext';
 import { useGoal } from '../context/GoalContext';
-import { useGamification } from '../context/BonsaiContext';
+import { useGamification } from '../context/GamificationContext';
 
 import { useSharedValue } from 'react-native-reanimated';
 import { Slider } from 'react-native-awesome-slider';
@@ -153,8 +153,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const handlePrevious = () => {
-    if(!loading)
-    {
+    if (!loading) {
       setLoading(true);
       // Update slider values (0 to 5, including)
       if (diaryModalIndex != 0 && diaryModalIndex <= sliderSteps.length - 1) {
@@ -180,8 +179,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   };
 
   const handleNext = () => {
-    if(!loading)
-    {
+    if (!loading) {
       setLoading(true);
       // Update slider values (0 to 5, excluding)
       if (diaryModalIndex < sliderSteps.length) {
@@ -210,8 +208,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
         setProgressValue((prev) => Math.min(1, prev + progressStep));
       }
       setLoading(false);
-    }
-    else console.log("loading");
+    } else console.log('loading');
   };
 
   const resetLocalState = () => {
