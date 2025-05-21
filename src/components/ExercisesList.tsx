@@ -64,11 +64,7 @@ export const ExercisesList: React.FC<ExercisesListProps> = ({
         : // Handle single category
           (exercisesData as [ExerciseCategory, Exercise[]][]).map(
             ([categoryKey, exercises], index) => {
-              console.log('Category: ' + category.toUpperCase());
-              console.log('CategoryKey: ' + categoryKey);
-              console.log('---');
               if (categoryKey == category.toUpperCase()) {
-                console.log('------Match-----');
                 exercises =
                   categoryExercises.get(getExerciseCategory(category)) || [];
                 const filtered = filteredExercises(exercises);

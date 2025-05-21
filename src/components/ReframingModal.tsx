@@ -260,6 +260,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       type,
       text1: title,
       text2: message,
+      props: styles.toastStyle,
     });
   };
 
@@ -331,12 +332,16 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
                       {/* Edit Description (WorryBox) */}
                       {reframingModalIndex == 0 &&
-                        route.name === 'WorryBox' && (
+                        route.name === 'WorryBox' ? (
                           <Text style={styles.headersDescriptionText}>
                             De situatie is automatisch overgenomen uit je zorg.
                             Je kunt deze hier indien nodig aanpassen.
                           </Text>
-                        )}
+                        ):(
+                        <Text style = {styles.headersDescriptionText}>
+                          Na deze oefening krijg je een bericht aan jezelf. 
+                          Dit bericht wordt opgeslagen in je lijst met berichten.
+                        </Text>)}
                     </View>
 
                     {/* Description */}
@@ -344,7 +349,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                       <Text style={styles.headersDescriptionText}>
                         {reframingSteps[reframingModalIndex].description}
                       </Text>
-                    ) : (
+                    ) : reframingModalIndex !=0 &&(
                       <>
                         <Text
                           style={
@@ -1037,7 +1042,6 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
               </View>
             </View>
           </View>
-          <Toast />
         </View>
       </GestureHandlerRootView>
     </Modal>
@@ -1045,6 +1049,10 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 };
 
 const styles = StyleSheet.create({
+  toastStyle: {
+    position: 'absolute',
+    bottom: 1
+  },
   modalWrapper: {
     flex: 1,
     justifyContent: 'flex-end',
