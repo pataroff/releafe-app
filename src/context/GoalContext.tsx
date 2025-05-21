@@ -237,29 +237,31 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
 
   const refreshGoalTimeframes = async () => {
     const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
     const todayUTC = today.toISOString().split('T')[0];
 
     for (const goal of goalEntries) {
-      const endDateUTC = goal.endDate
-        ? new Date(goal.endDate).toISOString().split('T')[0]
-        : null;
+      if (!goal.endDate) continue;
 
-      if (endDateUTC && endDateUTC < todayUTC) {
-        const newStartDate = new Date();
-        const newEndDate = new Date(newStartDate);
+      const endDate = new Date(goal.endDate);
+      endDate.setUTCHours(0, 0, 0, 0);
+      const endDateUTC = endDate.toISOString().split('T')[0];
 
-        switch (goal.timeframe) {
-          case Timeframe.Daily:
-            newEndDate.setUTCDate(newEndDate.getUTCDate() + 1);
-            break;
-          case Timeframe.Weekly:
-            newEndDate.setUTCDate(newEndDate.getUTCDate() + 7);
-            break;
-          case Timeframe.Monthly:
-            newEndDate.setUTCDate(newEndDate.getUTCDate() + 30);
-            break;
-          default:
-            newEndDate.setUTCDate(newEndDate.getUTCDate() + 1);
+      if (endDateUTC < todayUTC) {
+        let newStartDate = new Date(endDate);
+        let newEndDate = new Date(newStartDate);
+
+        const incrementDays =
+          goal.timeframe === Timeframe.Weekly
+            ? 7
+            : goal.timeframe === Timeframe.Monthly
+            ? 30
+            : 1;
+
+        // Keep incrementing until endDate reaches or passes today
+        while (newEndDate <= today) {
+          newStartDate = new Date(newEndDate);
+          newEndDate.setUTCDate(newEndDate.getUTCDate() + incrementDays);
         }
 
         const updatedGoal = {
