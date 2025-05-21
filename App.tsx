@@ -1,6 +1,5 @@
 import './gesture-handler';
 
-import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';

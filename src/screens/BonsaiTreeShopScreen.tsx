@@ -20,6 +20,7 @@ import { PurchaseModal } from '../components/PurchaseModal';
 import { bonsaiShopCategories } from '../utils/bonsai';
 import { useGamification } from '../context/GamificationContext';
 import Toast from 'react-native-toast-message';
+import { NotEnoughPointsModal } from '../components/NotEnoughPointsModal';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -27,7 +28,10 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
   const title = '';
   const { points, unlockedItems, unlockItem } = useGamification();
 
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [purchaseModalVisible, setPurchaseModalVisible] =
+    useState<boolean>(false);
+  const [notEnoughPointsModalVisible, setNotEnoughPointsModalVisible] =
+    useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<{
     itemId: string;
     price: number;
@@ -40,7 +44,7 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
     }
 
     setSelectedItem({ itemId, price });
-    setModalVisible(true);
+    setPurchaseModalVisible(true);
   };
   const showToast = (
     type: 'error' | 'success' | 'info',
@@ -56,27 +60,20 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
   };
 
   const handleConfirmPurchase = () => {
-    if (!selectedItem) return; // @TODO Is this check necessary?
+    if (!selectedItem) return;
 
     const { itemId, price } = selectedItem;
 
-    if (points < price || unlockedItems.includes(itemId)) {
-      // @TODO Show toast message/modal to the user!
-      return;
-    }
-
-    const updatedPoints = points - selectedItem.price;
-    if (updatedPoints <= 0) {
-      showToast(
-        'error',
-        'Te weinig Releafe-punten',
-        'Je hebt nog niet genoeg punten om dit te kopen. Blijf goed voor jezelf zorgen en spaar verder!'
-      );
+    if (points < price) {
+      setPurchaseModalVisible(false);
+      setTimeout(() => {
+        setNotEnoughPointsModalVisible(true);
+      }, 100);
       return;
     }
 
     unlockItem(itemId, price);
-    setModalVisible(false);
+    setPurchaseModalVisible(false);
   };
 
   return (
@@ -84,11 +81,15 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
       <StatusBar />
       <Header title={title} route={route} />
 
+      <NotEnoughPointsModal
+        visible={notEnoughPointsModalVisible}
+        onClose={() => setNotEnoughPointsModalVisible(false)}
+      />
       <PurchaseModal
-        visible={modalVisible}
+        visible={purchaseModalVisible}
         price={selectedItem?.price || 0}
         onConfirm={handleConfirmPurchase}
-        onCancel={() => setModalVisible(false)}
+        onCancel={() => setPurchaseModalVisible(false)}
       />
       <ScrollView
         bounces={false}

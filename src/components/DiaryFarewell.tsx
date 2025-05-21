@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useContext } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,20 +11,33 @@ import {
 import { Fonts } from '../styles';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-import { DiaryContext } from '../context/DiaryContext';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 import {
   useNavigation,
   useFocusEffect,
   StackActions,
 } from '@react-navigation/native';
+import { EarnedPointsModal } from './EarnedPointsModal';
 
 const windowWidth = Dimensions.get('window').width;
 
 export const DiaryFarewell: React.FC = () => {
   const navigation = useNavigation();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
+
+  const [earnedPointsModalVisible, setEarnedPointsModalVisible] =
+    useState(false);
+  const [hasShownModal, setHasShownModal] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!hasShownModal) {
+        setEarnedPointsModalVisible(true);
+        setHasShownModal(true);
+      }
+    }, [hasShownModal])
+  );
 
   const handleStackReset = (continueFlow: boolean) => {
     navigation.dispatch(StackActions.popToTop());
@@ -36,53 +49,61 @@ export const DiaryFarewell: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header Container */}
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          rowGap: 20,
-          marginTop: 10,
-        }}
-      >
-        <FontAwesome name='thumbs-up' size={36} color='#5C6B57' />
-        <Text style={styles.greetingText}>
-          Goed gedaan, {user?.firstName}!
-        </Text>
+    <>
+      <EarnedPointsModal
+        visible={earnedPointsModalVisible}
+        onClose={() => setEarnedPointsModalVisible(false)}
+        points={10}
+      />
+      <View style={styles.container}>
+        {/* Header Container */}
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            rowGap: 20,
+            marginTop: 10,
+          }}
+        >
+          <FontAwesome name='thumbs-up' size={36} color='#5C6B57' />
+          <Text style={styles.greetingText}>
+            Goed gedaan, {user?.firstName}!
+          </Text>
+        </View>
+
+        {/* Body Container */}
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            rowGap: 20,
+            marginTop: 20,
+          }}
+        >
+          <Text style={styles.diaryDescriptionText}>
+            Als je je dagboek vaak invult, krijg je meer inzicht in hoe het met
+            je gaat. Je ziet dit terug in je welzijnsoverzicht.
+          </Text>
+        </View>
+
+        <Pressable
+          onPress={() => handleStackReset(true)}
+          style={styles.dashboardButton}
+        >
+          <Text style={styles.dashboardButtonText}>
+            Bekijk mijn welzijnsoverzicht
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => handleStackReset(false)}
+          style={styles.closeButton}
+        >
+          <Text style={styles.closeButtonText}>Afsluiten</Text>
+        </Pressable>
       </View>
-
-      {/* Body Container */}
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          rowGap: 20,
-          marginTop: 20,
-        }}
-      >
-        <Text style={styles.diaryDescriptionText}>
-          Als je je dagboek vaak invult, krijg je meer inzicht in hoe het met je gaat. Je ziet dit terug in je welzijnsoverzicht.
-        </Text>
-      </View>
-
-      <Pressable
-        onPress={() => handleStackReset(true)}
-        style={styles.dashboardButton}
-      >
-        <Text style={styles.dashboardButtonText}>
-          Bekijk mijn welzijnsoverzicht
-        </Text>
-      </Pressable>
-
-      <Pressable
-        onPress={() => handleStackReset(false)}
-        style={styles.closeButton}
-      >
-        <Text style={styles.closeButtonText}>Afsluiten</Text>
-      </Pressable>
-    </View>
+    </>
   );
 };
 

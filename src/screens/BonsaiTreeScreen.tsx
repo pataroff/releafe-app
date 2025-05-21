@@ -181,7 +181,7 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                         : flowersStateIcons;
 
                     return (
-                      <View key={index}>
+                      <View key={index} pointerEvents='box-none'>
                         {/* Bonsai Tree State Button */}
                         <Pressable
                           style={styles.stateContainer}

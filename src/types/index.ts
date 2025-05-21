@@ -151,6 +151,7 @@ export interface IGoalEntry {
   timeframe: Timeframe;
   targetFrequency: number;
   startDate: Date | null;
+  endDate: Date | null;
   lastCompletedAt: Date | null;
   completedTimeframe: number;
   completedPeriod: number;
@@ -167,6 +168,7 @@ export interface IGoalContext {
   timeframe: Timeframe;
   targetFrequency: number;
   startDate: Date | null;
+  endDate: Date | null;
   lastCompletedAt: Date | null;
   completedTimeframe: number;
   completedPeriod: number;
@@ -182,10 +184,12 @@ export interface IGoalContext {
   setCompletedTimeframe: React.Dispatch<React.SetStateAction<number>>;
   setCompletedPeriod: React.Dispatch<React.SetStateAction<number>>;
   setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setLastCompletedAt: React.Dispatch<React.SetStateAction<Date | null>>;
   createGoalEntry: () => void;
   updateGoalEntry: (uuid: string) => void;
   deleteGoalEntry: (uuid: string) => void;
+  refreshGoalTimeframes: () => void;
   resetGoalEntryFields: () => void;
 }
 

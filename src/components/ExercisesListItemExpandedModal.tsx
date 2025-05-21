@@ -26,6 +26,8 @@ interface ExercisesListItemExpandedModalProps {
     React.SetStateAction<boolean>
   >;
   exercise: Exercise;
+  earnedPointsModalVisible: boolean;
+  setEarnedPointsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const windowWidth = Dimensions.get('window').width;
@@ -36,6 +38,8 @@ export const ExercisesListItemExpandedModal: React.FC<
   modalExercisesListItemExpandedVisible,
   setModalExercisesListItemExpandedVisible,
   exercise,
+  earnedPointsModalVisible,
+  setEarnedPointsModalVisible,
 }) => {
   const { icon, title, description, link } = exercise;
   const { addPoints } = useGamification();
@@ -97,6 +101,9 @@ export const ExercisesListItemExpandedModal: React.FC<
                   setModalExercisesListItemExpandedVisible(
                     !modalExercisesListItemExpandedVisible
                   );
+                  setTimeout(() => {
+                    setEarnedPointsModalVisible(!earnedPointsModalVisible);
+                  }, 100);
                   addPoints(10); // @TODO This is easy to cheat, how to prevent cheating?
                 }}
               >

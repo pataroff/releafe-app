@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
 import {
   StyleSheet,
@@ -31,7 +31,6 @@ import { useAuth } from '../context/AuthContext';
 import { Priority } from '../types';
 import { getCategory, getPriorityColor, reframingSteps } from '../utils/worry';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useGamification } from '../context/GamificationContext';
 
@@ -57,6 +56,8 @@ interface ReframingModalProps {
   modalWorryListVisible?: boolean;
   setModalWorryListVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   isDrawerOpen?: boolean;
+  earnedPointsModalVisible?: boolean;
+  setEarnedPointsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ReframingModal: React.FC<ReframingModalProps> = ({
@@ -68,6 +69,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
   modalWorryListVisible,
   setModalWorryListVisible,
   isDrawerOpen,
+  earnedPointsModalVisible,
+  setEarnedPointsModalVisible,
 }) => {
   const {
     uuid,
@@ -231,6 +234,16 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       setReframingModalIndex(0);
       setModalReframingVisible(!modalReframingVisible);
 
+      // Earned Points Modal
+      if (
+        earnedPointsModalVisible !== undefined &&
+        setEarnedPointsModalVisible !== undefined
+      ) {
+        setTimeout(() => {
+          setEarnedPointsModalVisible(!earnedPointsModalVisible);
+        }, 100);
+      }
+
       if (route.name === 'WorryBox') {
         createNoteEntry(uuid);
       } else {
@@ -241,7 +254,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       resetWorryEntryFields();
       deleteWorryEntry(uuid);
 
-      addPoints(5);
+      addPoints(20);
     }
   };
 
@@ -256,7 +269,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     message: string
   ) => {
     Toast.show({
-      topOffset: 15,
+      topOffset: 80,
       type,
       text1: title,
       text2: message,
@@ -286,19 +299,17 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       onRequestClose={() => setCloseModalVisible(!closeModalVisible)}
     >
       <GestureHandlerRootView>
-        <SafeAreaView>
-          <CloseModal
-            closeModalVisible={closeModalVisible}
-            setCloseModalVisible={setCloseModalVisible}
-            parentModalVisible={modalReframingVisible}
-            setParentModalVisible={setModalReframingVisible}
-            title='Stoppen met reframen'
-            description='Je staat op het punt te stoppen met het reframing-proces. Weet je het zeker?'
-            handleClose={handleClose}
-            denyText='Nee, ik wil doorgaan'
-            confirmText='Ja, ik wil afsluiten'
-          />
-        </SafeAreaView>
+        <CloseModal
+          closeModalVisible={closeModalVisible}
+          setCloseModalVisible={setCloseModalVisible}
+          parentModalVisible={modalReframingVisible}
+          setParentModalVisible={setModalReframingVisible}
+          title='Stoppen met reframen'
+          description='Je staat op het punt te stoppen met het reframing-proces. Weet je het zeker?'
+          handleClose={handleClose}
+          denyText='Nee, ik wil doorgaan'
+          confirmText='Ja, ik wil afsluiten'
+        />
         <View style={styles.modalWrapper}>
           <View>
             <View style={styles.modalContainer}>
@@ -1037,7 +1048,6 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
               </View>
             </View>
           </View>
-          <Toast />
         </View>
       </GestureHandlerRootView>
     </Modal>

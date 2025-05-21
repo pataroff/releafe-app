@@ -439,7 +439,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                         verticalAlign: Platform.OS == 'android' ? 'top' : {},
                         ...Fonts.sofiaProRegular[Platform.OS],
                         marginTop: 20,
-                        paddingHorizontal: 10,
+                        padding: 10,
                         borderRadius: 10,
                         backgroundColor: '#f6f7f8',
                         height: 165,

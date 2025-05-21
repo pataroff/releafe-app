@@ -17,17 +17,18 @@ import { useNavigation } from '@react-navigation/native';
 import { Fonts } from '../styles';
 
 import { ReframingModal } from '../components/ReframingModal';
+import { EarnedPointsModal } from '../components/EarnedPointsModal';
 
 const windowWidth = Dimensions.get('window').width;
 
 const reframingOptionsData = [
   [
     'Reframe een bestaande zorg',
-    'Wil je een zorg uit je Zorgenbakje reframen?\nGa dan naar je Zorgenbakje.',
+    'Wil je een zorg uit je Zorgenbakje reframen?\n\nGa dan naar je Zorgenbakje.',
   ],
   [
     'Reframe een nieuwe zorg',
-    'Heb je een zorg die nog niet in je Zorgenbakje staat, maar wil je er meteen mee aan de slag?\nBegin dan direct.',
+    'Heb je een zorg die nog niet in je Zorgenbakje staat, maar wil je er meteen mee aan de slag?\n\nBegin dan direct.',
   ],
 ];
 
@@ -37,9 +38,10 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
 
   const [modalReframingVisible, setModalReframingVisible] =
     useState<boolean>(false);
-  const [modalReframingSuccessVisible, setModalReframingSuccessVisible] =
-    useState<boolean>(false);
   const [reframingModalIndex, setReframingModalIndex] = useState<number>(0);
+
+  const [earnedPointsModalVisible, setEarnedPointsModalVisible] =
+    useState<boolean>(false);
 
   useEffect(() => {
     navigation.setOptions({ headerTitle: 'Zorgenbakje' });
@@ -47,6 +49,11 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
 
   return (
     <>
+      <EarnedPointsModal
+        visible={earnedPointsModalVisible}
+        onClose={() => setEarnedPointsModalVisible(false)}
+        points={20}
+      />
       <ReframingModal
         // @TODO: Correct `route` type annotation!
         route={route}
@@ -54,6 +61,8 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
         setReframingModalIndex={setReframingModalIndex}
         modalReframingVisible={modalReframingVisible}
         setModalReframingVisible={setModalReframingVisible}
+        earnedPointsModalVisible={earnedPointsModalVisible}
+        setEarnedPointsModalVisible={setEarnedPointsModalVisible}
       />
 
       <StatusBar />
@@ -107,7 +116,7 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
               >
                 {/* Points Container */}
                 <View style={styles.pointsContainer}>
-                  <Text style={styles.pointsText}>+5</Text>
+                  <Text style={styles.pointsText}>+20</Text>
 
                   <Image
                     style={styles.shopIcon}
@@ -174,7 +183,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 20,
     width: '100%',
-    height: 240,
+    flexGrow: 1,
     padding: 20,
     // justifyContent: 'space-between',
     rowGap: 20,
