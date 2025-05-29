@@ -246,6 +246,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
     fetchQuote();
   }, []);
 
+  // Resetting goal timeframes
   useEffect(() => {
     refreshGoalTimeframes();
   }, [goalEntries]);

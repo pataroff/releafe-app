@@ -25,7 +25,7 @@ import {
   branchesImages,
   leavesImages,
   flowerImages,
-} from '../utils/bonsai';
+} from '../utils/gamification';
 
 import { useGamification } from '../context/GamificationContext';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';

@@ -24,7 +24,7 @@ import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import Slider from '@react-native-community/slider';
-import { DiaryContext } from '../context/DiaryContext';
+import { useDiary } from '../context/DiaryContext';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -76,7 +76,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
   setSelectedDiaryEntry,
 }) => {
   const navigation = useNavigation();
-  const { diaryEntries } = useContext(DiaryContext);
+  const { diaryEntries } = useDiary();
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [displayDate, setDisplayDate] = useState<string>('');
@@ -128,6 +128,26 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
       setSelectedDiaryEntry(null);
       setDisplayDate(getFormattedDisplayDate(new Date(selectedDay)));
       console.log('No diary entry found for selected date: ', selectedDay);
+    }
+  };
+
+  const handleEditPress = () => {
+    const today = new Date();
+    const selected = new Date(selectedDate);
+
+    today.setUTCHours(0, 0, 0, 0);
+    selected.setUTCHours(0, 0, 0, 0);
+
+    console.log(today);
+    console.log(selected);
+
+    if (selected <= today) {
+      navigation.navigate('Diary', {
+        screen: 'Diary1',
+        params: {
+          date: selectedDate,
+        },
+      });
     }
   };
 
@@ -318,7 +338,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             </Text>
           </View>
 
-          {/* The Wizard of Oz Method Data Visualization */}
+          {/* Sliders Data */}
           <View style={styles.dataSlidersContainer}>
             <Text style={styles.dataHeadingText}>
               {sliderTitlesAndDescriptions[sliderQuestionIndex][0]}
@@ -475,17 +495,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
           {/* TODO: Adjust the editing to the new diary flow! */}
           {/* Edit Button */}
-          <Pressable
-            style={styles.editButton}
-            onPress={() =>
-              navigation.navigate('Diary', {
-                screen: 'Diary1',
-                params: {
-                  date: selectedDate,
-                },
-              })
-            }
-          >
+          <Pressable style={styles.editButton} onPress={handleEditPress}>
             <Text style={styles.editButtonText}>Pas gegevens aan</Text>
           </Pressable>
         </View>
@@ -533,17 +543,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               te geven
             </Text>
           </View>
-          <Pressable
-            style={styles.diaryButton}
-            onPress={() =>
-              navigation.navigate('Diary', {
-                screen: 'Diary1',
-                params: {
-                  date: selectedDate,
-                },
-              })
-            }
-          >
+          <Pressable style={styles.diaryButton} onPress={handleEditPress}>
             <Text style={styles.diaryButtonText}>Vul het dagboek in</Text>
           </Pressable>
         </View>

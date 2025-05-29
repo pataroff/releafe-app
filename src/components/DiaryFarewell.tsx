@@ -14,16 +14,27 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useAuth } from '../context/AuthContext';
 
 import {
+  useRoute,
   useNavigation,
   useFocusEffect,
   StackActions,
+  RouteProp,
 } from '@react-navigation/native';
 import { EarnedPointsModal } from './EarnedPointsModal';
 
 const windowWidth = Dimensions.get('window').width;
 
+// @TODO Move this into `types.ts` and apply the same principle to other stack navigators!
+type DiaryStackParamList = {
+  DiaryFarewell: { earnedPoints: number };
+  // ... other routes
+};
+
 export const DiaryFarewell: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute<RouteProp<DiaryStackParamList, 'DiaryFarewell'>>();
+  const { earnedPoints } = route.params;
+
   const { user } = useAuth();
 
   const [earnedPointsModalVisible, setEarnedPointsModalVisible] =
@@ -53,7 +64,7 @@ export const DiaryFarewell: React.FC = () => {
       <EarnedPointsModal
         visible={earnedPointsModalVisible}
         onClose={() => setEarnedPointsModalVisible(false)}
-        points={10}
+        points={earnedPoints}
       />
       <View style={styles.container}>
         {/* Header Container */}

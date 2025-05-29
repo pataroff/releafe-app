@@ -2,36 +2,20 @@ import {
   StyleSheet,
   Text,
   View,
-  Pressable,
   Image,
-  ImageSourcePropType,
   Platform,
   TextStyle,
 } from 'react-native';
 
 import { Fonts } from '../styles';
-import { performanceBonsaiState } from '../utils/bonsai';
-import { useGamification } from '../context/GamificationContext';
 
-const lockedIcon = require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Badge nog te verdienen.png');
-const achievementIcons: Record<string, ImageSourcePropType> = {
-  betrokken_ontdekker_1: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Betrokken Ontdekker (1 ster).png'),
-  betrokken_ontdekker_2: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Betrokken Ontdekker (2 sterren).png'),
-  betrokken_ontdekker_3: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Betrokken Ontdekker (3 sterren).png'),
-  innerlijke_tuinier_1: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Innerlijke Tuinier (1 ster).png'),
-  innerlijke_tuinier_2: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Innerlijke Tuinier (2 sterren).png'),
-  innerlijke_tuinier_3: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Innerlijke Tuinier (3 sterren).png'),
-  aandachtige_ontdekker_1: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Aandachtige Ontdekker (1 ster).png'),
-  aandachtige_ontdekker_2: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Aandachtige Ontdekker (2 sterren).png'),
-  aandachtige_ontdekker_3: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Aandachtige Ontdekker (3 sterren).png'),
-  gedreven_onderzoeker_1: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Gedreven Onderzoeker.png'),
-  doelgerichte_groier_1: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Doelgerichte Groeier (1 ster).png'),
-  doelgerichte_groier_2: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Doelgerichte Groeier (2 sterren).png'),
-  doelgerichte_groier_3: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Doelgerichte Groeier (3 sterren).png'),
-  zucht_van_opluchting_1: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Zucht Van Opluchting.png'),
-  de_optimist_1: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_De Optimist.png'),
-  innerlijke_rust_1: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Innerlijke Rust.png'),
-};
+import {
+  performanceBonsaiState,
+  lockedIcon,
+  achievementIcons,
+} from '../utils/gamification';
+
+import { useGamification } from '../context/GamificationContext';
 
 export const PerformanceOverview: React.FC = () => {
   const { treeState, unlockedAchievements } = useGamification();
@@ -56,7 +40,7 @@ export const PerformanceOverview: React.FC = () => {
                 const { label, icon, key } = state;
 
                 return (
-                  <Pressable key={index} style={styles.bonsaiTreeDataItem}>
+                  <View key={index} style={styles.bonsaiTreeDataItem}>
                     <Image
                       style={{ width: 50, height: 50 }}
                       resizeMode='contain'
@@ -81,7 +65,7 @@ export const PerformanceOverview: React.FC = () => {
                         </Text>
                       </Text>
                     </View>
-                  </Pressable>
+                  </View>
                 );
               })}
             </View>
@@ -101,12 +85,12 @@ export const PerformanceOverview: React.FC = () => {
                 : lockedIcon;
 
               return (
-                <Pressable key={index} style={styles.achievementDataItem}>
+                <View key={index} style={styles.achievementDataItem}>
                   <Image
                     style={{ width: 60, height: 60 }}
                     source={iconSource}
                   />
-                </Pressable>
+                </View>
               );
             })}
           </View>

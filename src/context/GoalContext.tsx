@@ -63,6 +63,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
               lastCompletedAt,
               completedTimeframe,
               completedPeriod,
+              created,
             } = item;
             return {
               id,
@@ -79,6 +80,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
               lastCompletedAt,
               completedTimeframe,
               completedPeriod,
+              created,
             };
           });
 
@@ -153,7 +155,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         // Update the existing entry in the database
         await pb
           .collection('goal_entries')
-          .update(matchedGoalEntry.id, newGoalEntryDatabase);
+          .update(matchedGoalEntryDatabase.id, newGoalEntryDatabase);
       } catch (error) {
         console.error('Error updating goal entry:', error);
       }
@@ -163,45 +165,55 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
-  const updateGoalEntry = async (uuid: string) => {
+  const updateGoalEntry = async (uuid: string, forDate: Date = new Date()) => {
     const matchedGoalEntry = goalEntries.find((entry) => entry.uuid === uuid);
     if (!matchedGoalEntry) return;
 
-    const today = new Date();
-    const todayUTC = today.toISOString().split('T')[0]; // e.g. "2025-05-21"
+    const today = new Date('2025-05-30');
+    const todayUTC = today.toISOString().split('T')[0];
+    const forDateUTC = forDate.toISOString().split('T')[0];
 
     const lastCompletedAtUTC = matchedGoalEntry.lastCompletedAt
       ? new Date(matchedGoalEntry.lastCompletedAt).toISOString().split('T')[0]
       : null;
 
-    if (lastCompletedAtUTC === todayUTC) {
-      return; // Already completed today
+    if (lastCompletedAtUTC === forDateUTC) {
+      return;
     }
 
-    // @TODO This may be unnecessary!
-    if (
-      matchedGoalEntry.completedTimeframe >= matchedGoalEntry.targetFrequency
-    ) {
-      return; // Goal already fulfilled for this timeframe
-    }
+    const shouldUpdateLastCompletedAt = forDateUTC === todayUTC;
 
-    // Update local entry
-    const index = goalEntries.indexOf(matchedGoalEntry);
+    console.log('forDate:', forDate);
+    console.log('startDate:', new Date(matchedGoalEntry.startDate!));
+    console.log('endDate:', new Date(matchedGoalEntry.endDate!));
+
+    const shouldCountTowardsTimeframe =
+      forDate >= new Date(matchedGoalEntry.startDate!) &&
+      forDate <= new Date(matchedGoalEntry.endDate!);
+
+    const shouldCountTowardsPeriod = forDate >= matchedGoalEntry.created!;
 
     const updatedEntry = {
       ...matchedGoalEntry,
-      completedTimeframe: matchedGoalEntry.completedTimeframe + 1,
-      completedPeriod: matchedGoalEntry.completedPeriod + 1,
-      lastCompletedAt: today, // store current timestamp
+      completedTimeframe:
+        matchedGoalEntry.completedTimeframe +
+        (shouldCountTowardsTimeframe ? 1 : 0),
+      completedPeriod:
+        matchedGoalEntry.completedPeriod + (shouldCountTowardsPeriod ? 1 : 0),
+      lastCompletedAt: shouldUpdateLastCompletedAt
+        ? today
+        : matchedGoalEntry.lastCompletedAt,
     };
 
+    // Update local state
+    const index = goalEntries.indexOf(matchedGoalEntry);
     setGoalEntries((prev) => {
       const updatedEntries = [...prev];
       updatedEntries[index] = updatedEntry;
       return updatedEntries;
     });
 
-    // Update in database
+    // Update PocketBase
     try {
       const matchedGoalEntryDatabase = await pb
         .collection('goal_entries')
@@ -212,7 +224,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       await pb.collection('goal_entries').update(matchedGoalEntryDatabase.id, {
         completedTimeframe: updatedEntry.completedTimeframe,
         completedPeriod: updatedEntry.completedPeriod,
-        lastCompletedAt: updatedEntry.lastCompletedAt,
+        ...(shouldUpdateLastCompletedAt && { lastCompletedAt: today }),
       });
     } catch (error) {
       console.error('Error updating goal entry:', error);

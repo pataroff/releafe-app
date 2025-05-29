@@ -17,7 +17,7 @@ import { Fonts } from '../styles';
 import { Header } from '../components/Header';
 import { PurchaseModal } from '../components/PurchaseModal';
 
-import { bonsaiShopCategories } from '../utils/bonsai';
+import { bonsaiShopCategories } from '../utils/gamification';
 import { useGamification } from '../context/GamificationContext';
 import Toast from 'react-native-toast-message';
 import { NotEnoughPointsModal } from '../components/NotEnoughPointsModal';

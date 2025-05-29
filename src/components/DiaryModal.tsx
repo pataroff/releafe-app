@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 
 import {
   StyleSheet,
@@ -11,13 +11,14 @@ import {
   Dimensions,
   Platform,
   TextStyle,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
-import { DiaryContext } from '../context/DiaryContext';
+import { useDiary } from '../context/DiaryContext';
 import { useGoal } from '../context/GoalContext';
 import { useGamification } from '../context/GamificationContext';
 
-import { useSharedValue } from 'react-native-reanimated';
+import { useSharedValue, cancelAnimation } from 'react-native-reanimated';
 import { Slider } from 'react-native-awesome-slider';
 
 import { CheckBox } from '@rneui/themed';
@@ -26,13 +27,11 @@ import { ProgressBar } from 'react-native-paper';
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 
-import { IGoalEntry, Timeframe } from '../types';
-import { sliderSteps, textSteps } from '../utils/diary';
+import { IGoalEntry } from '../types';
+import { sliderSteps, textSteps, getFormattedDate } from '../utils/diary';
 
 import { useNavigation } from '@react-navigation/native';
 import { CloseModal } from './CloseModal';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -109,20 +108,40 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   route,
 }) => {
   const {
+    diaryEntries,
+    sliderValues,
+    date,
+    textValues,
+    setSliderValues,
+    setTextValues,
     addSliderValue,
     addTextValue,
     setDate,
     resetSliderValues,
     resetTextValues,
-    createDiaryEntry,
-  } = useContext(DiaryContext);
+    createOrUpdateDiaryEntry,
+  } = useDiary();
 
+  // Handle incoming date from route
   useEffect(() => {
     if (route?.params?.date) {
       setDate(route.params.date);
       setModalDiaryVisible(true);
     }
-  });
+  }, [route?.params?.date]);
+
+  // Populate values if diary entry exists for current date
+  useEffect(() => {
+    const formattedDate = getFormattedDate(date);
+    const matchedEntry = diaryEntries.find(
+      (entry) => getFormattedDate(entry.date) === formattedDate
+    );
+
+    if (matchedEntry) {
+      setSliderValues(matchedEntry.sliderValues);
+      setTextValues(matchedEntry.textValues);
+    }
+  }, [date, diaryEntries]);
 
   const navigation = useNavigation();
 
@@ -139,106 +158,99 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   const [diaryModalIndex, setDiaryModalIndex] = useState<number>(0);
   const [progressValue, setProgressValue] = useState(progressStep);
 
-  const min = useSharedValue(0);
-  const max = useSharedValue(10);
-  const sliderValue = useSharedValue(5);
-
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState<number>(0);
-  const [textValue, setTextValue] = useState<string>('');
   const [textQuestionIndex, setTextQuestionIndex] = useState<number>(0);
   const [checkedGoals, setCheckedGoals] = useState<string[]>([]);
 
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const min = useSharedValue(1);
+  const max = useSharedValue(10);
+  const sliderValue = useSharedValue(5.5);
+
+  // Slider Value Update
+  useEffect(() => {
+    const value = sliderValues[sliderQuestionIndex];
+    sliderValue.value = value !== undefined ? value : 5.5;
+  }, [sliderQuestionIndex, sliderValues]);
 
   const handlePrevious = () => {
-    if (!loading) {
-      setLoading(true);
-      // Update slider values (0 to 5, including)
-      if (diaryModalIndex != 0 && diaryModalIndex <= sliderSteps.length - 1) {
-        sliderValue.value = 5;
-        setSliderQuestionIndex((prev) => --prev);
-      }
+    // Update slider values (0 to 5, including)
+    if (diaryModalIndex != 0 && diaryModalIndex <= sliderSteps.length - 1) {
+      setSliderQuestionIndex((prev) => --prev);
+    }
 
-      // Update text values (7 to 10)
-      if (diaryModalIndex > 7 && diaryModalIndex <= totalStepsIndex) {
-        setTextQuestionIndex((prev) => --prev);
-      }
+    // Update text values (7 to 10)
+    if (diaryModalIndex > 7 && diaryModalIndex <= totalStepsIndex) {
+      setTextQuestionIndex((prev) => --prev);
+    }
 
-      // Update navigation, check for personal goals on index 7
-      if (goalEntries.length === 0 && diaryModalIndex === 7) {
-        setDiaryModalIndex((prev) => prev - 2);
-        setProgressValue((prev) => Math.max(0, prev - progressStep));
-      } else {
-        setDiaryModalIndex((prev) => --prev);
-        setProgressValue((prev) => Math.max(0, prev - progressStep));
-      }
-      setLoading(false);
+    // Update navigation, check for personal goals on index 7
+    if (goalEntries.length === 0 && diaryModalIndex === 7) {
+      setDiaryModalIndex((prev) => prev - 2);
+      setProgressValue((prev) => Math.max(0, prev - progressStep));
+    } else {
+      setDiaryModalIndex((prev) => --prev);
+      setProgressValue((prev) => Math.max(0, prev - progressStep));
     }
   };
 
   const handleNext = () => {
-    if (!loading) {
-      setLoading(true);
-      // Update slider values (0 to 5, excluding)
-      if (diaryModalIndex < sliderSteps.length) {
-        // @TODO Remove the rounding of the slider values, keeps the decimals!
-        addSliderValue(sliderQuestionIndex, Math.round(sliderValue.value));
-        sliderValue.value = 5;
-        // Skip slider question index increment, if on last step
-        if (diaryModalIndex !== sliderSteps.length - 1) {
-          setSliderQuestionIndex((prev) => ++prev);
-        }
+    // Update slider values (0 to 5, excluding)
+    if (diaryModalIndex < sliderSteps.length) {
+      addSliderValue(sliderQuestionIndex, sliderValue.value);
+      // Skip slider question index increment, if on last step
+      if (diaryModalIndex !== sliderSteps.length - 1) {
+        setSliderQuestionIndex((prev) => ++prev);
       }
+    }
 
-      // Update text values (7 to 10)
-      if (diaryModalIndex > 6 && diaryModalIndex < totalStepsIndex) {
-        addTextValue(textQuestionIndex, textValue);
-        setTextValue('');
-        setTextQuestionIndex((prev) => ++prev);
-      }
+    // Update text values (7 to 10)
+    if (diaryModalIndex > 6 && diaryModalIndex < totalStepsIndex) {
+      setTextQuestionIndex((prev) => ++prev);
+    }
 
-      // Update navigation, check for personal goals on index 5
-      if (goalEntries.length === 0 && diaryModalIndex === 5) {
-        setDiaryModalIndex((prev) => prev + 2);
-        setProgressValue((prev) => Math.min(1, prev + progressStep));
-      } else {
-        setDiaryModalIndex((prev) => ++prev);
-        setProgressValue((prev) => Math.min(1, prev + progressStep));
-      }
-      setLoading(false);
-    } else console.log('loading');
+    // Update navigation, check for personal goals on index 5
+    if (goalEntries.length === 0 && diaryModalIndex === 5) {
+      setDiaryModalIndex((prev) => prev + 2);
+      setProgressValue((prev) => Math.min(1, prev + progressStep));
+    } else {
+      setDiaryModalIndex((prev) => ++prev);
+      setProgressValue((prev) => Math.min(1, prev + progressStep));
+    }
   };
 
   const resetLocalState = () => {
     setDiaryModalIndex(0);
     setProgressValue(progressStep);
     setSliderQuestionIndex(0);
-    sliderValue.value = 5;
-    setDate(new Date()); // Is this needed?
     // Clears the passed params for editing
     navigation.setParams({ date: null });
+    setDate(new Date()); // Is this needed?
     setCheckedGoals([]);
     setTextQuestionIndex(0);
   };
 
   const handleFinish = () => {
     // Create diary entry
-    createDiaryEntry();
+    createOrUpdateDiaryEntry();
+
+    let totalPoints = 0;
 
     // Check if there are goals that need to be updated
     if (checkedGoals.length > 0) {
       for (const checkedGoal of checkedGoals) {
-        updateGoalEntry(checkedGoal);
+        updateGoalEntry(checkedGoal, date);
       }
 
-      // Calculate `totalPoints` that need to be rewarded for goal completion
-      const totalPoints = checkedGoals.length * 50;
-      addPoints(totalPoints + 10); // `totalPoints` + 10 points for diary completion
+      // Calculate `calcualtedPoints` that need to be rewarded for goal completion
+      const calculatedPoints = checkedGoals.length * 50;
+      totalPoints = calculatedPoints + 10;
+      addPoints(totalPoints);
     } else {
       // If no completed goals, reward points just for diary completion
-      addPoints(10);
+      totalPoints = 10;
+      addPoints(totalPoints);
     }
 
     // Close modal
@@ -252,42 +264,44 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     resetTextValues();
 
     // Navigate to `DiaryFarewell`
-    navigation.navigate('Diary2');
+    navigation.navigate('Diary', {
+      screen: 'Diary2',
+      params: { earnedPoints: totalPoints },
+    });
   };
 
-  const handleClose = (index?: number) => {
-    // Close modal
-    setModalDiaryVisible(!modalDiaryVisible);
-
-    if (index !== 0) {
-      // Reset local state
-      resetLocalState();
-      // Reset context state
-      resetSliderValues();
-      resetTextValues();
+  const handleClose = async (shouldSave: boolean) => {
+    if (shouldSave) {
+      createOrUpdateDiaryEntry();
     }
+
+    // Close modal and reset states regardless
+    setModalDiaryVisible(false);
+    resetLocalState();
   };
 
-  const handleTextChange = (questionIndex: number, value: string) => {
-    setTextValue(value);
-    addTextValue(questionIndex, value);
-  };
+  const handleTextChange = useCallback(
+    (questionIndex: number, value: string) => {
+      addTextValue(questionIndex, value);
+    },
+    [textQuestionIndex]
+  );
 
   const shouldShowGoal = (goal: IGoalEntry): boolean => {
-    if (goal.timeframe === Timeframe.Daily && goal.lastCompletedAt) {
-      const now = new Date();
-      const last = new Date(goal.lastCompletedAt);
+    if (goal.lastCompletedAt) {
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
 
-      const lastReset = new Date(last);
-      lastReset.setHours(0, 0, 0, 0);
+      const lastCompleted = new Date(goal.lastCompletedAt);
+      lastCompleted.setUTCHours(0, 0, 0, 0);
 
-      const nextReset = new Date(lastReset);
-      nextReset.setDate(nextReset.getDate() + 1);
-
-      return now >= nextReset;
+      // If the goal was completed today, don't show it
+      if (lastCompleted.getTime() === today.getTime()) {
+        return false;
+      }
     }
 
-    return true; // Show for weekly/monthly goals or goals not yet completed
+    return true;
   };
 
   return (
@@ -297,231 +311,238 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
       visible={modalDiaryVisible}
       onRequestClose={() => setCloseModalVisible(!closeModalVisible)}
     >
-      <GestureHandlerRootView>
-        <SafeAreaView>
-          <CloseModal
-            closeModalVisible={closeModalVisible}
-            setCloseModalVisible={setCloseModalVisible}
-            parentModalVisible={modalDiaryVisible}
-            setParentModalVisible={setModalDiaryVisible}
-            title='Stoppen met invullen dagboek'
-            description='Je staat op het punt te stoppen met het invullen van je dagboek. Weet je het zeker?'
-            handleClose={handleClose}
-            route={route}
-            denyText='Opslaan en afsluiten'
-            confirmText='Niet opslaan en afsluiten'
-          />
-        </SafeAreaView>
-        <View style={styles.modalWrapper}>
-          <View style={styles.modalContainer}>
-            <View style={styles.headersContainer}>
-              {/* Title + Close Button */}
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
+      <CloseModal
+        closeModalVisible={closeModalVisible}
+        setCloseModalVisible={setCloseModalVisible}
+        parentModalVisible={modalDiaryVisible}
+        setParentModalVisible={setModalDiaryVisible}
+        title='Stoppen met invullen dagboek'
+        description='Je staat op het punt te stoppen met het invullen van je dagboek. Weet je het zeker?'
+        handleClose={handleClose}
+        route={route}
+        denyText='Opslaan en afsluiten'
+        confirmText='Niet opslaan en afsluiten'
+      />
+      <View style={styles.modalWrapper}>
+        <View style={styles.modalContainer}>
+          <View style={styles.headersContainer}>
+            {/* Title + Close Button */}
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <Text style={styles.headersTitleText}>Dagboek invullen</Text>
+              <Pressable
+                style={{ position: 'absolute', right: 0 }}
+                onPress={() => setCloseModalVisible(!closeModalVisible)}
               >
-                <Text style={styles.headersTitleText}>Dagboek invullen</Text>
-                <Pressable
-                  style={{ position: 'absolute', right: 0 }}
-                  onPress={() => setCloseModalVisible(!closeModalVisible)}
-                >
-                  <Feather name='x-circle' size={24} color='gray' />
-                </Pressable>
-              </View>
-
-              {/* Heading */}
-              <Text style={styles.headersHeadingText}>
-                {diaryModalIndex == 6
-                  ? 'Vraag 7. Persoonlijke doelen'
-                  : diaryModalIndex < 6
-                  ? sliderSteps[sliderQuestionIndex].heading
-                  : 'Aanvullende vragen'}
-              </Text>
+                <Feather name='x-circle' size={24} color='gray' />
+              </Pressable>
             </View>
 
-            <View style={{ flex: 1 }}>
-              {/* Slider Question Component */}
-              {diaryModalIndex < 6 && (
-                <View style={styles.componentContainer}>
-                  <Text style={styles.headingText}>
-                    {sliderSteps[sliderQuestionIndex].question}
-                  </Text>
-                  <View style={{ marginVertical: 25 }}>
-                    <Slider
-                      progress={sliderValue}
-                      onValueChange={(value) => (sliderValue.value = value)}
-                      minimumValue={min}
-                      maximumValue={max}
-                      disableTrackPress={true}
-                      disableTapEvent={true}
-                      containerStyle={{ borderRadius: 30 }}
-                      sliderHeight={15}
-                      thumbWidth={25}
-                      theme={{
-                        minimumTrackTintColor: '#E4E1E1',
-                        maximumTrackTintColor: '#E4E1E1',
-                        bubbleBackgroundColor: '#C1DEBE',
-                      }}
-                      renderThumb={() => <CustomThumb />}
-                      // @TODO Remove the bubble!
-                      bubble={(s: number) => s.toFixed(1)}
-                    />
-                  </View>
-                  {/* Slider Options Container */}
-                  <View style={styles.optionsContainer}>
-                    <Text style={styles.optionsText}>
-                      {sliderSteps[sliderQuestionIndex].options[0]}
-                    </Text>
-                    <Text style={styles.optionsText}>
-                      {sliderSteps[sliderQuestionIndex].options[1]}
-                    </Text>
-                  </View>
-                </View>
-              )}
+            {/* Heading */}
+            <Text style={styles.headersHeadingText}>
+              {diaryModalIndex == 6
+                ? 'Vraag 7. Persoonlijke doelen'
+                : diaryModalIndex < 6
+                ? sliderSteps[sliderQuestionIndex].heading
+                : 'Aanvullende vragen'}
+            </Text>
+          </View>
 
-              {/* Goals Checklist Component */}
-              {diaryModalIndex == 6 && (
-                <View
-                  style={[
-                    styles.componentContainer,
-                    { maxHeight: windowHeight - 400 },
-                  ]}
-                >
-                  <Text style={styles.headingText}>
-                    Vink aan welke van de volgende doelen jij vandaag hebt
-                    behaald.
+          <View style={{ flex: 1 }}>
+            {/* Slider Question Component */}
+            {diaryModalIndex < 6 && (
+              <View style={styles.componentContainer}>
+                <Text style={styles.headingText}>
+                  {sliderSteps[sliderQuestionIndex].question}
+                </Text>
+                <View style={{ marginVertical: 25 }}>
+                  <Slider
+                    progress={sliderValue}
+                    onSlidingComplete={(value) => {
+                      const clampedValue = Math.min(
+                        Math.max(value, min.value),
+                        max.value
+                      );
+
+                      addSliderValue(sliderQuestionIndex, clampedValue);
+                    }}
+                    minimumValue={min}
+                    maximumValue={max}
+                    disableTrackPress={true}
+                    disableTapEvent={true}
+                    containerStyle={{ borderRadius: 30, width: '100%' }}
+                    sliderHeight={15}
+                    thumbWidth={25}
+                    theme={{
+                      minimumTrackTintColor: '#E4E1E1',
+                      maximumTrackTintColor: '#E4E1E1',
+                      bubbleBackgroundColor: '#C1DEBE',
+                    }}
+                    renderThumb={() => <CustomThumb />}
+                    // @TODO Remove the bubble!
+                    bubble={(s: number) => s.toFixed(1)}
+                  />
+                </View>
+                {/* Slider Options Container */}
+                <View style={styles.optionsContainer}>
+                  <Text style={styles.optionsText}>
+                    {sliderSteps[sliderQuestionIndex].options[0]}
                   </Text>
-                  {/* Goal Check Item */}
+                  <Text style={styles.optionsText}>
+                    {sliderSteps[sliderQuestionIndex].options[1]}
+                  </Text>
+                </View>
+              </View>
+            )}
+
+            {/* Goals Checklist Component */}
+            {diaryModalIndex == 6 && (
+              <View
+                style={[
+                  styles.componentContainer,
+                  { maxHeight: windowHeight - 400 },
+                ]}
+              >
+                <Text style={styles.headingText}>
+                  Vink aan welke van de volgende doelen jij vandaag hebt
+                  behaald.
+                </Text>
+
+                {/* Goal Completion Text */}
+                {goalEntries.filter(shouldShowGoal).length === 0 ? (
+                  <Text style={styles.noGoalsText}>
+                    🎉 Je hebt vandaag al je doelen behaald!
+                  </Text>
+                ) : (
                   <ScrollView
                     style={styles.goalsChecklistContainer}
                     contentContainerStyle={
                       styles.goalsChecklistContentContainer
                     }
                   >
-                    {goalEntries.filter(shouldShowGoal).map((goal, index) => {
-                      return (
-                        <GoalsChecklistItem
-                          key={index}
-                          goal={goal}
-                          checked={checkedGoals.includes(goal.uuid)}
-                          setCheckedGoals={setCheckedGoals}
-                        />
-                      );
-                    })}
+                    {/* Goal Checklist Container */}
+                    {goalEntries.filter(shouldShowGoal).map((goal, index) => (
+                      <GoalsChecklistItem
+                        key={index}
+                        goal={goal}
+                        checked={checkedGoals.includes(goal.uuid)}
+                        setCheckedGoals={setCheckedGoals}
+                      />
+                    ))}
                   </ScrollView>
-                </View>
-              )}
+                )}
+              </View>
+            )}
 
-              {/* Text Question Component */}
-              {diaryModalIndex > 6 && (
-                <View style={styles.componentContainer}>
-                  <Text style={[styles.bodyText, { fontSize: 14 }]}>
-                    <Text
-                      style={
-                        { ...Fonts.sofiaProSemiBold[Platform.OS] } as TextStyle
-                      }
-                    ></Text>
-                    {textSteps[textQuestionIndex].question}
-                  </Text>
-                  <TextInput
-                    value={textValue}
-                    onChangeText={(value) =>
-                      handleTextChange(textQuestionIndex, value)
-                    }
-                    placeholder={textSteps[textQuestionIndex].placeholder}
-                    placeholderTextColor={'rgba(0,0,0,0.5)'}
-                    multiline
-                    style={
-                      {
-                        verticalAlign: Platform.OS == 'android' ? 'top' : {},
-                        ...Fonts.sofiaProRegular[Platform.OS],
-                        marginTop: 20,
-                        padding: 10,
-                        borderRadius: 10,
-                        backgroundColor: '#f6f7f8',
-                        height: 165,
-                      } as TextStyle
-                    }
-                  />
-                </View>
-              )}
-            </View>
+            {/* Text Question Component */}
+            {diaryModalIndex > 6 && (
+              <View style={styles.componentContainer}>
+                <Text style={[styles.bodyText]}>
+                  {textSteps[textQuestionIndex].question}
+                </Text>
+                <TextInput
+                  style={
+                    {
+                      ...Fonts.sofiaProRegular[Platform.OS],
+                      marginTop: 20,
+                      padding: 10,
+                      borderRadius: 10,
+                      backgroundColor: '#f6f7f8',
+                      height: 165,
+                    } as TextStyle
+                  }
+                  value={textValues[textQuestionIndex] || ''}
+                  onChangeText={(value) =>
+                    handleTextChange(textQuestionIndex, value)
+                  }
+                  placeholder={textSteps[textQuestionIndex].placeholder}
+                  placeholderTextColor='rgba(0,0,0,0.5)'
+                  multiline
+                  scrollEnabled
+                  autoFocus
+                  textAlign='left'
+                  textAlignVertical='top'
+                />
+              </View>
+            )}
+          </View>
 
-            {/* Progress Wrapper */}
-            <View
-              style={{
-                position: 'absolute',
-                bottom: 40,
-                width: '100%',
-                alignSelf: 'center',
-                paddingHorizontal: 15,
-              }}
-            >
-              {/* Progress Container */}
-              <View style={styles.progressContainer}>
-                {/* Buttons Container */}
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
+          {/* Progress Wrapper */}
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 40,
+              width: '100%',
+              alignSelf: 'center',
+              paddingHorizontal: 15,
+            }}
+          >
+            {/* Progress Container */}
+            <View style={styles.progressContainer}>
+              {/* Buttons Container */}
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                {/* Go Back Button */}
+                <Pressable
+                  onPress={() => handlePrevious()}
+                  disabled={diaryModalIndex == 0 ? true : false}
+                  style={
+                    diaryModalIndex == 0
+                      ? [styles.backButton, { opacity: 0.4 }]
+                      : styles.backButton
+                  }
                 >
-                  {/* Go Back Button */}
-                  <Pressable
-                    onPress={() => handlePrevious()}
-                    disabled={diaryModalIndex == 0 ? true : false}
-                    style={
-                      diaryModalIndex == 0
-                        ? [styles.backButton, { opacity: 0.4 }]
-                        : styles.backButton
-                    }
-                  >
-                    <Text style={styles.buttonText}>Ga terug</Text>
-                  </Pressable>
-                  {/* Continue Button */}
-                  <Pressable
-                    onPress={
-                      diaryModalIndex == totalStepsIndex
-                        ? handleFinish
-                        : handleNext
-                    }
-                    style={
-                      diaryModalIndex == totalStepsIndex
-                        ? [styles.continueButton, { width: 150 }]
-                        : styles.continueButton
-                    }
-                  >
-                    <Text style={styles.buttonText}>
-                      {diaryModalIndex == totalStepsIndex
-                        ? 'Afronden en sluiten'
-                        : 'Ga verder'}
-                    </Text>
-                  </Pressable>
-                </View>
-                {/* Progress Bar Container */}
-                <View style={styles.progressBarContainer}>
-                  <Text style={styles.progressBarText}>
+                  <Text style={styles.buttonText}>Ga terug</Text>
+                </Pressable>
+                {/* Continue Button */}
+                <Pressable
+                  onPress={
+                    diaryModalIndex == totalStepsIndex
+                      ? handleFinish
+                      : handleNext
+                  }
+                  style={
+                    diaryModalIndex == totalStepsIndex
+                      ? [styles.continueButton, { width: 150 }]
+                      : styles.continueButton
+                  }
+                >
+                  <Text style={styles.buttonText}>
                     {diaryModalIndex == totalStepsIndex
-                      ? '100%'
-                      : Math.round(progressValue * 100) + '%'}
+                      ? 'Afronden en sluiten'
+                      : 'Ga verder'}
                   </Text>
-                  <ProgressBar
-                    // Jan prefers switching to the steps to keep the design more consistent!
-                    progress={progressValue}
-                    color='#A9C1A1'
-                    style={styles.progressBar}
-                  />
-                </View>
+                </Pressable>
+              </View>
+              {/* Progress Bar Container */}
+              <View style={styles.progressBarContainer}>
+                <Text style={styles.progressBarText}>
+                  {diaryModalIndex == totalStepsIndex
+                    ? '100%'
+                    : Math.round(progressValue * 100) + '%'}
+                </Text>
+                <ProgressBar
+                  // Jan prefers switching to the steps to keep the design more consistent!
+                  progress={progressValue}
+                  color='#A9C1A1'
+                  style={styles.progressBar}
+                />
               </View>
             </View>
           </View>
         </View>
-      </GestureHandlerRootView>
+      </View>
     </Modal>
   );
 };
@@ -643,7 +664,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   bodyText: {
     ...Fonts.sofiaProRegular[Platform.OS],
-    fontSize: 13,
+    fontSize: 14,
     flexShrink: 1,
   } as TextStyle,
   optionsContainer: {
@@ -668,4 +689,10 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginRight: 0,
   },
+  noGoalsText: {
+    ...Fonts.sofiaProMedium[Platform.OS],
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 20,
+  } as TextStyle,
 });

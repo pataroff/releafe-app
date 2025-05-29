@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   StyleSheet,
@@ -12,20 +12,16 @@ import {
 
 import { ProgressBar } from 'react-native-paper';
 
-import { IGoalEntry, Timeframe } from '../types';
 import { Fonts } from '../styles';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import {
   getGoalCategoryString,
   getGoalCategoryIcon,
   highlightFrequency,
   getDaysBetweenDates,
-  calculatePeriod,
   formatDateString,
-  getTimeframeString,
 } from '../utils/goal';
 import { useGoal } from '../context/GoalContext';
 
@@ -38,12 +34,11 @@ export const GoalsOverview = () => {
     category,
     title,
     sentence,
-    timeframe,
     targetFrequency,
     startDate,
-    //endDate,
     completedTimeframe,
     completedPeriod,
+    created,
   } = goalEntries[goalIndex];
 
   const [timeframeProgressValue, setTimeframeProgressValue] = useState<number>(
@@ -120,7 +115,6 @@ export const GoalsOverview = () => {
           display: 'flex',
           flexDirection: 'row',
           columnGap: 10,
-          paddingRight: 30,
         }}
       >
         <Text style={styles.h2Text}>Doel:</Text>
@@ -226,13 +220,15 @@ export const GoalsOverview = () => {
             }}
           >
             <Text style={styles.statisticsDataBodyText}>
-              {formatDateString(startDate as Date)}
+              {formatDateString(new Date(created!))}
             </Text>
             {/* Completed Timeframe */}
             <Text style={styles.statisticsDataBodyText}>
               {new Date(startDate as Date) > new Date()
                 ? 1
-                : Math.ceil(getDaysBetweenDates(startDate, new Date()))}
+                : Math.ceil(
+                    getDaysBetweenDates(new Date(created!), new Date())
+                  )}
             </Text>
             {/* Completed Period */}
             <Text style={styles.statisticsDataBodyText}>{completedPeriod}</Text>
@@ -334,6 +330,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   goalBodyText: {
     ...Fonts.sofiaProRegular[Platform.OS],
+    flexShrink: 1,
   } as TextStyle,
   statisticsHeadingText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
@@ -391,7 +388,7 @@ const styles = StyleSheet.create({
 
   progressBarText: {
     ...Fonts.sofiaProRegular[Platform.OS],
-    fontSize: 9.5,
+    fontSize: 11,
   } as TextStyle,
   percentageText: {
     ...Fonts.sofiaProMedium[Platform.OS],
