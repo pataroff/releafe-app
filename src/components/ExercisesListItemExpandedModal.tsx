@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+
 import {
   StyleSheet,
   Text,
@@ -43,6 +45,8 @@ export const ExercisesListItemExpandedModal: React.FC<
 }) => {
   const { icon, title, description, link } = exercise;
   const { addPoints } = useGamification();
+
+  const [hasPlayedFully, setHasPlayedFully] = useState<boolean>(false);
 
   return (
     <Modal
@@ -101,10 +105,14 @@ export const ExercisesListItemExpandedModal: React.FC<
                   setModalExercisesListItemExpandedVisible(
                     !modalExercisesListItemExpandedVisible
                   );
-                  setTimeout(() => {
-                    setEarnedPointsModalVisible(!earnedPointsModalVisible);
-                  }, 100);
-                  addPoints(10); // @TODO This is easy to cheat, how to prevent cheating?
+
+                  if (hasPlayedFully) {
+                    setTimeout(() => {
+                      setEarnedPointsModalVisible(!earnedPointsModalVisible);
+                    }, 100);
+                    addPoints(10);
+                    setHasPlayedFully(false);
+                  }
                 }}
               >
                 <Feather name='x-circle' size={24} color='gray' />
@@ -128,35 +136,53 @@ export const ExercisesListItemExpandedModal: React.FC<
             </View>
 
             <WebView
-              on
-              bounces={false}
               javaScriptEnabled
               contentMode='desktop'
+              bounces={false}
               style={{ marginVertical: 20 }}
               originWhitelist={['*']}
+              onMessage={(event) => {
+                if (event.nativeEvent.data === 'finished') {
+                  console.log('Soundcloud track finished playing!');
+                  setHasPlayedFully(true);
+                }
+              }}
               source={{
                 html: `
-                <!DOCTYPE html>
-                <html>
-                  <head>
-                    <meta name="viewport" content="width=device-width, initial-scale=1">
-                    <style>
-                      html, body {
-                        margin: 0;
-                        padding: 0;
-                        height: 100%; /* Ensure the iframe's parent container takes full height */
-                      }
-                      #baseDiv {
-                        width: 100%;
-                        height: 100%;
-                      }
-                    </style>
-                  </head>
-                  <body>
-                    <div id="baseDiv">${link}</div>
-                  </body>
-                </html>
-              `,
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <script src="https://w.soundcloud.com/player/api.js"></script>
+          <style>
+            html, body {
+              margin: 0;
+              padding: 0;
+              height: 100%;
+            }
+            #baseDiv {
+              width: 100%;
+              height: 100%;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="baseDiv">${link}</div>
+
+          <script>
+            window.addEventListener('DOMContentLoaded', function () {
+              var iframe = document.querySelector('iframe');
+              if (!iframe) return;
+
+              var widget = SC.Widget(iframe);
+              widget.bind(SC.Widget.Events.FINISH, function () {
+                window.ReactNativeWebView.postMessage('finished');
+              });
+            });
+          </script>
+        </body>
+      </html>
+    `,
               }}
             />
             <View

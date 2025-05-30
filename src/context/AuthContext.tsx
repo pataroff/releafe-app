@@ -93,6 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
+  // @TODO Proper account activation flow!
   const register = async ({
     email,
     password,
@@ -249,8 +250,6 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
       const updated = await pb
         .collection('users')
         .update(user.id, updatedFields);
-
-      console.log(updated);
 
       setUser(updated); // update context with latest user data
 

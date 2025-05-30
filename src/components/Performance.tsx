@@ -101,8 +101,6 @@ export const Performance: React.FC = () => {
         </View>
 
         <PerformanceCalendar
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
           selectedDiaryEntry={selectedDiaryEntry}
           setSelectedDiaryEntry={setSelectedDiaryEntry}
         />
@@ -148,8 +146,8 @@ const styles = StyleSheet.create({
   } as TextStyle,
   performanceDescriptionText: {
     ...Fonts.sofiaProLight[Platform.OS],
-    fontSize: 13,
-    marginTop: 5,
+    lineHeight: 18,
+    marginTop: 10,
   } as TextStyle,
   calendarTitleText: {
     ...Fonts.sofiaProMedium[Platform.OS],

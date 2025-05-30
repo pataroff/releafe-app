@@ -27,7 +27,7 @@ import { ProgressBar } from 'react-native-paper';
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 
-import { IGoalEntry } from '../types';
+import { IGoalEntry, Timeframe } from '../types';
 import { sliderSteps, textSteps, getFormattedDate } from '../utils/diary';
 
 import { useNavigation } from '@react-navigation/native';
@@ -122,6 +122,10 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     createOrUpdateDiaryEntry,
   } = useDiary();
 
+  const { goalEntries, updateGoalEntry } = useGoal();
+
+  const { addPoints } = useGamification();
+
   // Handle incoming date from route
   useEffect(() => {
     if (route?.params?.date) {
@@ -144,9 +148,6 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   }, [date, diaryEntries]);
 
   const navigation = useNavigation();
-
-  const { goalEntries, updateGoalEntry } = useGoal();
-  const { addPoints } = useGamification();
 
   const totalSteps =
     goalEntries.length > 0
@@ -236,21 +237,55 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     createOrUpdateDiaryEntry();
 
     let totalPoints = 0;
+    let calculatedPoints = 0;
+    let goalCompleted = false;
+    let showEarnedPointsModal = true;
 
     // Check if there are goals that need to be updated
     if (checkedGoals.length > 0) {
       for (const checkedGoal of checkedGoals) {
         updateGoalEntry(checkedGoal, date);
+
+        const matchedGoalEntry = goalEntries.find(
+          (entry) => entry.uuid == checkedGoal
+        );
+
+        if (!matchedGoalEntry) continue;
+
+        if (
+          matchedGoalEntry.completedTimeframe ===
+          matchedGoalEntry.targetFrequency
+        ) {
+          if (matchedGoalEntry.timeframe === Timeframe.Monthly) {
+            calculatedPoints += 50;
+          } else if (matchedGoalEntry.timeframe === Timeframe.Weekly) {
+            calculatedPoints += 30;
+          } else {
+            calculatedPoints += 10;
+          }
+        }
       }
 
-      // Calculate `calcualtedPoints` that need to be rewarded for goal completion
-      const calculatedPoints = checkedGoals.length * 50;
+      if (calculatedPoints > 0) {
+        goalCompleted = true;
+      }
+    }
+
+    const matchedDiaryEntry = diaryEntries.find(
+      (entry) => getFormattedDate(entry.date) === getFormattedDate(date)
+    );
+    console.log(matchedDiaryEntry);
+
+    if (!matchedDiaryEntry) {
       totalPoints = calculatedPoints + 10;
+    } else {
+      totalPoints = calculatedPoints;
+    }
+
+    if (totalPoints !== 0) {
       addPoints(totalPoints);
     } else {
-      // If no completed goals, reward points just for diary completion
-      totalPoints = 10;
-      addPoints(totalPoints);
+      showEarnedPointsModal = false;
     }
 
     // Close modal
@@ -266,7 +301,11 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     // Navigate to `DiaryFarewell`
     navigation.navigate('Diary', {
       screen: 'Diary2',
-      params: { earnedPoints: totalPoints },
+      params: {
+        showEarnedPointsModal,
+        earnedPoints: totalPoints,
+        goalCompleted,
+      },
     });
   };
 
@@ -288,20 +327,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   );
 
   const shouldShowGoal = (goal: IGoalEntry): boolean => {
-    if (goal.lastCompletedAt) {
-      const today = new Date();
-      today.setUTCHours(0, 0, 0, 0);
-
-      const lastCompleted = new Date(goal.lastCompletedAt);
-      lastCompleted.setUTCHours(0, 0, 0, 0);
-
-      // If the goal was completed today, don't show it
-      if (lastCompleted.getTime() === today.getTime()) {
-        return false;
-      }
-    }
-
-    return true;
+    return !goal.completedDates.includes(date.toISOString().split('T')[0]);
   };
 
   return (
