@@ -197,7 +197,8 @@ const styles = StyleSheet.create({
   },
   headersDescriptionText: {
     ...Fonts.sofiaProLight[Platform.OS],
-    marginTop: 5,
+    lineHeight: 18,
+    marginTop: 10,
   } as TextStyle,
   h3Text: {
     ...Fonts.sofiaProSemiBold[Platform.OS],

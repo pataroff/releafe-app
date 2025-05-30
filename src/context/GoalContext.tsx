@@ -31,7 +31,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
   const [targetFrequency, setTargetFrequency] = useState<number>(1);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [lastCompletedAt, setLastCompletedAt] = useState<Date | null>(null);
+  const [completedDates, setCompletedDates] = useState<string[]>([]);
   const [completedTimeframe, setCompletedTimeframe] = useState<number>(0);
   const [completedPeriod, setCompletedPeriod] = useState<number>(0);
 
@@ -60,7 +60,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
               targetFrequency,
               startDate,
               endDate,
-              lastCompletedAt,
+              completedDates,
               completedTimeframe,
               completedPeriod,
               created,
@@ -77,7 +77,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
               targetFrequency,
               startDate,
               endDate,
-              lastCompletedAt,
+              completedDates,
               completedTimeframe,
               completedPeriod,
               created,
@@ -109,7 +109,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       targetFrequency,
       startDate,
       endDate,
-      lastCompletedAt,
+      completedDates,
       completedTimeframe,
       completedPeriod,
     };
@@ -128,7 +128,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       targetFrequency,
       startDate,
       endDate,
-      lastCompletedAt,
+      completedDates,
       completedTimeframe,
       completedPeriod,
     };
@@ -169,40 +169,30 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     const matchedGoalEntry = goalEntries.find((entry) => entry.uuid === uuid);
     if (!matchedGoalEntry) return;
 
-    const today = new Date('2025-05-30');
-    const todayUTC = today.toISOString().split('T')[0];
     const forDateUTC = forDate.toISOString().split('T')[0];
+    const completedDates = matchedGoalEntry.completedDates || [];
 
-    const lastCompletedAtUTC = matchedGoalEntry.lastCompletedAt
-      ? new Date(matchedGoalEntry.lastCompletedAt).toISOString().split('T')[0]
-      : null;
-
-    if (lastCompletedAtUTC === forDateUTC) {
-      return;
+    if (completedDates.includes(forDateUTC)) {
+      return; // Already marked as complete for this date
     }
-
-    const shouldUpdateLastCompletedAt = forDateUTC === todayUTC;
-
-    console.log('forDate:', forDate);
-    console.log('startDate:', new Date(matchedGoalEntry.startDate!));
-    console.log('endDate:', new Date(matchedGoalEntry.endDate!));
 
     const shouldCountTowardsTimeframe =
       forDate >= new Date(matchedGoalEntry.startDate!) &&
       forDate <= new Date(matchedGoalEntry.endDate!);
 
-    const shouldCountTowardsPeriod = forDate >= matchedGoalEntry.created!;
+    const shouldCountTowardsPeriod =
+      forDate >= new Date(matchedGoalEntry.created!);
+
+    const updatedCompletedDates = [forDateUTC, ...completedDates];
 
     const updatedEntry = {
       ...matchedGoalEntry,
+      completedDates: updatedCompletedDates,
       completedTimeframe:
         matchedGoalEntry.completedTimeframe +
         (shouldCountTowardsTimeframe ? 1 : 0),
       completedPeriod:
         matchedGoalEntry.completedPeriod + (shouldCountTowardsPeriod ? 1 : 0),
-      lastCompletedAt: shouldUpdateLastCompletedAt
-        ? today
-        : matchedGoalEntry.lastCompletedAt,
     };
 
     // Update local state
@@ -222,9 +212,9 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         });
 
       await pb.collection('goal_entries').update(matchedGoalEntryDatabase.id, {
+        completedDates: updatedCompletedDates,
         completedTimeframe: updatedEntry.completedTimeframe,
         completedPeriod: updatedEntry.completedPeriod,
-        ...(shouldUpdateLastCompletedAt && { lastCompletedAt: today }),
       });
     } catch (error) {
       console.error('Error updating goal entry:', error);
@@ -338,7 +328,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         targetFrequency,
         startDate,
         endDate,
-        lastCompletedAt,
+        completedDates,
         completedTimeframe,
         completedPeriod,
         setGoalEntries,
@@ -352,7 +342,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         setTargetFrequency,
         setStartDate,
         setEndDate,
-        setLastCompletedAt,
+        setCompletedDates,
         setCompletedTimeframe,
         setCompletedPeriod,
         createGoalEntry,

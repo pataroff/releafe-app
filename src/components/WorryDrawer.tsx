@@ -239,7 +239,8 @@ const styles = StyleSheet.create({
   } as TextStyle,
   headersDescriptionText: {
     ...Fonts.sofiaProLight[Platform.OS],
-    marginTop: 5,
+    lineHeight: 18,
+    marginTop: 10,
   } as TextStyle,
   addButton: {
     borderRadius: 15,

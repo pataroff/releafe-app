@@ -8,7 +8,9 @@ const pb = new PocketBase('https://releafe-app.pockethost.io/');
 function generateSliderValues() {
   const values = {};
   for (let i = 0; i < 6; i++) {
-    values[i] = Math.floor(Math.random() * 10) + 1; // Random values between 1 and 10
+    // Generate a random number between 1 and 10 with one decimal
+    const randomValue = Math.random() * 9 + 1; // Range [1, 10)
+    values[i] = parseFloat(randomValue.toFixed(1)); // Round to 1 decimal
   }
   return values;
 }
@@ -47,34 +49,38 @@ async function populateDiaryEntries() {
   }
 }
 
-// async function deleteDiaryEntries() {
-//   const userId = '50vxlm6yhgf6wvo'; // User ID
-//   const oneYearAgo = new Date();
-//   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+async function deleteDiaryEntries() {
+  const userId = '50vxlm6yhgf6wvo'; // User ID
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
-//   try {
-//     // Fetch all diary entries for the user within the past year
-//     const records = await pb.collection('diary_entries').getFullList({
-//       filter: `user = "${userId}" && date >= "${oneYearAgo.toISOString()}"`,
-//     });
+  try {
+    // Fetch all diary entries for the user within the past year
+    const records = await pb.collection('diary_entries').getFullList({
+      filter: `user = "${userId}" && date >= "${oneYearAgo.toISOString()}"`,
+    });
 
-//     if (records.length === 0) {
-//       console.log('No records found for deletion.');
-//       return;
-//     }
+    if (records.length === 0) {
+      console.log('No records found for deletion.');
+      return;
+    }
 
-//     console.log(`Found ${records.length} records. Deleting...`);
+    console.log(`Found ${records.length} records. Deleting...`);
 
-//     // Delete each record
-//     for (const record of records) {
-//       await pb.collection('diary_entries').delete(record.id);
-//       console.log(`Deleted record: ${record.id}`);
-//     }
+    // Delete each record
+    for (const record of records) {
+      await pb.collection('diary_entries').delete(record.id);
+      console.log(`Deleted record: ${record.id}`);
+    }
 
-//     console.log('All records deleted successfully.');
-//   } catch (error) {
-//     console.error('Error deleting records:', error);
-//   }
-// }
+    console.log('All records deleted successfully.');
+  } catch (error) {
+    console.error('Error deleting records:', error);
+  }
+}
 
-populateDiaryEntries();
+if (process.argv[2] === '-i') {
+  populateDiaryEntries();
+} else if (process.argv[2] === '-d') {
+  deleteDiaryEntries();
+}

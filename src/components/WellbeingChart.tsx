@@ -45,7 +45,7 @@ import { Fonts } from '../styles';
 // @ts-expect-error
 import poppinsLight from '../../assets/fonts/Poppins-Light.ttf';
 // @ts-expect-error
-import poppinsSemiBold from '../../assets/fonts/Poppins-SemiBold.ttf';
+import sofiaProSemiBold from '../../assets/fonts/SofiaProSemiBold.ttf';
 // @ts-expect-error
 import sofiaProLight from '../../assets/fonts/SofiaProLight.ttf';
 
@@ -529,7 +529,9 @@ const calculateAverages = (
   // Calculate average for each metric based on its own count of non-zero values
   const averages: Record<MetricKey, number> = { ...sums };
   (Object.keys(averages) as MetricKey[]).forEach((key) => {
-    averages[key] = counts[key] ? Math.round(sums[key] / counts[key]) : 0;
+    averages[key] = counts[key]
+      ? parseFloat((sums[key] / counts[key]).toFixed(1))
+      : 0;
   });
 
   return averages;
@@ -736,7 +738,7 @@ const VerticalDashedLineTooltip = ({
     return x.value - 100 - offset; // x.value - rectWidth - offset
   }, [x]);
   const textX = useDerivedValue(() => rectX.value + 10, [rectX]);
-  const font = useFont(poppinsSemiBold, 10);
+  const font = useFont(sofiaProSemiBold, 11);
 
   const numberOfItems = Object.keys(pointsData).length;
   const rectHeight = numberOfItems * 20 + 10;
@@ -754,7 +756,7 @@ const VerticalDashedLineTooltip = ({
         x={rectX}
         y={80}
         r={10}
-        width={100}
+        width={110}
         height={rectHeight}
         color='#E9F5E5' // #A9C1A1
       />
@@ -1456,7 +1458,20 @@ export const WellbeingChart = ({
         domainPadding={30}
       >
         {({ points }: { points: Record<LineKeys, PointsArray> }) => {
-          const displayedPointsData = displayData.reduce((acc, key) => {
+          const sortedLabels = [
+            'algeheel',
+            'energie',
+            'stress',
+            'concentratie',
+            'angst',
+            'slaap',
+          ];
+
+          const sortedDisplayData = [...displayData].sort(
+            (a, b) => sortedLabels.indexOf(a) - sortedLabels.indexOf(b)
+          );
+
+          const displayedPointsData = sortedDisplayData.reduce((acc, key) => {
             acc[key] = points[key];
             return acc;
           }, {} as Record<LineKeys, PointsArray>);

@@ -37,9 +37,15 @@ export const NotesToSelfScreen: React.FC<{ route: any }> = ({ route }) => {
         <View style={styles.headersContainer}>
           <Text style={styles.headersTitleText}>Berichten aan jezelf</Text>
           <Text style={styles.headersDescriptionText}>
-            Hier bewaar je berichten aan jezelf. Die kun je op elk moment teruglezen of beluisteren, wanneer jij dat nodig hebt. 
-            <Text style = {{...Fonts.sofiaProSemiBold[Platform.OS]}as TextStyle}>{'\n'}Tip: </Text>
-            Je kunt ook iemand die je lief hebt vragen om een bericht voor je te maken.
+            Hier bewaar je berichten aan jezelf. Die kun je op elk moment
+            teruglezen of beluisteren, wanneer jij dat nodig hebt.
+            <Text
+              style={{ ...Fonts.sofiaProSemiBold[Platform.OS] } as TextStyle}
+            >
+              {'\n\n'}Tip:{' '}
+            </Text>
+            Je kunt ook iemand die je lief hebt vragen om een bericht voor je te
+            maken.
           </Text>
 
           {/* Headers Inner Container */}
@@ -47,8 +53,8 @@ export const NotesToSelfScreen: React.FC<{ route: any }> = ({ route }) => {
             <View style={{ width: '80%' }}>
               <Text style={styles.headersHeadingText}>Mijn berichten</Text>
               <Text style={styles.headersDescriptionText}>
-                Bekijk hier jouw opgeslagen berichten, 
-                of maak een nieuw bericht via de + knop.
+                Bekijk hier jouw opgeslagen berichten, of maak een nieuw bericht
+                via de + knop.
               </Text>
             </View>
             {/* Add Button */}
@@ -103,8 +109,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
-    marginTop: 5,
+    ...Fonts.sofiaProLight[Platform.OS],
+    lineHeight: 18,
+    marginTop: 10,
   } as TextStyle,
   addButton: {
     borderRadius: 15,

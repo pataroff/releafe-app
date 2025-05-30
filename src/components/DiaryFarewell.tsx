@@ -26,14 +26,18 @@ const windowWidth = Dimensions.get('window').width;
 
 // @TODO Move this into `types.ts` and apply the same principle to other stack navigators!
 type DiaryStackParamList = {
-  DiaryFarewell: { earnedPoints: number };
+  DiaryFarewell: {
+    earnedPoints: number;
+    goalCompleted: boolean;
+    showEarnedPointsModal: boolean;
+  };
   // ... other routes
 };
 
 export const DiaryFarewell: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<DiaryStackParamList, 'DiaryFarewell'>>();
-  const { earnedPoints } = route.params;
+  const { showEarnedPointsModal, earnedPoints, goalCompleted } = route.params;
 
   const { user } = useAuth();
 
@@ -43,7 +47,7 @@ export const DiaryFarewell: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (!hasShownModal) {
+      if (showEarnedPointsModal && !hasShownModal) {
         setEarnedPointsModalVisible(true);
         setHasShownModal(true);
       }
@@ -65,6 +69,7 @@ export const DiaryFarewell: React.FC = () => {
         visible={earnedPointsModalVisible}
         onClose={() => setEarnedPointsModalVisible(false)}
         points={earnedPoints}
+        goalCompleted={goalCompleted}
       />
       <View style={styles.container}>
         {/* Header Container */}

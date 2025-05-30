@@ -76,7 +76,8 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
           <Pressable
             onPress={() => {
               setShowOnlyFavourites(false);
-              navigation.goBack()}}
+              navigation.goBack();
+            }}
             style={{
               marginVertical: 25,
               width: 200,
@@ -113,7 +114,8 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
             */}
 
             {/* Favourites Icon */}
-            {/*category === 'Bekijk alle oefeningen' && (*/
+            {
+              /*category === 'Bekijk alle oefeningen' && (*/
               <Pressable
                 onPress={() => setShowOnlyFavourites(!showOnlyFavourites)}
               >
@@ -131,7 +133,8 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
                   />
                 )}
               </Pressable>
-            /*)*/}
+              /*)*/
+            }
           </View>
         </View>
       </View>
@@ -171,7 +174,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
-    marginTop: 5,
+    ...Fonts.sofiaProLight[Platform.OS],
+    lineHeight: 18,
+    marginTop: 10,
   } as TextStyle,
 });

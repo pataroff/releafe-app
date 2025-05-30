@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
+import { TreeStateKey } from '../types';
 
 import {
   performanceBonsaiState,
@@ -58,10 +59,9 @@ export const PerformanceOverview: React.FC = () => {
                         <Text style={styles.performanceLevelText}>
                           {' '}
                           niveau{' '}
-                          {
-                            //@ts-expect-error
-                            treeState[key] + 1
-                          }
+                          {treeState[key as TreeStateKey] !== null
+                            ? treeState[key as TreeStateKey]! + 1
+                            : 0}
                         </Text>
                       </Text>
                     </View>

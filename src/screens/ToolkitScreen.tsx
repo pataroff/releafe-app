@@ -161,10 +161,12 @@ const styles = StyleSheet.create({
   } as TextStyle,
   headersDescriptionText: {
     ...Fonts.sofiaProRegular[Platform.OS],
-    marginTop: 5,
+    lineHeight: 18,
+    marginTop: 10,
   } as TextStyle,
   h3Text: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
+
     fontSize: 14,
   } as TextStyle,
   bodyText: {
@@ -183,9 +185,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 20,
     width: '100%',
-    height: 105,
+    rowGap: 10,
     padding: 15,
-    justifyContent: 'space-between',
     backgroundColor: 'white',
     // Shadow Test
     shadowColor: '#000',

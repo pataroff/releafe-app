@@ -126,7 +126,7 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
         {/*TODO: Is this correct styling? - Luna*/}
         <Pressable
           onPress={() => handleFavourite(id)}
-          style={{ width: 36, height: 36, paddingTop: 5, paddingLeft: 10 }}
+          style={{ width: 36, height: 36 }}
         >
           {isFavourite ? (
             <Image

@@ -28,8 +28,7 @@ export const ExercisesScreen: React.FC<{ route: any }> = ({ route }) => {
           voor jou, Ontdek welke oefeningen bij jou passen.
         </Text>
 
-        {/* Headers Inner Container COMMENTED AS RECOMMENDED BY THE DOCUMENT
-        <View style={styles.headersInnerContainer}>
+        {/* <View style={styles.headersInnerContainer}>
           <View style={{ width: '80%' }}>
             <Text style={styles.headersHeadingText}>Categorieën</Text>
             <Text style={styles.headersDescriptionText}>
@@ -77,7 +76,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
   } as TextStyle,
   headersDescriptionText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
-    marginTop: 5,
+    ...Fonts.sofiaProLight[Platform.OS],
+    lineHeight: 18,
+    marginTop: 10,
   } as TextStyle,
 });

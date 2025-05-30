@@ -147,7 +147,7 @@ export interface IGoalEntry {
   targetFrequency: number;
   startDate: Date | null;
   endDate: Date | null;
-  lastCompletedAt: Date | null;
+  completedDates: string[];
   completedTimeframe: number;
   completedPeriod: number;
   created?: string;
@@ -165,7 +165,7 @@ export interface IGoalContext {
   targetFrequency: number;
   startDate: Date | null;
   endDate: Date | null;
-  lastCompletedAt: Date | null;
+  completedDates: string[];
   completedTimeframe: number;
   completedPeriod: number;
   setGoalEntries: React.Dispatch<React.SetStateAction<IGoalEntry[]>>;
@@ -181,7 +181,7 @@ export interface IGoalContext {
   setCompletedPeriod: React.Dispatch<React.SetStateAction<number>>;
   setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
-  setLastCompletedAt: React.Dispatch<React.SetStateAction<Date | null>>;
+  setCompletedDates: React.Dispatch<React.SetStateAction<string[]>>;
   createGoalEntry: () => void;
   updateGoalEntry: (uuid: string, forDate: Date) => void;
   deleteGoalEntry: (uuid: string) => void;
@@ -303,6 +303,11 @@ export interface INoteContext {
   ) => void;
   resetNoteEntryFields: () => void;
 }
+
+export type TreeStateKey =
+  | 'selectedBranchIndex'
+  | 'selectedLeafIndex'
+  | 'selectedFlowerIndex';
 
 export type Achievement = {
   id: string;

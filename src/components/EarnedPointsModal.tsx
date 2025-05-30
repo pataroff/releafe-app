@@ -18,12 +18,14 @@ interface EarnedPointsModalProps {
   visible: boolean;
   onClose: () => void;
   points: number;
+  goalCompleted?: boolean;
 }
 
 export const EarnedPointsModal: React.FC<EarnedPointsModalProps> = ({
   visible,
   onClose,
   points,
+  goalCompleted,
 }) => {
   return (
     <Modal animationType='fade' transparent={true} visible={visible}>
@@ -39,8 +41,9 @@ export const EarnedPointsModal: React.FC<EarnedPointsModalProps> = ({
 
           <Text style={styles.title}>Mooi gedaan!</Text>
           <Text style={styles.description}>
-            Je hebt punten verdiend door aandacht te geven aan je mentale
-            welzijn.
+            {goalCompleted
+              ? 'Je hebt je dagboek ingevuld én één of meerdere persoonlijke doelen behaald. Daarvoor heb je punten verdiend.'
+              : 'Je hebt punten verdiend door aandacht te geven aan je mentale welzijn.'}
           </Text>
 
           <View style={styles.logoContainer}>

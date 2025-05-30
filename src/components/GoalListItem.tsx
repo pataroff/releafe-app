@@ -39,10 +39,9 @@ export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     sentence,
     timeframe,
     targetFrequency,
-    startDate,
-    //endDate,
     completedTimeframe,
     completedPeriod,
+    created,
   } = item;
 
   const { deleteGoalEntry } = useGoal();
@@ -265,43 +264,6 @@ export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                 </Text>
               </View>
 
-              {/* Period Progress Bar /*}
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  rowGap: 5,
-                }}
-              >
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Text style={styles.progressBarText}>
-                    Statistieken voor gehele looptijd
-                  </Text>
-
-                  <Text style={styles.completedTimeframeText}>
-                    {completedPeriod}/
-                    {calculatePeriod(timeframe, startDate, endDate)}
-                  </Text>
-                </View>
-
-                <ProgressBar
-                  progress={periodProgressValue}
-                  color='#A9C1A1'
-                  style={styles.progressBar}
-                />
-                {/* Period Percentage Text /*}
-                <Text style={styles.percentageText}>
-                  {periodProgressValue * 100}%
-                </Text>
-              </View>
-
               {/* Statistics Box */}
               <View
                 style={{
@@ -341,13 +303,15 @@ export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   }}
                 >
                   <Text style={styles.statisticsDataBodyText}>
-                    {formatDateString(startDate as Date)}
+                    {formatDateString(new Date(created!))}
                   </Text>
                   {/* Days Active */}
                   <Text style={styles.statisticsDataBodyText}>
-                    {new Date(startDate as Date) > new Date()
+                    {new Date(created!) > new Date()
                       ? 1
-                      : Math.ceil(getDaysBetweenDates(startDate, new Date()))}
+                      : Math.ceil(
+                          getDaysBetweenDates(new Date(created!), new Date())
+                        )}
                   </Text>
                   {/* Completed Period */}
                   <Text style={styles.statisticsDataBodyText}>
@@ -430,7 +394,7 @@ const styles = StyleSheet.create({
   },
   progressBarText: {
     ...Fonts.sofiaProRegular[Platform.OS],
-    fontSize: 9.5,
+    fontSize: 11,
   } as TextStyle,
   percentageText: {
     ...Fonts.sofiaProMedium[Platform.OS],

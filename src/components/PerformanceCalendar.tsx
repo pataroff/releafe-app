@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,6 @@ import {
   TextStyle,
   Dimensions,
   Pressable,
-  ScrollView,
   TextInput,
 } from 'react-native';
 
@@ -19,12 +18,29 @@ import { IDiaryEntry } from '../types';
 import '../utils/localeConfig';
 import { CalendarProvider, ExpandableCalendar } from 'react-native-calendars';
 
+import { MarkingProps } from 'react-native-calendars/src/calendar/day/marking';
+
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import Slider from '@react-native-community/slider';
 import { useDiary } from '../context/DiaryContext';
+
+import Toast from 'react-native-toast-message';
+
+const showToast = (
+  type: 'error' | 'success' | 'info' | 'longError',
+  title: string,
+  message: string
+) => {
+  Toast.show({
+    topOffset: 100,
+    type,
+    text1: title,
+    text2: message,
+  });
+};
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -61,8 +77,6 @@ const textQuestions = [
 ];
 
 interface PerformanceCalendarProps {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selectedDiaryEntry: IDiaryEntry | null;
   setSelectedDiaryEntry: React.Dispatch<
     React.SetStateAction<IDiaryEntry | null>
@@ -70,8 +84,6 @@ interface PerformanceCalendarProps {
 }
 
 export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
-  isOpen,
-  setIsOpen,
   selectedDiaryEntry,
   setSelectedDiaryEntry,
 }) => {
@@ -85,12 +97,8 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState<number>(0);
   const [textQuestionIndex, setTextQuestionIndex] = useState<number>(0);
 
-  const sliderValuesLength = Object.keys(
-    selectedDiaryEntry?.sliderValues ?? {}
-  ).length;
-  const textValuesLength = Object.keys(
-    selectedDiaryEntry?.textValues ?? {}
-  ).length;
+  const sliderValuesLength = 6;
+  const textValuesLength = 4;
 
   useFocusEffect(
     useCallback(() => {
@@ -138,16 +146,20 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
     today.setUTCHours(0, 0, 0, 0);
     selected.setUTCHours(0, 0, 0, 0);
 
-    console.log(today);
-    console.log(selected);
-
     if (selected <= today) {
+      // @ts-expect-error
       navigation.navigate('Diary', {
         screen: 'Diary1',
         params: {
           date: selectedDate,
         },
       });
+    } else {
+      showToast(
+        'longError',
+        'Datum ligt in de toekomst',
+        'Je kunt alleen een dagboekinvulling toevoegen voor vandaag of een eerdere datum.'
+      );
     }
   };
 
@@ -199,30 +211,53 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
     });
   };
 
-  const getMarkedDates = () => {
-    const markedDates = {};
+  const getDotColor = (index: number) => {
+    return dotColorMap.get(Math.floor(index));
+  };
+
+  const getMarkedDates: { [key: string]: MarkingProps } = useMemo(() => {
+    const markedDates: { [key: string]: MarkingProps } = {};
 
     diaryEntries.forEach((entry) => {
       const formattedDate = getFormattedDate(entry.date);
+      const dotColor = getDotColor(entry.sliderValues[0]);
+
       markedDates[formattedDate] = {
         marked: true,
-        dotColor: getDotColor(entry.sliderValues[0]),
+        type: 'custom',
+        customStyles: {
+          container: {},
+          text: {
+            color: 'black',
+          },
+        },
+        dotColor,
       };
     });
 
-    markedDates[getFormattedDate(selectedDate)] = {
+    // Mark the selected date with custom styles
+    const selectedDateFormatted = getFormattedDate(selectedDate);
+    markedDates[selectedDateFormatted] = {
+      ...(markedDates[selectedDateFormatted] || {}),
       selected: true,
       disableTouchEvent: true,
       selectedColor: '#A9C1A1',
       selectedTextColor: 'white',
+      type: 'custom',
+      customStyles: {
+        container: {
+          backgroundColor: '#A9C1A1',
+          borderRadius: 30,
+          marginTop: -4,
+          paddingTop: 4,
+        },
+        text: {},
+      },
+      dotColor: 'transparent',
     };
 
     return markedDates;
-  };
-
-  const getDotColor = (index: number) => {
-    return dotColorMap.get(index);
-  };
+  }, [diaryEntries, selectedDate]);
 
   const appendCurrentTime = (date: Date) => {
     const now = new Date();
@@ -254,10 +289,10 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
           style={{ borderRadius: 30, overflow: 'hidden' }}
           theme={{
             todayTextColor: 'black',
-            selectedDayTextColor: 'white',
-            selectedDayBackgroundColor: '#A9C1A1',
-            textMonthFontFamily: 'Poppins-Medium',
-            textDayFontFamily: 'Poppins-Regular',
+            selectedDayBackgroundColor: 'transparent', // !IMPORTANT
+            selectedDayTextColor: 'white', // !IMPORTANT
+            textMonthFontFamily: 'SofiaPro-Medium',
+            textDayFontFamily: 'SofiaPro-Regular',
             arrowColor: 'black',
             monthTextColor: 'black',
             // @ts-ignore
@@ -272,10 +307,8 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             },
           }}
           monthFormat='MMMM yyyy'
-          //hideArrows={isOpen ? false : true}
           firstDay={1}
-          closeOnDayPress={true}
-          onCalendarToggled={(isOpen) => setIsOpen(isOpen)}
+          closeOnDayPress={false}
           renderArrow={(direction) =>
             direction === 'left' ? (
               <Feather
@@ -293,11 +326,11 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               />
             )
           }
-          onDayPress={(day) => {
-            handleSelect(day.dateString);
+          onDayPress={(date) => {
+            handleSelect(date.dateString);
           }}
           markingType='custom'
-          markedDates={getMarkedDates()}
+          markedDates={getMarkedDates}
         />
       </CalendarProvider>
 
@@ -601,7 +634,6 @@ const styles = StyleSheet.create({
   diaryButtonText: {
     ...Fonts.sofiaProBold[Platform.OS],
     color: 'white',
-    fontSize: 12,
   } as TextStyle,
   editButton: {
     width: 160,
@@ -617,7 +649,6 @@ const styles = StyleSheet.create({
   editButtonText: {
     ...Fonts.sofiaProBold[Platform.OS],
     color: 'white',
-    fontSize: 12,
   } as TextStyle,
   dataTextInputContainer: {
     fontSize: 14,
