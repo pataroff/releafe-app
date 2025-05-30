@@ -62,7 +62,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     timeframe,
     targetFrequency,
     startDate,
-    //endDate,
+    endDate,
     setCategory,
     setTitle,
     setDescription,
@@ -71,7 +71,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setTimeframe,
     setTargetFrequency,
     setStartDate,
-    //setEndDate,
+    setEndDate,
     createGoalEntry,
     resetGoalEntryFields,
   } = useGoal();
@@ -202,7 +202,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setGoalListItemAddModalIndex(goalListItemAddModalIndex + 1);
     scrollView.current?.scrollTo({
       y: 0,
-      animated: false,
+      animated: true,
     });
   };
 
@@ -235,7 +235,30 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   };
 
   const handleGoalSentences = () => {
-    setStartDate(new Date());
+    const startDate = new Date();
+    setStartDate(startDate);
+
+    let endDate = new Date(startDate);
+
+    switch (timeframe) {
+      case Timeframe.Daily:
+        endDate.setUTCDate(endDate.getUTCDate() + 1);
+        break;
+      case Timeframe.Weekly:
+        endDate.setUTCDate(endDate.getUTCDate() + 7);
+        break;
+      case Timeframe.Monthly:
+        endDate.setUTCDate(endDate.getUTCDate() + 30);
+        break;
+      default:
+        endDate.setUTCDate(endDate.getUTCDate() + 1);
+    }
+
+    setEndDate(endDate);
+
+    console.log('startDate:', startDate);
+    console.log('endDate:', endDate);
+
     setSentence(
       `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
         specialDropdownValue ? ` ${specialDropdownValue}` : ``
@@ -251,7 +274,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     }
     scrollView.current?.scrollTo({
       y: 0,
-      animated: false
+      animated: false,
     });
   };
 

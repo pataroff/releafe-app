@@ -49,18 +49,32 @@ export const textSteps: TextStep[] = [
       'Omschrijf hier je angsten of zorgen en hoe jij je daardoor voelde...',
   },
   {
-    question:
-      'Heb je ook dingen vermeden?',
+    question: 'Heb je ook dingen vermeden?',
     placeholder:
       'Omschrijf hier wat je hebt vermeden, waarom en hoe jij je daardoor voelde...',
   },
   {
     question: 'Wat heeft je vandaag dankbaar, trots of blij gemaakt?',
-    placeholder:
-      'Schrijf het hier op...',
+    placeholder: 'Schrijf het hier op...',
   },
   {
     question: 'Zijn er nog andere dingen die je graag kwijt zou willen?',
     placeholder: 'Schrijf het hier op...',
   },
 ];
+
+export const getFormattedDate = (date: Date) => {
+  return date.toISOString().slice(0, 10);
+};
+
+export const serializeRecord = (record: Record<number, number | string>) => {
+  return JSON.stringify(record);
+};
+
+export const deserializeRecord = (data: {
+  [key: string]: number | string;
+}): Record<number, number | string> => {
+  return Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [Number(key), value])
+  );
+};

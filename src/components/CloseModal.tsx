@@ -22,7 +22,7 @@ interface CloseModalProps {
   setParentModalVisible?: React.Dispatch<SetStateAction<boolean>>;
   title: string;
   description: string;
-  handleClose?: (index?: number) => void;
+  handleClose?: (shouldSave?: boolean) => void;
   route?: any;
   denyText: string;
   confirmText: string;
@@ -61,11 +61,11 @@ export const CloseModal: React.FC<CloseModalProps> = ({
     }, 100);
   };
 
-  const handleDiaryCloseModal = (index: number) => {
+  const handleDiaryCloseModal = (shouldSave: boolean) => {
     setCloseModalVisible(!closeModalVisible);
     setTimeout(() => {
       // @ts-ignore
-      handleClose(index);
+      handleClose(shouldSave);
     }, 100);
   };
 
@@ -115,7 +115,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
               }
               onPress={() =>
                 route?.name === 'Diary1'
-                  ? handleDiaryCloseModal(0) // Save and Close
+                  ? handleDiaryCloseModal(true) // Save and Close
                   : setCloseModalVisible(!closeModalVisible)
               }
             >
@@ -130,7 +130,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
               onPress={() =>
                 handleClose !== undefined
                   ? route?.name === 'Diary1'
-                    ? handleDiaryCloseModal(1) // Don't Save and Close
+                    ? handleDiaryCloseModal(false) // Don't Save and Close
                     : handleCloseModal()
                   : handleParentCloseModal()
               }

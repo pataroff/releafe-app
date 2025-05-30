@@ -122,7 +122,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
   const title = 'Home';
 
   const { user } = useAuth();
-  const { goalEntries } = useGoal();
+  const { goalEntries, refreshGoalTimeframes } = useGoal();
 
   const [quote, setQuote] = useState<{
     id: string;
@@ -245,6 +245,11 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
 
     fetchQuote();
   }, []);
+
+  // Resetting goal timeframes
+  useEffect(() => {
+    refreshGoalTimeframes();
+  }, [goalEntries]);
 
   const itemWidth = windowWidth * 0.8;
   const sidePadding = (windowWidth - itemWidth) / 2;

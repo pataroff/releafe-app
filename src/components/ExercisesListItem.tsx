@@ -13,9 +13,10 @@ import {
 import { Fonts } from '../styles';
 import { Exercise } from '../types';
 
-import { SettingsContext } from '../context/SettingsContext';
+import { useSettings } from '../context/SettingsContext';
 
 import { ExercisesListItemExpandedModal } from './ExercisesListItemExpandedModal';
+import { EarnedPointsModal } from './EarnedPointsModal';
 
 interface ExerciseListItemProps {
   exercise: Exercise;
@@ -29,7 +30,7 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
     favouriteExercises,
     setFavouriteExercises,
     updateFavouritesInDatabase,
-  } = useContext(SettingsContext);
+  } = useSettings();
   // Check if the exercise is in the favorite list
   const isFavourite = favouriteExercises.includes(id);
 
@@ -37,6 +38,9 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
     modalExercisesListItemExpandedVisible,
     setModalExercisesListItemExpandedVisible,
   ] = useState<boolean>(false);
+
+  const [modalEarnedPointsModalVisible, setModalEarnedPointsModalVisibe] =
+    useState<boolean>(false);
 
   // Toggle favorite status
   const handleFavourite = (exerciseId: string) => {
@@ -52,6 +56,11 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
 
   return (
     <>
+      <EarnedPointsModal
+        visible={modalEarnedPointsModalVisible}
+        onClose={() => setModalEarnedPointsModalVisibe(false)}
+        points={15}
+      />
       <ExercisesListItemExpandedModal
         modalExercisesListItemExpandedVisible={
           modalExercisesListItemExpandedVisible
@@ -60,6 +69,8 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
           setModalExercisesListItemExpandedVisible
         }
         exercise={exercise}
+        earnedPointsModalVisible={modalEarnedPointsModalVisible}
+        setEarnedPointsModalVisible={setModalEarnedPointsModalVisibe}
       />
       <Pressable
         onPress={() =>

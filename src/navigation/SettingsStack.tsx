@@ -13,7 +13,7 @@ export const SettingsStack: React.FC = () => {
       initialRouteName='Settings1'
       screenOptions={{
         header: ({ route }) => {
-          const title = 'Personlijk profiel';
+          const title = 'Persoonlijk profiel';
           return <Header title={title} route={route} />;
         },
         headerTransparent: true,

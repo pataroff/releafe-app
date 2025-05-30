@@ -25,21 +25,16 @@ export interface IDiaryContext {
   diaryEntries: IDiaryEntry[];
   sliderValues: Record<number, number>;
   textValues: Record<number, string>;
-  hasData: boolean;
   date: Date;
   setDiaryEntries: React.Dispatch<React.SetStateAction<IDiaryEntry[]>>;
+  setSliderValues: React.Dispatch<React.SetStateAction<Record<number, number>>>;
   setTextValues: React.Dispatch<React.SetStateAction<Record<number, string>>>;
   addTextValue: (questionIndex: number, value: string) => void;
-  setHasData: React.Dispatch<React.SetStateAction<boolean>>;
   setDate: React.Dispatch<React.SetStateAction<Date>>;
   addSliderValue: (questionIndex: number, value: number) => void;
   resetSliderValues: () => void;
   resetTextValues: () => void;
-  createDiaryEntry: () => void;
-  serializeRecord: (record: Record<number, number | string>) => string;
-  deserializeRecord: (data: {
-    [key: string]: number | string;
-  }) => Record<number, number | string>;
+  createOrUpdateDiaryEntry: () => void;
 }
 
 export type RootStackParamList = {
@@ -151,9 +146,11 @@ export interface IGoalEntry {
   timeframe: Timeframe;
   targetFrequency: number;
   startDate: Date | null;
+  endDate: Date | null;
   lastCompletedAt: Date | null;
   completedTimeframe: number;
   completedPeriod: number;
+  created?: string;
 }
 
 export interface IGoalContext {
@@ -167,6 +164,7 @@ export interface IGoalContext {
   timeframe: Timeframe;
   targetFrequency: number;
   startDate: Date | null;
+  endDate: Date | null;
   lastCompletedAt: Date | null;
   completedTimeframe: number;
   completedPeriod: number;
@@ -182,10 +180,12 @@ export interface IGoalContext {
   setCompletedTimeframe: React.Dispatch<React.SetStateAction<number>>;
   setCompletedPeriod: React.Dispatch<React.SetStateAction<number>>;
   setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setLastCompletedAt: React.Dispatch<React.SetStateAction<Date | null>>;
   createGoalEntry: () => void;
-  updateGoalEntry: (uuid: string) => void;
+  updateGoalEntry: (uuid: string, forDate: Date) => void;
   deleteGoalEntry: (uuid: string) => void;
+  refreshGoalTimeframes: () => void;
   resetGoalEntryFields: () => void;
 }
 

@@ -18,6 +18,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { WorryListModal } from './WorryListModal';
 import { WorryListItemAddModal } from './WorryListItemAddModal';
 import { ReframingModal } from './ReframingModal';
+import { EarnedPointsModal } from './EarnedPointsModal';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -95,6 +96,9 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
     useState<boolean>(false);
   const [reframingModalIndex, setReframingModalIndex] = useState<number>(0);
 
+  const [earnedPointsModalVisible, setEarnedPointsModalVisible] =
+    useState<boolean>(false);
+
   const handleDrawer = () => {
     if (!isDrawerOpen) {
       setIsDrawerOpen(!isDrawerOpen);
@@ -111,6 +115,12 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
 
   return (
     <>
+      {/* Earned Points Modal */}
+      <EarnedPointsModal
+        visible={earnedPointsModalVisible}
+        onClose={() => setEarnedPointsModalVisible(false)}
+        points={20}
+      />
       {/* Worry List Modal */}
       <WorryListModal
         modalWorryListVisible={modalWorryListVisible}
@@ -140,6 +150,8 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
         modalWorryListVisible={modalWorryListVisible}
         setModalWorryListVisible={setModalWorryListVisible}
         isDrawerOpen={isDrawerOpen}
+        earnedPointsModalVisible={earnedPointsModalVisible}
+        setEarnedPointsModalVisible={setEarnedPointsModalVisible}
       />
 
       {/* Headers */}
