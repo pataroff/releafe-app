@@ -118,11 +118,11 @@ export enum GoalCategory {
 }
 
 export enum ExerciseCategory {
-  Mindfulness = 'MINDFULNESS',
+  Voelen = 'VOELEN',
   Meditatie = 'MEDITATIE',
   Ontspanning = 'ONTSPANNING',
-  Lichaamsbeweging = 'LICHAAMSBEWEGING',
-  Ademhaling = 'ADEMHALING',
+  Bewegen = 'BEWEGEN',
+  Adem = 'ADEM',
 }
 
 export interface Exercise {

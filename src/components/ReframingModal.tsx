@@ -1043,6 +1043,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
             </View>
           </View>
         </View>
+        <Toast/>
       </GestureHandlerRootView>
     </Modal>
   );
