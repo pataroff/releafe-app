@@ -26,13 +26,18 @@ import { Avatar } from 'react-native-paper';
 
 import { InformationModal } from './InformationModal';
 import { BonsaiInformationModal } from './BonsaiInformationModal';
+import { ChangePasswordModal } from './ChangePasswordModal';
 import { CloseModal } from './CloseModal';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const windowWidth = Dimensions.get('window').width;
 
 const HAS_SEEN_HOME_GUIDE_KEY = 'hasSeenHomeGuide';
 const HAS_SEEN_BONSAI_GUIDE_KEY = 'hasSeenBonsaiGuide';
+
+// @DTODO This is just for testing purposes, remove after!
+const clearLocalStorage = async () => {
+  await AsyncStorage.clear();
+};
 
 export const CustomDrawerContent: React.FC = (props) => {
   const { user, signOut } = useAuth();
@@ -40,8 +45,11 @@ export const CustomDrawerContent: React.FC = (props) => {
 
   const [isInformationModalVisible, setIsInformationModalVisible] =
     useState<boolean>(false);
+  const [changePasswordModalVisible, setChangePasswordModalVisible] =
+    useState<boolean>(false);
 
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
+  const [isUserClaimed, setIsUserClaimed] = useState<boolean>(user?.isClaimed);
 
   const currentRoute = state.routes[state.index];
   const nestedRoute = currentRoute.state?.routes?.[currentRoute.state.index];
@@ -92,16 +100,18 @@ export const CustomDrawerContent: React.FC = (props) => {
     },
   ];
 
+  useEffect(() => {
+    if (!isUserClaimed) {
+      setChangePasswordModalVisible(true);
+    } else {
+      checkAndShowGuideModal();
+    }
+  }, [nestedRoute?.name]);
+
   const checkAndShowGuideModal = async () => {
-    if (nestedRoute?.name === 'BonsaiTree') {
-      const hasSeenBonsaiGuide = await AsyncStorage.getItem(
-        HAS_SEEN_BONSAI_GUIDE_KEY
-      );
-      if (!hasSeenBonsaiGuide) {
-        setIsInformationModalVisible(true);
-        await AsyncStorage.setItem(HAS_SEEN_BONSAI_GUIDE_KEY, 'true');
-      }
-    } else if (nestedRoute?.name === 'Home') {
+    const routeName = nestedRoute?.name || 'Home';
+
+    if (routeName === 'Home') {
       const hasSeenHomeGuide = await AsyncStorage.getItem(
         HAS_SEEN_HOME_GUIDE_KEY
       );
@@ -109,17 +119,26 @@ export const CustomDrawerContent: React.FC = (props) => {
         setIsInformationModalVisible(true);
         await AsyncStorage.setItem(HAS_SEEN_HOME_GUIDE_KEY, 'true');
       }
+    } else if (routeName === 'BonsaiTree') {
+      const hasSeenBonsaiGuide = await AsyncStorage.getItem(
+        HAS_SEEN_BONSAI_GUIDE_KEY
+      );
+      if (!hasSeenBonsaiGuide) {
+        setIsInformationModalVisible(true);
+        await AsyncStorage.setItem(HAS_SEEN_BONSAI_GUIDE_KEY, 'true');
+      }
     }
   };
 
-  useEffect(() => {
-    if (nestedRoute?.name) {
-      checkAndShowGuideModal();
-    }
-  }, [nestedRoute?.name]);
-
   return (
     <>
+      {!isUserClaimed && (
+        <ChangePasswordModal
+          changePasswordModalVisible={changePasswordModalVisible}
+          setChangePasswordModalVisible={setChangePasswordModalVisible}
+          setIsUserClaimed={setIsUserClaimed}
+        />
+      )}
       {nestedRoute?.name === 'BonsaiTree' ? (
         <BonsaiInformationModal
           modalBonsaiInformationVisible={isInformationModalVisible}
@@ -131,6 +150,7 @@ export const CustomDrawerContent: React.FC = (props) => {
           setModalInformationVisible={setIsInformationModalVisible}
         />
       )}
+
       <CloseModal
         closeModalVisible={closeModalVisible}
         setCloseModalVisible={setCloseModalVisible}

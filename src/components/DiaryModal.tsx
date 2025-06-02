@@ -233,7 +233,12 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   };
 
   const handleFinish = () => {
-    // Create diary entry
+    // Check if a diary entry already exists for that date
+    const matchedDiaryEntry = diaryEntries.find(
+      (entry) => getFormattedDate(entry.date) == getFormattedDate(date)
+    );
+
+    // Create or update a diary entry
     createOrUpdateDiaryEntry();
 
     let totalPoints = 0;
@@ -244,24 +249,26 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     // Check if there are goals that need to be updated
     if (checkedGoals.length > 0) {
       for (const checkedGoal of checkedGoals) {
-        updateGoalEntry(checkedGoal, date);
+        const updatedGoalEntry = updateGoalEntry(checkedGoal, date);
 
-        const matchedGoalEntry = goalEntries.find(
-          (entry) => entry.uuid == checkedGoal
-        );
-
-        if (!matchedGoalEntry) continue;
+        if (!updatedGoalEntry) continue;
 
         if (
-          matchedGoalEntry.completedTimeframe ===
-          matchedGoalEntry.targetFrequency
+          updatedGoalEntry.completedTimeframe ===
+          updatedGoalEntry.targetFrequency
         ) {
-          if (matchedGoalEntry.timeframe === Timeframe.Monthly) {
-            calculatedPoints += 50;
-          } else if (matchedGoalEntry.timeframe === Timeframe.Weekly) {
-            calculatedPoints += 30;
-          } else {
-            calculatedPoints += 10;
+          switch (updatedGoalEntry.timeframe) {
+            case Timeframe.Monthly:
+              calculatedPoints += 50;
+              break;
+            case Timeframe.Weekly:
+              calculatedPoints += 30;
+              break;
+            case Timeframe.Daily:
+              calculatedPoints += 10;
+              break;
+            default:
+              calculatedPoints += 10;
           }
         }
       }
@@ -271,18 +278,9 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
       }
     }
 
-    const matchedDiaryEntry = diaryEntries.find(
-      (entry) => getFormattedDate(entry.date) === getFormattedDate(date)
-    );
-    console.log(matchedDiaryEntry);
+    totalPoints = !matchedDiaryEntry ? calculatedPoints + 10 : calculatedPoints;
 
-    if (!matchedDiaryEntry) {
-      totalPoints = calculatedPoints + 10;
-    } else {
-      totalPoints = calculatedPoints;
-    }
-
-    if (totalPoints !== 0) {
+    if (totalPoints > 0) {
       addPoints(totalPoints);
     } else {
       showEarnedPointsModal = false;

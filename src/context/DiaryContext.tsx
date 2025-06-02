@@ -96,7 +96,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     setTextValues({});
   };
 
-  const createOrUpdateDiaryEntry = async () => {
+  const createOrUpdateDiaryEntry = (): IDiaryEntry => {
     const formattedDate = getFormattedDate(date);
 
     const matchedDiaryEntry = diaryEntries.find(
@@ -105,7 +105,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
 
     const uuid = matchedDiaryEntry?.uuid ?? uuidv4();
 
-    const newDiaryEntry = {
+    const newDiaryEntry: IDiaryEntry = {
       id: '',
       uuid,
       date,
@@ -123,25 +123,41 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     };
 
     if (matchedDiaryEntry) {
-      setDiaryEntries((prev) =>
-        prev.map((entry) => (entry.uuid === uuid ? newDiaryEntry : entry))
-      );
+      const index = diaryEntries.indexOf(matchedDiaryEntry);
+      setDiaryEntries((prev) => {
+        const updatedEntries = [...prev];
+        updatedEntries[index] = newDiaryEntry;
+        return updatedEntries;
+      });
 
-      try {
-        const matchedDiaryEntryDatabase = await pb
-          .collection('diary_entries')
-          .getFirstListItem(`uuid="${uuid}"`);
-
-        await pb
-          .collection('diary_entries')
-          .update(matchedDiaryEntryDatabase.id, newDiaryEntryDatabase);
-      } catch (error) {
-        console.error('Failed to update diary entry in DB:', error);
-      }
+      // Async DB update
+      updateDiaryEntryInDatabase(uuid, newDiaryEntryDatabase);
     } else {
       setDiaryEntries((prev) => [...prev, newDiaryEntry]);
 
-      await pb.collection('diary_entries').create(newDiaryEntryDatabase);
+      // Async DB create
+      createDiaryEntryInDatabase(newDiaryEntryDatabase);
+    }
+
+    return newDiaryEntry;
+  };
+
+  const updateDiaryEntryInDatabase = async (uuid: string, entry: any) => {
+    try {
+      const matched = await pb
+        .collection('diary_entries')
+        .getFirstListItem(`uuid="${uuid}"`);
+      await pb.collection('diary_entries').update(matched.id, entry);
+    } catch (error) {
+      console.error('Failed to update diary entry in DB:', error);
+    }
+  };
+
+  const createDiaryEntryInDatabase = async (entry: any) => {
+    try {
+      await pb.collection('diary_entries').create(entry);
+    } catch (error) {
+      console.error('Failed to create diary entry in DB:', error);
     }
   };
 

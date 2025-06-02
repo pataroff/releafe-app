@@ -165,7 +165,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
-  const updateGoalEntry = async (uuid: string, forDate: Date = new Date()) => {
+  const updateGoalEntry = (uuid: string, forDate: Date = new Date()) => {
     const matchedGoalEntry = goalEntries.find((entry) => entry.uuid === uuid);
     if (!matchedGoalEntry) return;
 
@@ -203,7 +203,16 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       return updatedEntries;
     });
 
-    // Update PocketBase
+    // Update Pocketbase
+    updateGoalEntryInDatabase(matchedGoalEntry, updatedEntry);
+
+    return updatedEntry;
+  };
+
+  const updateGoalEntryInDatabase = async (
+    matchedGoalEntry: IGoalEntry,
+    updatedGoalEntry: IGoalEntry
+  ) => {
     try {
       const matchedGoalEntryDatabase = await pb
         .collection('goal_entries')
@@ -212,12 +221,13 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         });
 
       await pb.collection('goal_entries').update(matchedGoalEntryDatabase.id, {
-        completedDates: updatedCompletedDates,
-        completedTimeframe: updatedEntry.completedTimeframe,
-        completedPeriod: updatedEntry.completedPeriod,
+        completedDates: updatedGoalEntry.completedDates,
+        completedTimeframe: updatedGoalEntry.completedTimeframe,
+        completedPeriod: updatedGoalEntry.completedPeriod,
       });
     } catch (error) {
-      console.error('Error updating goal entry:', error);
+      console.error('Failed to update goal entry in DB:', error);
+      // Optional: store to retry later or notify user
     }
   };
 

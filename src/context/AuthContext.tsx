@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
     const checkAuthStatus = async () => {
       const isLoggedIn = pb.authStore.isValid;
       setIsLoggedIn(isLoggedIn);
-      setUser(isLoggedIn ? pb.authStore.model : null);
+      setUser(isLoggedIn ? pb.authStore.record : null);
     };
 
     checkAuthStatus();
@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
     try {
       setIsLoading(true);
       await pb.collection('users').authWithPassword(email, password);
-      setUser(pb.authStore.isValid ? pb.authStore.model : null);
+      setUser(pb.authStore.isValid ? pb.authStore.record : null);
       setIsLoggedIn(pb.authStore.isValid);
     } catch (error) {
       console.error('Error: ', error);
@@ -93,53 +93,21 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
-  // @TODO Proper account activation flow!
-  const register = async ({
+  const activate = async ({
     email,
-    password,
-    passwordConfirm,
+    otpId,
+    otp,
     firstName,
     lastName,
     birthDate,
     gender,
     postcode,
   }: IUserData) => {
-    try {
-      setIsLoading(true);
-      await pb.collection('users').create({
-        email: email.trim(),
-        password,
-        passwordConfirm,
-        firstName: firstName.trim() ?? '',
-        lastName: lastName.trim() ?? '',
-        birthDate,
-        gender,
-        postcode: postcode.trim() ?? '',
-      });
-
-      showToast('success', 'Account aangemaakt', 'Je kunt nu inloggen.');
-    } catch (error) {
-      console.error('Error: ', error);
+    if (!otpId || !otp) {
       showToast(
         'error',
-        'Account aanmaken mislukt',
-        'Controleer je gegevens of probeer het later opnieuw.'
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const changePassword = async (
-    oldPassword: string,
-    newPassword: string,
-    confirmNewPassword: string
-  ) => {
-    if (!pb.authStore.isValid || !user) {
-      showToast(
-        'error',
-        'Niet ingelogd',
-        'Log eerst in om deze actie uit te voeren.'
+        'Activatie mislukt',
+        'OTP-gegevens ontbreken. Vraag een nieuwe OTP aan.'
       );
       return;
     }
@@ -147,11 +115,120 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
     try {
       setIsLoading(true);
 
-      await pb.collection('users').update(user.id, {
-        oldPassword,
+      await pb.collection('users').authWithOTP(otpId, otp);
+      setUser(pb.authStore.isValid ? pb.authStore.record : null);
+      setIsLoggedIn(pb.authStore.isValid);
+
+      await pb.collection('users').update(pb.authStore.record?.id!, {
+        email: email.trim(),
+        firstName: firstName.trim() ?? '',
+        lastName: lastName.trim() ?? '',
+        birthDate,
+        gender,
+        postcode: postcode.trim() ?? '',
+      });
+
+      showToast(
+        'success',
+        'Account geactiveerd',
+        'Je account is geactiveerd en je bent ingelogd.'
+      );
+    } catch (error) {
+      console.error('Error: ', error);
+      showToast(
+        'error',
+        'Activatie mislukt',
+        'Kon je account niet activeren. Controleer je gegevens en probeer het opnieuw.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const requestOTP = async (email: string): Promise<string | undefined> => {
+    try {
+      await pb.collection('users').getFirstListItem(`email="${email.trim()}"`);
+    } catch {
+      showToast(
+        'error',
+        'E-mailadres niet gevonden',
+        'Er bestaat geen gebruiker met dit e-mailadres.'
+      );
+      return undefined;
+    }
+
+    try {
+      const result = await pb.collection('users').requestOTP(email.trim());
+      showToast(
+        'success',
+        'OTP verzonden',
+        'Er is een eenmalige code naar je e-mailadres gestuurd.'
+      );
+      return result.otpId;
+    } catch (error) {
+      console.error('OTP request failed:', error);
+      showToast(
+        'error',
+        'OTP-aanvraag mislukt',
+        'Kon geen OTP e-mail verzenden.'
+      );
+      return undefined;
+    }
+  };
+
+  const changePassword = async (
+    newPassword: string,
+    confirmNewPassword: string,
+    oldPassword?: string
+  ) => {
+    if (!pb.authStore.isValid || !user) {
+      showToast(
+        'error',
+        'Niet ingelogd',
+        'Log eerst in om deze actie uit te voeren.'
+      );
+      return false;
+    }
+
+    try {
+      setIsLoading(true);
+
+      // Get fresh user data to check `isClaimed`
+      const currentUser = await pb.collection('users').getOne(user.id);
+
+      if (currentUser.isClaimed === true) {
+        // If user has changed their password before, require `oldPassword`
+        if (!oldPassword) {
+          showToast(
+            'error',
+            'Oud wachtwoord vereist',
+            'Voer je oude wachtwoord in.'
+          );
+          return false;
+        }
+
+        try {
+          await pb
+            .collection('users')
+            .authWithPassword(user.email, oldPassword);
+        } catch {
+          showToast(
+            'error',
+            'Ongeldig wachtwoord',
+            'Het oude wachtwoord is onjuist.'
+          );
+          return false;
+        }
+      }
+
+      // Proceed with password update
+      const updatedUserData = {
         password: newPassword,
         passwordConfirm: confirmNewPassword,
-      });
+        isClaimed: true, // Mark that they’ve claimed the account
+      };
+
+      await pb.collection('users').update(user.id, updatedUserData);
 
       showToast(
         'success',
@@ -161,6 +238,7 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
 
       // Log the user out after changing the password
       await signOut();
+      return true;
     } catch (error) {
       console.error('Change password error: ', error);
 
@@ -169,6 +247,7 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
         'Mislukt',
         'Het wijzigen van het wachtwoord is mislukt.'
       );
+      return false;
     } finally {
       setIsLoading(false);
     }
@@ -183,8 +262,6 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
       );
       return;
     }
-
-    console.log(newEmail);
 
     try {
       setIsLoading(true);
@@ -318,7 +395,8 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
       value={{
         signIn,
         signOut,
-        register,
+        activate,
+        requestOTP,
         changePassword,
         changeEmail,
         changeBirthDate,

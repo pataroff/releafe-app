@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   Pressable,
   Dimensions,
   Platform,
@@ -33,7 +32,7 @@ const genderOptions = [
 ];
 
 export const RegisterForm = () => {
-  const { register } = useAuth();
+  const { activate, requestOTP } = useAuth();
   const navigation = useNavigation();
 
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
@@ -44,8 +43,16 @@ export const RegisterForm = () => {
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [gender, setGender] = useState<Gender | null>(null);
   const [postcode, setPostcode] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [passwordConfirm, setPasswordConfirm] = useState<string>('');
+  const [otp, setOtp] = useState<string>('');
+  const [otpId, setOtpId] = useState<string>('');
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldown]);
 
   const showToast = (
     type: 'error' | 'success' | 'info',
@@ -60,6 +67,22 @@ export const RegisterForm = () => {
     });
   };
 
+  const handleRequestOTP = async () => {
+    if (!email) {
+      return showToast(
+        'error',
+        'Geen e-mailadres',
+        'Voer een e-mailadres in om een OTP te ontvangen.'
+      );
+    }
+
+    const otpId = await requestOTP(email);
+    if (otpId) {
+      setOtpId(otpId);
+      setCooldown(30);
+    }
+  };
+
   const handleRegister = () => {
     if (
       !firstName ||
@@ -68,32 +91,16 @@ export const RegisterForm = () => {
       !birthDate ||
       !gender ||
       !postcode ||
-      !password ||
-      !passwordConfirm
+      !otpId ||
+      !otp
     ) {
       return showToast('error', 'Ongeldige invoer', 'Vul alle velden in.');
     }
 
-    if (password.length < 8) {
-      return showToast(
-        'error',
-        'Wachtwoord te kort',
-        'Gebruik minstens 8 tekens.'
-      );
-    }
-
-    if (password !== passwordConfirm) {
-      return showToast(
-        'error',
-        'Wachtwoorden komen niet overeen',
-        'Controleer je invoer.'
-      );
-    }
-
     const userData: IUserData = {
       email,
-      password,
-      passwordConfirm,
+      otpId,
+      otp,
       firstName,
       lastName,
       birthDate,
@@ -101,7 +108,7 @@ export const RegisterForm = () => {
       postcode,
     };
 
-    register(userData);
+    activate(userData);
     navigation.navigate('Login');
   };
 
@@ -173,19 +180,12 @@ export const RegisterForm = () => {
       />
 
       <FormInput
-        label='Wachtwoord'
-        placeholder='Vul je wachtwoord in...'
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-
-      <FormInput
-        label='Bevestig wachtwoord'
-        placeholder='Bevestig je wachtwoord...'
-        value={passwordConfirm}
-        onChangeText={setPasswordConfirm}
-        secureTextEntry
+        label='OTP (one-time-password)'
+        placeholder='Voer je OTP in...'
+        value={otp}
+        onChangeText={setOtp}
+        handleRequestOtp={handleRequestOTP}
+        cooldown={cooldown}
       />
 
       <Pressable style={styles.signInButton} onPress={handleRegister}>

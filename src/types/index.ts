@@ -34,7 +34,7 @@ export interface IDiaryContext {
   addSliderValue: (questionIndex: number, value: number) => void;
   resetSliderValues: () => void;
   resetTextValues: () => void;
-  createOrUpdateDiaryEntry: () => void;
+  createOrUpdateDiaryEntry: () => IDiaryEntry;
 }
 
 export type RootStackParamList = {
@@ -52,8 +52,9 @@ export enum Gender {
 
 export interface IUserData {
   email: string;
-  password: string;
-  passwordConfirm: string;
+  // @TODO `otpId` and `otp` in `IUserData` don't seem quite right, edit this later!
+  otpId: string;
+  otp: string;
   firstName: string;
   lastName: string;
   birthDate: Date | null;
@@ -64,12 +65,13 @@ export interface IUserData {
 export interface IAuthContext {
   signIn: (email: string, password: string) => void;
   signOut: () => void;
-  register: ({}: IUserData) => void;
+  activate: ({}: IUserData) => void;
+  requestOTP: (email: string) => Promise<string | undefined>;
   changePassword: (
-    oldPassword: string,
     newPassword: string,
-    confirmNewPassword: string
-  ) => Promise<void>;
+    confirmNewPassword: string,
+    oldPassword?: string
+  ) => Promise<boolean>;
   changeEmail: (newEmail: string) => Promise<void>;
   changeBirthDate: (newBirthDate: Date) => Promise<void>;
   updateUser: (updatedFields: Partial<IUserData>) => Promise<void>;
@@ -183,7 +185,7 @@ export interface IGoalContext {
   setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setCompletedDates: React.Dispatch<React.SetStateAction<string[]>>;
   createGoalEntry: () => void;
-  updateGoalEntry: (uuid: string, forDate: Date) => void;
+  updateGoalEntry: (uuid: string, forDate: Date) => IGoalEntry | undefined;
   deleteGoalEntry: (uuid: string) => void;
   refreshGoalTimeframes: () => void;
   resetGoalEntryFields: () => void;
