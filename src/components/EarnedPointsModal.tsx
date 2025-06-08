@@ -13,20 +13,28 @@ import {
 import { Fonts } from '../styles';
 
 import Feather from '@expo/vector-icons/Feather';
+import { useGamification } from '../context/GamificationContext';
 
 interface EarnedPointsModalProps {
   visible: boolean;
-  onClose: () => void;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   points: number;
   goalCompleted?: boolean;
 }
 
 export const EarnedPointsModal: React.FC<EarnedPointsModalProps> = ({
   visible,
-  onClose,
+  setVisible,
   points,
   goalCompleted,
 }) => {
+  const { addPoints } = useGamification();
+
+  const handleClose = () => {
+    setVisible(!visible);
+    addPoints(points);
+  };
+
   return (
     <Modal animationType='fade' transparent={true} visible={visible}>
       <View style={styles.modalWrapper}>
@@ -34,7 +42,7 @@ export const EarnedPointsModal: React.FC<EarnedPointsModalProps> = ({
           {/* Close Button */}
           <Pressable
             style={{ position: 'absolute', top: 20, right: 20 }}
-            onPress={onClose}
+            onPress={handleClose}
           >
             <Feather name='x-circle' size={24} color='gray' />
           </Pressable>
@@ -60,7 +68,7 @@ export const EarnedPointsModal: React.FC<EarnedPointsModalProps> = ({
             Elke stap telt. Blijf op jouw manier vooruitgaan.
           </Text>
 
-          <Pressable style={styles.collectButton} onPress={onClose}>
+          <Pressable style={styles.collectButton} onPress={handleClose}>
             <Text style={styles.collectText}>Punten verzamelen</Text>
           </Pressable>
         </View>

@@ -49,6 +49,11 @@ export const LoginForm = () => {
             onChangeText={(value) => setPassword(value)}
             value={password}
           ></TextInput>
+
+          <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={styles.forgotPasswordText}>Wachtwoord vergeten?</Text>
+          </Pressable>
+
           <Pressable
             style={styles.signInButton}
             onPress={() => signIn(email, password)}
@@ -111,6 +116,14 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     color: '#A9C1A1',
+    ...Fonts.sofiaProMedium[Platform.OS],
+  } as TextStyle,
+  forgotPasswordText: {
+    color: '#A9C1A1',
+    textAlign: 'right',
+    marginVertical: 10,
+    marginRight: 10,
+    fontSize: 14,
     ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,
 });

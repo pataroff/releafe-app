@@ -101,14 +101,14 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
 
   const handleDrawer = () => {
     if (!isDrawerOpen) {
-      setIsDrawerOpen(!isDrawerOpen);
+      setIsDrawerOpen(true);
       setTimeout(() => {
-        setModalWorryListVisible(!modalWorryListVisible);
+        setModalWorryListVisible(true);
       }, 500);
     } else {
-      setModalWorryListVisible(!modalWorryListVisible);
+      setModalWorryListVisible(false);
       setTimeout(() => {
-        setIsDrawerOpen(!isDrawerOpen);
+        setIsDrawerOpen(false);
       }, 500);
     }
   };
@@ -118,7 +118,7 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
       {/* Earned Points Modal */}
       <EarnedPointsModal
         visible={earnedPointsModalVisible}
-        onClose={() => setEarnedPointsModalVisible(false)}
+        setVisible={setEarnedPointsModalVisible}
         points={20}
       />
       {/* Worry List Modal */}
@@ -147,9 +147,7 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
         setReframingModalIndex={setReframingModalIndex}
         modalReframingVisible={modalReframingVisible}
         setModalReframingVisible={setModalReframingVisible}
-        modalWorryListVisible={modalWorryListVisible}
-        setModalWorryListVisible={setModalWorryListVisible}
-        isDrawerOpen={isDrawerOpen}
+        handleDrawer={handleDrawer}
         earnedPointsModalVisible={earnedPointsModalVisible}
         setEarnedPointsModalVisible={setEarnedPointsModalVisible}
       />

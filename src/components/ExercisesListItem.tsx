@@ -58,7 +58,7 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
     <>
       <EarnedPointsModal
         visible={modalEarnedPointsModalVisible}
-        onClose={() => setModalEarnedPointsModalVisibe(false)}
+        setVisible={setModalEarnedPointsModalVisibe}
         points={15}
       />
       <ExercisesListItemExpandedModal

@@ -40,7 +40,9 @@ import * as MediaLibrary from 'expo-media-library';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as VideoThumbnails from 'expo-video-thumbnails';
+
 import Toast from 'react-native-toast-message';
+import { toastConfig } from '../utils/toastConfig';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -778,7 +780,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                 </View>
               </TouchableWithoutFeedback>
             </View>
-            <Toast />
+            <Toast config={toastConfig} />
           </View>
         </Modal>
       )}

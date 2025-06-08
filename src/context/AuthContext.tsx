@@ -80,7 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
       setUser(null);
       setIsLoggedIn(false);
 
-      showToast('success', 'Uitgelogd', 'Je bent succesvol uitgelogd.');
+      // showToast('success', 'Uitgelogd', 'Je bent succesvol uitgelogd.');
     } catch (error) {
       console.error('Error: ', error);
       showToast(
@@ -114,12 +114,9 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
 
     try {
       setIsLoading(true);
+      const user = await pb.collection('users').authWithOTP(otpId, otp.trim());
 
-      await pb.collection('users').authWithOTP(otpId, otp);
-      setUser(pb.authStore.isValid ? pb.authStore.record : null);
-      setIsLoggedIn(pb.authStore.isValid);
-
-      await pb.collection('users').update(pb.authStore.record?.id!, {
+      const updatedUser = await pb.collection('users').update(user.record.id, {
         email: email.trim(),
         firstName: firstName.trim() ?? '',
         lastName: lastName.trim() ?? '',
@@ -128,11 +125,19 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
         postcode: postcode.trim() ?? '',
       });
 
-      showToast(
-        'success',
-        'Account geactiveerd',
-        'Je account is geactiveerd en je bent ingelogd.'
-      );
+      setUser(pb.authStore.isValid ? updatedUser : null);
+      setIsLoggedIn(pb.authStore.isValid);
+
+      // @WARN The delay is needed, so the <Toast /> inside the `ChangePasswordModal.tsx` has time to mount!
+      // Otherwise, the internal ref used, points to the <Toast /> inside `App.tsx`, and the toast is rendered
+      // underneath the modal!
+      setTimeout(() => {
+        showToast(
+          'success',
+          'Account geactiveerd',
+          'Je account is geactiveerd en je bent ingelogd.'
+        );
+      }, 100);
     } catch (error) {
       console.error('Error: ', error);
       showToast(
@@ -173,6 +178,30 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
         'Kon geen OTP e-mail verzenden.'
       );
       return undefined;
+    }
+  };
+
+  const resetPassword = async (email: string): Promise<boolean> => {
+    try {
+      await pb.collection('users').requestPasswordReset(email);
+
+      showToast(
+        'success',
+        'E-mail verzonden',
+        'Controleer je inbox voor de resetlink.'
+      );
+
+      return true;
+    } catch (error: any) {
+      console.error('Reset password error:', error);
+
+      showToast(
+        'error',
+        'Fout bij versturen',
+        'Er is iets misgegaan bij het versturen van de resetlink. Probeer het later opnieuw.'
+      );
+
+      return false;
     }
   };
 
@@ -397,6 +426,7 @@ export const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
         signOut,
         activate,
         requestOTP,
+        resetPassword,
         changePassword,
         changeEmail,
         changeBirthDate,

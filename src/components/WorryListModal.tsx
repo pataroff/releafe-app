@@ -50,7 +50,7 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
       animationType='none'
       transparent={true}
       visible={modalWorryListVisible}
-      onRequestClose={() => setModalWorryListVisible(!modalWorryListVisible)}
+      onRequestClose={() => handleDrawer()}
     >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
@@ -111,7 +111,9 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
             ) : (
               <>
                 <View style={styles.noDataContainer}>
-                  <Text style={styles.noDataTitleText}>Je zorgenbakje is leeg</Text>
+                  <Text style={styles.noDataTitleText}>
+                    Je zorgenbakje is leeg
+                  </Text>
                   <Text style={styles.noDataDescriptionText}>
                     Je hebt op dit moment geen zorgen opgeslagen.
                   </Text>

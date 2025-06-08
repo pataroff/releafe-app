@@ -8,7 +8,6 @@ import {
   Pressable,
   TextStyle,
   Platform,
-  Modal,
 } from 'react-native';
 
 import { Fonts } from '../styles';
@@ -42,7 +41,7 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
   setModalReframingVisible,
   handleDrawer,
 }) => {
-  const { uuid, category, priority, date, title, description, reframed } = item;
+  const { uuid, category, priority, date, title, description } = item;
 
   const { updateWorryEntryFields, deleteWorryEntry } = useWorry();
 
@@ -60,211 +59,185 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
   };
 
   const handleEdit = () => {
-    updateWorryEntryFields(
-      uuid,
-      category,
-      priority,
-      title,
-      description,
-      reframed
-    );
+    updateWorryEntryFields(uuid, category, priority, title, description);
     setModalWorryListVisible(!modalWorryListVisible);
     setTimeout(() => {
       setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
       handleDrawer();
-    }, 300);
+    }, 100);
   };
 
   const handleDelete = () => {
-    deleteWorryEntry(uuid);
+    setModalCloseVisible(!modalCloseVisible);
   };
 
   const handleReframing = () => {
-    updateWorryEntryFields(
-      uuid,
-      category,
-      priority,
-      title,
-      description,
-      reframed
-    );
+    updateWorryEntryFields(uuid, category, priority, title, description);
     setModalWorryListVisible(!modalWorryListVisible);
     // 👇🏻 This fixes the app freezing!
     setTimeout(() => {
       setModalReframingVisible(!modalReframingVisible);
-    }, 300);
+    }, 100);
   };
 
   const handleClose = () => {
-    handleDelete();
+    deleteWorryEntry(uuid);
+    setTimeout(() => {
+      setModalCloseVisible(!modalCloseVisible);
+    }, 100);
   };
 
   return (
-    <Pressable
-      style={
-        expandedItems[uuid] === true
-          ? [
-              styles.worryListItemContainer,
-              {
-                flex: 1,
-              },
-            ]
-          : [styles.worryListItemContainer, { height: 60 }]
-      }
-      onPress={() => expandItem(uuid)}
-    >
-      <View>
-        <Modal
-          animationType='none'
-          transparent={true}
-          visible={modalCloseVisible}
-          onRequestClose={() => setModalCloseVisible(!modalCloseVisible)}
-        >
-          <CloseModal
-            closeModalVisible={modalCloseVisible}
-            setCloseModalVisible={setModalCloseVisible}
-            parentModalVisible={modalCloseVisible}
-            setParentModalVisible={setModalCloseVisible}
-            title='Zorg verwijderen'
-            description='Je staat op het punt om je zorg te verwijderen. Weet je het zeker?'
-            handleClose={handleClose}
-            denyText='Nee, bewaar mijn zorg.'
-            confirmText='Ja, verwijder mijn zorg.'
-            closeButtonDisabled={true}
-          />
-        </Modal>
-      </View>
-      {/* Priority Bar */}
-      <View
-        style={{
-          position: 'absolute',
-          borderTopLeftRadius: 10,
-          borderBottomLeftRadius: 10,
-          borderTopRightRadius: 0,
-          borderBottomRightRadius: 0,
-          backgroundColor: getPriorityColor(priority),
-          width: 65,
-          height: '100%',
-        }}
-      ></View>
-
-      {/* Main Content Wrapper */}
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: '100%',
-          height: '100%',
-        }}
+    <>
+      <CloseModal
+        closeModalVisible={modalCloseVisible}
+        setCloseModalVisible={setModalCloseVisible}
+        parentModalVisible={modalCloseVisible}
+        setParentModalVisible={setModalCloseVisible}
+        title='Zorg verwijderen'
+        description='Je staat op het punt om je zorg te verwijderen. Weet je het zeker?'
+        handleClose={handleClose}
+        denyText='Nee, bewaar mijn zorg'
+        confirmText='Ja, verwijder mijn zorg'
+      />
+      <Pressable
+        style={
+          expandedItems[uuid] === true
+            ? [
+                styles.worryListItemContainer,
+                {
+                  flex: 1,
+                },
+              ]
+            : [styles.worryListItemContainer, { height: 60 }]
+        }
+        onPress={() => expandItem(uuid)}
       >
-        {/* Category + Title + Reframe Icon */}
+        {/* Priority Bar */}
+        <View
+          style={{
+            position: 'absolute',
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0,
+            backgroundColor: getPriorityColor(priority),
+            width: 65,
+            height: '100%',
+          }}
+        ></View>
+
+        {/* Main Content Wrapper */}
         <View
           style={{
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            columnGap: 10,
-            height: '100%',
             width: '100%',
+            height: '100%',
           }}
         >
-          {/* Category Container */}
+          {/* Category + Title + Reframe Icon */}
           <View
             style={{
               display: 'flex',
-              justifyContent:
-                expandedItems[uuid] == true ? 'flex-start' : 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
               alignItems: 'center',
-              backgroundColor: '#EDF8E9',
+              columnGap: 10,
               height: '100%',
-              width: 65,
-              borderRadius: 10,
-              paddingTop: expandedItems[uuid] == true ? 18 : 0,
+              width: '100%',
             }}
           >
-            {getCategory(category)}
-          </View>
-          {/* Title + Date + Description + Edit + Delete + Reframe Container */}
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent:
-                expandedItems[uuid] == true ? 'space-between' : 'center',
-              width: expandedItems[uuid] == true ? '73%' : '60%',
-              paddingVertical: 15,
-              rowGap: 15,
-            }}
-          >
-            {/* Title + Date */}
+            {/* Category Container */}
             <View
-              style={{ display: 'flex', flexDirection: 'column', rowGap: 5 }}
+              style={{
+                display: 'flex',
+                justifyContent:
+                  expandedItems[uuid] == true ? 'flex-start' : 'center',
+                alignItems: 'center',
+                backgroundColor: '#EDF8E9',
+                height: '100%',
+                width: 65,
+                borderRadius: 10,
+                paddingTop: expandedItems[uuid] == true ? 18 : 0,
+              }}
             >
-              {/* Title */}
-              <Text style={styles.worryListItemTitleText}>{title}</Text>
-              {/* Date */}
-              {expandedItems[uuid] == true && (
-                <Text style={styles.worryListItemDateText}>
-                  Angemaakt op{' '}
-                  {date.toLocaleDateString('nl-NL', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
-                </Text>
-              )}
+              {getCategory(category)}
             </View>
-            {expandedItems[uuid] == true && (
-              <>
-                {/* Description [2] */}
-                <Text style={styles.worryListItemDescriptionText}>
-                  {description}
-                </Text>
+            {/* Title + Date + Description + Edit + Delete + Reframe Container */}
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent:
+                  expandedItems[uuid] == true ? 'space-between' : 'center',
+                width: expandedItems[uuid] == true ? '73%' : '60%',
+                paddingVertical: 15,
+                rowGap: 15,
+              }}
+            >
+              {/* Title + Date */}
+              <View
+                style={{ display: 'flex', flexDirection: 'column', rowGap: 5 }}
+              >
+                {/* Title */}
+                <Text style={styles.worryListItemTitleText}>{title}</Text>
+                {/* Date */}
+                {expandedItems[uuid] == true && (
+                  <Text style={styles.worryListItemDateText}>
+                    Angemaakt op{' '}
+                    {date.toLocaleDateString('nl-NL', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </Text>
+                )}
+              </View>
+              {expandedItems[uuid] == true && (
+                <>
+                  {/* Description [2] */}
+                  <Text style={styles.worryListItemDescriptionText}>
+                    {description}
+                  </Text>
 
-                {/* Edit + Delete + Reframe  */}
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    rowGap: 10,
-                  }}
-                >
+                  {/* Edit + Delete + Reframe  */}
                   <View
                     style={{
                       display: 'flex',
-                      flexDirection: 'row',
-                      columnGap: 5,
+                      flexDirection: 'column',
+                      rowGap: 10,
                     }}
                   >
-                    {/* Edit Button  */}
-                    <Pressable onPress={() => handleEdit()}>
-                      <Image
-                        resizeMode='contain'
-                        style={{ width: 46, height: 46 }}
-                        source={require('../../assets/images/worry_item_edit_icon.png')}
-                      />
-                    </Pressable>
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        columnGap: 5,
+                      }}
+                    >
+                      {/* Edit Button  */}
+                      <Pressable onPress={() => handleEdit()}>
+                        <Image
+                          resizeMode='contain'
+                          style={{ width: 46, height: 46 }}
+                          source={require('../../assets/images/worry_item_edit_icon.png')}
+                        />
+                      </Pressable>
 
-                    {/* Delete Button  */}
-                    <Pressable onPress={() => setModalCloseVisible(true)}>
-                      <Image
-                        resizeMode='contain'
-                        style={{ width: 43, height: 46 }}
-                        source={require('../../assets/images/delete_icon.png')}
-                      />
-                    </Pressable>
-                  </View>
-                  {/* Reframe Button */}
-                  <Pressable onPress={() => handleReframing()}>
-                    {reframed ? (
-                      <Image
-                        style={{ width: 190, height: 47 }}
-                        source={require('../../assets/images/reframe_again_button.png')}
-                      />
-                    ) : (
+                      {/* Delete Button  */}
+                      <Pressable onPress={() => handleDelete()}>
+                        <Image
+                          resizeMode='contain'
+                          style={{ width: 43, height: 46 }}
+                          source={require('../../assets/images/delete_icon.png')}
+                        />
+                      </Pressable>
+                    </View>
+                    {/* Reframe Button */}
+                    <Pressable onPress={() => handleReframing()}>
                       <Image
                         style={{
                           width: 149,
@@ -272,29 +245,29 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
                         }}
                         source={require('../../assets/images/reframe_now_button.png')}
                       />
-                    )}
-                  </Pressable>
-                </View>
-              </>
-            )}
-          </View>
+                    </Pressable>
+                  </View>
+                </>
+              )}
+            </View>
 
-          {/* Reframe Icon */}
-          <View style={{ width: 30 }}>
-            {expandedItems[uuid] === true ? (
-              <Entypo
-                name='chevron-up'
-                size={32}
-                style={styles.worryListExpandedArrow}
-                color='#5c6b57'
-              />
-            ) : (
-              <Entypo name='chevron-down' size={32} color='#5c6b57' />
-            )}
+            {/* Reframe Icon */}
+            <View style={{ width: 30 }}>
+              {expandedItems[uuid] === true ? (
+                <Entypo
+                  name='chevron-up'
+                  size={32}
+                  style={styles.worryListExpandedArrow}
+                  color='#5c6b57'
+                />
+              ) : (
+                <Entypo name='chevron-down' size={32} color='#5c6b57' />
+              )}
+            </View>
           </View>
         </View>
-      </View>
-    </Pressable>
+      </Pressable>
+    </>
   );
 };
 

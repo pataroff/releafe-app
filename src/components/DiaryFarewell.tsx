@@ -67,7 +67,7 @@ export const DiaryFarewell: React.FC = () => {
     <>
       <EarnedPointsModal
         visible={earnedPointsModalVisible}
-        onClose={() => setEarnedPointsModalVisible(false)}
+        setVisible={setEarnedPointsModalVisible}
         points={earnedPoints}
         goalCompleted={goalCompleted}
       />

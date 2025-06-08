@@ -17,7 +17,8 @@ import { GamificationProvider } from './src/context/GamificationContext';
 
 import AppNav from './src/navigation/AppNav';
 
-import Toast, { ErrorToast, ToastConfig } from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './src/utils/toastConfig';
 
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -30,32 +31,6 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 });
-
-const toastConfig: ToastConfig = {
-  longError: (props) => (
-    <ErrorToast
-      {...props}
-      text1Style={{
-        fontFamily: 'SofiaProBold',
-        fontSize: 16,
-        fontWeight: 'bold',
-      }}
-      text2Style={{
-        fontFamily: 'SofiaProLight',
-        fontSize: 14,
-        color: '#333',
-      }}
-      style={{
-        minHeight: 90,
-        paddingVertical: 10,
-        borderLeftColor: 'red',
-        borderLeftWidth: 10,
-        borderRadius: 10,
-      }}
-      text2NumberOfLines={3}
-    />
-  ),
-};
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({

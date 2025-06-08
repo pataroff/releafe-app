@@ -373,7 +373,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
         title='Stoppen met doel toevoegen'
         description='Je staat op het punt te stoppen met het aanmaken van dit persoonlijk doel. Weet je het zeker?'
         handleClose={handleClose}
-        denyText='Nee, ga door met aanmaken.'
+        denyText='Nee, ga door met aanmaken'
         confirmText='Ja, stop met aanmaken'
       />
       <View style={styles.modalWrapper}>

@@ -110,7 +110,6 @@ export const ExercisesListItemExpandedModal: React.FC<
                     setTimeout(() => {
                       setEarnedPointsModalVisible(!earnedPointsModalVisible);
                     }, 100);
-                    addPoints(10);
                     setHasPlayedFully(false);
                   }
                 }}

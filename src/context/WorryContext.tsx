@@ -2,12 +2,11 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Category, Priority, IWorryListItem, IWorryContext } from '../types';
+import { Category, Priority, IWorryContext, IWorryEntry } from '../types';
 
 import pb from '../lib/pocketbase';
 
 import { useAuth } from './AuthContext';
-import { useNote } from './NoteContext';
 
 const WorryContext = createContext<IWorryContext | undefined>(undefined);
 
@@ -23,16 +22,14 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
   const { user } = useAuth();
-  // const { updateNoteEntryFields } = useNote(); // @TODO How do we solve this?
 
-  const [worryEntries, setWorryEntries] = useState<IWorryListItem[]>([]);
+  const [worryEntries, setWorryEntries] = useState<IWorryEntry[]>([]);
   const [uuid, setUuid] = useState<string>('');
   const [category, setCategory] = useState<Category>(Category.Work);
   const [priority, setPriority] = useState<Priority>(Priority.None);
   const [date, setDate] = useState<Date>(new Date());
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [reframed, setReframed] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchWorryEntries = async () => {
@@ -52,7 +49,6 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
           date: new Date(item.date),
           title: item.title,
           description: item.description,
-          reframed: item.reframed,
         }));
 
         setWorryEntries(formatted);
@@ -64,72 +60,63 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
     fetchWorryEntries();
   }, [user]);
 
-  const createWorryEntry = async (noteEntryUuid?: string) => {
-    let noteEntry = null;
+  const createOrUpdateWorryEntry = (): IWorryEntry => {
+    const matchedWorryEntry = worryEntries.find((entry) => entry.uuid === uuid);
+    const newUuid = matchedWorryEntry?.uuid ?? uuidv4();
 
-    if (noteEntryUuid) {
-      noteEntry = await getNoteEntryId(noteEntryUuid);
-    }
-
-    const matchedWorryEntry = worryEntries.find((entry) => entry.uuid == uuid);
-
-    const newWorryEntry = {
-      id: '',
-      uuid: uuidv4(),
+    const newWorryEntry: IWorryEntry = {
+      uuid: newUuid,
       category,
       priority,
       date,
       title,
       description,
-      reframed,
     };
 
     const newWorryEntryDatabase = {
-      id: '',
-      uuid: newWorryEntry.uuid,
-      // @ts-ignore 'user' is possibly 'null'!
-      user: user.id,
-      note: noteEntry?.id,
+      uuid: newUuid,
+      user: user?.id,
       category,
       priority,
       date,
       title,
       description,
-      reframed,
     };
 
-    // @TODO We need the uuid set if the user wants to reframe immediately after the creation of a worry!
-    setUuid(newWorryEntry.uuid);
-
     if (matchedWorryEntry) {
-      // Get the index of the matching entry
       const index = worryEntries.indexOf(matchedWorryEntry);
-
-      // Update the existing entry at the found index
       setWorryEntries((prev) => {
-        const updatedEntries = [...prev];
-        updatedEntries[index] = newWorryEntry;
-        return updatedEntries;
+        const updated = [...prev];
+        updated[index] = newWorryEntry;
+        return updated;
       });
 
-      try {
-        // Get the existing entry from the database
-        const matchedWorryEntryDatabase = await pb
-          .collection('worry_entries')
-          .getFirstListItem(`uuid="${matchedWorryEntry.uuid}"`, {
-            requestKey: null, // prevents auto-cancelling duplicate pending requests
-          });
-
-        // Update the existing entry in the database
-        await pb
-          .collection('worry_entries')
-          .update(matchedWorryEntryDatabase.id, newWorryEntryDatabase);
-      } catch (error) {
-        console.error('Error updating worry entry:', error);
-      }
+      updateWorryEntryInDatabase(newUuid, newWorryEntryDatabase);
     } else {
+      setUuid(newUuid); // @INFO This is needed in case the user wants to reframe immediately post-creation!
       setWorryEntries((prev) => [newWorryEntry, ...prev]);
-      pb.collection('worry_entries').create(newWorryEntryDatabase);
+      createWorryEntryInDatabase(newWorryEntryDatabase);
+    }
+
+    return newWorryEntry;
+  };
+
+  const updateWorryEntryInDatabase = async (uuid: string, entry: any) => {
+    try {
+      const matched = await pb
+        .collection('worry_entries')
+        .getFirstListItem(`uuid="${uuid}"`, { requestKey: null });
+      await pb.collection('worry_entries').update(matched.id, entry);
+    } catch (error) {
+      console.error('Failed to update worry entry in DB:', error);
+    }
+  };
+
+  const createWorryEntryInDatabase = async (entry: any) => {
+    try {
+      await pb.collection('worry_entries').create(entry);
+    } catch (error) {
+      console.error('Failed to create worry entry in DB:', error);
     }
   };
 
@@ -149,82 +136,18 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
-  // Helper functions
-  const getNoteEntryId = async (worryEntryUuid: string) => {
-    try {
-      // Fetch the worry entry by UUID
-      const matchedWorryEntryDatabase = await pb
-        .collection('worry_entries')
-        .getFirstListItem(`uuid="${worryEntryUuid}"`);
-
-      if (!matchedWorryEntryDatabase) {
-        console.error('No worry entry found with the provided UUID.');
-        return null;
-      }
-
-      // Fetch the note entry using the worry entry ID
-      const matchedNoteEntryDatabase = await pb
-        .collection('note_entries')
-        .getFirstListItem(`worry="${matchedWorryEntryDatabase.id}"`);
-
-      if (!matchedNoteEntryDatabase) {
-        console.error('No note entry found for the provided worry entry.');
-        return null;
-      }
-      // Return the matched note entry
-      return matchedNoteEntryDatabase;
-    } catch (error) {
-      console.error('Error fetching note entry: ', error);
-      return null;
-    }
-  };
-
   const updateWorryEntryFields = async (
     uuid: string,
     category: Category,
     priority: Priority,
     title: string,
-    description: string,
-    reframed?: boolean
+    description: string
   ) => {
     setUuid(uuid);
     setCategory(category);
     setPriority(priority);
     setTitle(title);
     setDescription(description);
-
-    // If a `worry_entry` is `reframed`, then a corresponding note should exist, get that note and it's values
-    if (reframed) {
-      const noteEntry = await getNoteEntryId(uuid);
-
-      if (noteEntry) {
-        const {
-          uuid,
-          feelingDescription,
-          thoughtLikelihoodSliderOne,
-          forThoughtEvidence,
-          againstThoughtEvidence,
-          friendAdvice,
-          thoughtLikelihoodSliderTwo,
-          thoughtLikelihood,
-          alternativePerspective,
-          mediaFile,
-        } = noteEntry;
-
-        updateNoteEntryFields(
-          uuid, // noteEntry.uuid
-          feelingDescription,
-          thoughtLikelihoodSliderOne,
-          forThoughtEvidence,
-          againstThoughtEvidence,
-          friendAdvice,
-          thoughtLikelihoodSliderTwo,
-          thoughtLikelihood,
-          alternativePerspective,
-          mediaFile
-        );
-      }
-    }
   };
 
   const resetWorryEntryFields = () => {
@@ -234,7 +157,6 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
     setDate(new Date());
     setTitle('');
     setDescription('');
-    setReframed(false);
   };
 
   return (
@@ -247,7 +169,6 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
         date,
         title,
         description,
-        reframed,
         setWorryEntries,
         setUuid,
         setCategory,
@@ -255,8 +176,7 @@ export const WorryProvider: React.FC<{ children: React.ReactElement }> = ({
         setDate,
         setTitle,
         setDescription,
-        setReframed,
-        createWorryEntry,
+        createOrUpdateWorryEntry,
         deleteWorryEntry,
         updateWorryEntryFields,
         resetWorryEntryFields,

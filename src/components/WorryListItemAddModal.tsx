@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
 import {
   StyleSheet,
@@ -23,6 +23,7 @@ import { getPriorityColor } from '../utils/worry';
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 import Toast from 'react-native-toast-message';
+import { toastConfig } from '../utils/toastConfig';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -50,7 +51,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setPriority,
     setTitle,
     setDescription,
-    createWorryEntry,
+    createOrUpdateWorryEntry,
     resetWorryEntryFields,
   } = useWorry();
 
@@ -74,36 +75,41 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
   };
 
   const handleStore = () => {
-    createWorryEntry();
+    createOrUpdateWorryEntry();
     setWorryListItemAddModalIndex(1);
   };
 
   const handleClose = () => {
-    resetWorryEntryFields();
-    setWorryListItemAddModalIndex(0);
     setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
+    setWorryListItemAddModalIndex(0);
+    resetWorryEntryFields();
   };
 
   const handleStorePress = () => {
-    if (!title) {
-      showToast('error', 'Titel ontbreekt nog', 'Voeg een titel toe.');
-    } else if (!description) {
-      showToast('error', 'Titel ontbreekt nog', 'Voeg een titel toe.');
-    } else {
-      title.trim();
-      description.trim();
+    const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
 
+    if (!trimmedTitle) {
+      showToast('error', 'Titel ontbreekt nog', 'Voeg een titel toe.');
+    } else if (!trimmedDescription) {
+      showToast(
+        'error',
+        'Beschrijving ontbreekt nog',
+        'Voeg een beschrijving toe.'
+      );
+    } else {
+      setTitle(trimmedTitle);
+      setDescription(trimmedDescription);
       handleStore();
     }
   };
 
   const handleReframing = () => {
-    // resetWorryEntryFields(); // TODO: Where should the reset happen?
-    setWorryListItemAddModalIndex(0);
     setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
+    setWorryListItemAddModalIndex(0);
     setTimeout(() => {
       setModalReframingVisible(!modalReframingVisible);
-    }, 300);
+    }, 100);
   };
 
   const handlePriority = (priority: Priority) => {
@@ -247,9 +253,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                 <>
                   {/* Description + Priority [1] */}
                   <View>
-                    <Text style={styles.headersHeadingText}>
-                      Omschrijving
-                    </Text>
+                    <Text style={styles.headersHeadingText}>Omschrijving</Text>
                   </View>
 
                   <View
@@ -430,7 +434,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
             </View>
           </View>
         </View>
-        <Toast />
+        <Toast config={toastConfig} />
       </View>
     </Modal>
   );
@@ -500,7 +504,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   } as TextStyle,
   successCtaDescriptionText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
     fontSize: 14,
   } as TextStyle,
   cancelButton: {
@@ -513,7 +517,6 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     ...Fonts.sofiaProRegular[Platform.OS],
-    fontSize: 13,
   } as TextStyle,
   reframeButton: {
     borderRadius: 10,
@@ -525,7 +528,6 @@ const styles = StyleSheet.create({
   },
   reframeButtonText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
-    fontSize: 13,
     color: 'white',
   } as TextStyle,
 });

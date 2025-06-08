@@ -26,7 +26,6 @@ interface CloseModalProps {
   route?: any;
   denyText: string;
   confirmText: string;
-  closeButtonDisabled?: boolean;
   isSpecialModal?: boolean;
 }
 
@@ -41,7 +40,6 @@ export const CloseModal: React.FC<CloseModalProps> = ({
   route,
   denyText,
   confirmText,
-  closeButtonDisabled = false,
   isSpecialModal = false,
 }) => {
   const handleCloseModal = () => {
@@ -107,7 +105,6 @@ export const CloseModal: React.FC<CloseModalProps> = ({
 
           <View style={{ rowGap: 15 }}>
             <Pressable
-              disabled={closeButtonDisabled}
               style={
                 isSpecialModal
                   ? [styles.confirmButton, { backgroundColor: '#eee' }]

@@ -20,6 +20,7 @@ import { Slider } from 'react-native-awesome-slider';
 import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 import Toast from 'react-native-toast-message';
+import { toastConfig } from '../utils/toastConfig';
 
 import { DropdownComponent } from './DropdownComponent';
 import { CloseModal } from './CloseModal';
@@ -30,9 +31,10 @@ import { useAuth } from '../context/AuthContext';
 
 import { Priority } from '../types';
 import { getCategory, getPriorityColor, reframingSteps } from '../utils/worry';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useGamification } from '../context/GamificationContext';
+
+import { SharedValue } from 'react-native-reanimated';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -42,8 +44,8 @@ type StringStateSetterPair = {
 };
 
 type NumberStateSetterPair = {
-  value: number;
-  setter: React.Dispatch<React.SetStateAction<number>>;
+  value: SharedValue<number>;
+  setter: (value: number) => void;
 };
 
 interface ReframingModalProps {
@@ -53,11 +55,9 @@ interface ReframingModalProps {
   setReframingModalIndex: React.Dispatch<React.SetStateAction<number>>;
   modalReframingVisible: boolean;
   setModalReframingVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  modalWorryListVisible?: boolean;
-  setModalWorryListVisible?: React.Dispatch<React.SetStateAction<boolean>>;
-  isDrawerOpen?: boolean;
-  earnedPointsModalVisible?: boolean;
-  setEarnedPointsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
+  handleDrawer?: () => void;
+  earnedPointsModalVisible: boolean;
+  setEarnedPointsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ReframingModal: React.FC<ReframingModalProps> = ({
@@ -66,9 +66,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
   setReframingModalIndex,
   modalReframingVisible,
   setModalReframingVisible,
-  modalWorryListVisible,
-  setModalWorryListVisible,
-  isDrawerOpen,
+  handleDrawer,
   earnedPointsModalVisible,
   setEarnedPointsModalVisible,
 }) => {
@@ -82,7 +80,6 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     setPriority,
     setTitle,
     setDescription,
-    setReframed,
     resetWorryEntryFields,
   } = useWorry();
   const {
@@ -94,8 +91,8 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     thoughtLikelihoodSliderTwo,
     thoughtLikelihood,
     alternativePerspective,
-    setThoughtLikelihoodSliderOne,
     setFeelingDescription,
+    setThoughtLikelihoodSliderOne,
     setForThoughtEvidence,
     setAgainstThoughtEvidence,
     setFriendAdvice,
@@ -108,40 +105,40 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
   const { user } = useAuth();
 
-  const { addPoints } = useGamification();
-
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
   const [showPriorityButtons, setShowPriorityButtons] =
     useState<boolean>(false);
   const { deleteWorryEntry } = useWorry();
   const [showUnreframedData, setShowUnreframedData] = useState<boolean>(false);
 
-  // @TODO Is there a better way of doing this?
-  const reframingModalTextState = new Map<number, StringStateSetterPair>([
-    [1, { value: feelingDescription, setter: setFeelingDescription }],
-    [2, { value: forThoughtEvidence, setter: setForThoughtEvidence }],
-    [3, { value: againstThoughtEvidence, setter: setAgainstThoughtEvidence }],
-    [4, { value: friendAdvice, setter: setFriendAdvice }],
-    // Skipping `reframingModalIndex` 5 as there is no state corressponding to it!
-    [6, { value: thoughtLikelihood, setter: setThoughtLikelihood }],
-    [7, { value: alternativePerspective, setter: setAlternativePerspective }],
-  ]);
-  const reframingModalSliderState = new Map<number, NumberStateSetterPair>([
-    [
-      1,
-      {
-        value: thoughtLikelihoodSliderOne,
-        setter: setThoughtLikelihoodSliderOne,
-      },
-    ],
-    [
-      2,
-      {
-        value: thoughtLikelihoodSliderTwo,
-        setter: setThoughtLikelihoodSliderTwo,
-      },
-    ],
-  ]);
+  const reframingModalTextState: Record<number, StringStateSetterPair> = {
+    1: { value: feelingDescription, setter: setFeelingDescription },
+    2: { value: forThoughtEvidence, setter: setForThoughtEvidence },
+    3: { value: againstThoughtEvidence, setter: setAgainstThoughtEvidence },
+    4: { value: friendAdvice, setter: setFriendAdvice },
+    // skipping 5 on purpose
+    6: { value: thoughtLikelihood, setter: setThoughtLikelihood },
+    7: { value: alternativePerspective, setter: setAlternativePerspective },
+  };
+
+  const reframingModalSliderState: Record<number, NumberStateSetterPair> = {
+    1: {
+      value: thoughtLikelihoodSliderOne,
+      setter: setThoughtLikelihoodSliderOne,
+    },
+    6: {
+      value: thoughtLikelihoodSliderTwo,
+      setter: setThoughtLikelihoodSliderTwo,
+    },
+  };
+
+  const [sliderTouchedState, setSliderTouchedState] = useState<
+    Record<number, boolean>
+  >({
+    1: false,
+    6: false,
+  });
+
   const unreframedData = [
     {
       heading: 'Situatieomschrijving',
@@ -163,7 +160,15 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
   const min = useSharedValue(0);
   const max = useSharedValue(10);
-  const sliderValue = useSharedValue(5);
+
+  const currentStep = reframingSteps[reframingModalIndex];
+  const currentSliderValue =
+    reframingModalSliderState[reframingModalIndex]?.value;
+  const currentSliderSetter =
+    reframingModalSliderState[reframingModalIndex]?.setter;
+  const currentTextValue = reframingModalTextState[reframingModalIndex]?.value;
+  const currentTextSetter =
+    reframingModalTextState[reframingModalIndex]?.setter;
 
   const CustomThumb: React.FC<{}> = () => {
     return (
@@ -177,20 +182,16 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       ></View>
     );
   };
+
   const handleClose = () => {
+    setModalReframingVisible(!modalReframingVisible);
     setReframingModalIndex(0);
+
     resetWorryEntryFields();
     resetNoteEntryFields();
-    setModalReframingVisible(!modalReframingVisible);
-    if (
-      setModalWorryListVisible !== undefined &&
-      route.name == 'WorryBox' &&
-      isDrawerOpen
-    ) {
-      // This fixes the app freezing!
-      setTimeout(() => {
-        setModalWorryListVisible(!modalWorryListVisible);
-      }, 300);
+
+    if (route.name === 'WorryBox') {
+      handleDrawer!();
     }
   };
 
@@ -204,57 +205,74 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
   const handleNext = () => {
     if (reframingModalIndex < reframingSteps.length - 1) {
-      //TODO Input validation: Is there a better way to do this? - Luna
-      if (title && description && reframingModalIndex === 0) {
-        title.trim();
-        description.trim();
-        setReframingModalIndex(reframingModalIndex + 1);
-      } else if (!title && reframingModalIndex != 5) {
-        showToast('error', 'Titel ontbreekt nog', 'Voeg een titel toe.');
-      } else if (!description && reframingModalIndex === 0) {
+      if (reframingModalIndex === 0) {
+        const trimmedTitle = title.trim();
+        const trimmedDescription = description.trim();
+
+        if (!trimmedTitle) {
+          showToast('error', 'Titel ontbreekt nog', 'Voeg een titel toe.');
+          return;
+        }
+
+        if (!trimmedDescription) {
+          showToast(
+            'error',
+            'Omschrijving ontbreekt nog',
+            'Voeg een omschrijving toe.'
+          );
+          return;
+        }
+
+        setTitle(trimmedTitle);
+        setDescription(trimmedDescription);
+      }
+
+      if (currentTextValue !== undefined && currentTextSetter !== undefined) {
+        const trimmedTextValue = currentTextValue.trim();
+
+        if (!trimmedTextValue) {
+          showToast(
+            'error',
+            'Antwoord ontbreekt nog',
+            'Voeg een antwoord toe.'
+          );
+
+          return;
+        }
+
+        currentTextSetter(trimmedTextValue);
+      }
+
+      if (sliderTouchedState[reframingModalIndex] === false) {
         showToast(
           'error',
-          'Omschrijving ontbreekt nog',
-          'Voeg een omschrijving toe.'
+          'Slider niet bewogen',
+          'Beweeg de slider om verder te gaan.'
         );
-      } else if (
-        !reframingModalTextState.get(reframingModalIndex)?.value &&
-        reframingModalIndex != 5
-      ) {
-        showToast('error', 'Antwoord ontbreekt nog', 'Voeg een antwoord toe.');
-      } else if (
-        reframingModalTextState.get(reframingModalIndex)?.value ||
-        reframingModalIndex === 5
-      ) {
-        reframingModalTextState.get(reframingModalIndex)?.value.trim();
-        setReframingModalIndex(reframingModalIndex + 1);
+        return;
       }
-    } else {
-      setReframed(true); // @TODO This is part of the worry and it is not being updated in the database here, so why are we doing this?
-      setReframingModalIndex(0);
-      setModalReframingVisible(!modalReframingVisible);
 
-      // Earned Points Modal
-      if (
-        earnedPointsModalVisible !== undefined &&
-        setEarnedPointsModalVisible !== undefined
-      ) {
-        setTimeout(() => {
-          setEarnedPointsModalVisible(!earnedPointsModalVisible);
-        }, 100);
-      }
+      setReframingModalIndex(reframingModalIndex + 1);
+    } else {
+      setModalReframingVisible(!modalReframingVisible);
+      setReframingModalIndex(0);
+      setSliderTouchedState({
+        1: false,
+        6: false,
+      });
+
+      createNoteEntry();
 
       if (route.name === 'WorryBox') {
-        createNoteEntry(uuid);
-      } else {
-        createNoteEntry();
+        deleteWorryEntry(uuid);
       }
 
-      resetNoteEntryFields();
       resetWorryEntryFields();
-      deleteWorryEntry(uuid);
+      resetNoteEntryFields();
 
-      addPoints(20);
+      setTimeout(() => {
+        setEarnedPointsModalVisible(!earnedPointsModalVisible);
+      }, 100);
     }
   };
 
@@ -276,21 +294,6 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     });
   };
 
-  // const StepMarker: React.FC<MarkerProps> = ({ stepMarked }) => {
-  //   return (
-  //     <View
-  //       style={{
-  //         position: 'absolute',
-  //         top: 6,
-  //         borderRadius: 99,
-  //         width: 8,
-  //         height: 8,
-  //         backgroundColor: stepMarked ? '#A5B79F' : '#5C6B57',
-  //       }}
-  //     ></View>
-  //   );
-  // };
-
   return (
     <Modal
       animationType='none'
@@ -298,100 +301,210 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       visible={modalReframingVisible}
       onRequestClose={() => setCloseModalVisible(!closeModalVisible)}
     >
-      <GestureHandlerRootView>
-        <CloseModal
-          closeModalVisible={closeModalVisible}
-          setCloseModalVisible={setCloseModalVisible}
-          parentModalVisible={modalReframingVisible}
-          setParentModalVisible={setModalReframingVisible}
-          title='Stoppen met reframen'
-          description='Je staat op het punt te stoppen met het reframing-proces. Weet je het zeker?'
-          handleClose={handleClose}
-          denyText='Nee, ik wil doorgaan'
-          confirmText='Ja, ik wil afsluiten'
-        />
-        <View style={styles.modalWrapper}>
-          <View>
-            <View style={styles.modalContainer}>
-              <View style={styles.headersContainer}>
-                {/* Title + Close Button */}
+      <CloseModal
+        closeModalVisible={closeModalVisible}
+        setCloseModalVisible={setCloseModalVisible}
+        parentModalVisible={modalReframingVisible}
+        setParentModalVisible={setModalReframingVisible}
+        title='Stoppen met reframen'
+        description='Je staat op het punt te stoppen met het reframing-proces. Weet je het zeker?'
+        handleClose={handleClose}
+        denyText='Nee, ik wil doorgaan'
+        confirmText='Ja, ik wil afsluiten'
+      />
+      <View style={styles.modalWrapper}>
+        <View style={styles.modalContainer}>
+          <View style={styles.headersContainer}>
+            {/* Title + Close Button */}
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <Text style={styles.headersTitleText}>Reframen</Text>
+              <Pressable
+                style={{ position: 'absolute', right: 0 }}
+                onPress={() => setCloseModalVisible(!closeModalVisible)}
+              >
+                <Feather name='x-circle' size={24} color='gray' />
+              </Pressable>
+            </View>
+
+            {reframingModalIndex !== reframingSteps.length - 1 && (
+              <View style={{ marginTop: 15 }}>
+                {/* Heading */}
+                <Text style={styles.headersHeadingText}>
+                  {currentStep.heading}
+                </Text>
+
+                {/* Description (Dynamic) */}
+                {/* Step 0 – Conditional description based on route */}
+                {reframingModalIndex === 0 && (
+                  <>
+                    {route.name === 'WorryBox' ? (
+                      <>
+                        <Text style={styles.headersDescriptionText}>
+                          De situatie is automatisch overgenomen uit je zorg. Je
+                          kunt deze hier indien nodig aanpassen.{'\n\n'}Na deze
+                          oefening krijg je een bericht aan jezelf. Dit bericht
+                          wordt opgeslagen in je lijst met berichten. De zorg
+                          verdwijnt dan automatisch uit je Zorgenbakje.
+                        </Text>
+                      </>
+                    ) : (
+                      <>
+                        <Text style={styles.headersDescriptionText}>
+                          Na deze oefening krijg je een bericht aan jezelf. Dit
+                          bericht wordt opgeslagen in je lijst met berichten.
+                        </Text>
+                      </>
+                    )}
+                  </>
+                )}
+
+                {/* Step 1 – Show description from step data */}
+                {reframingModalIndex === 1 && (
+                  <Text style={styles.headersDescriptionText}>
+                    {currentStep.description}
+                  </Text>
+                )}
+
+                {/* Step 2+ – Skip description, show question and instruction instead */}
+                {reframingModalIndex > 1 && (
+                  <>
+                    <Text
+                      style={
+                        {
+                          ...Fonts.sofiaProSemiBold[Platform.OS],
+                          marginTop: 10,
+                        } as TextStyle
+                      }
+                    >
+                      {currentStep.question}
+                    </Text>
+                    {currentStep.instruction && (
+                      <Text style={styles.headersDescriptionText}>
+                        {currentStep.instruction}
+                      </Text>
+                    )}
+                  </>
+                )}
+              </View>
+            )}
+
+            {/* Worry List Item Preview */}
+            {reframingModalIndex >= 1 && (
+              <View style={[styles.worryListItemContainer]}>
+                {/* Priority Bar */}
+                <View
+                  style={{
+                    position: 'absolute',
+                    borderTopLeftRadius: 10,
+                    borderBottomLeftRadius: 10,
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                    backgroundColor: getPriorityColor(priority),
+                    width: 65,
+                    height: '100%',
+                  }}
+                ></View>
+
+                {/* Main Content Wrapper */}
                 <View
                   style={{
                     display: 'flex',
                     flexDirection: 'row',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
+                    width: '100%',
+                    height: '100%',
                   }}
                 >
-                  <Text style={styles.headersTitleText}>Reframing</Text>
-                  <Pressable
-                    style={{ position: 'absolute', right: 0 }}
-                    onPress={() => setCloseModalVisible(!closeModalVisible)}
+                  {/* Category + Title */}
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      height: '100%',
+                      width: '100%',
+                      columnGap: 15,
+                    }}
                   >
-                    <Feather name='x-circle' size={24} color='gray' />
-                  </Pressable>
-                </View>
-
-                {reframingModalIndex !== reframingSteps.length - 1 && (
-                  <View style={{ marginTop: 15, rowGap: 10 }}>
-                    {/* Heading + Edit Description (WorryBox) */}
-                    <View>
-                      {/* Heading */}
-                      <Text style={styles.headersHeadingText}>
-                        {reframingSteps[reframingModalIndex].heading}
-                      </Text>
-
-                      {/* Edit Description (WorryBox) */}
-                      {reframingModalIndex == 0 &&
-                        route.name === 'WorryBox' && (
-                          <Text style={styles.headersDescriptionText}>
-                            De situatie is automatisch overgenomen uit je zorg.
-                            Je kunt deze hier indien nodig aanpassen.
-                          </Text>
-                        )}
-                    </View>
-
-                    {/* Description */}
-                    {reframingModalIndex == 1 ? (
-                      <Text style={styles.headersDescriptionText}>
-                        {reframingSteps[reframingModalIndex].description}
-                      </Text>
-                    ) : (
-                      <>
-                        <Text
-                          style={
-                            {
-                              ...Fonts.sofiaProSemiBold[Platform.OS],
-                            } as TextStyle
-                          }
-                        >
-                          {reframingSteps[reframingModalIndex].question}
-                        </Text>
-                        <Text style={styles.headersDescriptionText}>
-                          {reframingSteps[reframingModalIndex].instruction}
-                        </Text>
-                      </>
-                    )}
-                  </View>
-                )}
-
-                {/* Worry List Item Preview */}
-                {reframingModalIndex >= 1 && (
-                  <View style={[styles.worryListItemContainer, { height: 60 }]}>
-                    {/* Priority Bar */}
+                    {/* Category Container */}
                     <View
                       style={{
-                        position: 'absolute',
-                        borderTopLeftRadius: 10,
-                        borderBottomLeftRadius: 10,
-                        borderTopRightRadius: 0,
-                        borderBottomRightRadius: 0,
-                        backgroundColor: getPriorityColor(priority),
-                        width: 65,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: '#EDF8E9',
                         height: '100%',
+                        width: 65,
+                        borderRadius: 10,
                       }}
-                    ></View>
+                    >
+                      {getCategory(category)}
+                    </View>
 
-                    {/* Main Content Wrapper */}
+                    {/* Title */}
+                    <Text style={styles.worryListItemTitleText}>{title}</Text>
+                  </View>
+                </View>
+              </View>
+            )}
+          </View>
+
+          {/* Main Content Wrapper */}
+          <ScrollView
+            bounces={false}
+            showsVerticalScrollIndicator={false}
+            style={styles.mainContainer}
+            contentContainerStyle={styles.mainContentContainerStyles}
+          >
+            {/* Main Content Container */}
+            <View style={{ flex: 1, marginBottom: 180 }}>
+              {reframingModalIndex == 5 && (
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    marginTop: 20,
+                    width: windowWidth - 2 * 20,
+                    padding: 25,
+                    backgroundColor: 'white',
+                    borderRadius: 30,
+                    rowGap: 10,
+                  }}
+                >
+                  <Text
+                    style={
+                      {
+                        ...Fonts.sofiaProRegular[Platform.OS],
+                        fontSize: 13,
+                      } as TextStyle
+                    }
+                  >{`"${friendAdvice.trim()}"`}</Text>
+                </View>
+              )}
+
+              {reframingModalIndex == 0 && (
+                <>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginTop: 20,
+                      marginHorizontal: 20,
+                      borderRadius: 30,
+                      padding: 20,
+                      backgroundColor: 'white',
+                    }}
+                  >
+                    {/* Dropdown + Title */}
                     <View
                       style={{
                         display: 'flex',
@@ -399,303 +512,316 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         width: '100%',
-                        height: '100%',
                       }}
                     >
-                      {/* Category + Title */}
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          height: '100%',
-                          width: '100%',
-                          columnGap: 15,
-                        }}
-                      >
-                        {/* Category Container */}
+                      <DropdownComponent
+                        category={category}
+                        setCategory={setCategory}
+                      />
+                      <TextInput
+                        style={
+                          {
+                            ...Fonts.sofiaProRegular[Platform.OS],
+                            verticalAlign:
+                              Platform.OS == 'android' ? 'top' : {},
+                            backgroundColor: '#f6f7f8',
+                            borderRadius: 10,
+                            height: 40,
+                            width: '67%',
+                            paddingLeft: 10,
+                          } as TextStyle
+                        }
+                        placeholder='Titel van zorg...'
+                        placeholderTextColor='#00000080'
+                        value={title}
+                        onChangeText={(value) => setTitle(value)}
+                      />
+                    </View>
+                  </View>
+
+                  <View style={styles.textInputContainer}>
+                    <View
+                      style={{
+                        position: 'relative',
+                      }}
+                    >
+                      <TextInput
+                        style={
+                          {
+                            ...Fonts.sofiaProRegular[Platform.OS],
+                            verticalAlign:
+                              Platform.OS == 'android' ? 'top' : {},
+                            padding: 10,
+                            borderRadius: 10,
+                            backgroundColor: '#f6f7f8',
+                            height: 180,
+                          } as TextStyle
+                        }
+                        placeholder={currentStep.placeholder}
+                        placeholderTextColor='#00000080'
+                        multiline
+                        value={description}
+                        onChangeText={(value) => setDescription(value)}
+                      />
+
+                      {/* Priority Button(s)*/}
+                      {showPriorityButtons ? (
+                        <>
+                          {/* TODO: Is there a better way of doing this? */}
+                          <Pressable
+                            style={{
+                              position: 'absolute',
+                              right: 0,
+                              bottom: 0,
+                              borderRadius: 99,
+                              backgroundColor: '#dedede',
+                              padding: 5,
+                            }}
+                            onPress={() => handlePriority(Priority.None)}
+                          >
+                            <Feather name='flag' size={18} color='gray' />
+                          </Pressable>
+
+                          <Pressable
+                            style={{
+                              position: 'absolute',
+                              right: 0,
+                              bottom: 35,
+                              borderRadius: 99,
+                              backgroundColor: '#dedede',
+                              padding: 5,
+                            }}
+                            onPress={() => handlePriority(Priority.Low)}
+                          >
+                            <Feather
+                              name='flag'
+                              size={18}
+                              color={getPriorityColor(Priority.Low)}
+                            />
+                          </Pressable>
+
+                          <Pressable
+                            style={{
+                              position: 'absolute',
+                              right: 0,
+                              bottom: 70,
+                              borderRadius: 99,
+                              backgroundColor: '#dedede',
+                              padding: 5,
+                            }}
+                            onPress={() => handlePriority(Priority.Medium)}
+                          >
+                            <Feather
+                              name='flag'
+                              size={18}
+                              color={getPriorityColor(Priority.Medium)}
+                            />
+                          </Pressable>
+
+                          <Pressable
+                            style={{
+                              position: 'absolute',
+                              right: 0,
+                              bottom: 105,
+                              borderRadius: 99,
+                              backgroundColor: '#dedede',
+                              padding: 5,
+                            }}
+                            onPress={() => handlePriority(Priority.High)}
+                          >
+                            <Feather
+                              name='flag'
+                              size={18}
+                              color={getPriorityColor(Priority.High)}
+                            />
+                          </Pressable>
+                        </>
+                      ) : (
+                        <Pressable
+                          style={{
+                            position: 'absolute',
+                            right: 0,
+                            bottom: 0,
+                            padding: 5,
+                          }}
+                          onPress={() =>
+                            setShowPriorityButtons(!showPriorityButtons)
+                          }
+                        >
+                          <Feather
+                            name='flag'
+                            size={18}
+                            color={getPriorityColor(priority)}
+                          />
+                        </Pressable>
+                      )}
+                    </View>
+                  </View>
+                </>
+              )}
+
+              {reframingModalIndex > 0 &&
+                reframingModalIndex !== 5 &&
+                reframingModalIndex <= 7 && (
+                  <View style={styles.textInputContainer}>
+                    {/* Dynamic TextInput + Dynamic Slider Wrapper */}
+                    <View
+                      style={
+                        reframingModalIndex === 6
+                          ? {
+                              flexDirection: 'column-reverse',
+                              width: windowWidth - 2 * 40,
+                            }
+                          : { width: windowWidth - 2 * 40 }
+                      }
+                    >
+                      {/* Dynamic TextInput Component */}
+                      <TextInput
+                        style={[
+                          reframingModalIndex > 1 && reframingModalIndex <= 7
+                            ? { marginTop: 10 }
+                            : {},
+                          styles.dynamicTextInputComponent,
+                        ]}
+                        placeholder={currentStep.placeholder}
+                        //placeholderTextColor='#dedede'
+                        multiline
+                        value={currentTextValue}
+                        onChangeText={(value) => currentTextSetter(value)}
+                      />
+                      {/* Dynamic Slider Component  */}
+                      {(reframingModalIndex == 1 ||
+                        reframingModalIndex == 6) && (
                         <View
                           style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundColor: '#EDF8E9',
-                            height: '100%',
-                            width: 65,
-                            borderRadius: 10,
+                            marginTop: 20,
+                            rowGap: 15,
                           }}
                         >
-                          {getCategory(category)}
+                          {reframingModalIndex === 1 && (
+                            <Text
+                              style={
+                                {
+                                  textAlign: 'center',
+                                  alignSelf: 'center',
+                                  ...Fonts.sofiaProRegular[Platform.OS],
+                                } as TextStyle
+                              }
+                            >
+                              Hoe groot denk je dat de kans is dat deze gedachte
+                              realiteit wordt?
+                            </Text>
+                          )}
+                          <View>
+                            <View style={{ marginVertical: 25 }}>
+                              <Slider
+                                progress={currentSliderValue}
+                                onValueChange={(value) => {
+                                  currentSliderSetter(value);
+                                  setSliderTouchedState((prev) => ({
+                                    ...prev,
+                                    [reframingModalIndex]: true,
+                                  }));
+                                }}
+                                minimumValue={min}
+                                maximumValue={max}
+                                disableTrackPress={true}
+                                disableTapEvent={true}
+                                containerStyle={{ borderRadius: 30 }}
+                                sliderHeight={15}
+                                thumbWidth={25}
+                                theme={{
+                                  minimumTrackTintColor: '#E4E1E1',
+                                  maximumTrackTintColor: '#E4E1E1',
+                                  bubbleBackgroundColor: '#C1DEBE',
+                                }}
+                                renderThumb={() => <CustomThumb />}
+                                // @TODO Remove the bubble!
+                                bubble={(s: number) => s.toFixed(1)}
+                              />
+                            </View>
+                            <View
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                              }}
+                            >
+                              <Text style={styles.optionsText}>Heel klein</Text>
+                              <Text style={styles.optionsText}>Heel groot</Text>
+                            </View>
+                          </View>
                         </View>
-
-                        {/* Title */}
-                        <Text style={styles.worryListItemTitleText}>
-                          {title}
-                        </Text>
-                      </View>
+                      )}
                     </View>
                   </View>
                 )}
-              </View>
 
-              {/* Main Content Wrapper */}
-              <ScrollView
-                bounces={false}
-                showsVerticalScrollIndicator={false}
-                style={styles.mainContainer}
-                contentContainerStyle={styles.mainContentContainerStyles}
-              >
-                {/* Main Content Container */}
-                <View style={{ flex: 1, marginBottom: 190 }}>
-                  {reframingModalIndex == 5 && (
-                    <View
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        marginTop: 20,
-                        width: windowWidth - 2 * 20,
-                        padding: 25,
-                        backgroundColor: 'white',
-                        borderRadius: 30,
-                        rowGap: 10,
-                      }}
-                    >
+              {/* Success Step  */}
+              {reframingModalIndex === reframingSteps.length - 1 && (
+                <>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      marginTop: 20,
+                      width: windowWidth - 2 * 20,
+                      padding: 25,
+                      backgroundColor: 'white',
+                      borderRadius: 30,
+                      rowGap: 10,
+                    }}
+                  >
+                    <Image
+                      style={{ width: 106, height: 74 }}
+                      resizeMode='contain'
+                      source={require('../../assets/images/reframing_success_icon.png')}
+                    />
+
+                    <View style={{ marginTop: 10, rowGap: 10 }}>
+                      <Text
+                        style={
+                          {
+                            ...Fonts.sofiaProSemiBold[Platform.OS],
+                            fontSize: 15,
+                            textAlign: 'center',
+                          } as TextStyle
+                        }
+                      >
+                        Goed gedaan, {user?.firstName}. Je hebt jouw gedachte
+                        succesvol gereframed!
+                      </Text>
                       <Text
                         style={
                           {
                             ...Fonts.sofiaProRegular[Platform.OS],
                             fontSize: 13,
+                            textAlign: 'center',
                           } as TextStyle
                         }
-                      >{`"${friendAdvice.trim()}"`}</Text>
-                    </View>
-                  )}
-
-                  {reframingModalIndex == 0 && (
-                    <>
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          marginTop: 20,
-                          marginHorizontal: 20,
-                          borderRadius: 30,
-                          padding: 20,
-                          backgroundColor: 'white',
-                        }}
                       >
-                        {/* Dropdown + Title */}
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            width: '100%',
-                          }}
-                        >
-                          <DropdownComponent
-                            category={category}
-                            setCategory={setCategory}
-                          />
-                          <TextInput
-                            style={
-                              {
-                                ...Fonts.sofiaProRegular[Platform.OS],
-                                verticalAlign:
-                                  Platform.OS == 'android' ? 'top' : {},
-                                backgroundColor: '#f6f7f8',
-                                borderRadius: 10,
-                                height: 40,
-                                width: '67%',
-                                paddingLeft: 10,
-                              } as TextStyle
-                            }
-                            placeholder='Titel van zorg...'
-                            placeholderTextColor='#00000080'
-                            value={title}
-                            onChangeText={(value) => setTitle(value)}
-                          />
-                        </View>
-                      </View>
+                        Hieronder staat jouw nieuwe bericht aan jezelf:
+                      </Text>
+                    </View>
+                  </View>
 
-                      <View style={styles.textInputContainer}>
-                        <View
-                          style={{
-                            position: 'relative',
-                          }}
-                        >
-                          <TextInput
-                            style={
-                              {
-                                ...Fonts.sofiaProRegular[Platform.OS],
-                                verticalAlign:
-                                  Platform.OS == 'android' ? 'top' : {},
-                                padding: 10,
-                                borderRadius: 10,
-                                backgroundColor: '#f6f7f8',
-                                height: 180,
-                              } as TextStyle
-                            }
-                            placeholder={
-                              reframingSteps[reframingModalIndex].placeholder
-                            }
-                            placeholderTextColor='#00000080'
-                            multiline
-                            value={description}
-                            onChangeText={(value) => setDescription(value)}
-                          />
-
-                          {/* Priority Button(s)*/}
-                          {showPriorityButtons ? (
-                            <>
-                              {/* TODO: Is there a better way of doing this? */}
-                              <Pressable
-                                style={{
-                                  position: 'absolute',
-                                  right: 0,
-                                  bottom: 0,
-                                  borderRadius: 99,
-                                  backgroundColor: '#dedede',
-                                  padding: 5,
-                                }}
-                                onPress={() => handlePriority(Priority.None)}
-                              >
-                                <Feather name='flag' size={18} color='gray' />
-                              </Pressable>
-
-                              <Pressable
-                                style={{
-                                  position: 'absolute',
-                                  right: 0,
-                                  bottom: 35,
-                                  borderRadius: 99,
-                                  backgroundColor: '#dedede',
-                                  padding: 5,
-                                }}
-                                onPress={() => handlePriority(Priority.Low)}
-                              >
-                                <Feather
-                                  name='flag'
-                                  size={18}
-                                  color={getPriorityColor(Priority.Low)}
-                                />
-                              </Pressable>
-
-                              <Pressable
-                                style={{
-                                  position: 'absolute',
-                                  right: 0,
-                                  bottom: 70,
-                                  borderRadius: 99,
-                                  backgroundColor: '#dedede',
-                                  padding: 5,
-                                }}
-                                onPress={() => handlePriority(Priority.Medium)}
-                              >
-                                <Feather
-                                  name='flag'
-                                  size={18}
-                                  color={getPriorityColor(Priority.Medium)}
-                                />
-                              </Pressable>
-
-                              <Pressable
-                                style={{
-                                  position: 'absolute',
-                                  right: 0,
-                                  bottom: 105,
-                                  borderRadius: 99,
-                                  backgroundColor: '#dedede',
-                                  padding: 5,
-                                }}
-                                onPress={() => handlePriority(Priority.High)}
-                              >
-                                <Feather
-                                  name='flag'
-                                  size={18}
-                                  color={getPriorityColor(Priority.High)}
-                                />
-                              </Pressable>
-                            </>
-                          ) : (
-                            <Pressable
-                              style={{
-                                position: 'absolute',
-                                right: 0,
-                                bottom: 0,
-                                padding: 5,
-                              }}
-                              onPress={() =>
-                                setShowPriorityButtons(!showPriorityButtons)
-                              }
-                            >
-                              <Feather
-                                name='flag'
-                                size={18}
-                                color={getPriorityColor(priority)}
-                              />
-                            </Pressable>
-                          )}
-                        </View>
-
-                        {/* Checkbox Functionality */}
-                        {/* {reframingModalIndex == 0 && route.name === 'WorryBox' && (
-                      <View style={{ rowGap: 15 }}>
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            columnGap: 10,
-                            marginTop: 10,
-                          }}
-                        >
-                          <Checkbox
-                            color={isChecked ? '#C1DEBE' : '#5C6B57'}
-                            value={isChecked}
-                            onValueChange={setIsChecked}
-                          />
-                          <Text
-                            style={
-                              {
-                                ...Fonts.sofiaProMedium[Platform.OS],
-                              } as TextStyle
-                            }
-                          >
-                            Koppelen aan zorg
-                          </Text>
-                        </View>
-
-                        <Text
-                          style={
-                            {
-                              ...Fonts.sofiaProLight[Platform.OS],
-                              fontSize: 11,
-                              textAlign: 'center',
-                            } as TextStyle
-                          }
-                        >
-                          Wanneer je het reframing-proces koppelt aan de zorg,
-                          wordt deze zorg na afloop omgezet in een bericht aan
-                          jezelf en automatisch uit het zorgenbakje verwijderd.
-                        </Text>
-                      </View>
-                    )} */}
-                      </View>
-                    </>
-                  )}
-
-                  {reframingModalIndex > 0 &&
-                    reframingModalIndex !== 5 &&
-                    reframingModalIndex <= 7 && (
-                      <View style={styles.textInputContainer}>
-                        {/* Question }
-                        {reframingModalIndex !== 1 && (
-                          <View style={{ rowGap: 10 }}>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      marginTop: 20,
+                      width: windowWidth - 2 * 20,
+                      padding: 25,
+                      backgroundColor: 'white',
+                      borderRadius: 30,
+                      rowGap: 20,
+                    }}
+                  >
+                    {successData.map((item, index) => {
+                      return (
+                        <View key={index} style={{ rowGap: 5 }}>
+                          {item.heading !== null && (
                             <Text
                               style={
                                 {
@@ -703,353 +829,156 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                                 } as TextStyle
                               }
                             >
+                              {item.heading}
                             </Text>
-
-                            <Text
-                              style={
-                                {
-                                  ...Fonts.sofiaProRegular[Platform.OS],
-                                  fontSize: 13,
-                                } as TextStyle
-                              }
-                            >
-                            </Text>
-                          </View>
-                        )}
-
-                        {/* Dynamic TextInput + Dynamic Slider Wrapper */}
-                        <View
-                          style={
-                            reframingModalIndex === 6
-                              ? {
-                                  flexDirection: 'column-reverse',
-                                  width: windowWidth - 2 * 40,
-                                }
-                              : { width: windowWidth - 2 * 40 }
-                          }
-                        >
-                          {/* Dynamic TextInput Component */}
-                          <TextInput
-                            style={[
-                              reframingModalIndex > 1 &&
-                              reframingModalIndex <= 7
-                                ? { marginTop: 10 }
-                                : {},
-                              styles.dynamicTextInputComponent,
-                            ]}
-                            placeholder={
-                              reframingSteps[reframingModalIndex].placeholder
-                            }
-                            //placeholderTextColor='#dedede'
-                            multiline
-                            value={
-                              reframingModalTextState.get(reframingModalIndex)
-                                ?.value
-                            }
-                            onChangeText={(value) =>
-                              reframingModalTextState
-                                .get(reframingModalIndex)
-                                ?.setter(value)
-                            }
-                          />
-                          {/* Dynamic Slider Component  */}
-                          {(reframingModalIndex == 1 ||
-                            reframingModalIndex == 6) && (
-                            <View
-                              style={{
-                                marginTop: 20,
-                                rowGap: 15,
-                              }}
-                            >
-                              {reframingModalIndex === 1 && (
-                                <Text
-                                  style={
-                                    {
-                                      textAlign: 'center',
-                                      alignSelf: 'center',
-                                      ...Fonts.sofiaProRegular[Platform.OS],
-                                    } as TextStyle
-                                  }
-                                >
-                                  Hoe groot denk je dat de kans is dat deze
-                                  gedachte realiteit wordt?
-                                </Text>
-                              )}
-                              <View>
-                                <View style={{ marginVertical: 25 }}>
-                                  <Slider
-                                    progress={sliderValue}
-                                    onValueChange={(value) =>
-                                      (sliderValue.value = value)
-                                    }
-                                    minimumValue={min}
-                                    maximumValue={max}
-                                    disableTrackPress={true}
-                                    disableTapEvent={true}
-                                    containerStyle={{ borderRadius: 30 }}
-                                    sliderHeight={15}
-                                    thumbWidth={25}
-                                    theme={{
-                                      minimumTrackTintColor: '#E4E1E1',
-                                      maximumTrackTintColor: '#E4E1E1',
-                                      bubbleBackgroundColor: '#C1DEBE',
-                                    }}
-                                    renderThumb={() => <CustomThumb />}
-                                    // @TODO Remove the bubble!
-                                    bubble={(s: number) => s.toFixed(1)}
-                                  />
-                                </View>
-                                <View
-                                  style={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                  }}
-                                >
-                                  <Text style={styles.optionsText}>
-                                    Heel klein
-                                  </Text>
-                                  <Text style={styles.optionsText}>
-                                    Heel groot
-                                  </Text>
-                                </View>
-                              </View>
-                            </View>
                           )}
-                        </View>
-                      </View>
-                    )}
-
-                  {/* Success Step  */}
-                  {reframingModalIndex === reframingSteps.length - 1 && (
-                    <>
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          marginTop: 20,
-                          width: windowWidth - 2 * 20,
-                          padding: 25,
-                          backgroundColor: 'white',
-                          borderRadius: 30,
-                          rowGap: 10,
-                        }}
-                      >
-                        <Image
-                          style={{ width: 106, height: 74 }}
-                          resizeMode='contain'
-                          source={require('../../assets/images/reframing_success_icon.png')}
-                        />
-
-                        <View style={{ marginTop: 10, rowGap: 10 }}>
-                          <Text
-                            style={
-                              {
-                                ...Fonts.sofiaProSemiBold[Platform.OS],
-                                fontSize: 15,
-                                textAlign: 'center',
-                              } as TextStyle
-                            }
-                          >
-                            Goed gedaan, {user?.firstName}. Je hebt jouw
-                            gedachte succesvol gereframed!
-                          </Text>
                           <Text
                             style={
                               {
                                 ...Fonts.sofiaProRegular[Platform.OS],
-                                fontSize: 13,
-                                textAlign: 'center',
                               } as TextStyle
                             }
                           >
-                            Hieronder staat jouw nieuwe bericht aan jezelf:
+                            {item.body}
                           </Text>
                         </View>
-                      </View>
-
-                      <View
+                      );
+                    })}
+                    <View
+                      style={{
+                        marginVertical: 20,
+                        display: 'flex',
+                        flexDirection: showUnreframedData
+                          ? 'column-reverse'
+                          : 'column',
+                        rowGap: 20,
+                      }}
+                    >
+                      <Pressable
                         style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          marginTop: 20,
-                          width: windowWidth - 2 * 20,
-                          padding: 25,
-                          backgroundColor: 'white',
-                          borderRadius: 30,
-                          rowGap: 20,
+                          alignSelf: 'center',
+                          alignItems: 'center',
                         }}
+                        onPress={() =>
+                          setShowUnreframedData(!showUnreframedData)
+                        }
                       >
-                        {successData.map((item, index) => {
-                          return (
-                            <View key={index} style={{ rowGap: 5 }}>
-                              {item.heading !== null && (
-                                <Text
-                                  style={
-                                    {
-                                      ...Fonts.sofiaProSemiBold[Platform.OS],
-                                    } as TextStyle
-                                  }
-                                >
-                                  {item.heading}
-                                </Text>
-                              )}
-                              <Text
-                                style={
-                                  {
-                                    ...Fonts.sofiaProRegular[Platform.OS],
-                                  } as TextStyle
-                                }
-                              >
-                                {item.body}
-                              </Text>
-                            </View>
-                          );
-                        })}
-                        <View
-                          style={{
-                            marginVertical: 20,
-                            display: 'flex',
-                            flexDirection: showUnreframedData
-                              ? 'column-reverse'
-                              : 'column',
-                            rowGap: 20,
-                          }}
-                        >
-                          <Pressable
-                            style={{
-                              alignSelf: 'center',
-                              alignItems: 'center',
-                            }}
-                            onPress={() =>
-                              setShowUnreframedData(!showUnreframedData)
-                            }
-                          >
-                            <Text style={styles.showOldSituationText}>
-                              {showUnreframedData
-                                ? 'Oude situatie verbergen'
-                                : 'Oude situatie bekijken'}
+                        <Text style={styles.showOldSituationText}>
+                          {showUnreframedData
+                            ? 'Oude situatie verbergen'
+                            : 'Oude situatie bekijken'}
+                        </Text>
+
+                        <Feather
+                          name={
+                            showUnreframedData ? 'chevron-up' : 'chevron-down'
+                          }
+                          size={20}
+                          color={'gray'}
+                        />
+                      </Pressable>
+
+                      {showUnreframedData &&
+                        unreframedData.map((data, index) => (
+                          <View key={index}>
+                            <Text
+                              style={[styles.headingText, { color: 'gray' }]}
+                            >
+                              {data.heading}
                             </Text>
-
-                            <Feather
-                              name={
-                                showUnreframedData
-                                  ? 'chevron-up'
-                                  : 'chevron-down'
-                              }
-                              size={20}
-                              color={'gray'}
-                            />
-                          </Pressable>
-
-                          {showUnreframedData &&
-                            unreframedData.map((data, index) => (
-                              <View key={index}>
-                                <Text
-                                  style={[
-                                    styles.headingText,
-                                    { color: 'gray' },
-                                  ]}
-                                >
-                                  {data.heading}
-                                </Text>
-                                <Text
-                                  style={[styles.bodyText, { color: 'gray' }]}
-                                >
-                                  {data.body}
-                                </Text>
-                              </View>
-                            ))}
-                        </View>
-                      </View>
-                    </>
-                  )}
-                </View>
-              </ScrollView>
-              {/* Progress Wrapper */}
+                            <Text style={[styles.bodyText, { color: 'gray' }]}>
+                              {data.body}
+                            </Text>
+                          </View>
+                        ))}
+                    </View>
+                  </View>
+                </>
+              )}
+            </View>
+          </ScrollView>
+          {/* Progress Wrapper */}
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 40,
+              width: '100%',
+              alignSelf: 'center',
+              paddingHorizontal: 15,
+            }}
+          >
+            {/* Progress Container */}
+            <View style={styles.progressContainer}>
+              {/* Buttons Container */}
               <View
                 style={{
-                  position: 'absolute',
-                  bottom: 40,
-                  width: '100%',
-                  alignSelf: 'center',
-                  paddingHorizontal: 15,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                 }}
               >
-                {/* Progress Container */}
-                <View style={styles.progressContainer}>
-                  {/* Buttons Container */}
-                  <View
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    {/* Go Back Button */}
-                    <Pressable
-                      onPress={() => handlePrevious()}
-                      disabled={reframingModalIndex == 0 ? true : false}
-                      style={
-                        reframingModalIndex == 0
-                          ? [styles.backButton, { opacity: 0.4 }]
-                          : styles.backButton
-                      }
-                    >
-                      <Text style={styles.buttonText}>Ga terug</Text>
-                    </Pressable>
-                    {/* Continue Button */}
-                    <Pressable
-                      onPress={() => handleNext()}
-                      style={
-                        reframingModalIndex == reframingSteps.length - 1
-                          ? [styles.continueButton, { width: 150 }]
-                          : styles.continueButton
-                      }
-                    >
-                      <Text style={styles.buttonText}>
-                        {reframingModalIndex == reframingSteps.length - 1
-                          ? 'Opslaan en afsluiten'
-                          : 'Ga verder'}
-                      </Text>
-                    </Pressable>
-                  </View>
-                  {/* Progress Dots Container */}
-                  <View
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignSelf: 'center',
-                      columnGap: 7,
-                    }}
-                  >
-                    {Array.from({ length: reframingSteps.length }).map(
-                      (_, index) => {
-                        return (
-                          <View
-                            key={index}
-                            style={{
-                              width: 8,
-                              height: 8,
-                              backgroundColor:
-                                index === reframingModalIndex
-                                  ? '#829c7a'
-                                  : '#E4E1E1',
-                              borderRadius: 99,
-                            }}
-                          ></View>
-                        );
-                      }
-                    )}
-                  </View>
-                </View>
+                {/* Go Back Button */}
+                <Pressable
+                  onPress={() => handlePrevious()}
+                  disabled={reframingModalIndex == 0 ? true : false}
+                  style={
+                    reframingModalIndex == 0
+                      ? [styles.backButton, { opacity: 0.4 }]
+                      : styles.backButton
+                  }
+                >
+                  <Text style={styles.buttonText}>Ga terug</Text>
+                </Pressable>
+                {/* Continue Button */}
+                <Pressable
+                  onPress={() => handleNext()}
+                  style={
+                    reframingModalIndex == reframingSteps.length - 1
+                      ? [styles.continueButton, { width: 150 }]
+                      : styles.continueButton
+                  }
+                >
+                  <Text style={styles.buttonText}>
+                    {reframingModalIndex == reframingSteps.length - 1
+                      ? 'Opslaan en afsluiten'
+                      : 'Ga verder'}
+                  </Text>
+                </Pressable>
+              </View>
+              {/* Progress Dots Container */}
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignSelf: 'center',
+                  columnGap: 7,
+                }}
+              >
+                {Array.from({ length: reframingSteps.length }).map(
+                  (_, index) => {
+                    return (
+                      <View
+                        key={index}
+                        style={{
+                          width: 8,
+                          height: 8,
+                          backgroundColor:
+                            index === reframingModalIndex
+                              ? '#829c7a'
+                              : '#E4E1E1',
+                          borderRadius: 99,
+                        }}
+                      ></View>
+                    );
+                  }
+                )}
               </View>
             </View>
           </View>
         </View>
-      </GestureHandlerRootView>
+      </View>
+      <Toast config={toastConfig} />
     </Modal>
   );
 };
@@ -1092,7 +1021,7 @@ const styles = StyleSheet.create({
   headersDescriptionText: {
     ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
-    marginTop: 5,
+    marginTop: 10,
   } as TextStyle,
   mainContainer: {
     flex: 1,
@@ -1176,6 +1105,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: 'white',
     width: '100%',
+    height: 60,
     paddingLeft: 12,
     paddingRight: 15,
     // Shadow Test

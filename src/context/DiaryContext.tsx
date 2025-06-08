@@ -106,7 +106,6 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     const uuid = matchedDiaryEntry?.uuid ?? uuidv4();
 
     const newDiaryEntry: IDiaryEntry = {
-      id: '',
       uuid,
       date,
       sliderValues,
@@ -114,7 +113,6 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     };
 
     const newDiaryEntryDatabase = {
-      id: '',
       uuid,
       user: user?.id,
       date,

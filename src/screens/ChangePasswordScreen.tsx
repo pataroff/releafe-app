@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TextInput,
@@ -9,7 +9,7 @@ import {
   Platform,
   Dimensions,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import Feather from 'react-native-vector-icons/Feather';
 
 import { useAuth } from '../context/AuthContext';
 import { Fonts } from '../styles';
@@ -17,6 +17,12 @@ import Toast from 'react-native-toast-message';
 
 const windowHeight = Dimensions.get('window').height;
 const isSmallerScreen = windowHeight <= 667;
+
+const UPPERCASE_REGEX = /[A-Z]/;
+const LOWERCASE_REGEX = /[a-z]/;
+const DIGIT_REGEX = /[0-9]/;
+const SPECIAL_CHAR_REGEX = /[!@#$%^&*(),.?":{}|<>]/;
+const MIN_PASSWORD_LENGTH = 8;
 
 export const ChangePasswordScreen: React.FC = () => {
   const { changePassword } = useAuth();
@@ -48,11 +54,47 @@ export const ChangePasswordScreen: React.FC = () => {
       return;
     }
 
-    if (newPassword.length < 8) {
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
       showToast(
         'error',
         'Wachtwoord te kort',
-        'Het nieuwe wachtwoord moet minstens 8 tekens lang zijn.'
+        `Het nieuwe wachtwoord moet minstens ${MIN_PASSWORD_LENGTH} tekens lang zijn.`
+      );
+      return;
+    }
+
+    if (!UPPERCASE_REGEX.test(newPassword)) {
+      showToast(
+        'error',
+        'Hoofdletter vereist',
+        'Het nieuwe wachtwoord moet minimaal één hoofdletter bevatten.'
+      );
+      return;
+    }
+
+    if (!LOWERCASE_REGEX.test(newPassword)) {
+      showToast(
+        'error',
+        'Kleine letter vereist',
+        'Het nieuwe wachtwoord moet minimaal één kleine letter bevatten.'
+      );
+      return;
+    }
+
+    if (!DIGIT_REGEX.test(newPassword)) {
+      showToast(
+        'error',
+        'Cijfer vereist',
+        'Het nieuwe wachtwoord moet minimaal één cijfer bevatten.'
+      );
+      return;
+    }
+
+    if (!SPECIAL_CHAR_REGEX.test(newPassword)) {
+      showToast(
+        'error',
+        'Speciaal teken vereist',
+        'Het nieuwe wachtwoord moet minimaal één speciaal teken bevatten (bijv. !@#$%).'
       );
       return;
     }
@@ -88,7 +130,7 @@ export const ChangePasswordScreen: React.FC = () => {
           style={styles.input}
         />
         <Pressable onPress={() => setShow(!show)} style={styles.iconContainer}>
-          <Icon name={show ? 'eye-off' : 'eye'} size={20} color='#aaa' />
+          <Feather name={show ? 'eye-off' : 'eye'} size={20} color='#aaa' />
         </Pressable>
       </View>
     </>

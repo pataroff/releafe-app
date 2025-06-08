@@ -2,6 +2,8 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { useSharedValue } from 'react-native-reanimated';
+
 import { MediaFile, INoteContext, INoteEntry } from '../types';
 
 import pb from '../lib/pocketbase';
@@ -21,20 +23,29 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
   const [noteEntries, setNoteEntries] = useState<INoteEntry[]>([]);
-
   const [uuid, setUuid] = useState<string>('');
+  // Text State
   const [feelingDescription, setFeelingDescription] = useState<string>('');
-  const [thoughtLikelihoodSliderOne, setThoughtLikelihoodSliderOne] =
-    useState<number>(5);
   const [forThoughtEvidence, setForThoughtEvidence] = useState<string>('');
   const [againstThoughtEvidence, setAgainstThoughtEvidence] =
     useState<string>('');
   const [friendAdvice, setFriendAdvice] = useState<string>('');
-  const [thoughtLikelihoodSliderTwo, setThoughtLikelihoodSliderTwo] =
-    useState<number>(5);
   const [thoughtLikelihood, setThoughtLikelihood] = useState<string>('');
   const [alternativePerspective, setAlternativePerspective] =
     useState<string>('');
+
+  // Slider State
+  const thoughtLikelihoodSliderOne = useSharedValue(5);
+  const thoughtLikelihoodSliderTwo = useSharedValue(5);
+
+  const setThoughtLikelihoodSliderOne = (val: number) => {
+    thoughtLikelihoodSliderOne.value = val;
+  };
+  const setThoughtLikelihoodSliderTwo = (val: number) => {
+    thoughtLikelihoodSliderTwo.value = val;
+  };
+
+  // Special State
   const [mediaFile, setMediaFile] = useState<MediaFile>({
     uri: '',
     type: '',
@@ -106,13 +117,7 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     fetchNoteEntries();
   }, [user]);
 
-  const createNoteEntry = async (worryEntryUuid?: string) => {
-    let worryEntry = null;
-
-    if (worryEntryUuid) {
-      worryEntry = await getWorryEntryId(worryEntryUuid);
-    }
-
+  const createNoteEntry = async () => {
     const matchedNoteEntry = noteEntries.find((entry) => entry.uuid == uuid);
 
     // Create the base newNoteEntry object (same for both update and create)
@@ -144,7 +149,6 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     // Append other fields, converting numbers to strings where necessary
     formData.append('uuid', newNoteEntry.uuid);
     formData.append('user', user?.id || '');
-    formData.append('worry', worryEntry?.id || '');
 
     formData.append('category', category);
     formData.append('priority', priority);
@@ -167,7 +171,6 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
 
     // @TODO Is there a better way of doing this? It is required otherwise, the app crashes! See line 96!
     if (mediaFile.uri && mediaFile.type && mediaFile.name) {
-      // @ts-expect-error
       formData.append('mediaFile', mediaFile);
 
       if (mediaFile.name.startsWith('recording')) {
@@ -270,18 +273,6 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     setThoughtLikelihood(thoughtLikelihood);
     setAlternativePerspective(alternativePerspective);
     setMediaFile(mediaFile);
-  };
-
-  const getWorryEntryId = async (worryEntryUuid: string) => {
-    try {
-      const matchedWorryEntryDatabase = await pb
-        .collection('worry_entries')
-        .getFirstListItem(`uuid="${worryEntryUuid}"`);
-      return matchedWorryEntryDatabase;
-    } catch (error) {
-      console.error('Error fetching worry entry id: ', error);
-      return null;
-    }
   };
 
   return (

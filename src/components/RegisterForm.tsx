@@ -91,7 +91,7 @@ export const RegisterForm = () => {
       !birthDate ||
       !gender ||
       !postcode ||
-      !otpId ||
+      // !otpId || // Purposefully omitting `otpId` check
       !otp
     ) {
       return showToast('error', 'Ongeldige invoer', 'Vul alle velden in.');
@@ -152,6 +152,7 @@ export const RegisterForm = () => {
       <Text style={styles.textInputLabelText}>Geslacht</Text>
       <Dropdown
         style={styles.dropdown}
+        containerStyle={styles.dropdownContainer}
         placeholderStyle={styles.placeholderTextStyle}
         selectedTextStyle={styles.selectedTextStyle}
         itemTextStyle={styles.label}
@@ -180,8 +181,8 @@ export const RegisterForm = () => {
       />
 
       <FormInput
-        label='OTP (one-time-password)'
-        placeholder='Voer je OTP in...'
+        label='Eenmalige inlogcode'
+        placeholder='Voer je inlogcode in...'
         value={otp}
         onChangeText={setOtp}
         handleRequestOtp={handleRequestOTP}
@@ -262,6 +263,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 10,
     marginBottom: 15,
+  },
+  dropdownContainer: {
+    backgroundColor: 'white',
+    borderRadius: 10,
   },
   placeholderTextStyle: {
     ...Fonts.sofiaProItalic[Platform.OS],

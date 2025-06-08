@@ -124,8 +124,6 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
 
   const { goalEntries, updateGoalEntry } = useGoal();
 
-  const { addPoints } = useGamification();
-
   // Handle incoming date from route
   useEffect(() => {
     if (route?.params?.date) {
@@ -280,9 +278,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
 
     totalPoints = !matchedDiaryEntry ? calculatedPoints + 10 : calculatedPoints;
 
-    if (totalPoints > 0) {
-      addPoints(totalPoints);
-    } else {
+    if (totalPoints <= 0) {
       showEarnedPointsModal = false;
     }
 

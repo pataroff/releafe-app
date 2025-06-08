@@ -6,6 +6,7 @@ import {
 import { ImageSourcePropType } from 'react-native';
 
 import { AuthModel, RecordModel } from 'pocketbase';
+import { SharedValue } from 'react-native-reanimated';
 
 export interface ISettingsContext {
   favouriteExercises: string[];
@@ -14,7 +15,6 @@ export interface ISettingsContext {
 }
 
 export interface IDiaryEntry {
-  id: string;
   uuid: string;
   date: Date;
   sliderValues: Record<number, number>;
@@ -67,6 +67,7 @@ export interface IAuthContext {
   signOut: () => void;
   activate: ({}: IUserData) => void;
   requestOTP: (email: string) => Promise<string | undefined>;
+  resetPassword: (email: string) => Promise<boolean>;
   changePassword: (
     newPassword: string,
     confirmNewPassword: string,
@@ -197,43 +198,38 @@ export interface IIcon {
   icon: React.ReactElement;
 }
 
-export interface IWorryListItem {
-  id: string;
+export interface IWorryEntry {
   uuid: string;
   category: Category;
   priority: Priority;
   date: Date;
   title: string;
   description: string;
-  reframed: boolean;
 }
 
 export interface IWorryContext {
-  worryEntries: IWorryListItem[];
+  worryEntries: IWorryEntry[];
   uuid: string;
   category: Category;
   priority: Priority;
   date: Date;
   title: string;
   description: string;
-  reframed: boolean;
-  setWorryEntries: React.Dispatch<React.SetStateAction<IWorryListItem[]>>;
+  setWorryEntries: React.Dispatch<React.SetStateAction<IWorryEntry[]>>;
   setUuid: React.Dispatch<React.SetStateAction<string>>;
   setCategory: React.Dispatch<React.SetStateAction<Category>>;
   setPriority: React.Dispatch<React.SetStateAction<Priority>>;
   setDate: React.Dispatch<React.SetStateAction<Date>>;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
-  setReframed: React.Dispatch<React.SetStateAction<boolean>>;
-  createWorryEntry: () => void;
+  createOrUpdateWorryEntry: () => IWorryEntry;
   deleteWorryEntry: (uuid: string) => void;
   updateWorryEntryFields: (
     uuid: string,
     category: Category,
     priority: Priority,
     title: string,
-    description: string,
-    reframed?: boolean
+    description: string
   ) => void;
   resetWorryEntryFields: () => void;
 }
@@ -253,11 +249,11 @@ export interface INoteEntry {
   title: string;
   description: string;
   feelingDescription: string;
-  thoughtLikelihoodSliderOne: number;
+  thoughtLikelihoodSliderOne: SharedValue<number>;
   forThoughtEvidence: string;
   againstThoughtEvidence: string;
   friendAdvice: string;
-  thoughtLikelihoodSliderTwo: number;
+  thoughtLikelihoodSliderTwo: SharedValue<number>;
   thoughtLikelihood: string;
   alternativePerspective: string;
   mediaFile: MediaFile;
@@ -268,28 +264,33 @@ export interface INoteContext {
   noteEntries: INoteEntry[];
   uuid: string;
   feelingDescription: string;
-  thoughtLikelihoodSliderOne: number;
+  thoughtLikelihoodSliderOne: SharedValue<number>;
+  thoughtLikelihoodSliderTwo: SharedValue<number>;
   forThoughtEvidence: string;
   againstThoughtEvidence: string;
   friendAdvice: string;
-  thoughtLikelihoodSliderTwo: number;
   thoughtLikelihood: string;
   alternativePerspective: string;
   mediaFile: MediaFile;
   audioMetering: number[];
+
+  // Setters for normal React states
   setNoteEntries: React.Dispatch<React.SetStateAction<INoteEntry[]>>;
   setUuid: React.Dispatch<React.SetStateAction<string>>;
   setFeelingDescription: React.Dispatch<React.SetStateAction<string>>;
-  setThoughtLikelihoodSliderOne: React.Dispatch<React.SetStateAction<number>>;
   setForThoughtEvidence: React.Dispatch<React.SetStateAction<string>>;
   setAgainstThoughtEvidence: React.Dispatch<React.SetStateAction<string>>;
   setFriendAdvice: React.Dispatch<React.SetStateAction<string>>;
-  setThoughtLikelihoodSliderTwo: React.Dispatch<React.SetStateAction<number>>;
   setThoughtLikelihood: React.Dispatch<React.SetStateAction<string>>;
   setAlternativePerspective: React.Dispatch<React.SetStateAction<string>>;
   setMediaFile: React.Dispatch<React.SetStateAction<MediaFile>>;
   setAudioMetering: React.Dispatch<React.SetStateAction<number[]>>;
-  createNoteEntry: (worryEntryUuid?: string) => void;
+
+  // Setters for slider SharedValues
+  setThoughtLikelihoodSliderOne: (value: number) => void;
+  setThoughtLikelihoodSliderTwo: (value: number) => void;
+
+  createNoteEntry: () => void;
   deleteNoteEntry: (uuid: string) => void;
   updateNoteEntryFields: (
     uuid: string,

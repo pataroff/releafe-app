@@ -8,8 +8,12 @@ import {
   TextStyle,
   View,
   Platform,
+  Dimensions,
 } from 'react-native';
 import { Fonts } from '../styles';
+
+const windowHeight = Dimensions.get('window').height;
+const isSmallerScreen = windowHeight <= 667;
 
 interface FormInputProps {
   label: string;
@@ -37,7 +41,7 @@ export const FormInput: React.FC<FormInputProps> = ({
   keyboardType = 'default',
   maxLength,
   handleRequestOtp,
-  requestOTPButtonLabel = 'Vraag OTP aan',
+  requestOTPButtonLabel = 'Vraag code aan',
   cooldown,
 }) => {
   return (
@@ -96,7 +100,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#dedede',
     borderRadius: 30,
-    paddingLeft: 20,
+    paddingLeft: 15,
     flex: 1,
     marginRight: 10,
   } as TextStyle,
@@ -108,6 +112,7 @@ const styles = StyleSheet.create({
   },
   otpButtonDisabled: {
     backgroundColor: 'gainsboro',
+    width: isSmallerScreen ? '63%' : '59%',
   },
   otpButtonText: {
     color: '#fff',

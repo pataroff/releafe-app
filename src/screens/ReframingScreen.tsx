@@ -51,7 +51,7 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
     <>
       <EarnedPointsModal
         visible={earnedPointsModalVisible}
-        onClose={() => setEarnedPointsModalVisible(false)}
+        setVisible={setEarnedPointsModalVisible}
         points={20}
       />
       <ReframingModal
