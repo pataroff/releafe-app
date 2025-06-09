@@ -81,9 +81,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
   // Video State
   const [isVideoRecording, setIsVideoRecording] = useState<boolean>(false);
   const [video, setVideo] = useState<string | null>(null);
-  const [videoThumbnailUri, setVideoThumbnailUri] = useState<string | null>(
-    null
-  );
+  const [videoThumbnailUri, setVideoThumbnailUri] = useState<string>('');
 
   // Audio State
   const [isAudioRecording, setIsAudioRecording] = useState<boolean>(false);
@@ -108,12 +106,12 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     audioMetering,
     setMediaFile,
     setAudioMetering,
-    createNoteEntry,
+    createOrUpdateNoteEntry,
     resetNoteEntryFields,
   } = useNote();
 
   const handleStore = () => {
-    createNoteEntry();
+    createOrUpdateNoteEntry();
     resetNoteEntryFields();
     resetWorryEntryFields();
     setModalAddNoteListItemVisible(!modalAddNoteListItemVisible);
@@ -692,66 +690,68 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                     </View>
 
                     {/* Uploaded Media Container */}
-                    {mediaFile.uri && mediaFile.name && (
-                      <View
-                        style={{
-                          marginTop: 20,
-                          display: 'flex',
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}
-                      >
-                        {/* @TODO: Is there a better way of differentiating between the different media types? */}
-                        {mediaFile.name.startsWith('recording') ? (
-                          <MemoItem
-                            uri={audioUri}
-                            metering={audioMetering}
-                            containerStyle={{ width: '80%' }}
-                          />
-                        ) : (
-                          <View
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              height: 50,
-                              width: '80%',
-                              backgroundColor: '#EEF1EC',
-                              borderRadius: 10,
-                            }}
-                          >
-                            <Image
-                              style={{
-                                borderRadius: 10,
-                                height: 50,
-                                width: 50,
-                                marginRight: 8,
-                              }}
-                              // @ts-expect-error
-                              source={{
-                                uri: imageExtensions.some((ext) =>
-                                  mediaFile.uri.endsWith(ext)
-                                )
-                                  ? mediaFile.uri
-                                  : videoThumbnailUri,
-                              }}
+                    {mediaFile &&
+                      typeof mediaFile !== 'string' &&
+                      mediaFile.uri &&
+                      mediaFile.name && (
+                        <View
+                          style={{
+                            marginTop: 20,
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                          }}
+                        >
+                          {/* @TODO: Is there a better way of differentiating between the different media types? */}
+                          {mediaFile.name.startsWith('recording') ? (
+                            <MemoItem
+                              uri={audioUri}
+                              metering={audioMetering}
+                              containerStyle={{ width: '80%' }}
                             />
-                            <Text style={styles.mediaFileNameText}>
-                              {mediaFile.name}
-                            </Text>
-                          </View>
-                        )}
-                        <Pressable onPress={() => handleMediaFileDelete()}>
-                          <Image
-                            resizeMode='contain'
-                            style={{ width: 43, height: 46 }}
-                            source={require('../../assets/images/delete_icon.png')}
-                          />
-                        </Pressable>
-                      </View>
-                    )}
+                          ) : (
+                            <View
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                height: 50,
+                                width: '80%',
+                                backgroundColor: '#EEF1EC',
+                                borderRadius: 10,
+                              }}
+                            >
+                              <Image
+                                style={{
+                                  borderRadius: 10,
+                                  height: 50,
+                                  width: 50,
+                                  marginRight: 8,
+                                }}
+                                source={{
+                                  uri: imageExtensions.some((ext) =>
+                                    mediaFile.uri.endsWith(ext)
+                                  )
+                                    ? mediaFile.uri
+                                    : videoThumbnailUri,
+                                }}
+                              />
+                              <Text style={styles.mediaFileNameText}>
+                                {mediaFile.name}
+                              </Text>
+                            </View>
+                          )}
+                          <Pressable onPress={() => handleMediaFileDelete()}>
+                            <Image
+                              resizeMode='contain'
+                              style={{ width: 43, height: 46 }}
+                              source={require('../../assets/images/delete_icon.png')}
+                            />
+                          </Pressable>
+                        </View>
+                      )}
 
                     <Pressable
                       onPress={() => handleStorePress()}

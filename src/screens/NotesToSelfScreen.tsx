@@ -31,6 +31,7 @@ export const NotesToSelfScreen: React.FC<{ route: any }> = ({ route }) => {
       />
       <ScrollView
         bounces={false}
+        showsVerticalScrollIndicator={false}
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >

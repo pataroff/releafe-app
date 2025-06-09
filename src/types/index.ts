@@ -234,15 +234,15 @@ export interface IWorryContext {
   resetWorryEntryFields: () => void;
 }
 
-export type MediaFile = {
-  uri: string;
-  type: string;
-  name: string;
-};
+export type MediaFile =
+  | {
+      uri: string;
+      type: string;
+      name: string;
+    }
+  | string;
 
-// @TODO: What about the slider values?
 export interface INoteEntry {
-  id: string;
   uuid: string;
   category: Category;
   priority: Priority;
@@ -290,21 +290,22 @@ export interface INoteContext {
   setThoughtLikelihoodSliderOne: (value: number) => void;
   setThoughtLikelihoodSliderTwo: (value: number) => void;
 
-  createNoteEntry: () => void;
+  createOrUpdateNoteEntry: () => INoteEntry;
   deleteNoteEntry: (uuid: string) => void;
   updateNoteEntryFields: (
     uuid: string,
     feelingDescription: string,
-    thoughtLikelihoodSliderOne: number,
+    thoughtLikelihoodSliderOne: SharedValue<number>,
     forThoughtEvidence: string,
     againstThoughtEvidence: string,
     friendAdvice: string,
-    thoughtLikelihoodSliderTwo: number,
+    thoughtLikelihoodSliderTwo: SharedValue<number>,
     thoughtLikelihood: string,
     alternativePerspective: string,
     mediaFile: MediaFile
   ) => void;
   resetNoteEntryFields: () => void;
+  getNoteEntryMediaFileUrl: (uuid: string) => Promise<string | undefined>;
 }
 
 export type TreeStateKey =

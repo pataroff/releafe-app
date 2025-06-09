@@ -48,7 +48,7 @@ export const NoteListItem: React.FC<{ item: INoteEntry; route: any }> = ({
         setModalReframingVisible={setModalReframingVisible}
         item={item}
       />
-
+      {/* @TODO This is here due to the editing functionality! */}
       <ReframingModal
         route={route}
         reframingModalIndex={reframingModalIndex}

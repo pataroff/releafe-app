@@ -2,7 +2,7 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { useSharedValue } from 'react-native-reanimated';
+import { SharedValue, useSharedValue } from 'react-native-reanimated';
 
 import { MediaFile, INoteContext, INoteEntry } from '../types';
 
@@ -117,13 +117,12 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     fetchNoteEntries();
   }, [user]);
 
-  const createNoteEntry = async () => {
-    const matchedNoteEntry = noteEntries.find((entry) => entry.uuid == uuid);
+  const createOrUpdateNoteEntry = (): INoteEntry => {
+    const matchedNoteEntry = noteEntries.find((entry) => entry.uuid === uuid);
+    const newUuid = matchedNoteEntry?.uuid ?? uuidv4();
 
-    // Create the base newNoteEntry object (same for both update and create)
     const newNoteEntry = {
-      id: matchedNoteEntry?.id || '',
-      uuid: matchedNoteEntry?.uuid || uuidv4(),
+      uuid: newUuid,
       category,
       priority,
       title,
@@ -140,84 +139,109 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
       audioMetering,
     };
 
-    // @TODO I believe the logic can be separated here into branches depending on `mediaFile` and if it is present or not!
-    // Simply said going for the formData approach only if the `mediaFile` is present!
-
-    // Prepare FormData for uploading the media file and other fields
-    const formData = new FormData();
-
-    // Append other fields, converting numbers to strings where necessary
-    formData.append('uuid', newNoteEntry.uuid);
-    formData.append('user', user?.id || '');
-
-    formData.append('category', category);
-    formData.append('priority', priority);
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('feelingDescription', feelingDescription);
-    formData.append(
-      'thoughtLikelihoodSliderOne',
-      thoughtLikelihoodSliderOne.toString()
-    );
-    formData.append('forThoughtEvidence', forThoughtEvidence);
-    formData.append('againstThoughtEvidence', againstThoughtEvidence);
-    formData.append('friendAdvice', friendAdvice);
-    formData.append(
-      'thoughtLikelihoodSliderTwo',
-      thoughtLikelihoodSliderTwo.toString()
-    );
-    formData.append('thoughtLikelihood', thoughtLikelihood);
-    formData.append('alternativePerspective', alternativePerspective);
-
-    // @TODO Is there a better way of doing this? It is required otherwise, the app crashes! See line 96!
-    if (mediaFile.uri && mediaFile.type && mediaFile.name) {
-      formData.append('mediaFile', mediaFile);
-
-      if (mediaFile.name.startsWith('recording')) {
-        formData.append('audioMetering', JSON.stringify(audioMetering));
-      }
-    }
+    const newNoteEntryDatabase = {
+      uuid: newUuid,
+      user: user?.id,
+      category,
+      priority,
+      title,
+      description,
+      feelingDescription,
+      thoughtLikelihoodSliderOne,
+      forThoughtEvidence,
+      againstThoughtEvidence,
+      friendAdvice,
+      thoughtLikelihoodSliderTwo,
+      thoughtLikelihood,
+      alternativePerspective,
+      mediaFile,
+      audioMetering,
+    };
 
     if (matchedNoteEntry) {
-      try {
-        // Update existing note entry in the database
-        const updatedNoteEntry = await pb
-          .collection('note_entries')
-          .update(matchedNoteEntry.id, formData);
+      const index = noteEntries.indexOf(matchedNoteEntry);
+      setNoteEntries((prev) => {
+        const updated = [...prev];
+        updated[index] = newNoteEntry;
+        return updated;
+      });
 
-        // Update the local state with the updated note entry
-        setNoteEntries((prev) =>
-          prev.map((entry) =>
-            entry.uuid === matchedNoteEntry.uuid
-              ? {
-                  ...newNoteEntry,
-                  id: updatedNoteEntry.id,
-                  mediaFile: updatedNoteEntry.mediaFile,
-                }
-              : entry
-          )
-        );
-      } catch (error) {
-        console.error('Error updating note entry: ', error);
-      }
+      updateNoteEntryInDatabase(newUuid, newNoteEntry);
     } else {
-      try {
-        // Create a new record in the database
-        const createdNoteEntry = await pb
-          .collection('note_entries')
-          .create(formData);
+      setNoteEntries((prev) => [newNoteEntry, ...prev]);
+      createNoteEntryInDatabase(newNoteEntryDatabase);
+    }
+    return newNoteEntry;
+  };
 
-        // Create the newNoteEntry in local state
-        setNoteEntries((prev) => [
-          {
-            ...newNoteEntry,
-            id: createdNoteEntry.id,
-            mediaFile: createdNoteEntry.mediaFile,
-          },
-          ...prev,
-        ]);
-      } catch (error) {
-        console.error('Error creating note entry: ', error);
+  const updateNoteEntryInDatabase = async (uuid: string, entry: any) => {
+    try {
+      const matched = await pb
+        .collection('note_entries')
+        .getFirstListItem(`uuid="${uuid}"`, { requestKey: null });
+
+      const hasMedia =
+        entry.mediaFile?.uri && entry.mediaFile?.type && entry.mediaFile?.name;
+
+      if (hasMedia) {
+        const formData = new FormData();
+        appendNoteFormData(formData, entry);
+        await pb.collection('note_entries').update(matched.id, formData);
+      } else {
+        const { mediaFile, audioMetering, ...cleanEntry } = entry;
+        await pb.collection('note_entries').update(matched.id, cleanEntry);
+      }
+    } catch (error) {
+      console.error('Failed to update note entry in DB:', error);
+    }
+  };
+
+  const createNoteEntryInDatabase = async (entry: any) => {
+    try {
+      const hasMedia =
+        entry.mediaFile?.uri && entry.mediaFile?.type && entry.mediaFile?.name;
+
+      if (hasMedia) {
+        const formData = new FormData();
+        appendNoteFormData(formData, entry);
+        await pb.collection('note_entries').create(formData);
+      } else {
+        const { mediaFile, audioMetering, ...cleanEntry } = entry;
+        await pb.collection('note_entries').create(cleanEntry);
+      }
+    } catch (error) {
+      console.error('Failed to create note entry in DB:', error);
+    }
+  };
+
+  const appendNoteFormData = (formData: FormData, entry: any) => {
+    formData.append('uuid', entry.uuid);
+    formData.append('user', entry.user);
+
+    formData.append('category', entry.category);
+    formData.append('priority', entry.priority);
+    formData.append('title', entry.title);
+    formData.append('description', entry.description);
+    formData.append('feelingDescription', entry.feelingDescription);
+    formData.append(
+      'thoughtLikelihoodSliderOne',
+      entry.thoughtLikelihoodSliderOne.toString()
+    );
+    formData.append('forThoughtEvidence', entry.forThoughtEvidence);
+    formData.append('againstThoughtEvidence', entry.againstThoughtEvidence);
+    formData.append('friendAdvice', entry.friendAdvice);
+    formData.append(
+      'thoughtLikelihoodSliderTwo',
+      entry.thoughtLikelihoodSliderTwo.toString()
+    );
+    formData.append('thoughtLikelihood', entry.thoughtLikelihood);
+    formData.append('alternativePerspective', entry.alternativePerspective);
+
+    if (entry.mediaFile) {
+      formData.append('mediaFile', entry.mediaFile);
+
+      if (entry.mediaFile.name?.startsWith('recording')) {
+        formData.append('audioMetering', JSON.stringify(entry.audioMetering));
       }
     }
   };
@@ -226,12 +250,10 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     setNoteEntries((prev) => prev.filter((entry) => entry.uuid != uuid));
 
     try {
-      // Get the corresponding entry from the database
       const matchedNoteEntryDatabase = await pb
         .collection('note_entries')
         .getFirstListItem(`uuid="${uuid}"`);
 
-      // Delete the existing entry from the database
       await pb.collection('note_entries').delete(matchedNoteEntryDatabase.id);
     } catch (error) {
       console.error('Error deleting worry entry:', error);
@@ -254,25 +276,40 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
   const updateNoteEntryFields = (
     uuid: string,
     feelingDescription: string,
-    thoughtLikelihoodSliderOne: number,
+    thoughtLikelihoodSliderOne: SharedValue<number>,
     forThoughtEvidence: string,
     againstThoughtEvidence: string,
     friendAdvice: string,
-    thoughtLikelihoodSliderTwo: number,
+    thoughtLikelihoodSliderTwo: SharedValue<number>,
     thoughtLikelihood: string,
     alternativePerspective: string,
     mediaFile: MediaFile
   ) => {
     setUuid(uuid);
     setFeelingDescription(feelingDescription);
-    setThoughtLikelihoodSliderOne(thoughtLikelihoodSliderOne);
+    setThoughtLikelihoodSliderOne(thoughtLikelihoodSliderOne.value);
     setForThoughtEvidence(forThoughtEvidence);
     setAgainstThoughtEvidence(againstThoughtEvidence);
     setFriendAdvice(friendAdvice);
-    setThoughtLikelihoodSliderTwo(thoughtLikelihoodSliderTwo);
+    setThoughtLikelihoodSliderTwo(thoughtLikelihoodSliderTwo.value);
     setThoughtLikelihood(thoughtLikelihood);
     setAlternativePerspective(alternativePerspective);
     setMediaFile(mediaFile);
+  };
+
+  const getNoteEntryMediaFileUrl = async (
+    uuid: string
+  ): Promise<string | null> => {
+    try {
+      const record = await pb
+        .collection('note_entries')
+        .getFirstListItem(`uuid="${uuid}"`, { requestKey: null });
+
+      return pb.files.getURL(record, record.mediaFile);
+    } catch (error) {
+      console.error('Failed to generate file URL:', error);
+      return null;
+    }
   };
 
   return (
@@ -302,10 +339,11 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
         setAlternativePerspective,
         setMediaFile,
         setAudioMetering,
-        createNoteEntry,
+        createOrUpdateNoteEntry,
         deleteNoteEntry,
         updateNoteEntryFields,
         resetNoteEntryFields,
+        getNoteEntryMediaFileUrl,
       }}
     >
       {children}

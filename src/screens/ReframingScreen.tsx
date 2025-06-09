@@ -55,7 +55,6 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
         points={20}
       />
       <ReframingModal
-        // @TODO: Correct `route` type annotation!
         route={route}
         reframingModalIndex={reframingModalIndex}
         setReframingModalIndex={setReframingModalIndex}

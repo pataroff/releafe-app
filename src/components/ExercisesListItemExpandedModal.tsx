@@ -44,7 +44,6 @@ export const ExercisesListItemExpandedModal: React.FC<
   setEarnedPointsModalVisible,
 }) => {
   const { icon, title, description, link } = exercise;
-  const { addPoints } = useGamification();
 
   const [hasPlayedFully, setHasPlayedFully] = useState<boolean>(false);
 

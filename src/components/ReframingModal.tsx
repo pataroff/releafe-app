@@ -49,15 +49,14 @@ type NumberStateSetterPair = {
 };
 
 interface ReframingModalProps {
-  // @TODO Correct the `route` type annotation!
   route: any;
   reframingModalIndex: number;
   setReframingModalIndex: React.Dispatch<React.SetStateAction<number>>;
   modalReframingVisible: boolean;
   setModalReframingVisible: React.Dispatch<React.SetStateAction<boolean>>;
   handleDrawer?: () => void;
-  earnedPointsModalVisible: boolean;
-  setEarnedPointsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  earnedPointsModalVisible?: boolean;
+  setEarnedPointsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ReframingModal: React.FC<ReframingModalProps> = ({
@@ -99,7 +98,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
     setThoughtLikelihoodSliderTwo,
     setThoughtLikelihood,
     setAlternativePerspective,
-    createNoteEntry,
+    createOrUpdateNoteEntry,
     resetNoteEntryFields,
   } = useNote();
 
@@ -261,7 +260,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
         6: false,
       });
 
-      createNoteEntry();
+      createOrUpdateNoteEntry();
 
       if (route.name === 'WorryBox') {
         deleteWorryEntry(uuid);
@@ -270,9 +269,11 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       resetWorryEntryFields();
       resetNoteEntryFields();
 
-      setTimeout(() => {
-        setEarnedPointsModalVisible(!earnedPointsModalVisible);
-      }, 100);
+      if (setEarnedPointsModalVisible) {
+        setTimeout(() => {
+          setEarnedPointsModalVisible(!earnedPointsModalVisible);
+        }, 100);
+      }
     }
   };
 

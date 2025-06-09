@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   StyleSheet,
@@ -49,11 +49,13 @@ export const NoteListItemExpandedModal: React.FC<
   item,
 }) => {
   const [showUnreframedData, setShowUnreframedData] = useState<boolean>(false);
-  const { updateNoteEntryFields, deleteNoteEntry } = useNote();
+  const [fileUrl, setFileUrl] = useState<string>('');
+
+  const { getNoteEntryMediaFileUrl, updateNoteEntryFields, deleteNoteEntry } =
+    useNote();
   const { updateWorryEntryFields } = useWorry();
 
   const {
-    id,
     uuid,
     category,
     priority,
@@ -70,6 +72,20 @@ export const NoteListItemExpandedModal: React.FC<
     mediaFile,
     audioMetering,
   } = item;
+
+  useEffect(() => {
+    const fetchUrl = async () => {
+      if (mediaFile) {
+        const url = await getNoteEntryMediaFileUrl(uuid);
+
+        console.log(url);
+        if (url) {
+          setFileUrl(url);
+        }
+      }
+    };
+    fetchUrl();
+  }, [[mediaFile]]);
 
   const reframedData = [
     { heading: null, body: alternativePerspective },
@@ -96,6 +112,7 @@ export const NoteListItemExpandedModal: React.FC<
 
   const [modalCloseVisible, setModalCloseVisible] = useState<boolean>(false);
 
+  // @TODO Jan wants the notes to be editable, but only if they were created through the reframing!
   const handleReframing = async () => {
     updateWorryEntryFields(uuid, category, priority, title, description);
     updateNoteEntryFields(
@@ -139,9 +156,8 @@ export const NoteListItemExpandedModal: React.FC<
         title='Bericht aan jezelf verwijderen'
         description='Je staat op het punt om het bericht aan jezelf te verwijderen. Weet je het zeker?'
         handleClose={handleClose}
-        denyText='Nee, bewaar het bericht.'
-        confirmText='Ja, verwijder het bericht.'
-        closeButtonDisabled={true}
+        denyText='Nee, bewaar het bericht'
+        confirmText='Ja, verwijder het bericht'
       />
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
@@ -200,46 +216,35 @@ export const NoteListItemExpandedModal: React.FC<
             style={styles.mainContainer}
             contentContainerStyle={styles.mainContentContainer}
           >
-            {mediaFile ? (
+            {mediaFile && typeof mediaFile === 'string' ? (
               <>
                 <Text style={styles.bodyText}>{description}</Text>
-                {
-                  // @ts-expect-error Property 'endsWith' does not exist on type 'MediaFile'.
-                  mediaFile.endsWith('.jpg') || mediaFile.endsWith('.pdf') ? (
-                    <Image
-                      style={{ width: '100%', height: 400, marginVertical: 20 }}
+                {mediaFile.endsWith('.jpg') || mediaFile.endsWith('.pdf') ? (
+                  <Image
+                    style={{ width: '100%', height: 400, marginVertical: 20 }}
+                    source={{ uri: fileUrl }}
+                  />
+                ) : mediaFile.startsWith('recording') ? (
+                  <View style={{ marginVertical: 20 }}>
+                    <MemoItem uri={fileUrl} metering={audioMetering} />
+                  </View>
+                ) : (
+                  <>
+                    <Video
                       source={{
-                        // PB_URL ends with a slash, therefore no slash before 'api'!
-                        uri: `${process.env.PB_URL}api/files/note_entries/${id}/${mediaFile}`,
+                        uri: fileUrl,
                       }}
+                      style={{
+                        width: '100%',
+                        height: 400,
+                        marginVertical: 20,
+                      }}
+                      resizeMode={ResizeMode.COVER}
+                      useNativeControls
+                      isLooping
                     />
-                  ) : // @ts-expect-error Property 'endsWith' does not exist on type 'MediaFile'.
-                  mediaFile.startsWith('recording') ? (
-                    <View style={{ marginVertical: 20 }}>
-                      <MemoItem
-                        uri={`${process.env.PB_URL}api/files/note_entries/${id}/${mediaFile}`}
-                        metering={audioMetering}
-                      />
-                    </View>
-                  ) : (
-                    <>
-                      <Video
-                        source={{
-                          // PB_URL ends with a slash, therefore no slash before 'api'!
-                          uri: `${process.env.PB_URL}api/files/note_entries/${id}/${mediaFile}`,
-                        }}
-                        style={{
-                          width: '100%',
-                          height: 400,
-                          marginVertical: 20,
-                        }}
-                        resizeMode={ResizeMode.COVER}
-                        useNativeControls
-                        isLooping
-                      />
-                    </>
-                  )
-                }
+                  </>
+                )}
               </>
             ) : (
               <>
