@@ -82,9 +82,6 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
 
   const handleClose = () => {
     deleteWorryEntry(uuid);
-    setTimeout(() => {
-      setModalCloseVisible(!modalCloseVisible);
-    }, 100);
   };
 
   return (

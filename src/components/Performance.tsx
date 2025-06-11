@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
   container: {
     width: windowWidth,
     marginTop: 25,
-    marginBottom: 110,
     paddingHorizontal: 20,
   },
   headersContainer: {

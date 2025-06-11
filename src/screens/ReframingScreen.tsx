@@ -67,6 +67,7 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
       <StatusBar />
       <ScrollView
         bounces={false}
+        showsVerticalScrollIndicator={false}
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
@@ -89,7 +90,7 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
           style={{
             width: windowWidth,
             paddingHorizontal: 30,
-            marginBottom: 110,
+            paddingBottom: 110,
           }}
         >
           {reframingOptionsData.map((option, index) => (

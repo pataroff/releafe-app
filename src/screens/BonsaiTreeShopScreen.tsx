@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent', // #F9F9F9
-    marginBottom: 80, // @TODO: Is this right?
+    paddingBottom: 80,
   },
   contentContainerStyles: {
     flexGrow: 1,

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 
 import {
   View,
@@ -421,6 +420,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     backgroundColor: '#f9f9f9',
+    paddingBottom: 120,
   },
   greetingContainer: {
     alignSelf: 'flex-start',

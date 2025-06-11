@@ -206,7 +206,7 @@ export const RegisterForm = () => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
-    marginBottom: 60,
+    paddingBottom: 60,
     width: windowWidth - 2 * 30,
   },
   textInputLabelText: {

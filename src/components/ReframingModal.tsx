@@ -470,7 +470,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
             contentContainerStyle={styles.mainContentContainerStyles}
           >
             {/* Main Content Container */}
-            <View style={{ flex: 1, marginBottom: 180 }}>
+            <View style={{ flex: 1, paddingBottom: 180 }}>
               {reframingModalIndex == 5 && (
                 <View
                   style={{
@@ -1035,7 +1035,7 @@ const styles = StyleSheet.create({
   mainContentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    marginBottom: 100,
+    paddingBottom: 100,
   },
   modalTitleText: {
     textAlign: 'center',

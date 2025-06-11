@@ -14,6 +14,7 @@ export const DiaryStack: React.FC = () => {
           const title = 'Dagboek';
           return <Header title={title} />;
         },
+        headerTransparent: true,
       }}
     >
       <Stack.Screen name='Diary1' component={DiaryScreen} />

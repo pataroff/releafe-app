@@ -905,7 +905,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingHorizontal: 25,
-    marginBottom: 170,
+    paddingBottom: 170,
   },
   categoryComponent: {
     marginTop: 20,
@@ -927,7 +927,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingHorizontal: 25,
-    marginBottom: 170,
+    paddingBottom: 170,
   },
   goalComponent: {
     flex: 1,
@@ -952,7 +952,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingHorizontal: 25,
-    marginBottom: 170,
+    paddingBottom: 170,
   },
   menuComponent: {
     flex: 1,
@@ -977,7 +977,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingHorizontal: 25,
-    marginBottom: 170,
+    paddingBottom: 170,
   },
   selectedGoalComponent: {
     flex: 1,

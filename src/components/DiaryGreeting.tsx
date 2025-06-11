@@ -20,7 +20,7 @@ import { DiaryModal } from './DiaryModal';
 
 const windowWidth = Dimensions.get('window').width;
 
-export const DiaryGreeting = ({ route }) => {
+export const DiaryGreeting: React.FC<{ route: any }> = ({ route }) => {
   const { user } = useAuth();
 
   const [modalDiaryVisible, setModalDiaryVisible] = useState<boolean>(false);
@@ -32,7 +32,6 @@ export const DiaryGreeting = ({ route }) => {
         setModalDiaryVisible={setModalDiaryVisible}
         route={route}
       />
-
       <View style={styles.container}>
         {/* Header Container */}
         <View
@@ -59,8 +58,8 @@ export const DiaryGreeting = ({ route }) => {
           }}
         >
           <Text style={styles.diaryDescriptionText}>
-            Door elke dag je dagboek in te vullen, krijg je inzicht in hoe het met je 
-            gaat en hoe je groeit.
+            Door elke dag je dagboek in te vullen, krijg je inzicht in hoe het
+            met je gaat en hoe je groeit.
           </Text>
           {/* Reward Container */}
           <View style={{ display: 'flex', flexDirection: 'row', columnGap: 5 }}>
@@ -112,8 +111,6 @@ const styles = StyleSheet.create({
     width: windowWidth - 2 * 30,
     backgroundColor: 'white',
     borderRadius: 30,
-    marginTop: 20,
-    marginBottom: 100,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',

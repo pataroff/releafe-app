@@ -85,15 +85,17 @@ export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
           <View style={styles.headersContainer}>
             <Text style={styles.headersTitleText}>Persoonlijke doelen</Text>
             <Text style={styles.headersDescriptionText}>
-             Stel een doel dat je helpt om je mentaal gezond te voelen. Door er met aandacht aan te werken, 
-             ontdek je stap voor stap wat jou helpt om je goed te voelen.
+              Stel een doel dat je helpt om je mentaal gezond te voelen. Door er
+              met aandacht aan te werken, ontdek je stap voor stap wat jou helpt
+              om je goed te voelen.
             </Text>
             {/* Headers Inner Container */}
             <View style={styles.headersInnerContainer}>
               <View style={{ width: '80%' }}>
                 <Text style={styles.headersHeadingText}>Mijn doelen</Text>
                 <Text style={styles.headersDescriptionText}>
-                  Bekijk hieronder je voortgang of voeg een nieuw doel toe via de + knop.
+                  Bekijk hieronder je voortgang of voeg een nieuw doel toe via
+                  de + knop.
                 </Text>
               </View>
               {/* Add Button */}
@@ -144,8 +146,8 @@ const styles = StyleSheet.create({
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#F9F9F9',
+    paddingBottom: 120,
   },
 
   headersContainer: {
@@ -183,7 +185,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   goalListContainer: {
-    marginVertical: 20,
+    paddingVertical: 20,
     flex: 1,
   },
   goalListContentContainer: {
@@ -198,7 +200,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingHorizontal: 25,
-    marginBottom: 170,
   },
   noDataContainer: {
     flex: 1,

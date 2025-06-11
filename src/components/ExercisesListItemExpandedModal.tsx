@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 25,
     marginTop: 20,
-    marginBottom: 125, // @TODO Does this need to be a greater value?
+    paddingBottom: 125, // @TODO Does this need to be a greater value?
     marginHorizontal: 20,
     backgroundColor: '#ffffff',
   },

@@ -366,14 +366,14 @@ export const AchievementsScreen: React.FC<{ route: any }> = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent', // #F9F9F9
-    marginBottom: 80, // @TODO: Is this right?
+    backgroundColor: 'transparent',
+    paddingBottom: 80,
   },
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
     // justifyContent: 'space-evenly',
-    backgroundColor: 'transparent', // #F9F9F9
+    backgroundColor: 'transparent',
   },
   headersContainer: {
     position: 'relative',

@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#F9F9F9',
+    paddingBottom: 120,
   },
   headersContainer: {
     width: windowWidth,
@@ -179,7 +179,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingHorizontal: 25,
-    marginBottom: 120,
   },
   toolkitToolComponent: {
     marginTop: 20,

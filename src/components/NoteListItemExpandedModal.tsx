@@ -146,13 +146,12 @@ export const NoteListItemExpandedModal: React.FC<
   };
 
   const handleDelete = () => {
-    // @TODO Modal asking if you are sure about deletion!
-    deleteNoteEntry(uuid);
-    setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible);
+    setModalCloseVisible(!modalCloseVisible);
   };
 
   const handleClose = () => {
-    handleDelete();
+    deleteNoteEntry(uuid);
+    setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible);
   };
 
   return (

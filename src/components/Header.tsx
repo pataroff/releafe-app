@@ -38,9 +38,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
       : '#C1D6BA';
 
   const isNestedScreen =
-    route?.params?.toolkitStackScreen ||
-    route?.params?.bonsaiTreeStackScreen ||
-    route?.params?.settingsStackScreen;
+    route?.params?.bonsaiTreeStackScreen || route?.params?.settingsStackScreen;
 
   const showBackButton = isNestedScreen && route?.name !== 'Toolkit1';
 

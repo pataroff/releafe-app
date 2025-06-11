@@ -1,4 +1,3 @@
-import React, { useState, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,7 +5,7 @@ import {
   View,
   Platform,
   TextStyle,
-  Pressable,
+  Dimensions,
 } from 'react-native';
 
 import { Fonts } from '../styles';
@@ -24,6 +23,8 @@ interface NoteListProps {
     React.SetStateAction<boolean>
   >;
 }
+
+const windowWidth = Dimensions.get('window').width;
 
 export const NoteList: React.FC<NoteListProps> = ({
   route,
@@ -84,7 +85,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#ffffff',
     rowGap: 10,
-    marginHorizontal: 30,
+    width: windowWidth - 2 * 25,
+    paddingBottom: 100,
   },
   noDataContainer: {
     flex: 1,

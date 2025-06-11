@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
-  ScrollView,
   View,
   Text,
   TextStyle,
@@ -12,6 +11,8 @@ import {
   Dimensions,
   ImageBackground,
 } from 'react-native';
+
+import { ScrollView } from 'react-native-gesture-handler';
 
 import { Fonts } from '../styles';
 
@@ -150,6 +151,8 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
           {/* Main content */}
           <View style={{ flex: 1, zIndex: 2 }}>
             <ScrollView
+              nestedScrollEnabled={true}
+              keyboardShouldPersistTaps='handled'
               bounces={false}
               showsVerticalScrollIndicator={false}
               style={styles.container}
@@ -181,7 +184,7 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                         : flowersStateIcons;
 
                     return (
-                      <View key={index} pointerEvents='box-none'>
+                      <View key={index}>
                         {/* Bonsai Tree State Button */}
                         <Pressable
                           style={styles.stateContainer}
@@ -196,6 +199,8 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                         {/* Bonsai Tree State Dropdown */}
                         {isDropdownVisible && (
                           <ScrollView
+                            bounces={false}
+                            showsVerticalScrollIndicator={false}
                             style={{
                               position: 'absolute',
                               top: 30,
@@ -211,8 +216,6 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
                               paddingBottom: 10,
                               gap: 5,
                             }}
-                            showsVerticalScrollIndicator={false}
-                            bounces={false}
                           >
                             {dropdownIcons.map((icon, idx) => (
                               <Pressable

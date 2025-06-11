@@ -118,7 +118,13 @@ export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
   }, [firstName, lastName, birthDate, gender, postcode]);
 
   return (
-    <View style={{ flex: 1, position: 'relative' }}>
+    <View
+      style={{
+        flex: 1,
+        position: 'relative',
+        paddingTop: isSmallerScreen ? 105 : 145,
+      }}
+    >
       <DeleteAccountModal
         visible={deleteModalVisible}
         onConfirm={handleDeleteConfirm}
@@ -385,13 +391,12 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: isSmallerScreen ? 105 : 145,
     backgroundColor: 'transparent',
   },
   contentContainerStyles: {
-    flexGrow: 1,
     alignItems: 'center',
     backgroundColor: 'transparent',
+    paddingBottom: 120,
   },
   personalDataContainer: {
     backgroundColor: '#FFFFFF',
@@ -424,7 +429,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     marginTop: 25,
-    marginBottom: 120, // @TODO This is not right!
     width: 325,
     // Shadow Test
     shadowColor: '#000',

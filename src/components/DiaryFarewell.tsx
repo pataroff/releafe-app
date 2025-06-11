@@ -126,14 +126,13 @@ export const DiaryFarewell: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 25,
-    marginBottom: 100,
+    padding: 25,
     width: windowWidth - 2 * 25,
     borderRadius: 30,
     borderColor: 'black',
     display: 'flex',
     flexDirection: 'column',
     rowGap: 10,
-    padding: 25,
     backgroundColor: 'white',
     // Shadow Test
     shadowColor: '#000',

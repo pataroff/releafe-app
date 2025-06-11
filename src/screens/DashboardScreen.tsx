@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'space-evenly',
     backgroundColor: '#F9F9F9',
+    paddingBottom: 120,
   },
 });

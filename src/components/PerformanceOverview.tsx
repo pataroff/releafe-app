@@ -109,7 +109,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 25,
     marginTop: 20,
-    marginBottom: 120,
     // Shadow Test
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
