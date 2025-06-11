@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,34 +11,64 @@ import {
 
 import { Fonts } from '../styles';
 
-import { useNote } from '../context/NoteContext';
-
 import { NoteListItem } from './NoteListItem';
 
-export const NoteList: React.FC<{ route: any }> = ({ route }) => {
+import { useNote } from '../context/NoteContext';
+import { INoteEntry } from '../types';
+
+interface NoteListProps {
+  route: any;
+  setSelectedNote: React.Dispatch<React.SetStateAction<INoteEntry | null>>;
+  modalNoteListItemExpandedVisible: boolean;
+  setModalNoteListItemExpandedVisible: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+}
+
+export const NoteList: React.FC<NoteListProps> = ({
+  route,
+  setSelectedNote,
+  modalNoteListItemExpandedVisible,
+  setModalNoteListItemExpandedVisible,
+}) => {
   const { noteEntries } = useNote();
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={styles.noteListContainer}
-      contentContainerStyle={styles.noteListContentContainer}
-    >
-      {noteEntries.length > 0 ? (
-        noteEntries.map((item) => {
-          return <NoteListItem route={route} key={item.uuid} item={item} />;
-        })
-      ) : (
-        <>
-          <View style={styles.noDataContainer}>
-            <Text style={styles.noDataTitleText}>Geen berichten</Text>
-            <Text style={styles.noDataDescriptionText}>
-              Je hebt op dit moment geen opgeslagen berichten. 
-            </Text>
-          </View>
-        </>
-      )}
-    </ScrollView>
+    <>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.noteListContainer}
+        contentContainerStyle={styles.noteListContentContainer}
+      >
+        {noteEntries.length > 0 ? (
+          noteEntries.map((note) => {
+            return (
+              <NoteListItem
+                route={route}
+                key={note.uuid}
+                note={note}
+                setSelectedNote={setSelectedNote}
+                modalNoteListItemExpandedVisible={
+                  modalNoteListItemExpandedVisible
+                }
+                setModalNoteListItemExpandedVisible={
+                  setModalNoteListItemExpandedVisible
+                }
+              />
+            );
+          })
+        ) : (
+          <>
+            <View style={styles.noDataContainer}>
+              <Text style={styles.noDataTitleText}>Geen berichten</Text>
+              <Text style={styles.noDataDescriptionText}>
+                Je hebt op dit moment geen opgeslagen berichten.
+              </Text>
+            </View>
+          </>
+        )}
+      </ScrollView>
+    </>
   );
 };
 

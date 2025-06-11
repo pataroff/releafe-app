@@ -223,7 +223,7 @@ export const WorryListItem: React.FC<WorryListItemProps> = ({
                         <Image
                           resizeMode='contain'
                           style={{ width: 46, height: 46 }}
-                          source={require('../../assets/images/worry_item_edit_icon.png')}
+                          source={require('../../assets/images/edit_icon.png')}
                         />
                       </Pressable>
 

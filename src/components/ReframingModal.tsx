@@ -262,8 +262,13 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
       createOrUpdateNoteEntry();
 
+      // @TODO Should these be combined in one if statement?
       if (route.name === 'WorryBox') {
         deleteWorryEntry(uuid);
+
+        if (handleDrawer) {
+          handleDrawer();
+        }
       }
 
       resetWorryEntryFields();

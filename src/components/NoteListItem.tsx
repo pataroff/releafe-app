@@ -13,56 +13,35 @@ import {
 import { Fonts } from '../styles';
 import { INoteEntry } from '../types';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { NoteListItemExpandedModal } from './NoteListItemExpandedModal';
-import { ReframingModal } from './ReframingModal';
-
 import Entypo from '@expo/vector-icons/Entypo';
 import { getCategory } from '../utils/worry';
 
-export const NoteListItem: React.FC<{ item: INoteEntry; route: any }> = ({
-  item,
-  route,
+interface NoteListItemProps {
+  note: INoteEntry;
+  route: any;
+  setSelectedNote: React.Dispatch<React.SetStateAction<INoteEntry | null>>;
+  modalNoteListItemExpandedVisible: boolean;
+  setModalNoteListItemExpandedVisible: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+}
+
+export const NoteListItem: React.FC<NoteListItemProps> = ({
+  note,
+  setSelectedNote,
+  modalNoteListItemExpandedVisible,
+  setModalNoteListItemExpandedVisible,
 }) => {
-  const navigation = useNavigation();
-  const { title, category } = item;
+  const { title, category } = note;
 
-  const [modalReframingVisible, setModalReframingVisible] =
-    useState<boolean>(false);
-  const [reframingModalIndex, setReframingModalIndex] = useState<number>(0);
-
-  const [
-    modalNoteListItemExpandedVisible,
-    setModalNoteListItemExpandedVisible,
-  ] = useState<boolean>(false);
+  const handleSelect = () => {
+    setSelectedNote(note);
+    setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible);
+  };
 
   return (
     <>
-      <NoteListItemExpandedModal
-        modalNoteListItemExpandedVisible={modalNoteListItemExpandedVisible}
-        setModalNoteListItemExpandedVisible={
-          setModalNoteListItemExpandedVisible
-        }
-        modalReframingVisible={modalReframingVisible}
-        setModalReframingVisible={setModalReframingVisible}
-        item={item}
-      />
-      {/* @TODO This is here due to the editing functionality! */}
-      <ReframingModal
-        route={route}
-        reframingModalIndex={reframingModalIndex}
-        setReframingModalIndex={setReframingModalIndex}
-        modalReframingVisible={modalReframingVisible}
-        setModalReframingVisible={setModalReframingVisible}
-      />
-
-      <Pressable
-        onPress={() =>
-          setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible)
-        }
-        style={styles.container}
-      >
+      <Pressable onPress={() => handleSelect()} style={styles.container}>
         <View
           style={{
             display: 'flex',

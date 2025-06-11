@@ -12,22 +12,53 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
+import { INoteEntry } from '../types';
 import Entypo from '@expo/vector-icons/Entypo';
 
 import { NoteList } from '../components/NoteList';
 import { NoteListItemAddModal } from '../components/NoteListItemAddModal';
+import { NoteListItemExpandedModal } from '../components/NoteListItemExpandedModal';
+import { ReframingModal } from '../components/ReframingModal';
 
 const windowWidth = Dimensions.get('window').width;
 
 export const NotesToSelfScreen: React.FC<{ route: any }> = ({ route }) => {
-  const [modalAddNoteListItemVisible, setModalAddNoteListItemVisible] =
+  const [modalNoteListItemAddVisible, setModalNoteListItemAddVisible] =
     useState<boolean>(false);
+  const [
+    modalNoteListItemExpandedVisible,
+    setModalNoteListItemExpandedVisible,
+  ] = useState<boolean>(false);
+  const [modalReframingVisible, setModalReframingVisible] =
+    useState<boolean>(false);
+  const [reframingModalIndex, setReframingModalIndex] = useState<number>(0);
+  const [selectedNote, setSelectedNote] = useState<INoteEntry | null>(null);
 
   return (
     <>
       <NoteListItemAddModal
-        modalAddNoteListItemVisible={modalAddNoteListItemVisible}
-        setModalAddNoteListItemVisible={setModalAddNoteListItemVisible}
+        modalNoteListItemAddVisible={modalNoteListItemAddVisible}
+        setModalNoteListItemAddVisible={setModalNoteListItemAddVisible}
+      />
+      {selectedNote && (
+        <NoteListItemExpandedModal
+          modalNoteListItemExpandedVisible={modalNoteListItemExpandedVisible}
+          setModalNoteListItemExpandedVisible={
+            setModalNoteListItemExpandedVisible
+          }
+          modalReframingVisible={modalReframingVisible}
+          setModalReframingVisible={setModalReframingVisible}
+          selectedNote={selectedNote}
+          modalNoteListItemAddVisible={modalNoteListItemAddVisible}
+          setModalNoteListItemAddVisible={setModalNoteListItemAddVisible}
+        />
+      )}
+      <ReframingModal
+        route={route}
+        reframingModalIndex={reframingModalIndex}
+        setReframingModalIndex={setReframingModalIndex}
+        modalReframingVisible={modalReframingVisible}
+        setModalReframingVisible={setModalReframingVisible}
       />
       <ScrollView
         bounces={false}
@@ -62,7 +93,7 @@ export const NotesToSelfScreen: React.FC<{ route: any }> = ({ route }) => {
             <Pressable
               style={styles.addButton}
               onPress={() =>
-                setModalAddNoteListItemVisible(!modalAddNoteListItemVisible)
+                setModalNoteListItemAddVisible(!modalNoteListItemAddVisible)
               }
             >
               <Entypo name='plus' size={32} color='#5C6B57' />
@@ -71,7 +102,14 @@ export const NotesToSelfScreen: React.FC<{ route: any }> = ({ route }) => {
         </View>
 
         {/* Note List */}
-        <NoteList route={route} />
+        <NoteList
+          route={route}
+          setSelectedNote={setSelectedNote}
+          modalNoteListItemExpandedVisible={modalNoteListItemExpandedVisible}
+          setModalNoteListItemExpandedVisible={
+            setModalNoteListItemExpandedVisible
+          }
+        />
       </ScrollView>
     </>
   );

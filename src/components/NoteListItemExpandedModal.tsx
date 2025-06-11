@@ -14,39 +14,44 @@ import {
 } from 'react-native';
 
 import { Fonts } from '../styles';
-import Feather from '@expo/vector-icons/Feather';
-
 import { INoteEntry } from '../types';
+
+import Feather from '@expo/vector-icons/Feather';
+import { ActivityIndicator } from 'react-native-paper';
 
 import { useNote } from '../context/NoteContext';
 import { useWorry } from '../context/WorryContext';
+import { getCategory } from '../utils/worry';
 
 import { Video, ResizeMode } from 'expo-av';
 import { MemoItem } from './MemoItem';
-import { CloseModal } from './CloseModal';
 
-import { getCategory } from '../utils/worry';
+import { CloseModal } from './CloseModal';
 
 const windowWidth = Dimensions.get('window').width;
 
 interface NoteListItemExpandedModalProps {
+  selectedNote: INoteEntry;
   modalNoteListItemExpandedVisible: boolean;
   setModalNoteListItemExpandedVisible: React.Dispatch<
     React.SetStateAction<boolean>
   >;
   modalReframingVisible: boolean;
   setModalReframingVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  item: INoteEntry;
+  modalNoteListItemAddVisible: boolean;
+  setModalNoteListItemAddVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const NoteListItemExpandedModal: React.FC<
   NoteListItemExpandedModalProps
 > = ({
+  selectedNote,
   modalNoteListItemExpandedVisible,
   setModalNoteListItemExpandedVisible,
   modalReframingVisible,
   setModalReframingVisible,
-  item,
+  modalNoteListItemAddVisible,
+  setModalNoteListItemAddVisible,
 }) => {
   const [showUnreframedData, setShowUnreframedData] = useState<boolean>(false);
   const [fileUrl, setFileUrl] = useState<string>('');
@@ -71,21 +76,25 @@ export const NoteListItemExpandedModal: React.FC<
     alternativePerspective,
     mediaFile,
     audioMetering,
-  } = item;
+  } = selectedNote;
 
   useEffect(() => {
     const fetchUrl = async () => {
+      // Reset the fileUrl to avoid flash
+      setFileUrl('');
+
       if (mediaFile) {
         const url = await getNoteEntryMediaFileUrl(uuid);
 
         console.log(url);
+        console.log('UUID:', uuid);
         if (url) {
           setFileUrl(url);
         }
       }
     };
     fetchUrl();
-  }, [[mediaFile]]);
+  }, [mediaFile]);
 
   const reframedData = [
     { heading: null, body: alternativePerspective },
@@ -112,8 +121,7 @@ export const NoteListItemExpandedModal: React.FC<
 
   const [modalCloseVisible, setModalCloseVisible] = useState<boolean>(false);
 
-  // @TODO Jan wants the notes to be editable, but only if they were created through the reframing!
-  const handleReframing = async () => {
+  const handleEdit = () => {
     updateWorryEntryFields(uuid, category, priority, title, description);
     updateNoteEntryFields(
       uuid,
@@ -127,12 +135,20 @@ export const NoteListItemExpandedModal: React.FC<
       alternativePerspective,
       mediaFile
     );
+
     setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible);
-    setModalReframingVisible(!modalReframingVisible);
+
+    if (mediaFile) {
+      setModalNoteListItemAddVisible(!modalNoteListItemAddVisible);
+    } else {
+      setModalReframingVisible(!modalReframingVisible);
+    }
   };
 
   const handleDelete = () => {
+    // @TODO Modal asking if you are sure about deletion!
     deleteNoteEntry(uuid);
+    setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible);
   };
 
   const handleClose = () => {
@@ -209,7 +225,6 @@ export const NoteListItemExpandedModal: React.FC<
           </View>
 
           {/* Main Content Container */}
-
           <ScrollView
             showsVerticalScrollIndicator={false}
             bounces={false}
@@ -219,7 +234,24 @@ export const NoteListItemExpandedModal: React.FC<
             {mediaFile && typeof mediaFile === 'string' ? (
               <>
                 <Text style={styles.bodyText}>{description}</Text>
-                {mediaFile.endsWith('.jpg') || mediaFile.endsWith('.pdf') ? (
+
+                {!fileUrl ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginVertical: 30,
+                    }}
+                  >
+                    {/* Loading Spinner */}
+                    <ActivityIndicator
+                      size={'large'}
+                      animating={true}
+                      color='#A9C1A1'
+                    />
+                  </View>
+                ) : mediaFile.endsWith('.jpg') || mediaFile.endsWith('.pdf') ? (
                   <Image
                     style={{ width: '100%', height: 400, marginVertical: 20 }}
                     source={{ uri: fileUrl }}
@@ -229,49 +261,44 @@ export const NoteListItemExpandedModal: React.FC<
                     <MemoItem uri={fileUrl} metering={audioMetering} />
                   </View>
                 ) : (
-                  <>
-                    <Video
-                      source={{
-                        uri: fileUrl,
-                      }}
-                      style={{
-                        width: '100%',
-                        height: 400,
-                        marginVertical: 20,
-                      }}
-                      resizeMode={ResizeMode.COVER}
-                      useNativeControls
-                      isLooping
-                    />
-                  </>
+                  <Video
+                    source={{ uri: fileUrl }}
+                    style={{ width: '100%', height: 400, marginVertical: 20 }}
+                    resizeMode={ResizeMode.COVER}
+                    useNativeControls
+                    isLooping
+                  />
                 )}
               </>
             ) : (
               <>
                 {/* Reframed Data Container */}
-                <View style={{ rowGap: 20 }}>
-                  {reframedData.map((data, index) => (
-                    <View key={index}>
+                {reframedData.map((data, index) => {
+                  const { heading, body } = data;
+
+                  if (!heading && !body) {
+                    return;
+                  }
+
+                  return (
+                    <View key={index} style={{ marginBottom: 20 }}>
                       {/* Render heading if available */}
-                      {data.heading && (
-                        <Text style={styles.headingText}>{data.heading}</Text>
+                      {heading && (
+                        <Text style={styles.headingText}>{heading}</Text>
                       )}
 
                       {/* Render body text */}
-                      <Text style={styles.bodyText}>{data.body}</Text>
+                      {body && <Text style={styles.bodyText}>{body}</Text>}
                     </View>
-                  ))}
-                </View>
+                  );
+                })}
 
                 {/* Unreframed Data Container */}
                 <View
                   style={{
-                    marginVertical: 20,
-                    display: 'flex',
                     flexDirection: showUnreframedData
                       ? 'column-reverse'
                       : 'column',
-                    rowGap: 20,
                   }}
                 >
                   <Pressable
@@ -292,16 +319,24 @@ export const NoteListItemExpandedModal: React.FC<
                   </Pressable>
 
                   {showUnreframedData &&
-                    unreframedData.map((data, index) => (
-                      <View key={index}>
-                        <Text style={[styles.headingText, { color: 'gray' }]}>
-                          {data.heading}
-                        </Text>
-                        <Text style={[styles.bodyText, { color: 'gray' }]}>
-                          {data.body}
-                        </Text>
-                      </View>
-                    ))}
+                    unreframedData.map((data, index) => {
+                      const { heading, body } = data;
+
+                      if (!heading && !body) {
+                        return;
+                      }
+
+                      return (
+                        <View key={index} style={{ marginBottom: 20 }}>
+                          <Text style={[styles.headingText, { color: 'gray' }]}>
+                            {heading}
+                          </Text>
+                          <Text style={[styles.bodyText, { color: 'gray' }]}>
+                            {body}
+                          </Text>
+                        </View>
+                      );
+                    })}
                 </View>
               </>
             )}
@@ -309,24 +344,22 @@ export const NoteListItemExpandedModal: React.FC<
             {/* Buttons Container */}
             <View
               style={{
+                marginTop: 10,
                 display: 'flex',
                 flexDirection: 'row',
+                alignSelf: 'flex-end',
                 columnGap: 10,
               }}
             >
-              {/*} {feelingDescription !== '' && (
-                <Pressable onPress={() => handleReframing()}>
-                  <Image
-                    style={{ width: 190, height: 47 }}
-                    source={require('../../assets/images/reframe_again_button.png')}
-                  />
-                </Pressable>
-              )}*/}
+              <Pressable onPress={() => handleEdit()}>
+                <Image
+                  resizeMode='contain'
+                  style={{ width: 46, height: 46 }}
+                  source={require('../../assets/images/edit_icon.png')}
+                />
+              </Pressable>
 
-              <Pressable
-                style={{ position: 'absolute', right: 0 }}
-                onPress={() => setModalCloseVisible(true)}
-              >
+              <Pressable onPress={() => handleDelete()}>
                 <Image
                   resizeMode='contain'
                   style={{ width: 43, height: 46 }}
@@ -373,10 +406,10 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   } as TextStyle,
   mainContainer: {
+    flexGrow: 0,
     borderRadius: 25,
     marginTop: 20,
     marginHorizontal: 20,
-    marginBottom: 125,
     backgroundColor: '#ffffff',
   },
   mainContentContainer: {
@@ -385,6 +418,7 @@ const styles = StyleSheet.create({
   },
   headingText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
+    marginBottom: 5,
   } as TextStyle,
   bodyText: {
     ...Fonts.sofiaProRegular[Platform.OS],

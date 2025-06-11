@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import {
   StyleSheet,
@@ -56,20 +56,20 @@ const mediaAddIcons = [
 const voiceMemoRedIcon = require('../../assets/images/media_add/media_add_voice_memo_red.png');
 
 const imageExtensions = ['.jpg', '.jpeg', '.png', '.pdf'];
+const videoExtensions = ['.mp4', '.mov', '.mkv', '.webm'];
 
 interface NoteListModalProps {
-  modalAddNoteListItemVisible: boolean;
-  setModalAddNoteListItemVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  modalNoteListItemAddVisible: boolean;
+  setModalNoteListItemAddVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
-  modalAddNoteListItemVisible,
-  setModalAddNoteListItemVisible,
+  modalNoteListItemAddVisible,
+  setModalNoteListItemAddVisible,
 }) => {
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
   // Media Add State
-
   const [permission, requestPermission] = useCameraPermissions();
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
 
@@ -90,6 +90,8 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
 
   const cameraRef = useRef(null);
 
+  const [fileUrl, setFileUrl] = useState<string | undefined>(undefined);
+
   const {
     category,
     title,
@@ -108,28 +110,43 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     setAudioMetering,
     createOrUpdateNoteEntry,
     resetNoteEntryFields,
+    getNoteEntryMediaFileUrl,
   } = useNote();
 
   const handleStore = () => {
     createOrUpdateNoteEntry();
+
     resetNoteEntryFields();
     resetWorryEntryFields();
-    setModalAddNoteListItemVisible(!modalAddNoteListItemVisible);
+
+    setModalNoteListItemAddVisible(!modalNoteListItemAddVisible);
   };
 
   const handleStorePress = () => {
-    if (title) {
-      title.trim();
-      handleStore();
-    } else {
+    const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
+
+    if (!trimmedTitle) {
       showToast('error', 'Titel ontbreekt nog', 'Voeg een titel toe.');
     }
+
+    if (!trimmedDescription) {
+      showToast(
+        'error',
+        'Omschrijving ontbreekt nog',
+        'Voeg een omschrijving toe.'
+      );
+    }
+
+    setTitle(title);
+    setDescription(description);
+    handleStore();
   };
 
   const handleClose = () => {
     resetNoteEntryFields();
     resetWorryEntryFields();
-    setModalAddNoteListItemVisible(!modalAddNoteListItemVisible);
+    setModalNoteListItemAddVisible(!modalNoteListItemAddVisible);
   };
 
   const handleMediaButton = (index: number) => {
@@ -141,7 +158,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
         handlePickImage();
         break;
       case 2:
-        handleAudio(index);
+        handleAudio();
         break;
       case 3:
         handlePickDocument();
@@ -306,14 +323,14 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
   };
 
   // Audio
-  const handleAudio = (index: number) => {
-    // @TODO: Is there a better way of doing this?
-    if (index !== 2) {
-      return;
+  const handleAudio = () => {
+    if (isAudioRecording) {
+      setIsAudioRecording(false);
+      stopAudioRecording();
+    } else {
+      setIsAudioRecording(true);
+      recordAudio();
     }
-
-    setIsAudioRecording(true);
-    recordAudio();
   };
 
   const recordAudio = async () => {
@@ -321,6 +338,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
       setAudioMetering([]);
 
       const permission = await Audio.requestPermissionsAsync();
+      console.log(permission);
       if (permission.status === 'granted') {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
@@ -345,11 +363,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
     }
   };
 
-  const stopAudioRecording = async (index: number) => {
-    if (index !== 2) {
-      return;
-    }
-
+  const stopAudioRecording = async () => {
     if (!audio) {
       return;
     }
@@ -394,6 +408,33 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
       setMediaFile(fileData);
     }
   };
+
+  const isFileObj = typeof mediaFile !== 'string';
+  const fileName = isFileObj ? mediaFile?.name : mediaFile;
+  const isAudio = fileName.startsWith('recording');
+  const isImage = imageExtensions.some((ext) => fileName.endsWith(ext));
+  const isVideo = videoExtensions.some((ext) => fileName.endsWith(ext));
+
+  useEffect(() => {
+    const fetchMediaFileUrl = async () => {
+      setFileUrl(undefined);
+
+      if (typeof mediaFile === 'string') {
+        const url = await getNoteEntryMediaFileUrl(uuid);
+
+        if (url) {
+          if (isVideo) {
+            generateVideoThumbnail(url);
+          }
+          setFileUrl(url);
+        }
+      } else {
+        setFileUrl(mediaFile?.uri);
+      }
+    };
+
+    fetchMediaFileUrl();
+  }, [mediaFile]);
 
   return (
     <>
@@ -521,16 +562,16 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
         <Modal
           animationType='none'
           transparent={true}
-          visible={modalAddNoteListItemVisible}
+          visible={modalNoteListItemAddVisible}
           onRequestClose={() =>
-            setModalAddNoteListItemVisible(!modalAddNoteListItemVisible)
+            setModalNoteListItemAddVisible(!modalNoteListItemAddVisible)
           }
         >
           <CloseModal
             closeModalVisible={closeModalVisible}
             setCloseModalVisible={setCloseModalVisible}
-            parentModalVisible={modalAddNoteListItemVisible}
-            setParentModalVisible={setModalAddNoteListItemVisible}
+            parentModalVisible={modalNoteListItemAddVisible}
+            setParentModalVisible={setModalNoteListItemAddVisible}
             title='Stoppen met bericht toevoegen'
             description='Je staat op het punt te stoppen met het aanmaken van jouw bericht aan jezelf. Weet je het zeker?'
             handleClose={handleClose}
@@ -669,8 +710,6 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                           <Pressable
                             key={index}
                             onPress={() => handleMediaButton(index)}
-                            onLongPress={() => handleAudio(index)}
-                            onPressOut={() => stopAudioRecording(index)}
                           >
                             <Image
                               resizeMode='contain'
@@ -690,68 +729,58 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                     </View>
 
                     {/* Uploaded Media Container */}
-                    {mediaFile &&
-                      typeof mediaFile !== 'string' &&
-                      mediaFile.uri &&
-                      mediaFile.name && (
-                        <View
-                          style={{
-                            marginTop: 20,
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}
-                        >
-                          {/* @TODO: Is there a better way of differentiating between the different media types? */}
-                          {mediaFile.name.startsWith('recording') ? (
-                            <MemoItem
-                              uri={audioUri}
-                              metering={audioMetering}
-                              containerStyle={{ width: '80%' }}
-                            />
-                          ) : (
-                            <View
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                height: 50,
-                                width: '80%',
-                                backgroundColor: '#EEF1EC',
-                                borderRadius: 10,
-                              }}
-                            >
-                              <Image
-                                style={{
-                                  borderRadius: 10,
-                                  height: 50,
-                                  width: 50,
-                                  marginRight: 8,
-                                }}
-                                source={{
-                                  uri: imageExtensions.some((ext) =>
-                                    mediaFile.uri.endsWith(ext)
-                                  )
-                                    ? mediaFile.uri
-                                    : videoThumbnailUri,
-                                }}
-                              />
-                              <Text style={styles.mediaFileNameText}>
-                                {mediaFile.name}
-                              </Text>
-                            </View>
-                          )}
-                          <Pressable onPress={() => handleMediaFileDelete()}>
+                    {mediaFile && fileUrl && (
+                      <View
+                        style={{
+                          marginTop: 20,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        {isAudio ? (
+                          <MemoItem
+                            uri={fileUrl}
+                            metering={audioMetering}
+                            containerStyle={{ width: '80%' }}
+                          />
+                        ) : (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              height: 50,
+                              width: '80%',
+                              backgroundColor: '#EEF1EC',
+                              borderRadius: 10,
+                            }}
+                          >
                             <Image
-                              resizeMode='contain'
-                              style={{ width: 43, height: 46 }}
-                              source={require('../../assets/images/delete_icon.png')}
+                              style={{
+                                borderRadius: 10,
+                                height: 50,
+                                width: 50,
+                                marginRight: 15,
+                              }}
+                              source={{
+                                uri: isImage ? fileUrl : videoThumbnailUri,
+                              }}
                             />
-                          </Pressable>
-                        </View>
-                      )}
+                            <Text style={styles.mediaFileNameText}>
+                              {fileName}
+                            </Text>
+                          </View>
+                        )}
+
+                        <Pressable onPress={handleMediaFileDelete}>
+                          <Image
+                            resizeMode='contain'
+                            style={{ width: 43, height: 46 }}
+                            source={require('../../assets/images/delete_icon.png')}
+                          />
+                        </Pressable>
+                      </View>
+                    )}
 
                     <Pressable
                       onPress={() => handleStorePress()}

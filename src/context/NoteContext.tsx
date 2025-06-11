@@ -166,7 +166,7 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
         return updated;
       });
 
-      updateNoteEntryInDatabase(newUuid, newNoteEntry);
+      updateNoteEntryInDatabase(newUuid, newNoteEntryDatabase);
     } else {
       setNoteEntries((prev) => [newNoteEntry, ...prev]);
       createNoteEntryInDatabase(newNoteEntryDatabase);
@@ -180,13 +180,28 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
         .collection('note_entries')
         .getFirstListItem(`uuid="${uuid}"`, { requestKey: null });
 
-      const hasMedia =
-        entry.mediaFile?.uri && entry.mediaFile?.type && entry.mediaFile?.name;
+      const isValidFileObject =
+        typeof mediaFile === 'object' &&
+        mediaFile.uri &&
+        mediaFile.name &&
+        mediaFile.type;
 
-      if (hasMedia) {
+      const isEmptyFileObject =
+        typeof mediaFile === 'object' &&
+        mediaFile.uri === '' &&
+        mediaFile.name === '' &&
+        mediaFile.type === '';
+
+      if (isValidFileObject) {
         const formData = new FormData();
         appendNoteFormData(formData, entry);
         await pb.collection('note_entries').update(matched.id, formData);
+      } else if (isEmptyFileObject) {
+        const { audioMetering, ...cleanEntry } = entry;
+        await pb.collection('note_entries').update(matched.id, {
+          ...cleanEntry,
+          mediaFile: null,
+        });
       } else {
         const { mediaFile, audioMetering, ...cleanEntry } = entry;
         await pb.collection('note_entries').update(matched.id, cleanEntry);
@@ -244,6 +259,8 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
         formData.append('audioMetering', JSON.stringify(entry.audioMetering));
       }
     }
+
+    console.log('APPENDFORMDATA FINISHED EXEC!');
   };
 
   const deleteNoteEntry = async (uuid: string) => {
@@ -299,7 +316,7 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
 
   const getNoteEntryMediaFileUrl = async (
     uuid: string
-  ): Promise<string | null> => {
+  ): Promise<string | undefined> => {
     try {
       const record = await pb
         .collection('note_entries')
@@ -308,7 +325,7 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
       return pb.files.getURL(record, record.mediaFile);
     } catch (error) {
       console.error('Failed to generate file URL:', error);
-      return null;
+      return undefined;
     }
   };
 
