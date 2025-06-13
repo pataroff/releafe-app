@@ -220,14 +220,19 @@ export const GoalsOverview = () => {
             }}
           >
             <Text style={styles.statisticsDataBodyText}>
-              {formatDateString(new Date(created!))}
+              {/* Start Date */}
+              {/* @TODO How do we handle `created` for local entries prior refetching the db? */}
+              {formatDateString(created ? new Date(created) : new Date())}
             </Text>
-            {/* Completed Timeframe */}
+            {/* Days Active */}
             <Text style={styles.statisticsDataBodyText}>
-              {new Date(startDate as Date) > new Date()
+              {(created ? new Date(created) : new Date()) >= new Date()
                 ? 1
                 : Math.ceil(
-                    getDaysBetweenDates(new Date(created!), new Date())
+                    getDaysBetweenDates(
+                      created ? new Date(created) : new Date(),
+                      new Date()
+                    )
                   )}
             </Text>
             {/* Completed Period */}

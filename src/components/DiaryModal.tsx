@@ -18,6 +18,8 @@ import { useDiary } from '../context/DiaryContext';
 import { useGoal } from '../context/GoalContext';
 import { useGamification } from '../context/GamificationContext';
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import { useSharedValue, cancelAnimation } from 'react-native-reanimated';
 import { Slider } from 'react-native-awesome-slider';
 
@@ -343,226 +345,229 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
         denyText='Opslaan en afsluiten'
         confirmText='Niet opslaan en afsluiten'
       />
-      <View style={styles.modalWrapper}>
-        <View style={styles.modalContainer}>
-          <View style={styles.headersContainer}>
-            {/* Title + Close Button */}
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
-              <Text style={styles.headersTitleText}>Dagboek invullen</Text>
-              <Pressable
-                style={{ position: 'absolute', right: 0 }}
-                onPress={() => setCloseModalVisible(!closeModalVisible)}
-              >
-                <Feather name='x-circle' size={24} color='gray' />
-              </Pressable>
-            </View>
-
-            {/* Heading */}
-            <Text style={styles.headersHeadingText}>
-              {diaryModalIndex == 6
-                ? 'Vraag 7. Persoonlijke doelen'
-                : diaryModalIndex < 6
-                ? sliderSteps[sliderQuestionIndex].heading
-                : 'Aanvullende vragen'}
-            </Text>
-          </View>
-
-          <View style={{ flex: 1 }}>
-            {/* Slider Question Component */}
-            {diaryModalIndex < 6 && (
-              <View style={styles.componentContainer}>
-                <Text style={styles.headingText}>
-                  {sliderSteps[sliderQuestionIndex].question}
-                </Text>
-                <View style={{ marginVertical: 25 }}>
-                  <Slider
-                    progress={sliderValue}
-                    onSlidingComplete={(value) => {
-                      const clampedValue = Math.min(
-                        Math.max(value, min.value),
-                        max.value
-                      );
-
-                      addSliderValue(sliderQuestionIndex, clampedValue);
-                    }}
-                    minimumValue={min}
-                    maximumValue={max}
-                    disableTrackPress={true}
-                    disableTapEvent={true}
-                    containerStyle={{ borderRadius: 30, width: '100%' }}
-                    sliderHeight={15}
-                    thumbWidth={25}
-                    theme={{
-                      minimumTrackTintColor: '#E4E1E1',
-                      maximumTrackTintColor: '#E4E1E1',
-                      bubbleBackgroundColor: '#C1DEBE',
-                    }}
-                    renderThumb={() => <CustomThumb />}
-                    // @TODO Remove the bubble!
-                    bubble={(s: number) => s.toFixed(1)}
-                  />
-                </View>
-                {/* Slider Options Container */}
-                <View style={styles.optionsContainer}>
-                  <Text style={styles.optionsText}>
-                    {sliderSteps[sliderQuestionIndex].options[0]}
-                  </Text>
-                  <Text style={styles.optionsText}>
-                    {sliderSteps[sliderQuestionIndex].options[1]}
-                  </Text>
-                </View>
-              </View>
-            )}
-
-            {/* Goals Checklist Component */}
-            {diaryModalIndex == 6 && (
-              <View
-                style={[
-                  styles.componentContainer,
-                  { maxHeight: windowHeight - 400 },
-                ]}
-              >
-                <Text style={styles.headingText}>
-                  Vink aan welke van de volgende doelen jij vandaag hebt
-                  behaald.
-                </Text>
-
-                {/* Goal Completion Text */}
-                {goalEntries.filter(shouldShowGoal).length === 0 ? (
-                  <Text style={styles.noGoalsText}>
-                    🎉 Je hebt vandaag al je doelen behaald!
-                  </Text>
-                ) : (
-                  <ScrollView
-                    style={styles.goalsChecklistContainer}
-                    contentContainerStyle={
-                      styles.goalsChecklistContentContainer
-                    }
-                  >
-                    {/* Goal Checklist Container */}
-                    {goalEntries.filter(shouldShowGoal).map((goal, index) => (
-                      <GoalsChecklistItem
-                        key={index}
-                        goal={goal}
-                        checked={checkedGoals.includes(goal.uuid)}
-                        setCheckedGoals={setCheckedGoals}
-                      />
-                    ))}
-                  </ScrollView>
-                )}
-              </View>
-            )}
-
-            {/* Text Question Component */}
-            {diaryModalIndex > 6 && (
-              <View style={styles.componentContainer}>
-                <Text style={[styles.bodyText]}>
-                  {textSteps[textQuestionIndex].question}
-                </Text>
-                <TextInput
-                  style={
-                    {
-                      ...Fonts.sofiaProRegular[Platform.OS],
-                      marginTop: 20,
-                      padding: 10,
-                      borderRadius: 10,
-                      backgroundColor: '#f6f7f8',
-                      height: 165,
-                    } as TextStyle
-                  }
-                  value={textValues[textQuestionIndex] || ''}
-                  onChangeText={(value) =>
-                    handleTextChange(textQuestionIndex, value)
-                  }
-                  placeholder={textSteps[textQuestionIndex].placeholder}
-                  placeholderTextColor='rgba(0,0,0,0.5)'
-                  multiline
-                  scrollEnabled
-                  autoFocus
-                  textAlign='left'
-                  textAlignVertical='top'
-                />
-              </View>
-            )}
-          </View>
-
-          {/* Progress Wrapper */}
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 40,
-              width: '100%',
-              alignSelf: 'center',
-              paddingHorizontal: 15,
-            }}
-          >
-            {/* Progress Container */}
-            <View style={styles.progressContainer}>
-              {/* Buttons Container */}
+      {/* This is required in order for the slider to work on Android! */}
+      <GestureHandlerRootView>
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            <View style={styles.headersContainer}>
+              {/* Title + Close Button */}
               <View
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
                 }}
               >
-                {/* Go Back Button */}
+                <Text style={styles.headersTitleText}>Dagboek invullen</Text>
                 <Pressable
-                  onPress={() => handlePrevious()}
-                  disabled={diaryModalIndex == 0 ? true : false}
-                  style={
-                    diaryModalIndex == 0
-                      ? [styles.backButton, { opacity: 0.4 }]
-                      : styles.backButton
-                  }
+                  style={{ position: 'absolute', right: 0 }}
+                  onPress={() => setCloseModalVisible(!closeModalVisible)}
                 >
-                  <Text style={styles.buttonText}>Ga terug</Text>
-                </Pressable>
-                {/* Continue Button */}
-                <Pressable
-                  onPress={
-                    diaryModalIndex == totalStepsIndex
-                      ? handleFinish
-                      : handleNext
-                  }
-                  style={
-                    diaryModalIndex == totalStepsIndex
-                      ? [styles.continueButton, { width: 150 }]
-                      : styles.continueButton
-                  }
-                >
-                  <Text style={styles.buttonText}>
-                    {diaryModalIndex == totalStepsIndex
-                      ? 'Afronden en sluiten'
-                      : 'Ga verder'}
-                  </Text>
+                  <Feather name='x-circle' size={24} color='gray' />
                 </Pressable>
               </View>
-              {/* Progress Bar Container */}
-              <View style={styles.progressBarContainer}>
-                <Text style={styles.progressBarText}>
-                  {diaryModalIndex == totalStepsIndex
-                    ? '100%'
-                    : Math.round(progressValue * 100) + '%'}
-                </Text>
-                <ProgressBar
-                  // Jan prefers switching to the steps to keep the design more consistent!
-                  progress={progressValue}
-                  color='#A9C1A1'
-                  style={styles.progressBar}
-                />
+
+              {/* Heading */}
+              <Text style={styles.headersHeadingText}>
+                {diaryModalIndex == 6
+                  ? 'Vraag 7. Persoonlijke doelen'
+                  : diaryModalIndex < 6
+                  ? sliderSteps[sliderQuestionIndex].heading
+                  : 'Aanvullende vragen'}
+              </Text>
+            </View>
+
+            <View style={{ flex: 1 }}>
+              {/* Slider Question Component */}
+              {diaryModalIndex < 6 && (
+                <View style={styles.componentContainer}>
+                  <Text style={styles.headingText}>
+                    {sliderSteps[sliderQuestionIndex].question}
+                  </Text>
+                  <View style={{ marginVertical: 25 }}>
+                    <Slider
+                      progress={sliderValue}
+                      onSlidingComplete={(value) => {
+                        const clampedValue = Math.min(
+                          Math.max(value, min.value),
+                          max.value
+                        );
+
+                        addSliderValue(sliderQuestionIndex, clampedValue);
+                      }}
+                      minimumValue={min}
+                      maximumValue={max}
+                      disableTrackPress={true}
+                      disableTapEvent={true}
+                      containerStyle={{ borderRadius: 30, width: '100%' }}
+                      sliderHeight={15}
+                      thumbWidth={25}
+                      theme={{
+                        minimumTrackTintColor: '#E4E1E1',
+                        maximumTrackTintColor: '#E4E1E1',
+                        bubbleBackgroundColor: '#C1DEBE',
+                      }}
+                      renderThumb={() => <CustomThumb />}
+                      // @TODO Remove the bubble!
+                      bubble={(s: number) => s.toFixed(1)}
+                    />
+                  </View>
+                  {/* Slider Options Container */}
+                  <View style={styles.optionsContainer}>
+                    <Text style={styles.optionsText}>
+                      {sliderSteps[sliderQuestionIndex].options[0]}
+                    </Text>
+                    <Text style={styles.optionsText}>
+                      {sliderSteps[sliderQuestionIndex].options[1]}
+                    </Text>
+                  </View>
+                </View>
+              )}
+
+              {/* Goals Checklist Component */}
+              {diaryModalIndex == 6 && (
+                <View
+                  style={[
+                    styles.componentContainer,
+                    { maxHeight: windowHeight - 400 },
+                  ]}
+                >
+                  <Text style={styles.headingText}>
+                    Vink aan welke van de volgende doelen jij vandaag hebt
+                    behaald.
+                  </Text>
+
+                  {/* Goal Completion Text */}
+                  {goalEntries.filter(shouldShowGoal).length === 0 ? (
+                    <Text style={styles.noGoalsText}>
+                      🎉 Je hebt vandaag al je doelen behaald!
+                    </Text>
+                  ) : (
+                    <ScrollView
+                      style={styles.goalsChecklistContainer}
+                      contentContainerStyle={
+                        styles.goalsChecklistContentContainer
+                      }
+                    >
+                      {/* Goal Checklist Container */}
+                      {goalEntries.filter(shouldShowGoal).map((goal, index) => (
+                        <GoalsChecklistItem
+                          key={index}
+                          goal={goal}
+                          checked={checkedGoals.includes(goal.uuid)}
+                          setCheckedGoals={setCheckedGoals}
+                        />
+                      ))}
+                    </ScrollView>
+                  )}
+                </View>
+              )}
+
+              {/* Text Question Component */}
+              {diaryModalIndex > 6 && (
+                <View style={styles.componentContainer}>
+                  <Text style={[styles.bodyText]}>
+                    {textSteps[textQuestionIndex].question}
+                  </Text>
+                  <TextInput
+                    style={
+                      {
+                        ...Fonts.sofiaProRegular[Platform.OS],
+                        marginTop: 20,
+                        padding: 10,
+                        borderRadius: 10,
+                        backgroundColor: '#f6f7f8',
+                        height: 165,
+                      } as TextStyle
+                    }
+                    value={textValues[textQuestionIndex] || ''}
+                    onChangeText={(value) =>
+                      handleTextChange(textQuestionIndex, value)
+                    }
+                    placeholder={textSteps[textQuestionIndex].placeholder}
+                    placeholderTextColor='rgba(0,0,0,0.5)'
+                    multiline
+                    scrollEnabled
+                    autoFocus
+                    textAlign='left'
+                    textAlignVertical='top'
+                  />
+                </View>
+              )}
+            </View>
+
+            {/* Progress Wrapper */}
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 40,
+                width: '100%',
+                alignSelf: 'center',
+                paddingHorizontal: 15,
+              }}
+            >
+              {/* Progress Container */}
+              <View style={styles.progressContainer}>
+                {/* Buttons Container */}
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  {/* Go Back Button */}
+                  <Pressable
+                    onPress={() => handlePrevious()}
+                    disabled={diaryModalIndex == 0 ? true : false}
+                    style={
+                      diaryModalIndex == 0
+                        ? [styles.backButton, { opacity: 0.4 }]
+                        : styles.backButton
+                    }
+                  >
+                    <Text style={styles.buttonText}>Ga terug</Text>
+                  </Pressable>
+                  {/* Continue Button */}
+                  <Pressable
+                    onPress={
+                      diaryModalIndex == totalStepsIndex
+                        ? handleFinish
+                        : handleNext
+                    }
+                    style={
+                      diaryModalIndex == totalStepsIndex
+                        ? [styles.continueButton, { width: 150 }]
+                        : styles.continueButton
+                    }
+                  >
+                    <Text style={styles.buttonText}>
+                      {diaryModalIndex == totalStepsIndex
+                        ? 'Afronden en sluiten'
+                        : 'Ga verder'}
+                    </Text>
+                  </Pressable>
+                </View>
+                {/* Progress Bar Container */}
+                <View style={styles.progressBarContainer}>
+                  <Text style={styles.progressBarText}>
+                    {diaryModalIndex == totalStepsIndex
+                      ? '100%'
+                      : Math.round(progressValue * 100) + '%'}
+                  </Text>
+                  <ProgressBar
+                    // Jan prefers switching to the steps to keep the design more consistent!
+                    progress={progressValue}
+                    color='#A9C1A1'
+                    style={styles.progressBar}
+                  />
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 };

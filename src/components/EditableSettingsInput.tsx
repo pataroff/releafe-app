@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
   } as TextStyle,
   textInputField: {
     ...Fonts.sofiaProRegular[Platform.OS],
-    verticalAlign: Platform.OS == 'android' ? 'top' : {},
     height: 40,
     width: '100%',
     borderWidth: 1,

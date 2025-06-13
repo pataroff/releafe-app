@@ -46,84 +46,88 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
   const { worryEntries } = useWorry();
 
   return (
-    <Modal
-      animationType='none'
-      transparent={true}
-      visible={modalWorryListVisible}
-      onRequestClose={() => handleDrawer()}
-    >
-      <View style={styles.modalWrapper}>
-        <View style={styles.modalContainer}>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              position: 'relative',
-            }}
-          >
-            {/* Modal Headers Wrapper */}
+    <View>
+      <Modal
+        animationType='none'
+        transparent={true}
+        visible={modalWorryListVisible}
+        onRequestClose={() => handleDrawer()}
+      >
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
             <View
               style={{
                 display: 'flex',
-                flexDirection: 'column',
-                rowGap: 5,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative',
               }}
             >
-              <Text style={styles.modalTitleText}>Mijn zorgen</Text>
-              <Text style={styles.modalDescriptionText}>
-                Klik op een zorg om deze volledig te bekijken.
-              </Text>
+              {/* Modal Headers Wrapper */}
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  rowGap: 5,
+                }}
+              >
+                <Text style={styles.modalTitleText}>Mijn zorgen</Text>
+                <Text style={styles.modalDescriptionText}>
+                  Klik op een zorg om deze volledig te bekijken.
+                </Text>
+              </View>
+              {/* Close Button */}
+              <Pressable
+                style={{ position: 'absolute', top: 0, right: 0 }}
+                onPress={() => handleDrawer()}
+              >
+                <Feather name='x-circle' size={24} color='gray' />
+              </Pressable>
             </View>
-            {/* Close Button */}
-            <Pressable
-              style={{ position: 'absolute', top: 0, right: 0 }}
-              onPress={() => handleDrawer()}
+            {/* Worry List */}
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={styles.worryListContainer}
+              contentContainerStyle={styles.worryListContentContainer}
             >
-              <Feather name='x-circle' size={24} color='gray' />
-            </Pressable>
+              {worryEntries.length > 0 ? (
+                worryEntries.map((item) => {
+                  return (
+                    <WorryListItem
+                      key={item.uuid}
+                      item={item}
+                      modalWorryListVisible={modalWorryListVisible}
+                      setModalWorryListVisible={setModalWorryListVisible}
+                      modalAddWorryListItemVisible={
+                        modalAddWorryListItemVisible
+                      }
+                      setModalAddWorryListItemVisible={
+                        setModalAddWorryListItemVisible
+                      }
+                      modalReframingVisible={modalReframingVisible}
+                      setModalReframingVisible={setModalReframingVisible}
+                      handleDrawer={handleDrawer}
+                    />
+                  );
+                })
+              ) : (
+                <>
+                  <View style={styles.noDataContainer}>
+                    <Text style={styles.noDataTitleText}>
+                      Je zorgenbakje is leeg
+                    </Text>
+                    <Text style={styles.noDataDescriptionText}>
+                      Je hebt op dit moment geen zorgen opgeslagen.
+                    </Text>
+                  </View>
+                </>
+              )}
+            </ScrollView>
           </View>
-          {/* Worry List */}
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={styles.worryListContainer}
-            contentContainerStyle={styles.worryListContentContainer}
-          >
-            {worryEntries.length > 0 ? (
-              worryEntries.map((item) => {
-                return (
-                  <WorryListItem
-                    key={item.uuid}
-                    item={item}
-                    modalWorryListVisible={modalWorryListVisible}
-                    setModalWorryListVisible={setModalWorryListVisible}
-                    modalAddWorryListItemVisible={modalAddWorryListItemVisible}
-                    setModalAddWorryListItemVisible={
-                      setModalAddWorryListItemVisible
-                    }
-                    modalReframingVisible={modalReframingVisible}
-                    setModalReframingVisible={setModalReframingVisible}
-                    handleDrawer={handleDrawer}
-                  />
-                );
-              })
-            ) : (
-              <>
-                <View style={styles.noDataContainer}>
-                  <Text style={styles.noDataTitleText}>
-                    Je zorgenbakje is leeg
-                  </Text>
-                  <Text style={styles.noDataDescriptionText}>
-                    Je hebt op dit moment geen zorgen opgeslagen.
-                  </Text>
-                </View>
-              </>
-            )}
-          </ScrollView>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 
@@ -160,7 +164,8 @@ const styles = StyleSheet.create({
   },
   worryListContentContainer: {
     flexGrow: 1,
-    rowGap: 10,
+    rowGap: 5,
+    paddingVertical: 10,
   },
   noDataContainer: {
     flex: 1,

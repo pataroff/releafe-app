@@ -45,72 +45,74 @@ export const AchievementModal: React.FC<AchievementModalProps> = ({
   };
 
   return (
-    <Modal
-      animationType='fade'
-      transparent={true}
-      visible={achievementModalVisible}
-    >
-      <View style={styles.modalWrapper}>
-        <View style={styles.modalContainer}>
-          {/* Close Button */}
-          <Pressable
-            style={{ position: 'absolute', top: 20, right: 20 }}
-            onPress={() =>
-              mode === 'unlocked'
-                ? handleCollect()
-                : setAchievementModalVisible(!achievementModalVisible)
-            }
-          >
-            <Feather name='x-circle' size={24} color='gray' />
-          </Pressable>
+    <View>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={achievementModalVisible}
+      >
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            {/* Close Button */}
+            <Pressable
+              style={{ position: 'absolute', top: 20, right: 20 }}
+              onPress={() =>
+                mode === 'unlocked'
+                  ? handleCollect()
+                  : setAchievementModalVisible(!achievementModalVisible)
+              }
+            >
+              <Feather name='x-circle' size={24} color='gray' />
+            </Pressable>
 
-          {/* Headers */}
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={styles.modalTitle}>
-              {isAchievementUnlocked ? 'Gefeliciteerd!' : 'Hmmm...'}
-            </Text>
-
-            <Text style={styles.modalDescription}>
-              {isAchievementUnlocked
-                ? 'Je hebt een badge behaald.'
-                : 'Deze badge heb je nog niet behaald, maar je bent goed op weg!'}
-            </Text>
-
-            <Image
+            {/* Headers */}
+            <View
               style={{
-                width: 170,
-                height: 170,
-                marginVertical: 20,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
               }}
-              source={isAchievementUnlocked ? icon : lockedIcon}
-            />
+            >
+              <Text style={styles.modalTitle}>
+                {isAchievementUnlocked ? 'Gefeliciteerd!' : 'Hmmm...'}
+              </Text>
 
-            <Text style={styles.title}>
-              {parentTitle} (+{points} RP)
-            </Text>
+              <Text style={styles.modalDescription}>
+                {isAchievementUnlocked
+                  ? 'Je hebt een badge behaald.'
+                  : 'Deze badge heb je nog niet behaald, maar je bent goed op weg!'}
+              </Text>
 
-            <Text style={styles.description}>{description}</Text>
+              <Image
+                style={{
+                  width: 170,
+                  height: 170,
+                  marginVertical: 20,
+                }}
+                source={isAchievementUnlocked ? icon : lockedIcon}
+              />
 
-            {mode === 'unlocked' && isAchievementUnlocked && (
-              <View style={{ marginTop: 20 }}>
-                <Pressable
-                  style={styles.collectButton}
-                  onPress={() => handleCollect()}
-                >
-                  <Text style={styles.collectText}>Punten verzamelen</Text>
-                </Pressable>
-              </View>
-            )}
+              <Text style={styles.title}>
+                {parentTitle} (+{points} RP)
+              </Text>
+
+              <Text style={styles.description}>{description}</Text>
+
+              {mode === 'unlocked' && isAchievementUnlocked && (
+                <View style={{ marginTop: 20 }}>
+                  <Pressable
+                    style={styles.collectButton}
+                    onPress={() => handleCollect()}
+                  >
+                    <Text style={styles.collectText}>Punten verzamelen</Text>
+                  </Pressable>
+                </View>
+              )}
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 

@@ -68,84 +68,86 @@ export const CloseModal: React.FC<CloseModalProps> = ({
   };
 
   return (
-    <Modal
-      animationType='fade'
-      transparent={true}
-      visible={closeModalVisible}
-      onRequestClose={() => setCloseModalVisible(!setCloseModalVisible)}
-    >
-      <View style={styles.modalWrapper}>
-        <View style={styles.modalContainer}>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-            }}
-          >
-            <View style={{ rowGap: 20 }}>
-              <View
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Text style={styles.title}>{title}</Text>
-                <Pressable
-                  onPress={() => setCloseModalVisible(!closeModalVisible)}
+    <View>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={closeModalVisible}
+        onRequestClose={() => setCloseModalVisible(!setCloseModalVisible)}
+      >
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+              }}
+            >
+              <View style={{ rowGap: 20 }}>
+                <View
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
                 >
-                  <Feather name='x-circle' size={24} color='gray' />
-                </Pressable>
+                  <Text style={styles.title}>{title}</Text>
+                  <Pressable
+                    onPress={() => setCloseModalVisible(!closeModalVisible)}
+                  >
+                    <Feather name='x-circle' size={24} color='gray' />
+                  </Pressable>
+                </View>
+                <Text style={styles.description}>{description}</Text>
               </View>
-              <Text style={styles.description}>{description}</Text>
             </View>
-          </View>
 
-          <View style={{ rowGap: 15 }}>
-            <Pressable
-              style={
-                isSpecialModal
-                  ? [styles.confirmButton, { backgroundColor: '#eee' }]
-                  : styles.confirmButton
-              }
-              onPress={() =>
-                route?.name === 'Diary1'
-                  ? handleDiaryCloseModal(true) // Save and Close
-                  : setCloseModalVisible(!closeModalVisible)
-              }
-            >
-              <Text style={styles.confirmText}>{denyText}</Text>
-            </Pressable>
-            <Pressable
-              style={
-                isSpecialModal
-                  ? [styles.cancelButton, { backgroundColor: '#F08080' }]
-                  : styles.cancelButton
-              }
-              onPress={() =>
-                handleClose !== undefined
-                  ? route?.name === 'Diary1'
-                    ? handleDiaryCloseModal(false) // Don't Save and Close
-                    : handleCloseModal()
-                  : handleParentCloseModal()
-              }
-            >
-              <Text
+            <View style={{ rowGap: 15 }}>
+              <Pressable
                 style={
                   isSpecialModal
-                    ? [styles.cancelText, { color: '#eee' }]
-                    : styles.cancelText
+                    ? [styles.confirmButton, { backgroundColor: '#eee' }]
+                    : styles.confirmButton
+                }
+                onPress={() =>
+                  route?.name === 'Diary1'
+                    ? handleDiaryCloseModal(true) // Save and Close
+                    : setCloseModalVisible(!closeModalVisible)
                 }
               >
-                {confirmText}
-              </Text>
-            </Pressable>
+                <Text style={styles.confirmText}>{denyText}</Text>
+              </Pressable>
+              <Pressable
+                style={
+                  isSpecialModal
+                    ? [styles.cancelButton, { backgroundColor: '#F08080' }]
+                    : styles.cancelButton
+                }
+                onPress={() =>
+                  handleClose !== undefined
+                    ? route?.name === 'Diary1'
+                      ? handleDiaryCloseModal(false) // Don't Save and Close
+                      : handleCloseModal()
+                    : handleParentCloseModal()
+                }
+              >
+                <Text
+                  style={
+                    isSpecialModal
+                      ? [styles.cancelText, { color: '#eee' }]
+                      : styles.cancelText
+                  }
+                >
+                  {confirmText}
+                </Text>
+              </Pressable>
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 

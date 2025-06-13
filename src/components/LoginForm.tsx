@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
   } as TextStyle,
   textInputField: {
     ...Fonts.sofiaProItalic[Platform.OS],
-    verticalAlign: Platform.OS == 'android' ? 'top' : {},
     height: 40,
     borderWidth: 1,
     borderColor: '#dedede',

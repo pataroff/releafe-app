@@ -357,273 +357,210 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   };
 
   return (
-    <Modal
-      animationType='none'
-      transparent={true}
-      visible={modalAddGoalListItemVisible}
-      onRequestClose={() =>
-        setModalAddGoalListItemVisible(!modalAddGoalListItemVisible)
-      }
-    >
-      <CloseModal
-        closeModalVisible={closeModalVisible}
-        setCloseModalVisible={setCloseModalVisible}
-        parentModalVisible={modalAddGoalListItemVisible}
-        setParentModalVisible={setModalAddGoalListItemVisible}
-        title='Stoppen met doel toevoegen'
-        description='Je staat op het punt te stoppen met het aanmaken van dit persoonlijk doel. Weet je het zeker?'
-        handleClose={handleClose}
-        denyText='Nee, ga door met aanmaken'
-        confirmText='Ja, stop met aanmaken'
-      />
-      <View style={styles.modalWrapper}>
-        <View style={styles.modalContainer}>
-          <View style={styles.headersContainer}>
-            {/* Title + Close Button */}
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
-              <Text style={styles.headersTitleText}>Nieuwe doel toevoegen</Text>
-              <Pressable
-                style={{ position: 'absolute', right: 0 }}
-                onPress={() => setCloseModalVisible(!closeModalVisible)}
-              >
-                <Feather name='x-circle' size={24} color='gray' />
-              </Pressable>
-            </View>
-
-            {/* Instructions */}
-            <Text style={[styles.headersDescriptionText, { fontSize: 14 }]}>
-              {getDescription(goalListItemAddModalIndex)}
-            </Text>
-
-            {/* Selected Goal */}
-            {goalListItemAddModalIndex === 2 && (
+    <View>
+      <Modal
+        animationType='none'
+        transparent={true}
+        visible={modalAddGoalListItemVisible}
+        onRequestClose={() =>
+          setModalAddGoalListItemVisible(!modalAddGoalListItemVisible)
+        }
+      >
+        <CloseModal
+          closeModalVisible={closeModalVisible}
+          setCloseModalVisible={setCloseModalVisible}
+          parentModalVisible={modalAddGoalListItemVisible}
+          setParentModalVisible={setModalAddGoalListItemVisible}
+          title='Stoppen met doel toevoegen'
+          description='Je staat op het punt te stoppen met het aanmaken van dit persoonlijk doel. Weet je het zeker?'
+          handleClose={handleClose}
+          denyText='Nee, ga door met aanmaken'
+          confirmText='Ja, stop met aanmaken'
+        />
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            <View style={styles.headersContainer}>
+              {/* Title + Close Button */}
               <View
                 style={{
-                  marginTop: 20,
-                  rowGap: 10,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}
               >
+                <Text style={styles.headersTitleText}>
+                  Nieuwe doel toevoegen
+                </Text>
+                <Pressable
+                  style={{ position: 'absolute', right: 0 }}
+                  onPress={() => setCloseModalVisible(!closeModalVisible)}
+                >
+                  <Feather name='x-circle' size={24} color='gray' />
+                </Pressable>
+              </View>
+
+              {/* Instructions */}
+              <Text style={[styles.headersDescriptionText, { fontSize: 14 }]}>
+                {getDescription(goalListItemAddModalIndex)}
+              </Text>
+
+              {/* Selected Goal */}
+              {goalListItemAddModalIndex === 2 && (
                 <View
                   style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    width: '100%',
-                    columnGap: 5,
+                    marginTop: 20,
+                    rowGap: 10,
                   }}
                 >
-                  <Image
-                    style={{ width: 40, height: 40 }}
-                    source={getGoalCategoryIcon(category)}
-                  />
                   <View
                     style={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
+                      flexDirection: 'row',
+                      alignItems: 'center',
                       width: '100%',
+                      columnGap: 5,
                     }}
                   >
-                    <Text style={styles.h2Text}>
-                      {getGoalCategoryString(category)}
-                    </Text>
-                    <Text style={styles.h3Text}>{title}</Text>
-                  </View>
-                </View>
-                <Text style={styles.bodyText}>{description}</Text>
-              </View>
-            )}
-          </View>
-
-          {/* Main Content Wrapper */}
-          <ScrollView
-            bounces={false}
-            showsVerticalScrollIndicator={false}
-            style={styles.goalContainer}
-            contentContainerStyle={styles.goalContentContainerStyles}
-            ref={scrollView}
-          >
-            {goalListItemAddModalIndex === 0 && (
-              <View style={styles.categoriesContainer}>
-                {categories.map((category, index) => (
-                  <Pressable
-                    key={index}
-                    style={styles.categoryComponent}
-                    onPress={() => handleCategorySelect(index)}
-                  >
-                    {/* Icon + Title + Description */}
+                    <Image
+                      style={{ width: 40, height: 40 }}
+                      source={getGoalCategoryIcon(category)}
+                    />
                     <View
                       style={{
                         display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        height: '100%',
-                        columnGap: 5,
-                      }}
-                    >
-                      <Image
-                        style={{ width: 50, height: 50 }}
-                        source={categoryIcons[index]}
-                      />
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'center',
-                          height: '100%',
-                          width: '73%',
-                        }}
-                      >
-                        <Text style={styles.h3Text}>{category[0]}</Text>
-                        <Text style={styles.bodyText}>{category[1]}</Text>
-                      </View>
-
-                      {/* Chevron Right Icon */}
-                      <Entypo name='chevron-right' size={34} color='#5C6B57' />
-                    </View>
-                  </Pressable>
-                ))}
-              </View>
-            )}
-            {goalListItemAddModalIndex === 1 && (
-              <View style={styles.goalsContainer}>
-                {/* @ts-ignore */}
-                {categoryGoals.get(category).map((goal, index) => (
-                  <Pressable
-                    key={index}
-                    style={styles.goalComponent}
-                    onPress={() =>
-                      handleGoalSelect(
-                        goal.title,
-                        goal.description,
-                        goal.endText,
-                        goal.dropdownText,
-                        goal.dropdownOptions,
-                        goal.diarySentence
-                      )
-                    }
-                  >
-                    {/* Icon + Category + Title */}
-                    <View
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
                         width: '100%',
-                        columnGap: 5,
                       }}
                     >
-                      <Image
-                        style={{ width: 40, height: 40 }}
-                        source={getGoalCategoryIcon(category)}
-                      />
+                      <Text style={styles.h2Text}>
+                        {getGoalCategoryString(category)}
+                      </Text>
+                      <Text style={styles.h3Text}>{title}</Text>
+                    </View>
+                  </View>
+                  <Text style={styles.bodyText}>{description}</Text>
+                </View>
+              )}
+            </View>
+
+            {/* Main Content Wrapper */}
+            <ScrollView
+              bounces={false}
+              showsVerticalScrollIndicator={false}
+              style={styles.goalContainer}
+              contentContainerStyle={styles.goalContentContainerStyles}
+              ref={scrollView}
+            >
+              {goalListItemAddModalIndex === 0 && (
+                <View style={styles.categoriesContainer}>
+                  {categories.map((category, index) => (
+                    <Pressable
+                      key={index}
+                      style={styles.categoryComponent}
+                      onPress={() => handleCategorySelect(index)}
+                    >
+                      {/* Icon + Title + Description */}
                       <View
                         style={{
                           display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'center',
-                          width: '100%',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          height: '100%',
+                          columnGap: 5,
                         }}
                       >
-                        {/* Category */}
-                        <Text style={styles.h2Text}>{goal.category}</Text>
-                        {/* Title */}
-                        <Text style={styles.h3Text}>{goal.title}</Text>
+                        <Image
+                          style={{ width: 50, height: 50 }}
+                          source={categoryIcons[index]}
+                        />
+                        <View
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            height: '100%',
+                            width: '73%',
+                          }}
+                        >
+                          <Text style={styles.h3Text}>{category[0]}</Text>
+                          <Text style={styles.bodyText}>{category[1]}</Text>
+                        </View>
+
+                        {/* Chevron Right Icon */}
+                        <Entypo
+                          name='chevron-right'
+                          size={34}
+                          color='#5C6B57'
+                        />
                       </View>
-                    </View>
-                    {/* Description */}
-                    <Text style={styles.bodyText}>{goal.description}</Text>
-                  </Pressable>
-                ))}
-              </View>
-            )}
-            {goalListItemAddModalIndex === 2 && (
-              <View style={styles.selectionMenusContainer}>
-                {/* Timeframe Menu */}
-                <View style={styles.menuComponent}>
-                  <Text style={styles.h2Text}>Mijn doel</Text>
-                  <Text style={styles.h3Text}>{title}</Text>
-                  <Text style={styles.bodyText}>
-                    Kies of je dit dagelijks, wekelijks of maandelijks wil doen.
-                  </Text>
-
-                  {/* Dropdown */}
-                  <Dropdown
-                    style={styles.dropdown}
-                    containerStyle={styles.dropdownContainer}
-                    iconColor='black'
-                    iconStyle={styles.icon}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    itemTextStyle={styles.itemTextStyle}
-                    itemContainerStyle={styles.itemContainerStyle}
-                    data={timeframeDropdownData}
-                    labelField='label'
-                    valueField='value'
-                    placeholder='Kies een tijdsbestek'
-                    placeholderStyle={styles.placeholderStyle}
-                    value={timeframeDropdownValue}
-                    onChange={(item) => {
-                      setTimeframeDropdownValue(item.value);
-                      setTimeframe(item.value);
-                      setMarkedDates({});
-                    }}
-                    onFocus={() => setTimeframeDropdownIsFocus(true)}
-                    onBlur={() => setTimeframeDropdownIsFocus(false)}
-                    renderRightIcon={() => (
-                      <Feather
-                        name={`${
-                          timeframeDropdownIsFocus
-                            ? 'chevron-up'
-                            : 'chevron-down'
-                        }`}
-                        size={24}
-                      />
-                    )}
-                  />
+                    </Pressable>
+                  ))}
                 </View>
-
-                {/* Target Frequency Menu */}
-                {timeframe !== Timeframe.Daily && (
-                  <View style={styles.menuComponent}>
-                    <Text style={styles.h2Text}>Mijn doel</Text>
-                    <Text style={styles.h3Text}>{title}</Text>
-                    <Text style={styles.bodyText}>
-                      Kies hoe vaak je dit doel wil uitvoeren.
-                    </Text>
-                    <Text style={styles.bodyText}>
-                      Selecteer een aantal tussen:{'\n'}Wekelijks: 1 - 7 keer.
-                      {'\n'}
-                      Maandelijks: 1 - 30 keer.
-                    </Text>
-                    {/* Text Input */}
-                    <TextInput
-                      value={textInputValue}
-                      onChangeText={(text) =>
-                        validateTextInput(
-                          text,
-                          timeframe === Timeframe.Weekly ? 7 : 30
+              )}
+              {goalListItemAddModalIndex === 1 && (
+                <View style={styles.goalsContainer}>
+                  {/* @ts-ignore */}
+                  {categoryGoals.get(category).map((goal, index) => (
+                    <Pressable
+                      key={index}
+                      style={styles.goalComponent}
+                      onPress={() =>
+                        handleGoalSelect(
+                          goal.title,
+                          goal.description,
+                          goal.endText,
+                          goal.dropdownText,
+                          goal.dropdownOptions,
+                          goal.diarySentence
                         )
                       }
-                      inputMode='numeric'
-                      style={styles.textInputStyle}
-                      placeholder='Maak een keuze...'
-                    />
-                  </View>
-                )}
-
-                {/* Special Dropdown Menu */}
-                {goalSpecialDropdownOptions.length > 0 && (
+                    >
+                      {/* Icon + Category + Title */}
+                      <View
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          width: '100%',
+                          columnGap: 5,
+                        }}
+                      >
+                        <Image
+                          style={{ width: 40, height: 40 }}
+                          source={getGoalCategoryIcon(category)}
+                        />
+                        <View
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            width: '100%',
+                          }}
+                        >
+                          {/* Category */}
+                          <Text style={styles.h2Text}>{goal.category}</Text>
+                          {/* Title */}
+                          <Text style={styles.h3Text}>{goal.title}</Text>
+                        </View>
+                      </View>
+                      {/* Description */}
+                      <Text style={styles.bodyText}>{goal.description}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+              )}
+              {goalListItemAddModalIndex === 2 && (
+                <View style={styles.selectionMenusContainer}>
+                  {/* Timeframe Menu */}
                   <View style={styles.menuComponent}>
                     <Text style={styles.h2Text}>Mijn doel</Text>
                     <Text style={styles.h3Text}>{title}</Text>
-                    <Text style={styles.bodyText}>{specialDropdownText}</Text>
+                    <Text style={styles.bodyText}>
+                      Kies of je dit dagelijks, wekelijks of maandelijks wil
+                      doen.
+                    </Text>
 
                     {/* Dropdown */}
                     <Dropdown
@@ -634,21 +571,23 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       selectedTextStyle={styles.selectedTextStyle}
                       itemTextStyle={styles.itemTextStyle}
                       itemContainerStyle={styles.itemContainerStyle}
-                      data={goalSpecialDropdownOptions}
+                      data={timeframeDropdownData}
                       labelField='label'
                       valueField='value'
-                      placeholder='Selecteer een aantal'
+                      placeholder='Kies een tijdsbestek'
                       placeholderStyle={styles.placeholderStyle}
-                      value={specialDropdownValue}
+                      value={timeframeDropdownValue}
                       onChange={(item) => {
-                        setSpecialDropdownValue(item.value);
+                        setTimeframeDropdownValue(item.value);
+                        setTimeframe(item.value);
+                        setMarkedDates({});
                       }}
-                      onFocus={() => setSpecialDropdownIsFocus(true)}
-                      onBlur={() => setSpecialDropdownIsFocus(false)}
+                      onFocus={() => setTimeframeDropdownIsFocus(true)}
+                      onBlur={() => setTimeframeDropdownIsFocus(false)}
                       renderRightIcon={() => (
                         <Feather
                           name={`${
-                            specialDropdownIsFocus
+                            timeframeDropdownIsFocus
                               ? 'chevron-up'
                               : 'chevron-down'
                           }`}
@@ -657,14 +596,83 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       )}
                     />
                   </View>
-                )}
-                <View style={styles.menuComponent}>
-                  {/*
+
+                  {/* Target Frequency Menu */}
+                  {timeframe !== Timeframe.Daily && (
+                    <View style={styles.menuComponent}>
+                      <Text style={styles.h2Text}>Mijn doel</Text>
+                      <Text style={styles.h3Text}>{title}</Text>
+                      <Text style={styles.bodyText}>
+                        Kies hoe vaak je dit doel wil uitvoeren.
+                      </Text>
+                      <Text style={styles.bodyText}>
+                        Selecteer een aantal tussen:{'\n'}Wekelijks: 1 - 7 keer.
+                        {'\n'}
+                        Maandelijks: 1 - 30 keer.
+                      </Text>
+                      {/* Text Input */}
+                      <TextInput
+                        value={textInputValue}
+                        onChangeText={(text) =>
+                          validateTextInput(
+                            text,
+                            timeframe === Timeframe.Weekly ? 7 : 30
+                          )
+                        }
+                        inputMode='numeric'
+                        style={styles.textInputStyle}
+                        placeholder='Maak een keuze...'
+                      />
+                    </View>
+                  )}
+
+                  {/* Special Dropdown Menu */}
+                  {goalSpecialDropdownOptions.length > 0 && (
+                    <View style={styles.menuComponent}>
+                      <Text style={styles.h2Text}>Mijn doel</Text>
+                      <Text style={styles.h3Text}>{title}</Text>
+                      <Text style={styles.bodyText}>{specialDropdownText}</Text>
+
+                      {/* Dropdown */}
+                      <Dropdown
+                        style={styles.dropdown}
+                        containerStyle={styles.dropdownContainer}
+                        iconColor='black'
+                        iconStyle={styles.icon}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        itemTextStyle={styles.itemTextStyle}
+                        itemContainerStyle={styles.itemContainerStyle}
+                        data={goalSpecialDropdownOptions}
+                        labelField='label'
+                        valueField='value'
+                        placeholder='Selecteer een aantal'
+                        placeholderStyle={styles.placeholderStyle}
+                        value={specialDropdownValue}
+                        onChange={(item) => {
+                          setSpecialDropdownValue(item.value);
+                        }}
+                        onFocus={() => setSpecialDropdownIsFocus(true)}
+                        onBlur={() => setSpecialDropdownIsFocus(false)}
+                        renderRightIcon={() => (
+                          <Feather
+                            name={`${
+                              specialDropdownIsFocus
+                                ? 'chevron-up'
+                                : 'chevron-down'
+                            }`}
+                            size={24}
+                          />
+                        )}
+                      />
+                    </View>
+                  )}
+                  <View style={styles.menuComponent}>
+                    {/*
                   <Text style={[styles.h2Text, { textAlign: 'center' }]}>
                     Start- en einddatum
                   </Text>
                   */}
-                  {/* Calendar }
+                    {/* Calendar }
                   <Calendar
                     // Old functionality
                     // minDate={
@@ -699,64 +707,64 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       )
                     }
                   />*/}
-                  <Pressable
-                    onPress={() => handleGoalSentences()}
-                    style={styles.viewButton}
-                  >
-                    <Text style={styles.buttonText}>Doel bekijken</Text>
-                  </Pressable>
+                    <Pressable
+                      onPress={() => handleGoalSentences()}
+                      style={styles.viewButton}
+                    >
+                      <Text style={styles.buttonText}>Doel bekijken</Text>
+                    </Pressable>
+                  </View>
                 </View>
-              </View>
-            )}
-            {goalListItemAddModalIndex === 3 && (
-              <View style={styles.selectedGoalContainer}>
-                <View style={styles.selectedGoalComponent}>
-                  <View
-                    style={{
-                      rowGap: 10,
-                    }}
-                  >
+              )}
+              {goalListItemAddModalIndex === 3 && (
+                <View style={styles.selectedGoalContainer}>
+                  <View style={styles.selectedGoalComponent}>
                     <View
                       style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        width: '100%',
-                        columnGap: 5,
+                        rowGap: 10,
                       }}
                     >
-                      <Image
-                        style={{ width: 40, height: 40 }}
-                        source={getGoalCategoryIcon(category)}
-                      />
                       <View
                         style={{
                           display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'center',
+                          flexDirection: 'row',
+                          alignItems: 'center',
                           width: '100%',
+                          columnGap: 5,
                         }}
                       >
-                        <Text style={styles.h2Text}>
-                          {getGoalCategoryString(category)}
-                        </Text>
-                        <Text style={styles.h3Text}>{title}</Text>
+                        <Image
+                          style={{ width: 40, height: 40 }}
+                          source={getGoalCategoryIcon(category)}
+                        />
+                        <View
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            width: '100%',
+                          }}
+                        >
+                          <Text style={styles.h2Text}>
+                            {getGoalCategoryString(category)}
+                          </Text>
+                          <Text style={styles.h3Text}>{title}</Text>
+                        </View>
                       </View>
-                    </View>
-                    <Text style={styles.bodyText}>
-                      {highlightFrequency(sentence)}
-                    </Text>
-                    <Text style={styles.h3Text}>
-                      Startdatum:{' '}
                       <Text style={styles.bodyText}>
-                        {startDate?.toLocaleDateString('nl-NL', {
-                          day: '2-digit',
-                          month: 'long',
-                          year: 'numeric',
-                        })}
+                        {highlightFrequency(sentence)}
                       </Text>
-                    </Text>
-                    {/*
+                      <Text style={styles.h3Text}>
+                        Startdatum:{' '}
+                        <Text style={styles.bodyText}>
+                          {startDate?.toLocaleDateString('nl-NL', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </Text>
+                      </Text>
+                      {/*
                     <Text style={styles.h3Text}>
                       Einddatum:{' '}
                       <Text style={styles.bodyText}>
@@ -768,86 +776,87 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
                       </Text>
                     </Text>
                     */}
+                    </View>
                   </View>
                 </View>
-              </View>
-            )}
-          </ScrollView>
-          {/* TODO: Is there a way to achieve this layout without a wrapper? */}
-          {/* Progress Wrapper */}
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 40,
-              width: '100%',
-              alignSelf: 'center',
-              paddingHorizontal: 15,
-            }}
-          >
-            {/* Progress Container */}
-            <View style={styles.progressContainer}>
-              {/* Buttons Container */}
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                {/* Go Back Button */}
-                <Pressable
-                  onPress={() => handleBack()}
-                  disabled={goalListItemAddModalIndex == 0 ? true : false}
-                  style={
-                    goalListItemAddModalIndex == 0
-                      ? [styles.backButton, { opacity: 0.4 }]
-                      : styles.backButton
-                  }
+              )}
+            </ScrollView>
+            {/* TODO: Is there a way to achieve this layout without a wrapper? */}
+            {/* Progress Wrapper */}
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 40,
+                width: '100%',
+                alignSelf: 'center',
+                paddingHorizontal: 15,
+              }}
+            >
+              {/* Progress Container */}
+              <View style={styles.progressContainer}>
+                {/* Buttons Container */}
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
                 >
-                  <Text style={styles.buttonText}>Ga terug</Text>
-                </Pressable>
-                {/* Finish Button */}
-                {goalListItemAddModalIndex === 3 && (
+                  {/* Go Back Button */}
                   <Pressable
-                    onPress={() => handleFinish()}
-                    style={styles.finishButton}
+                    onPress={() => handleBack()}
+                    disabled={goalListItemAddModalIndex == 0 ? true : false}
+                    style={
+                      goalListItemAddModalIndex == 0
+                        ? [styles.backButton, { opacity: 0.4 }]
+                        : styles.backButton
+                    }
                   >
-                    <Text style={styles.buttonText}>Doel aanmaken</Text>
+                    <Text style={styles.buttonText}>Ga terug</Text>
                   </Pressable>
-                )}
-              </View>
-              {/* Progress Dots Container */}
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignSelf: 'center',
-                  columnGap: 7,
-                }}
-              >
-                {Array.from({ length: 4 }).map((_, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        width: 8,
-                        height: 8,
-                        backgroundColor:
-                          index === goalListItemAddModalIndex
-                            ? '#829c7a'
-                            : '#E4E1E1',
-                        borderRadius: 99,
-                      }}
-                    ></View>
-                  );
-                })}
+                  {/* Finish Button */}
+                  {goalListItemAddModalIndex === 3 && (
+                    <Pressable
+                      onPress={() => handleFinish()}
+                      style={styles.finishButton}
+                    >
+                      <Text style={styles.buttonText}>Doel aanmaken</Text>
+                    </Pressable>
+                  )}
+                </View>
+                {/* Progress Dots Container */}
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignSelf: 'center',
+                    columnGap: 7,
+                  }}
+                >
+                  {Array.from({ length: 4 }).map((_, index) => {
+                    return (
+                      <View
+                        key={index}
+                        style={{
+                          width: 8,
+                          height: 8,
+                          backgroundColor:
+                            index === goalListItemAddModalIndex
+                              ? '#829c7a'
+                              : '#E4E1E1',
+                          borderRadius: 99,
+                        }}
+                      ></View>
+                    );
+                  })}
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 

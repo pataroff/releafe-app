@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   StyleSheet,
   Text,
@@ -24,7 +24,9 @@ import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-import Slider from '@react-native-community/slider';
+import { Slider } from 'react-native-awesome-slider';
+import { useSharedValue } from 'react-native-reanimated';
+
 import { useDiary } from '../context/DiaryContext';
 
 import Toast from 'react-native-toast-message';
@@ -269,6 +271,29 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
     return date;
   };
 
+  const min = useSharedValue(1);
+  const max = useSharedValue(10);
+  const sliderValue = useSharedValue(5.5);
+
+  // Slider Value Update
+  useEffect(() => {
+    const value = selectedDiaryEntry?.sliderValues[sliderQuestionIndex];
+    sliderValue.value = value !== undefined ? value : 5.5;
+  }, [sliderQuestionIndex, selectedDiaryEntry?.sliderValues]);
+
+  const CustomThumb: React.FC<{}> = () => {
+    return (
+      <View
+        style={{
+          backgroundColor: '#C1DEBE',
+          height: 28,
+          width: 28,
+          borderRadius: 99,
+        }}
+      ></View>
+    );
+  };
+
   return (
     <>
       <CalendarProvider
@@ -377,14 +402,16 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               {sliderTitlesAndDescriptions[sliderQuestionIndex][0]}
             </Text>
             <Slider
-              disabled={true}
+              disable={true}
               style={{ width: '100%', height: 40 }}
-              value={selectedDiaryEntry?.sliderValues[sliderQuestionIndex]}
-              minimumValue={1}
-              maximumValue={10}
-              thumbTintColor='#A5B79F'
-              minimumTrackTintColor='#A9C1A1'
-              maximumTrackTintColor='#dedede'
+              progress={sliderValue}
+              minimumValue={min}
+              maximumValue={max}
+              theme={{
+                minimumTrackTintColor: '#E4E1E1',
+                maximumTrackTintColor: '#E4E1E1',
+              }}
+              renderThumb={() => <CustomThumb />}
             />
           </View>
 
@@ -651,6 +678,7 @@ const styles = StyleSheet.create({
     color: 'white',
   } as TextStyle,
   dataTextInputContainer: {
+    verticalAlign: Platform.OS === 'android' ? 'top' : undefined,
     fontSize: 14,
     height: 150,
     ...Fonts.sofiaProRegular[Platform.OS],

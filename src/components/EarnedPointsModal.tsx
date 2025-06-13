@@ -36,44 +36,46 @@ export const EarnedPointsModal: React.FC<EarnedPointsModalProps> = ({
   };
 
   return (
-    <Modal animationType='fade' transparent={true} visible={visible}>
-      <View style={styles.modalWrapper}>
-        <View style={styles.modalContainer}>
-          {/* Close Button */}
-          <Pressable
-            style={{ position: 'absolute', top: 20, right: 20 }}
-            onPress={handleClose}
-          >
-            <Feather name='x-circle' size={24} color='gray' />
-          </Pressable>
+    <View>
+      <Modal animationType='fade' transparent={true} visible={visible}>
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            {/* Close Button */}
+            <Pressable
+              style={{ position: 'absolute', top: 20, right: 20 }}
+              onPress={handleClose}
+            >
+              <Feather name='x-circle' size={24} color='gray' />
+            </Pressable>
 
-          <Text style={styles.title}>Mooi gedaan!</Text>
-          <Text style={styles.description}>
-            {goalCompleted
-              ? 'Je hebt je dagboek ingevuld én één of meerdere persoonlijke doelen behaald. Daarvoor heb je punten verdiend.'
-              : 'Je hebt punten verdiend door aandacht te geven aan je mentale welzijn.'}
-          </Text>
+            <Text style={styles.title}>Mooi gedaan!</Text>
+            <Text style={styles.description}>
+              {goalCompleted
+                ? 'Je hebt je dagboek ingevuld én één of meerdere persoonlijke doelen behaald. Daarvoor heb je punten verdiend.'
+                : 'Je hebt punten verdiend door aandacht te geven aan je mentale welzijn.'}
+            </Text>
 
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../../assets/images/logo_releafe_05.png')}
-              style={styles.logo}
-              resizeMode='contain'
-            />
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../../assets/images/logo_releafe_05.png')}
+                style={styles.logo}
+                resizeMode='contain'
+              />
+            </View>
+
+            <Text style={styles.pointsText}>+ {points} RP</Text>
+
+            <Text style={styles.message}>
+              Elke stap telt. Blijf op jouw manier vooruitgaan.
+            </Text>
+
+            <Pressable style={styles.collectButton} onPress={handleClose}>
+              <Text style={styles.collectText}>Punten verzamelen</Text>
+            </Pressable>
           </View>
-
-          <Text style={styles.pointsText}>+ {points} RP</Text>
-
-          <Text style={styles.message}>
-            Elke stap telt. Blijf op jouw manier vooruitgaan.
-          </Text>
-
-          <Pressable style={styles.collectButton} onPress={handleClose}>
-            <Text style={styles.collectText}>Punten verzamelen</Text>
-          </Pressable>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 

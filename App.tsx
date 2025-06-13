@@ -2,6 +2,7 @@ import './gesture-handler';
 
 import { useFonts } from 'expo-font';
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { PaperProvider } from 'react-native-paper';
@@ -49,29 +50,31 @@ export default function App() {
 
   return (
     <>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <PaperProvider>
-            <NotificationProvider>
-              <AuthProvider>
-                <GamificationProvider>
-                  <SettingsProvider>
-                    <DiaryProvider>
-                      <WorryProvider>
-                        <NoteProvider>
-                          <GoalProvider>
-                            <AppNav />
-                          </GoalProvider>
-                        </NoteProvider>
-                      </WorryProvider>
-                    </DiaryProvider>
-                  </SettingsProvider>
-                </GamificationProvider>
-              </AuthProvider>
-            </NotificationProvider>
-          </PaperProvider>
-        </NavigationContainer>
-      </SafeAreaProvider>
+      <GestureHandlerRootView>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <PaperProvider>
+              <NotificationProvider>
+                <AuthProvider>
+                  <GamificationProvider>
+                    <SettingsProvider>
+                      <DiaryProvider>
+                        <WorryProvider>
+                          <NoteProvider>
+                            <GoalProvider>
+                              <AppNav />
+                            </GoalProvider>
+                          </NoteProvider>
+                        </WorryProvider>
+                      </DiaryProvider>
+                    </SettingsProvider>
+                  </GamificationProvider>
+                </AuthProvider>
+              </NotificationProvider>
+            </PaperProvider>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
       <Toast config={toastConfig} />
     </>
   );
