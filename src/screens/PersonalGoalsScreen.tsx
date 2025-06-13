@@ -73,10 +73,9 @@ export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
         modalAddGoalListItemVisible={modalAddGoalListItemVisible}
         setModalAddGoalListItemVisible={setModalAddGoalListItemVisible}
       />
-
-      <StatusBar />
       <ScrollView
         bounces={false}
+        showsVerticalScrollIndicator={false}
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >

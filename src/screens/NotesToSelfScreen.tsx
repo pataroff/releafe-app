@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#ffffff',
   },
   headersContainer: {

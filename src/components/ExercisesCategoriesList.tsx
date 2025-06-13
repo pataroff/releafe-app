@@ -1,14 +1,16 @@
-import React, { useContext } from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, Dimensions } from 'react-native';
 
 import { categories } from '../utils/exercises';
 import { ExercisesCategoriesListItem } from './ExercisesCategoriesListItem';
+
+const windowWidth = Dimensions.get('window').width;
 
 export const ExercisesCategoriesList: React.FC<{ route: any }> = ({
   route,
 }) => {
   return (
     <ScrollView
+      bounces={false}
       showsVerticalScrollIndicator={false}
       style={styles.exercisesCategoriesListContainer}
       contentContainerStyle={styles.exercisesCategoriesListContentContainer}
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#f9f9f9',
     rowGap: 10,
-    marginHorizontal: 30,
+    width: windowWidth - 2 * 25,
     paddingBottom: 100,
   },
 });

@@ -1,15 +1,26 @@
-import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TextStyle,
+  Platform,
+  Dimensions,
+} from 'react-native';
 
+import { Fonts } from '../styles';
+import { Exercise } from '../types';
+
+import { useSettings } from '../context/SettingsContext';
 import {
   categoryExercises,
   getExerciseCategory,
   getExerciseCategoryString,
 } from '../utils/exercises';
+
 import { ExercisesListItem } from './ExercisesListItem';
 
-import { ExerciseCategory, Exercise } from '../types';
-import { SettingsContext } from '../context/SettingsContext'; // Import your context
+const windowWidth = Dimensions.get('window').width;
 
 interface ExercisesListProps {
   category: string;
@@ -20,74 +31,68 @@ export const ExercisesList: React.FC<ExercisesListProps> = ({
   category,
   showOnlyFavourites,
 }) => {
-  const { favouriteExercises } = useContext(SettingsContext); // Get favouriteExercises from context
+  const { favouriteExercises } = useSettings();
 
-  // Define the structure of `exercisesData`
-  const exercisesData: [ExerciseCategory, Exercise[]][] | Exercise[] =
-    //category === 'Bekijk alle oefeningen'
-    Array.from(categoryExercises.entries()); // Grouped: [categoryKey, exercises[]]
-  //: categoryExercises.get(getExerciseCategory(category)) || []; // Flat array of exercises
-
-  // Type guard to check if `exercisesData` is grouped
   const isGrouped = category == 'Bekijk alle oefeningen';
-  //Array.isArray(exercisesData[0]);
+  const exercisesData = Array.from(categoryExercises.entries());
 
-  const filteredExercises = (exercises: Exercise[]) =>
+  const filterExercises = (exercises: Exercise[]) =>
     showOnlyFavourites
       ? exercises.filter((exercise) => favouriteExercises.includes(exercise.id))
       : exercises;
 
   return (
     <ScrollView
+      bounces={false}
       showsVerticalScrollIndicator={false}
       style={styles.exercisesListContainer}
       contentContainerStyle={styles.exercisesListContentContainer}
     >
       {isGrouped
         ? // Handle grouped categories
-          (exercisesData as [ExerciseCategory, Exercise[]][]).map(
-            ([categoryKey, exercises]) => {
-              const filtered = filteredExercises(exercises);
-              if (filtered.length === 0) return null; // Skip rendering if no favourites for this category
+          exercisesData.map(([categoryKey, exercises], index) => {
+            const filteredExercises = filterExercises(exercises);
+            if (filteredExercises.length === 0)
               return (
-                <React.Fragment key={String(categoryKey)}>
+                <Text key={index} style={styles.noDataText}>
+                  Geen favoriete oefeningen gevonden.
+                </Text>
+              );
+            return (
+              <View key={String(categoryKey)} style={{ rowGap: 20 }}>
+                <Text style={styles.categoryText}>
+                  {getExerciseCategoryString(categoryKey)}
+                </Text>
+                {filteredExercises.map((exercise, idx) => (
+                  <ExercisesListItem key={idx} exercise={exercise} />
+                ))}
+              </View>
+            );
+          })
+        : // Handle single category
+          exercisesData.map(([categoryKey, exercises], index) => {
+            if (categoryKey == getExerciseCategory(category)) {
+              const filteredExercises = filterExercises(exercises);
+
+              if (filteredExercises.length === 0)
+                return (
+                  <Text key={index} style={styles.noDataText}>
+                    Geen favoriete oefeningen gevonden.
+                  </Text>
+                );
+
+              return (
+                <View key={index} style={{ rowGap: 20 }}>
                   <Text style={styles.categoryText}>
                     {getExerciseCategoryString(categoryKey)}
                   </Text>
-                  {filtered.map((exercise, index) => (
-                    <ExercisesListItem key={index} exercise={exercise} />
+                  {filteredExercises.map((exercise, idx) => (
+                    <ExercisesListItem key={idx} exercise={exercise} />
                   ))}
-                </React.Fragment>
+                </View>
               );
             }
-          )
-        : // Handle single category
-          (exercisesData as [ExerciseCategory, Exercise[]][]).map(
-            ([categoryKey, exercises], index) => {
-              console.log('Category: ' + category.toUpperCase());
-              console.log('CategoryKey: ' + categoryKey);
-              console.log('---');
-              if (categoryKey == category.toUpperCase()) {
-                console.log('------Match-----');
-                exercises =
-                  categoryExercises.get(getExerciseCategory(category)) || [];
-                const filtered = filteredExercises(exercises);
-                if (filtered.length === 0) return null; // Skip rendering if no favourites for this category
-                return (
-                  <React.Fragment key={index}>
-                    <Text style={styles.categoryText}>
-                      {getExerciseCategoryString(categoryKey)}
-                    </Text>
-                    <React.Fragment>
-                      {filtered.map((exercise, idx) => (
-                        <ExercisesListItem key={idx} exercise={exercise} />
-                      ))}
-                    </React.Fragment>
-                  </React.Fragment>
-                );
-              }
-            }
-          )}
+          })}
     </ScrollView>
   );
 };
@@ -101,15 +106,20 @@ const styles = StyleSheet.create({
   exercisesListContentContainer: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
     backgroundColor: '#f9f9f9',
-    rowGap: 15,
-    paddingBottom: 200,
+    width: windowWidth - 2 * 25,
+
+    paddingBottom: 120,
   },
   categoryText: {
+    ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 18,
     fontWeight: 'bold',
     marginVertical: 10,
-    alignSelf: 'flex-start',
-  },
+  } as TextStyle,
+  noDataText: {
+    ...Fonts.sofiaProSemiBold[Platform.OS],
+    fontSize: 16,
+    marginTop: 10,
+  } as TextStyle,
 });

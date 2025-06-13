@@ -149,7 +149,7 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -157,6 +157,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '100%',
     padding: 25,
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   exerciseHeadingText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],

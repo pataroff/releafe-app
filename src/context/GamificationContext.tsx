@@ -10,6 +10,14 @@ import React, {
 import pb from '../lib/pocketbase';
 import { useAuth } from './AuthContext';
 
+import {
+  achievementsLockedIcon,
+  findAchievementById,
+  evaluateAllAchievements,
+} from '../utils/achievements';
+import { AchievementModal } from '../components/AchievementModal';
+import { SelectedAchievement } from '../types';
+
 interface TreeState {
   selectedBranchIndex: number | null;
   selectedLeafIndex: number | null;
@@ -18,10 +26,12 @@ interface TreeState {
 
 interface GamificationContextType {
   points: number;
+  appUsageDates: string[];
   unlockedItems: string[];
   unlockedAchievements: string[];
   treeState: TreeState;
   setPoints: React.Dispatch<SetStateAction<number>>;
+  setAppUsageDates: React.Dispatch<SetStateAction<string[]>>;
   setUnlockedItems: React.Dispatch<SetStateAction<string[]>>;
   setUnlockedAchievemnts: React.Dispatch<SetStateAction<string[]>>;
   setTreeState: React.Dispatch<SetStateAction<TreeState>>;
@@ -33,6 +43,7 @@ interface GamificationContextType {
     selectedLeafIndex: number | null,
     selectedFlowerIndex: number | null
   ) => Promise<void>;
+  trackAppUsage: () => Promise<void>;
 }
 
 const GamificationContext = createContext<GamificationContextType | undefined>(
@@ -51,39 +62,15 @@ export const useGamification = () => {
 export const GamificationProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
 
-  useEffect(() => {
-    const fetchGamification = async () => {
-      if (!user) return;
-      try {
-        const userRecord = await pb.collection('users').getOne(user.id);
-        const points = userRecord?.points ? userRecord.points : 0;
-        const unlockedItems = userRecord?.unlockedItems
-          ? userRecord.unlockedItems
-          : [];
-        const unlockedAchievements = userRecord?.unlockedAchievements
-          ? userRecord.unlockedAchievements
-          : [];
-        const treeState = userRecord?.treeState
-          ? userRecord?.treeState
-          : {
-              selectedBranchIndex: null,
-              selectedLeafIndex: null,
-              selectedFlowerIndex: null,
-            };
-
-        setPoints(points);
-        setUnlockedItems(unlockedItems);
-        setUnlockedAchievemnts(unlockedAchievements);
-        setTreeState(treeState);
-      } catch (error) {
-        console.error('Error fetching gamification data:', error);
-      }
-    };
-
-    fetchGamification();
-  }, [user]);
+  const [isGamificationLoaded, setIsGamificaitonLoaded] =
+    useState<boolean>(false);
+  const [achievementModalVisible, setAchievementModalVisible] =
+    useState<boolean>(false);
+  const [selectedAchievement, setSelectedAchievement] =
+    useState<SelectedAchievement | null>(null);
 
   const [points, setPoints] = useState<number>(0);
+  const [appUsageDates, setAppUsageDates] = useState<string[]>([]);
   const [unlockedItems, setUnlockedItems] = useState<string[]>([]);
   const [unlockedAchievements, setUnlockedAchievemnts] = useState<string[]>([]);
   const [treeState, setTreeState] = useState<TreeState>({
@@ -91,6 +78,82 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
     selectedLeafIndex: null,
     selectedFlowerIndex: null,
   });
+
+  useEffect(() => {
+    const fetchGamification = async () => {
+      if (!user) return;
+      try {
+        const userRecord = await pb.collection('users').getOne(user.id);
+        const points = userRecord?.points ? userRecord.points : 0;
+        const appUsageDates = userRecord?.appUsageDates
+          ? userRecord.appUsageDates
+          : [];
+        const unlockedItems = userRecord?.unlockedItems
+          ? userRecord.unlockedItems
+          : [];
+        const unlockedAchievements = userRecord?.unlockedAchievements
+          ? userRecord.unlockedAchievements
+          : [];
+        const treeState = userRecord?.treeState
+          ? userRecord.treeState
+          : {
+              selectedBranchIndex: null,
+              selectedLeafIndex: null,
+              selectedFlowerIndex: null,
+            };
+
+        setPoints(points);
+        setAppUsageDates(appUsageDates);
+        setUnlockedItems(unlockedItems);
+        setUnlockedAchievemnts(unlockedAchievements);
+        setTreeState(treeState);
+      } catch (error) {
+        console.error('Error fetching gamification data:', error);
+      } finally {
+        setIsGamificaitonLoaded(true);
+      }
+    };
+
+    fetchGamification();
+  }, [user]);
+
+  useEffect(() => {
+    const evaluateAppUsageAchievements = async () => {
+      if (!isGamificationLoaded || !user) return;
+
+      // Track usage first (updates appUsageDates state + PocketBase)
+      await trackAppUsage();
+
+      // Evaluate achievements
+      await evaluateAllAchievements('onAppUsage', {
+        appUsageDates,
+        unlockedAchievements,
+        unlockAchievement,
+      });
+    };
+
+    evaluateAppUsageAchievements();
+  }, [isGamificationLoaded]);
+
+  const trackAppUsage = async () => {
+    const today = new Date().toISOString().split('T')[0];
+
+    if (appUsageDates.includes(today)) return;
+
+    const previousAppUsageDates = [...appUsageDates];
+    const updatedDates = [today, ...appUsageDates];
+
+    setAppUsageDates(updatedDates);
+
+    try {
+      await pb.collection('users').update(user?.id!, {
+        appUsageDates: updatedDates,
+      });
+    } catch (error) {
+      console.error('Failed to update appUsageDates:', error);
+      setAppUsageDates(previousAppUsageDates);
+    }
+  };
 
   const unlockItem = async (itemId: string, price: number) => {
     if (points < price || unlockedItems.includes(itemId)) {
@@ -109,6 +172,11 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       await updateUnlockedItemsInDatabase(updatedPoints, updatedUnlockedItems);
+      await evaluateAllAchievements('onItemUnlocked', {
+        unlockedAchievements,
+        unlockAchievement,
+        unlockedItems: updatedUnlockedItems,
+      });
     } catch (error) {
       console.error('Error unlocking item:', error);
 
@@ -128,10 +196,18 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
       ...previousUnlockedAchievements,
     ];
 
+    setUnlockedAchievemnts(updatedUnlockedAchievements);
+
     try {
       await updateUnlockedAchievemntsInDatabase(updatedUnlockedAchievements);
+      // @TODO This is a bit slow cause we are waiting on nested async calls to resolve!
+      const achievement = findAchievementById(achievementId);
+      if (achievement) {
+        setSelectedAchievement(achievement);
+        setAchievementModalVisible(true);
+      }
     } catch (error) {
-      console.error('Error unoocking achievement:', error);
+      console.error('Error unlocking achievement:', error);
 
       setUnlockedAchievemnts(previousUnlockedAchievements);
     }
@@ -180,11 +256,17 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
     newUnlockedAchievements: string[]
   ) => {
     const newUnlockedAchievementsJSON = JSON.stringify(newUnlockedAchievements);
-    const userRecord = await pb.collection('users').getOne(user?.id);
+    const userRecord = await pb
+      .collection('users')
+      .getOne(user?.id, { requestKey: null });
 
-    await pb.collection('user').update(userRecord.id, {
-      unlockedAchievements: newUnlockedAchievementsJSON,
-    });
+    await pb.collection('users').update(
+      userRecord.id,
+      {
+        unlockedAchievements: newUnlockedAchievementsJSON,
+      },
+      { requestKey: null }
+    );
   };
 
   const updateTreeStateInDatabase = async (
@@ -213,19 +295,31 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
     <GamificationContext.Provider
       value={{
         points,
+        appUsageDates,
         unlockedItems,
         unlockedAchievements,
         treeState,
-        setTreeState,
         setPoints,
+        setAppUsageDates,
         setUnlockedItems,
         setUnlockedAchievemnts,
+        setTreeState,
         unlockItem,
         unlockAchievement,
         addPoints,
         updateTreeStateInDatabase,
+        trackAppUsage,
       }}
     >
+      {selectedAchievement && (
+        <AchievementModal
+          achievementModalVisible={achievementModalVisible}
+          setAchievementModalVisible={setAchievementModalVisible}
+          selectedAchievement={selectedAchievement}
+          isAchievementUnlocked={true}
+          mode='unlocked'
+        />
+      )}
       {children}
     </GamificationContext.Provider>
   );

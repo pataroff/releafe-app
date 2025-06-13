@@ -29,7 +29,6 @@ import { useGoal } from '../context/GoalContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { debugAsyncStorage } from '../utils/registerForPushNotificationsAsync';
-import { useGamification } from '../context/GamificationContext';
 
 const windowWidth = Dimensions.get('window').width;
 

@@ -125,7 +125,7 @@ export const DiaryFarewell: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 25,
+    marginTop: 40,
     padding: 25,
     width: windowWidth - 2 * 25,
     borderRadius: 30,

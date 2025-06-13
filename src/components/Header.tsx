@@ -38,128 +38,138 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
       : '#C1D6BA';
 
   const isNestedScreen =
-    route?.params?.bonsaiTreeStackScreen || route?.params?.settingsStackScreen;
+    route?.params?.toolkitStackScreen ||
+    route?.params?.bonsaiTreeStackScreen ||
+    route?.params?.settingsStackScreen;
 
   const showBackButton = isNestedScreen && route?.name !== 'Toolkit1';
 
   return (
     <>
       <StatusBar style='light' backgroundColor='transparent' />
-      {/* SafeAreaView */}
+      {/* Background  */}
       <View
         style={{
-          backgroundColor,
-          paddingLeft: insets.left,
-          paddingRight: insets.right,
-          paddingTop: insets.top,
-          borderTopWidth: 0,
-          borderBottomStartRadius: 30,
-          borderBottomEndRadius: 30,
-          // Shadow Test
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.1,
-          shadowRadius: 1,
-          elevation: 1,
+          backgroundColor:
+            route?.name !== 'Settings1' ? '#f9f9f9' : 'transparent',
         }}
       >
-        {/* Main Container */}
+        {/* SafeAreaView */}
         <View
-          style={[
-            styles.container,
-            {
-              backgroundColor,
-            },
-          ]}
+          style={{
+            backgroundColor,
+            paddingLeft: insets.left,
+            paddingRight: insets.right,
+            paddingTop: insets.top,
+            borderTopWidth: 0,
+            borderBottomStartRadius: 30,
+            borderBottomEndRadius: 30,
+            // Shadow Test
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.1,
+            shadowRadius: 1,
+            elevation: 1,
+          }}
         >
-          {/* Header Container */}
-          <View style={styles.headerContainer}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
-              {/* Nested Routes */}
-              {showBackButton && (
-                <Pressable onPress={() => navigation.goBack()}>
-                  <MaterialCommunityIcons
-                    style={{ marginBottom: 5 }}
-                    name='chevron-left-circle-outline'
-                    size={35}
-                    color='white'
-                  />
-                </Pressable>
-              )}
-              {/* Title */}
-              {route?.name !== 'Home' ? (
-                <Text style={styles.headerTitle}> {title} </Text>
-              ) : (
-                <Image
-                  style={{
-                    height: 90,
-                    width: 90,
-                    marginBottom: 10,
-                  }}
-                  resizeMode='contain'
-                  source={require('../../assets/images/logo_releafe_white.png')}
-                />
-              )}
-            </View>
-            {!isNestedScreen && (
-              <Pressable onPress={() => navigation.openDrawer()}>
-                <Avatar.Text
-                  style={{
-                    backgroundColor,
-                    borderWidth: 2,
-                    borderColor: 'white',
-                  }}
-                  color='white'
-                  size={60}
-                  label={user?.firstName[0] + user?.lastName[0]}
-                />
-              </Pressable>
-            )}
-            {/* Bonsai Tree Shop */}
-            {route?.name === 'BonsaiTreeShop' && (
+          {/* Main Container */}
+          <View
+            style={[
+              styles.container,
+              {
+                backgroundColor,
+              },
+            ]}
+          >
+            {/* Header Container */}
+            <View style={styles.headerContainer}>
               <View
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  columnGap: 15,
                 }}
               >
+                {/* Nested Routes */}
+                {showBackButton && (
+                  <Pressable onPress={() => navigation.goBack()}>
+                    <MaterialCommunityIcons
+                      style={{ marginBottom: 5 }}
+                      name='chevron-left-circle-outline'
+                      size={35}
+                      color='white'
+                    />
+                  </Pressable>
+                )}
+                {/* Title */}
+                {route?.name !== 'Home' ? (
+                  <Text style={styles.headerTitle}> {title} </Text>
+                ) : (
+                  <Image
+                    style={{
+                      height: 90,
+                      width: 90,
+                      marginBottom: 10,
+                    }}
+                    resizeMode='contain'
+                    source={require('../../assets/images/logo_releafe_white.png')}
+                  />
+                )}
+              </View>
+              {!isNestedScreen && (
+                <Pressable onPress={() => navigation.openDrawer()}>
+                  <Avatar.Text
+                    style={{
+                      backgroundColor,
+                      borderWidth: 2,
+                      borderColor: 'white',
+                    }}
+                    color='white'
+                    size={60}
+                    label={user?.firstName[0] + user?.lastName[0]}
+                  />
+                </Pressable>
+              )}
+              {/* Bonsai Tree Shop */}
+              {route?.name === 'BonsaiTreeShop' && (
                 <View
                   style={{
-                    backgroundColor: '#C1D6BA',
-                    padding: 15,
-                    borderRadius: 5,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    columnGap: 15,
                   }}
                 >
-                  <Text
-                    style={
-                      {
-                        ...Fonts.sofiaProBold[Platform.OS],
-                        fontSize: 20,
-                        color: 'white',
-                      } as TextStyle
-                    }
+                  <View
+                    style={{
+                      backgroundColor: '#C1D6BA',
+                      padding: 15,
+                      borderRadius: 5,
+                    }}
                   >
-                    {points} punten
-                  </Text>
+                    <Text
+                      style={
+                        {
+                          ...Fonts.sofiaProBold[Platform.OS],
+                          fontSize: 20,
+                          color: 'white',
+                        } as TextStyle
+                      }
+                    >
+                      {points} punten
+                    </Text>
+                  </View>
+                  <Image
+                    style={{
+                      height: 60,
+                      width: 60,
+                    }}
+                    resizeMode='contain'
+                    source={require('../../assets/images/logo_releafe_white.png')}
+                  />
                 </View>
-                <Image
-                  style={{
-                    height: 60,
-                    width: 60,
-                  }}
-                  resizeMode='contain'
-                  source={require('../../assets/images/logo_releafe_white.png')}
-                />
-              </View>
-            )}
+              )}
+            </View>
           </View>
         </View>
       </View>

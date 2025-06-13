@@ -36,20 +36,20 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
         <View style={styles.headersContainer}>
           <Text style={styles.headersTitleText}>{category}</Text>
           <Text style={styles.headersDescriptionText}>{description}</Text>
-
-          {/* Exercises List */}
-          <ExercisesList
-            category={category}
-            showOnlyFavourites={showOnlyFavourites}
-          />
         </View>
+
+        {/* Exercises List */}
+        <ExercisesList
+          category={category}
+          showOnlyFavourites={showOnlyFavourites}
+        />
       </ScrollView>
 
       {/* Bottom Bar Wrapper */}
       <View
         style={{
           position: 'absolute',
-          bottom: 100,
+          bottom: 120,
           width: '100%',
           alignSelf: 'center',
           paddingHorizontal: 15,
@@ -103,19 +103,8 @@ export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
           <View
             style={{ display: 'flex', flexDirection: 'row', columnGap: 10 }}
           >
-            {/* List Icon }
-            <Pressable>
-              <Image
-                resizeMode='contain'
-                style={{ width: 50, height: 50 }}
-                source={require('../../assets/images/exercises_list_icon.png')}
-              />
-            </Pressable>
-            */}
-
             {/* Favourites Icon */}
             {
-              /*category === 'Bekijk alle oefeningen' && (*/
               <Pressable
                 onPress={() => setShowOnlyFavourites(!showOnlyFavourites)}
               >

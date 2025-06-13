@@ -118,7 +118,6 @@ export const ExercisesListItemExpandedModal: React.FC<
             </View>
           </View>
           {/* Main Content Container */}
-
           <ScrollView
             showsVerticalScrollIndicator={false}
             bounces={false}
@@ -137,7 +136,8 @@ export const ExercisesListItemExpandedModal: React.FC<
               javaScriptEnabled
               contentMode='desktop'
               bounces={false}
-              style={{ marginVertical: 20 }}
+              showsVerticalScrollIndicator={false}
+              style={{ marginVertical: 20, height: 300 }}
               originWhitelist={['*']}
               onMessage={(event) => {
                 if (event.nativeEvent.data === 'finished') {
@@ -147,40 +147,40 @@ export const ExercisesListItemExpandedModal: React.FC<
               }}
               source={{
                 html: `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          <script src="https://w.soundcloud.com/player/api.js"></script>
-          <style>
-            html, body {
-              margin: 0;
-              padding: 0;
-              height: 100%;
-            }
-            #baseDiv {
-              width: 100%;
-              height: 100%;
-            }
-          </style>
-        </head>
-        <body>
-          <div id="baseDiv">${link}</div>
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <script src="https://w.soundcloud.com/player/api.js"></script>
+                    <style>
+                      html, body {
+                        margin: 0;
+                        padding: 0;
+                        height: 100%;
+                      }
+                      #baseDiv {
+                        width: 100%;
+                        height: 100%;
+                      }
+                    </style>
+                  </head>
+                  <body>
+                    <div id="baseDiv">${link}</div>
 
-          <script>
-            window.addEventListener('DOMContentLoaded', function () {
-              var iframe = document.querySelector('iframe');
-              if (!iframe) return;
+                    <script>
+                      window.addEventListener('DOMContentLoaded', function () {
+                        var iframe = document.querySelector('iframe');
+                        if (!iframe) return;
 
-              var widget = SC.Widget(iframe);
-              widget.bind(SC.Widget.Events.FINISH, function () {
-                window.ReactNativeWebView.postMessage('finished');
-              });
-            });
-          </script>
-        </body>
-      </html>
-    `,
+                        var widget = SC.Widget(iframe);
+                        widget.bind(SC.Widget.Events.FINISH, function () {
+                          window.ReactNativeWebView.postMessage('finished');
+                        });
+                      });
+                    </script>
+                  </body>
+                </html>
+              `,
               }}
             />
             <View
@@ -240,15 +240,13 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   } as TextStyle,
   mainContainer: {
-    flex: 1,
+    flexGrow: 0,
     borderRadius: 25,
     marginTop: 20,
-    paddingBottom: 125, // @TODO Does this need to be a greater value?
     marginHorizontal: 20,
     backgroundColor: '#ffffff',
   },
   mainContentContainer: {
-    flexGrow: 1,
     backgroundColor: '#ffffff',
     padding: 25,
   },

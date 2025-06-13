@@ -18,6 +18,7 @@ export const ExercisesScreen: React.FC<{ route: any }> = ({ route }) => {
   return (
     <ScrollView
       bounces={false}
+      showsVerticalScrollIndicator={false}
       style={styles.container}
       contentContainerStyle={styles.contentContainerStyles}
     >
@@ -27,15 +28,6 @@ export const ExercisesScreen: React.FC<{ route: any }> = ({ route }) => {
           Hieronder vind je een selectie van oefeningen, zorgvuldig samengesteld
           voor jou, Ontdek welke oefeningen bij jou passen.
         </Text>
-
-        {/* <View style={styles.headersInnerContainer}>
-          <View style={{ width: '80%' }}>
-            <Text style={styles.headersHeadingText}>Categorieën</Text>
-            <Text style={styles.headersDescriptionText}>
-              Kies een categorie waarmee jij aan de slag wilt.
-            </Text>
-          </View>
-        </View> */}
       </View>
 
       {/* Exercises Categories List */}
@@ -51,7 +43,6 @@ const styles = StyleSheet.create({
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#f9f9f9',
   },
   headersContainer: {

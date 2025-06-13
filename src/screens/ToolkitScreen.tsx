@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
 import {
@@ -92,7 +92,7 @@ export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
         contentContainerStyle={styles.contentContainerStyles}
       >
         {/* Circle Image */}
-        <Image
+        {/* <Image
           style={{
             position: 'absolute',
             top: -85,
@@ -100,7 +100,7 @@ export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
             opacity: 0.1,
           }}
           source={require('../../assets/images/circle_background.png')}
-        />
+        /> */}
         {/* Headers */}
         <View style={styles.headersContainer}>
           <Text style={styles.headersTitleText}>Toolkit</Text>

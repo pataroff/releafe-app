@@ -22,11 +22,7 @@ export const ToolkitStack: React.FC = () => {
         },
       }}
     >
-      <Stack.Screen
-        name='Toolkit1'
-        component={ToolkitScreen}
-        initialParams={{ toolkitStackScreen: true }}
-      />
+      <Stack.Screen name='Toolkit1' component={ToolkitScreen} />
       <Stack.Screen
         name='PersonalGoals'
         component={PersonalGoalsScreen}

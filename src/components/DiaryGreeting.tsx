@@ -108,6 +108,8 @@ export const DiaryGreeting: React.FC<{ route: any }> = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 40,
+    padding: 25,
     width: windowWidth - 2 * 30,
     backgroundColor: 'white',
     borderRadius: 30,
@@ -115,8 +117,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     rowGap: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 25,
     // Shadow Test
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },

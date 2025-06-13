@@ -10,16 +10,6 @@ export const categories = [
     description:
       'Met mindfulness leer je om meer bewust en aanwezig te zijn in het hier en nu. Dit helpt je beter om te gaan met stress en spanningsklachten.',
   },
- /* {
-    title: 'Meditatie',
-    description:
-      'Meditatie draait om (mentale) stilte. Je laat je geest volledig tot rust komen en probeert uiteindelijk tot een andere staat van bewustzijn te komen door je volledig op het hier en nu te focussen.',
-  },*/
- /* {
-    title: 'Ontspanning',
-    description:
-      'Door te ontspannen werkt jouw lichaam weer beter na stress. Als je ontspant, adem je rustiger, klopt het hart langzamer en verlaagt de bloeddruk. Dit is goed voor het lichaam.',
-  },*/
   {
     title: 'Lichaamsbeweging',
     description:
@@ -90,20 +80,20 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
         link: '<iframe width="100%" height="100%" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/390808308&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/bergmeditatie" title="Bergmeditatie (19 min)" target="_blank" style="color: #cccccc; text-decoration: none;">Bergmeditatie (19 min)</a></div>',
       },
       {
-      id: '7',
+        id: '7',
         icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
         title: 'Lichaamsbewustzijn - Bekken, borst en onderrug',
         description: 'Lichaamsbewustzijn - Bekken, borst en onderrug',
         duration: '6 minuten',
-        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2080025961&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/bekken-borst-en-onderrug-1" title="Lichaamsbewustzijn - Bekken, borst en onderrug" target="_blank" style="color: #cccccc; text-decoration: none;">Lichaamsbewustzijn - Bekken, borst en onderrug</a></div>'
+        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2080025961&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/bekken-borst-en-onderrug-1" title="Lichaamsbewustzijn - Bekken, borst en onderrug" target="_blank" style="color: #cccccc; text-decoration: none;">Lichaamsbewustzijn - Bekken, borst en onderrug</a></div>',
       },
       {
         id: '8',
-          icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
-          title: 'Lichaamsbewustzijn - borstgebied en bovenrug',
-          description: 'Lichaamsbewustzijn - borstgebied en bovenrug',
-          duration: '7 minuten',
-          link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2080025958&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/goed-33-2" title="Lichaamsbewustzijn - borstgebied en bovenrug" target="_blank" style="color: #cccccc; text-decoration: none;">Lichaamsbewustzijn - borstgebied en bovenrug</a></div>'
+        icon: require('../../assets/images/exercises_categories_icons/mindfulness_icon.png'),
+        title: 'Lichaamsbewustzijn - borstgebied en bovenrug',
+        description: 'Lichaamsbewustzijn - borstgebied en bovenrug',
+        duration: '7 minuten',
+        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2080025958&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/goed-33-2" title="Lichaamsbewustzijn - borstgebied en bovenrug" target="_blank" style="color: #cccccc; text-decoration: none;">Lichaamsbewustzijn - borstgebied en bovenrug</a></div>',
       },
       {
         id: '9',
@@ -111,7 +101,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
         title: 'Lichaamsbewustzijn - voeten en benen',
         description: 'Lichaamsbewustzijn - voeten en benen',
         duration: '10 minuten',
-        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2080025967&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/mi-week-3-dag-1-3" title="Lichaamsbewustzijn - voeten en benen" target="_blank" style="color: #cccccc; text-decoration: none;">Lichaamsbewustzijn - voeten en benen</a></div>'
+        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2080025967&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/mi-week-3-dag-1-3" title="Lichaamsbewustzijn - voeten en benen" target="_blank" style="color: #cccccc; text-decoration: none;">Lichaamsbewustzijn - voeten en benen</a></div>',
       },
       {
         id: '10',
@@ -119,7 +109,7 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
         title: 'Lichaamsbewustzijn - schouders en armen',
         description: 'Lichaamsbewustzijn - schouders en armen',
         duration: '6 minuten',
-        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2080025964&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/mindful-insights-34-schouders-en-armen-5" title="Lichaamsbewustzijn - schouders en armen" target="_blank" style="color: #cccccc; text-decoration: none;">Lichaamsbewustzijn - schouders en armen</a></div>'
+        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2080025964&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/mindful-insights-34-schouders-en-armen-5" title="Lichaamsbewustzijn - schouders en armen" target="_blank" style="color: #cccccc; text-decoration: none;">Lichaamsbewustzijn - schouders en armen</a></div>',
       },
       {
         id: '11',
@@ -161,104 +151,10 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
         duration: '6 minuten',
         link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2080025061&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/verwijden-goed-1-5" title="Verwijden van de aandacht" target="_blank" style="color: #cccccc; text-decoration: none;">Verwijden van de aandacht</a></div>',
       },
-
-
-
       // Jan's Input End
-     /* {
-        id: '7',
-        icon: require('../../assets/images/exercises_icons/mindfulness_vijf_zintuigen_icon.png'),
-        title: 'Vijf zintuigen',
-        description:
-          'Neem de tijd om bewust te worden van wat je via elke zintuig ervaart.',
-        duration: '5 minuten',
-        link: '',
-      },
-      {
-        id: '8',
-        icon: require('../../assets/images/exercises_icons/mindfulness_mindful_journaling_icon.png'),
-        title: 'Mindful Journaling',
-        description: 'Schrijf je gedachten en gevoelens op zonder oordeel.',
-        duration: '10 - 20 minuten',
-        link: '',
-      },*/
     ],
   ],
-  [
-    // Meditatie
-    ExerciseCategory.Meditatie,
-    [
-     /* {
-        id: '9',
-        icon: require('../../assets/images/exercises_icons/meditatie_meditatie_icon.png'),
-        title: 'Mantra meditatie',
-        description:
-          'Ga ontspannen zitten, sluit je ogen en herhaal in stilte een woord, zin of geluid.',
-        duration: '10 - 20 minuten',
-        link: '',
-      },
-      {
-        id: '10',
-        icon: require('../../assets/images/exercises_icons/meditatie_meditatie_icon.png'),
-        title: 'Yoga Nidra',
-        description:
-          'Een vorm van yoga die je geestelijk en lichamelijk voorbereidt op meditatie en het verkennen van diepere niveaus van bewustzijn.',
-        duration: '20 - 30 minuten',
-        link: '',
-      },
-      {
-        id: '11',
-        icon: require('../../assets/images/exercises_icons/meditatie_meditatie_icon.png'),
-        title: 'Tellen meditatie',
-        description:
-          'Ga comfortabel zitten en sluit je ogen. Tel bij het inademen in stilte "één" en bij het uitademen "twee".',
-        duration: '5 - 15 minuten',
-        link: '',
-      },
-      {
-        id: '12',
-        icon: require('../../assets/images/exercises_icons/meditatie_meditatie_icon.png'),
-        title: 'Visualisatie meditatie',
-        description:
-          'Sluit je ogen en stel je een vredige plek voor. Gebruik je verbeelding om alle details te visualiseren.',
-        duration: '10 - 15 minuten',
-        link: '',
-      },
-      {
-        id: '13',
-        icon: require('../../assets/images/exercises_icons/meditatie_meditatie_icon.png'),
-        title: 'Chakra meditatie',
-        description:
-          'Ga in een comfortabele positie zitten met je ogen dicht. Visualiseer energiecentra in je lichaam.',
-        duration: '15 - 30 minuten',
-        link: '',
-      },*/
-    ],
-  ],
-  [
-    // Ontspanning
-    ExerciseCategory.Ontspanning,
-    [
-     /* {
-        id: '14',
-        icon: require('../../assets/images/exercises_icons/ontspanning_zelfmassage_icon.png'),
-        title: 'Zelfmassage',
-        description:
-          'Ga comfortabel zitten en masseer met je handen zachtjes de plekken waar je spanning voelt.',
-        duration: '5 - 10 minuten',
-        link: '',
-      },
-      {
-        id: '15',
-        icon: require('../../assets/images/exercises_icons/ontspanning_regel_voor_angst_icon.png'),
-        title: '"3-3-3"-regel voor angst"',
-        description:
-          'Wanneer jij je angstig voelt, gebruik de 3-3-3-regel: kijk om je heen, luister aandachtig en beweeg.',
-        duration: '2 - 3 minuten',
-        link: '',
-      },*/
-    ],
-  ],
+
   [
     // Lichaamsbeweging
     ExerciseCategory.Lichaamsbeweging,
@@ -279,24 +175,6 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
         duration: '39 minuten',
         link: '<iframe width="100%" height="100%" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/402388137&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/bewegen-in-aandacht-2" title="Bewegen in aandacht 2 (39 min)" target="_blank" style="color: #cccccc; text-decoration: none;">Bewegen in aandacht 2 (39 min)</a></div>',
       },
-    /*  {
-        id: '18',
-        icon: require('../../assets/images/exercises_icons/lichaamsbeweging_wandelen_icon.png'),
-        title: 'Wandelen',
-        description:
-          'Wandel in een comfortabel tempo buiten of op een loopband. Concentreer de ademhaling en de sensaties in het lichaam.',
-        duration: '20 - 30 minuten',
-        link: '',
-      },
-      {
-        id: '19',
-        icon: require('../../assets/images/exercises_icons/lichaamsbeweging_yoga_icon.png'),
-        title: 'Yoga',
-        description:
-          'Neem de tijd om via verschillende poses een persoonlijke reis in yoga te maken.',
-        duration: '30 - 45 minuten',
-        link: '',
-      },*/
     ],
   ],
   [
@@ -311,72 +189,50 @@ export const categoryExercises = new Map<ExerciseCategory, Exercise[]>([
         duration: '14 minuten',
         link: '<iframe width="100%" height="100%" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/390819327&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/aandacht-voor-de-ademhaling" title="Aandacht voor de adem (14 min)" target="_blank" style="color: #cccccc; text-decoration: none;">Aandacht voor de adem (14 min)</a></div>',
       },
-    /*  {
-        id: '21',
-        icon: require('../../assets/images/exercises_icons/ademhaling_ademhaling_icon.png'),
-        title: '4-7-8 ademhaling',
-        description:
-          'Deze techniek combineert ademhalingscontrole met ritmisch tellen om ontspanning en slaapbereidheid te bevorderen.',
-        duration: '2 - 3 minuten',
-        link: '',
-      },*/
-     /* {
-        id: '22',
-        icon: require('../../assets/images/exercises_icons/ademhaling_ademhaling_icon.png'),
-        title: 'Box-ademhaling',
-        description:
-          'Bij box-ademhaling worden de ademhalingen in gelijke delen uitgevoerd: inademen, vasthouden en uitademen.',
-        duration: '2 - 3 minuten',
-        link: '',
-      },*/
-     /* {
-        id: '23',
-        icon: require('../../assets/images/exercises_icons/ademhaling_ademhaling_icon.png'),
-        title: 'Sama Vritti',
-        description:
-          'Bij gelijkmatige ademhaling ligt de nadruk op een evenwichtige in- en uitademing.',
-        duration: '2 - 3 minuten',
-        link: '',
-      },*/
       {
         id: '24',
         icon: require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
         title: 'De ademstroom',
-        description: 'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
+        description:
+          'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
         duration: '6 minuten',
-        link: '<iframe width="100%" height="280" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2068201364&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/de-ademstroom-1" title="De ademstroom" target="_blank" style="color: #cccccc; text-decoration: none;">De ademstroom</a></div>'
+        link: '<iframe width="100%" height="280" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2068201364&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/de-ademstroom-1" title="De ademstroom" target="_blank" style="color: #cccccc; text-decoration: none;">De ademstroom</a></div>',
       },
       {
         id: '25',
         icon: require('../../assets/images/exercises_icons/ademhaling_ademhaling_icon.png'),
         title: 'De ademhaling en het borstgebied',
-        description: 'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
+        description:
+          'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
         duration: '6 minuten',
-        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2068201380&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/de-ademhaling-en-het-borstgebied-2" title="De ademhaling en het borstgebied" target="_blank" style="color: #cccccc; text-decoration: none;">De ademhaling en het borstgebied</a></div>'
+        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2068201380&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/de-ademhaling-en-het-borstgebied-2" title="De ademhaling en het borstgebied" target="_blank" style="color: #cccccc; text-decoration: none;">De ademhaling en het borstgebied</a></div>',
       },
       {
         id: '26',
         icon: require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
         title: 'De ademhaling en het buikgebied',
-        description: 'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
+        description:
+          'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
         duration: '4 minuten',
-        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2068201376&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/de-ademhaling-en-het-buikgebied-3" title="De ademhaling en het buikgebied" target="_blank" style="color: #cccccc; text-decoration: none;">De ademhaling en het buikgebied</a></div>'
+        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2068201376&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/de-ademhaling-en-het-buikgebied-3" title="De ademhaling en het buikgebied" target="_blank" style="color: #cccccc; text-decoration: none;">De ademhaling en het buikgebied</a></div>',
       },
       {
         id: '27',
         icon: require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
         title: 'De ademhaling en stilte',
-        description: 'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
+        description:
+          'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
         duration: '5 minuten',
-        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2068201372&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/de-ademhaling-en-stilte-4" title="De ademhaling en stilte" target="_blank" style="color: #cccccc; text-decoration: none;">De ademhaling en stilte</a></div>'
+        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2068201372&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/de-ademhaling-en-stilte-4" title="De ademhaling en stilte" target="_blank" style="color: #cccccc; text-decoration: none;">De ademhaling en stilte</a></div>',
       },
       {
         id: '28',
         icon: require('../../assets/images/exercises_categories_icons/breathing_icon.png'),
         title: 'De ademhaling als geheel',
-        description: 'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
+        description:
+          'Maak laagdrempelig contact met mindfulness door te verbinden met je ademhaling',
         duration: '5 minuten',
-        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2068201368&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/de-ademhaling-als-geheel-5" title="De ademhaling als geheel" target="_blank" style="color: #cccccc; text-decoration: none;">De ademhaling als geheel</a></div>'
+        link: '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2068201368&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-878201022" title="MindfulnessFabriek | CVM | StressWise" target="_blank" style="color: #cccccc; text-decoration: none;">MindfulnessFabriek | CVM | StressWise</a> · <a href="https://soundcloud.com/user-878201022/de-ademhaling-als-geheel-5" title="De ademhaling als geheel" target="_blank" style="color: #cccccc; text-decoration: none;">De ademhaling als geheel</a></div>',
       },
     ],
   ],

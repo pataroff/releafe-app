@@ -13,15 +13,20 @@ import {
 import { Fonts } from '../styles';
 import { SelectedAchievement } from '../types';
 
+import { useGamification } from '../context/GamificationContext';
+
 import Feather from '@expo/vector-icons/Feather';
 
 const lockedIcon = require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Badge nog te verdienen.png');
+
+type AchievementModalMode = 'view' | 'unlocked';
 
 interface AchievementModalProps {
   achievementModalVisible: boolean;
   setAchievementModalVisible: React.Dispatch<SetStateAction<boolean>>;
   selectedAchievement: SelectedAchievement;
   isAchievementUnlocked: boolean;
+  mode?: AchievementModalMode;
 }
 
 export const AchievementModal: React.FC<AchievementModalProps> = ({
@@ -29,24 +34,32 @@ export const AchievementModal: React.FC<AchievementModalProps> = ({
   setAchievementModalVisible,
   selectedAchievement,
   isAchievementUnlocked,
+  mode,
 }) => {
+  const { addPoints } = useGamification();
   const { icon, points, description, parentTitle } = selectedAchievement;
+
+  const handleCollect = () => {
+    addPoints(points);
+    setAchievementModalVisible(false);
+  };
 
   return (
     <Modal
       animationType='fade'
       transparent={true}
       visible={achievementModalVisible}
-      onRequestClose={() =>
-        setAchievementModalVisible(!achievementModalVisible)
-      }
     >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
           {/* Close Button */}
           <Pressable
             style={{ position: 'absolute', top: 20, right: 20 }}
-            onPress={() => setAchievementModalVisible(!achievementModalVisible)}
+            onPress={() =>
+              mode === 'unlocked'
+                ? handleCollect()
+                : setAchievementModalVisible(!achievementModalVisible)
+            }
           >
             <Feather name='x-circle' size={24} color='gray' />
           </Pressable>
@@ -83,6 +96,17 @@ export const AchievementModal: React.FC<AchievementModalProps> = ({
             </Text>
 
             <Text style={styles.description}>{description}</Text>
+
+            {mode === 'unlocked' && isAchievementUnlocked && (
+              <View style={{ marginTop: 20 }}>
+                <Pressable
+                  style={styles.collectButton}
+                  onPress={() => handleCollect()}
+                >
+                  <Text style={styles.collectText}>Punten verzamelen</Text>
+                </Pressable>
+              </View>
+            )}
           </View>
         </View>
       </View>
@@ -133,26 +157,16 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     gap: 15,
   },
-  confirmButton: {
+  collectButton: {
+    marginTop: 10,
     backgroundColor: '#C1DEBE',
     borderRadius: 12,
     paddingVertical: 12,
-    alignItems: 'center',
+    paddingHorizontal: 30,
   },
-  confirmText: {
+  collectText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
     fontSize: 16,
     color: '#333',
-  } as TextStyle,
-  cancelButton: {
-    borderRadius: 12,
-    paddingVertical: 12,
-    alignItems: 'center',
-    backgroundColor: '#eee',
-  },
-  cancelText: {
-    ...Fonts.sofiaProSemiBold[Platform.OS],
-    fontSize: 16,
-    color: '#666',
   } as TextStyle,
 });

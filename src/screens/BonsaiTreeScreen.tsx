@@ -472,6 +472,7 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
 
                 {/* Achievements Button */}
                 <Pressable
+                  onPress={() => navigation.navigate('Achievements')}
                   style={{
                     height: 100,
                     width: 100,

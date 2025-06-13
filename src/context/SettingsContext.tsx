@@ -25,7 +25,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
   const updateFavouritesInDatabase = async (favouriteExercises: string[]) => {
     try {
       const favouriteExercisesJSON = JSON.stringify(favouriteExercises);
-      await pb.collection('users').update(user?.id, {
+      await pb.collection('users').update(user?.id!, {
         favouriteExercises: favouriteExercisesJSON,
       });
     } catch (error) {
