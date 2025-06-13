@@ -15,9 +15,9 @@ import { SelectedAchievement } from '../types';
 
 import { useGamification } from '../context/GamificationContext';
 
-import Feather from '@expo/vector-icons/Feather';
+import { achievementsLockedIcon } from '../utils/achievements';
 
-const lockedIcon = require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Badge nog te verdienen.png');
+import Feather from '@expo/vector-icons/Feather';
 
 type AchievementModalMode = 'view' | 'unlocked';
 
@@ -89,7 +89,7 @@ export const AchievementModal: React.FC<AchievementModalProps> = ({
                   height: 170,
                   marginVertical: 20,
                 }}
-                source={isAchievementUnlocked ? icon : lockedIcon}
+                source={isAchievementUnlocked ? icon : achievementsLockedIcon}
               />
 
               <Text style={styles.title}>
