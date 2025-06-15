@@ -71,7 +71,6 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
           const {
             id,
             uuid,
-            worry,
             category,
             priority,
             title,
@@ -90,7 +89,6 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
           return {
             id,
             uuid,
-            worry,
             category,
             priority,
             title,
@@ -259,8 +257,6 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
         formData.append('audioMetering', JSON.stringify(entry.audioMetering));
       }
     }
-
-    console.log('APPENDFORMDATA FINISHED EXEC!');
   };
 
   const deleteNoteEntry = async (uuid: string) => {

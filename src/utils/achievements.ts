@@ -1,16 +1,32 @@
-import { SelectedAchievement } from '../types';
+import {
+  IDiaryEntry,
+  IGoalEntry,
+  INoteEntry,
+  IWorryEntry,
+  SelectedAchievement,
+} from '../types';
 
 // Types
-type AchievementTrigger = 'onAppUsage' | 'onItemUnlocked';
+type AchievementTrigger =
+  | 'onAppUsage'
+  | 'onItemUnlocked'
+  | 'onDiaryCompleted'
+  | 'onWellBeingDataAvailable'
+  | 'onGoalCreated'
+  | 'onGoalCompleted'
+  | 'onWorryCreated'
+  | 'onReframingCompleted'
+  | 'onExerciseCompleted';
 
 type AchievementContext = {
   unlockedAchievements: string[];
   unlockAchievement: (id: string) => Promise<void>;
   appUsageDates?: string[];
   unlockedItems?: string[];
-  // goalsCompleted?: number;
-  // itemsPurchased?: number;
-  // journalEntries?: string[];
+  diaryEntries?: IDiaryEntry[];
+  goalEntries?: IGoalEntry[];
+  worryEntries?: IWorryEntry[];
+  noteEntries?: INoteEntry[];
 };
 
 export const achievementsLockedIcon = require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Badge nog te verdienen.png');
@@ -19,28 +35,25 @@ export const achievementsDataContainer = [
   {
     title: 'Betrokken Ontdekker',
     description:
-      'Deze badges verdien je wanneer je Releafe gedurende een bepaald aantal dagen consequent gebruikt.',
+      'Deze badges verdien je wanneer je Releafe gedurende een bepaald aantal dagen gebruikt.',
     achievements: [
       {
         id: 'betrokken_ontdekker_1',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Betrokken Ontdekker (1 ster).png'),
         points: 10,
-        description:
-          'Verdiend door binnen 7 dagen minstens één keer interactie te hebben met verschillende modules in de app.',
+        description: 'Je hebt de app 3 dagen achter elkaar gebruikt.',
       },
       {
         id: 'betrokken_ontdekker_2',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Betrokken Ontdekker (2 sterren).png'),
         points: 20,
-        description:
-          'Verdiend door de app 7 dagen achter elkaar consequent te gebruiken.',
+        description: 'Je hebt de app 7 dagen achter elkaar gebruikt.',
       },
       {
         id: 'betrokken_ontdekker_3',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Betrokken Ontdekker (3 sterren).png'),
         points: 50,
-        description:
-          'Verdiend door de app 28 dagen op rij consequent te gebruiken.',
+        description: 'Je hebt de app 28 dagen achter elkaar gebruikt.',
       },
     ],
   },
@@ -54,20 +67,19 @@ export const achievementsDataContainer = [
         id: 'innerlijke_tuinier_1',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Innerlijke Tuinier (1 ster).png'),
         points: 10,
-        description:
-          'Verdiend bij het voor de eerste keer kopen van een upgrade voor de boom.',
+        description: 'Je hebt je bonsaiboom voor het eerst laten groeien.',
       },
       {
         id: 'innerlijke_tuinier_2',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Innerlijke Tuinier (2 sterren).png'),
         points: 20,
-        description: 'Verdiend door 3 keer upgrades voor de boom te kopen.',
+        description: 'Je hebt je bonsaiboom drie keer laten groeien.',
       },
       {
         id: 'innerlijke_tuinier_3',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Innerlijke Tuinier (3 sterren).png'),
         points: 50,
-        description: 'Verdiend door 5 keer upgrades voor de boom te kopen.',
+        description: 'Je hebt je bonsaiboom vijf keer laten groeien.',
       },
     ],
   },
@@ -75,27 +87,25 @@ export const achievementsDataContainer = [
   {
     title: 'Aandachtige Ontdekker',
     description:
-      'Deze badges verdien je door je dagboek gedurende een bepaalde periode consequent bij te houden.',
+      'Deze badges verdien je door je dagboek gedurende een bepaalde periode bij te houden.',
     achievements: [
       {
         id: 'aandachtige_ontdekker_1',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Aandachtige Ontdekker (1 ster).png'),
         points: 10,
-        description: 'Verdiend door de eerste keer het dagboek in te vullen.',
+        description: 'Je hebt voor het eerst je dagboek ingevuld.',
       },
       {
         id: 'aandachtige_ontdekker_2',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Aandachtige Ontdekker (2 sterren).png'),
         points: 20,
-        description:
-          'Verdiend door dagboek 7 dagen op rij consequent in te vullen.',
+        description: 'Je hebt je dagboek 7 dagen achter elkaar ingevuld.',
       },
       {
         id: 'aandachtige_ontdekker_3',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Aandachtige Ontdekker (3 sterren).png'),
         points: 50,
-        description:
-          'Verdiend door dagboek 28 dagen op rij consequent in te vullen.',
+        description: 'Je hebt je dagboek 28 dagen achter elkaar ingevuld.',
       },
     ],
   },
@@ -109,8 +119,7 @@ export const achievementsDataContainer = [
         id: 'gedreven_onderzoeker_1',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Gedreven Onderzoeker.png'),
         points: 20,
-        description:
-          'Verdiend door het welzijnsoverzicht te bekijken zodra de eerste set gegevens beschikbaar is.',
+        description: 'Je hebt voor het eerst je welzijnsoverzicht bekeken.',
       },
     ],
   },
@@ -124,21 +133,19 @@ export const achievementsDataContainer = [
         id: 'doelgerichte_groier_1',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Doelgerichte Groeier (1 ster).png'),
         points: 10,
-        description: 'Verdiend door een eerste persoonlijk doel aan te maken.',
+        description: 'Je hebt je eerste persoonlijke doel aangemaakt.',
       },
       {
         id: 'doelgerichte_groier_2',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Doelgerichte Groeier (2 sterren).png'),
         points: 20,
-        description:
-          'Verdiend door voor het eerst in het dagboek aan te geven dat je aan een doel hebt gewerkt.',
+        description: 'Je hebt gewerkt aan een persoonlijk doel.',
       },
       {
         id: 'doelgerichte_groier_3',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Doelgerichte Groeier (3 sterren).png'),
         points: 50,
-        description:
-          'Verdiend door een volledige eerste week van een doel te behalen (dit kan elk doel zijn; de tijdsperiode maakt niet uit, zolang de gebruiker de vereisten voor een week succesvol volbrengt).',
+        description: 'Je hebt een persoonlijk doel van een hele week behaald.',
       },
     ],
   },
@@ -153,7 +160,7 @@ export const achievementsDataContainer = [
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Zucht Van Opluchting.png'),
         points: 20,
         description:
-          'Verdiend door voor het eerst een zorg of gedachte op te slaan in het Zorgenbakje.',
+          'Je hebt voor het eerst iets opgeslagen in je Zorgenbakje.',
       },
     ],
   },
@@ -168,7 +175,7 @@ export const achievementsDataContainer = [
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_De Optimist.png'),
         points: 20,
         description:
-          'Verdiend door voor het eerst een gedachte of zorg te herformuleren.',
+          'Je hebt voor het eerst een gedachte of zorg anders bekeken.',
       },
     ],
   },
@@ -182,8 +189,7 @@ export const achievementsDataContainer = [
         id: 'innerlijke_rust_1',
         icon: require('../../assets/images/badges_icons/transparent/Badges-gamification-V3-los-transparant_Innerlijke Rust.png'),
         points: 20,
-        description:
-          'Verdiend door voor het eerste een ontspanningsoefening afgekeken of afgeluisterd te hebben.',
+        description: 'Je hebt voor het eerst een ontspanningsoefening gedaan.',
       },
     ],
   },
@@ -240,7 +246,7 @@ export const evaluateBetrokkenOntdekker = async (
   const consecutiveDays = getConsecutiveDays(appUsageDates!);
 
   if (
-    consecutiveDays >= 2 &&
+    consecutiveDays >= 3 &&
     !unlockedAchievements.includes('betrokken_ontdekker_1')
   ) {
     unlockAchievement('betrokken_ontdekker_1');
@@ -290,6 +296,144 @@ export const evaluateInnerlijkeTuinier = async (
   }
 };
 
+export const evaluateAandachtigeOntdekker = async (
+  context: AchievementContext
+) => {
+  const { diaryEntries, unlockedAchievements, unlockAchievement } = context;
+
+  if (!diaryEntries) return;
+
+  const consecutiveDays = getConsecutiveDays(
+    diaryEntries.map((entry) => entry.date.toISOString().split('T')[0])
+  );
+
+  if (
+    diaryEntries.length > 0 &&
+    !unlockedAchievements.includes('aandachtige_ontdekker_1')
+  ) {
+    unlockAchievement('aandachtige_ontdekker_1');
+  }
+
+  if (
+    consecutiveDays >= 7 &&
+    !unlockedAchievements.includes('aandachtige_ontdekker_2')
+  ) {
+    unlockAchievement('aandachtige_ontdekker_2');
+  }
+
+  if (
+    consecutiveDays >= 28 &&
+    !unlockedAchievements.includes('aandachtige_ontdekker_3')
+  ) {
+    unlockAchievement('aandachtige_ontdekker_3');
+  }
+};
+
+export const evaluateGedrevenOnderzoeker = async (
+  context: AchievementContext
+) => {
+  const { diaryEntries, unlockedAchievements, unlockAchievement } = context;
+
+  if (!diaryEntries) return;
+
+  if (
+    diaryEntries.length > 0 &&
+    !unlockedAchievements.includes('gedreven_onderzoeker_1')
+  ) {
+    unlockAchievement('gedreven_onderzoeker_1');
+  }
+};
+
+export const evaluateDoelgerichteGroierOnCreate = async (
+  context: AchievementContext
+) => {
+  const { goalEntries, unlockedAchievements, unlockAchievement } = context;
+
+  if (!goalEntries) return;
+
+  if (
+    goalEntries.length > 0 &&
+    !unlockedAchievements.includes('doelgerichte_groier_1')
+  ) {
+    unlockAchievement('doelgerichte_groier_1');
+  }
+};
+
+export const evaluateDoelgerichteGroierOnComplete = async (
+  context: AchievementContext
+) => {
+  const {
+    /* checkedGoalEntries, */ // @TODO: To speed up the iteration process!
+    goalEntries,
+    unlockedAchievements,
+    unlockAchievement,
+  } = context;
+
+  if (!goalEntries) return;
+
+  const hasCompletedGoal = goalEntries.some(
+    (entry) => entry.completedDates.length > 0
+  );
+
+  let hasCompletedFullWeek = false;
+
+  for (const goal of goalEntries) {
+    const consecutiveDays = getConsecutiveDays(goal.completedDates);
+    if (consecutiveDays >= 7) {
+      hasCompletedFullWeek = true;
+    }
+  }
+
+  if (
+    hasCompletedGoal &&
+    !unlockedAchievements.includes('doelgerichte_groier_2')
+  ) {
+    unlockAchievement('doelgerichte_groier_2');
+  }
+
+  if (
+    hasCompletedFullWeek &&
+    !unlockedAchievements.includes('doelgerichte_groier_3')
+  ) {
+    unlockAchievement('doelgerichte_groier_3');
+  }
+};
+
+const evaluateZuchtVanOpluchting = async (context: AchievementContext) => {
+  const { worryEntries, unlockedAchievements, unlockAchievement } = context;
+
+  if (!worryEntries) return;
+
+  if (
+    worryEntries.length > 0 &&
+    !unlockedAchievements.includes('zucht_van_opluchting_1')
+  ) {
+    unlockAchievement('zucht_van_opluchting_1');
+  }
+};
+
+const evaluateDeOptimist = async (context: AchievementContext) => {
+  const { noteEntries, unlockedAchievements, unlockAchievement } = context;
+
+  if (!noteEntries || noteEntries.length <= 0) return;
+
+  const hasReframedEntry = noteEntries.some(
+    (entry) => entry.feelingDescription.trim() !== ''
+  );
+
+  if (hasReframedEntry && !unlockedAchievements.includes('de_optimist_1')) {
+    unlockAchievement('de_optimist_1');
+  }
+};
+
+const evaluateInnerlijkeRust = async (context: AchievementContext) => {
+  const { unlockedAchievements, unlockAchievement } = context;
+
+  if (!unlockedAchievements.includes('innerlijke_rust_1')) {
+    unlockAchievement('innerlijke_rust_1');
+  }
+};
+
 export const evaluateAllAchievements = async (
   trigger: AchievementTrigger,
   context: AchievementContext
@@ -300,6 +444,27 @@ export const evaluateAllAchievements = async (
       break;
     case 'onItemUnlocked':
       await evaluateInnerlijkeTuinier(context);
+      break;
+    case 'onDiaryCompleted':
+      await evaluateAandachtigeOntdekker(context);
+      break;
+    case 'onWellBeingDataAvailable':
+      await evaluateGedrevenOnderzoeker(context);
+      break;
+    case 'onGoalCreated':
+      await evaluateDoelgerichteGroierOnCreate(context);
+      break;
+    case 'onGoalCompleted':
+      await evaluateDoelgerichteGroierOnComplete(context);
+      break;
+    case 'onWorryCreated':
+      await evaluateZuchtVanOpluchting(context);
+      break;
+    case 'onReframingCompleted':
+      await evaluateDeOptimist(context);
+      break;
+    case 'onExerciseCompleted':
+      await evaluateInnerlijkeRust(context);
       break;
   }
 };

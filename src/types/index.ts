@@ -185,7 +185,7 @@ export interface IGoalContext {
   setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setCompletedDates: React.Dispatch<React.SetStateAction<string[]>>;
-  createGoalEntry: () => void;
+  createGoalEntry: () => IGoalEntry;
   updateGoalEntry: (uuid: string, forDate: Date) => IGoalEntry | undefined;
   deleteGoalEntry: (uuid: string) => void;
   refreshGoalTimeframes: () => void;

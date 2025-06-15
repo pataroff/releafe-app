@@ -239,6 +239,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
     // Mark the selected date with custom styles
     const selectedDateFormatted = getFormattedDate(selectedDate);
+    console.log(selectedDateFormatted);
     markedDates[selectedDateFormatted] = {
       ...(markedDates[selectedDateFormatted] || {}),
       selected: true,
@@ -308,14 +309,14 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
         }}
         date={getFormattedDate(selectedDate)}
       >
-        {/* https://github.com/wix/react-native-calendars/issues/1937 */}
+        {/* https://github.com/wix/react-native-calendars/issues/1937#issuecomment-2186829555 */}
         <ExpandableCalendar
           calendarWidth={windowWidth - 2 * 20}
           style={{ borderRadius: 30, overflow: 'hidden' }}
           theme={{
             todayTextColor: 'black',
             selectedDayBackgroundColor: 'transparent', // !IMPORTANT
-            selectedDayTextColor: 'white', // !IMPORTANT
+            selectedDayTextColor: 'black', // !IMPORTANT
             textMonthFontFamily: 'SofiaPro-Medium',
             textDayFontFamily: 'SofiaPro-Regular',
             arrowColor: 'black',

@@ -19,6 +19,11 @@ import { Fonts } from '../styles';
 import { ReframingModal } from '../components/ReframingModal';
 import { EarnedPointsModal } from '../components/EarnedPointsModal';
 
+import { useNote } from '../context/NoteContext';
+import { useGamification } from '../context/GamificationContext';
+
+import { evaluateAllAchievements } from '../utils/achievements';
+
 const windowWidth = Dimensions.get('window').width;
 
 const reframingOptionsData = [
@@ -35,6 +40,8 @@ const reframingOptionsData = [
 // @TODO Correct the `route` type annotation!
 export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
+  const { noteEntries } = useNote();
+  const { unlockedAchievements, unlockAchievement } = useGamification();
 
   const [modalReframingVisible, setModalReframingVisible] =
     useState<boolean>(false);
@@ -53,6 +60,13 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
         visible={earnedPointsModalVisible}
         setVisible={setEarnedPointsModalVisible}
         points={20}
+        onClose={() => {
+          evaluateAllAchievements('onReframingCompleted', {
+            noteEntries,
+            unlockedAchievements,
+            unlockAchievement,
+          });
+        }}
       />
       <ReframingModal
         route={route}

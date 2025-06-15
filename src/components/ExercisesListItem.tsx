@@ -17,6 +17,8 @@ import { useSettings } from '../context/SettingsContext';
 
 import { ExercisesListItemExpandedModal } from './ExercisesListItemExpandedModal';
 import { EarnedPointsModal } from './EarnedPointsModal';
+import { evaluateAllAchievements } from '../utils/achievements';
+import { useGamification } from '../context/GamificationContext';
 
 interface ExerciseListItemProps {
   exercise: Exercise;
@@ -31,6 +33,8 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
     setFavouriteExercises,
     updateFavouritesInDatabase,
   } = useSettings();
+
+  const { unlockedAchievements, unlockAchievement } = useGamification();
   // Check if the exercise is in the favorite list
   const isFavourite = favouriteExercises.includes(id);
 
@@ -60,6 +64,12 @@ export const ExercisesListItem: React.FC<ExerciseListItemProps> = ({
         visible={modalEarnedPointsModalVisible}
         setVisible={setModalEarnedPointsModalVisibe}
         points={15}
+        onClose={() =>
+          evaluateAllAchievements('onExerciseCompleted', {
+            unlockedAchievements,
+            unlockAchievement,
+          })
+        }
       />
       <ExercisesListItemExpandedModal
         modalExercisesListItemExpandedVisible={

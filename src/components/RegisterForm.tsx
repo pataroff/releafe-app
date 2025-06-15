@@ -166,6 +166,7 @@ export const RegisterForm = () => {
 
       <FormInput
         label='Postcode'
+        autoCapitalize='characters'
         placeholder='Vul je postcode in...'
         value={postcode}
         onChangeText={setPostcode}
@@ -194,9 +195,9 @@ export const RegisterForm = () => {
       </Pressable>
 
       <View style={styles.signUpBox}>
-        <Text>Heb je al een account?</Text>
+        <Text style={styles.signUpText}>Heb je al een account?</Text>
         <Pressable onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.signUpText}> Inloggen</Text>
+          <Text style={styles.signUpCTAText}> Inloggen</Text>
         </Pressable>
       </View>
     </View>
@@ -206,8 +207,18 @@ export const RegisterForm = () => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
-    paddingBottom: 60,
-    width: windowWidth - 2 * 30,
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#dedede',
+    borderRadius: 30,
+    padding: 30,
+    backgroundColor: 'white',
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 1,
   },
   textInputLabelText: {
     ...Fonts.sofiaProMedium[Platform.OS],
@@ -251,6 +262,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   signUpText: {
+    ...Fonts.sofiaProLight[Platform.OS],
+    fontSize: 13,
+  } as TextStyle,
+  signUpCTAText: {
     color: '#A9C1A1',
     ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,

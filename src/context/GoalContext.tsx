@@ -95,8 +95,6 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
   }, [user]);
 
   const createGoalEntry = async () => {
-    const matchedGoalEntry = goalEntries.find((entry) => entry.uuid == uuid);
-
     const newGoalEntry = {
       id: '',
       uuid: uuidv4(),
@@ -133,57 +131,50 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       completedPeriod,
     };
 
-    if (matchedGoalEntry) {
-      // Get the index of the matching entry
-      const index = goalEntries.indexOf(matchedGoalEntry);
+    setGoalEntries((prev) => [newGoalEntry, ...prev]);
+    createGoalEntryInDatabase(newGoalEntryDatabase);
 
-      // Update the existing entry at the found index
-      setGoalEntries((prev) => {
-        const updatedEntries = [...prev];
-        updatedEntries[index] = newGoalEntry;
-        return updatedEntries;
-      });
+    return newGoalEntry;
+  };
 
-      try {
-        // Get the existing entry from the database
-        const matchedGoalEntryDatabase = await pb
-          .collection('goal_entries')
-          .getFirstListItem(`uuid="${matchedGoalEntry.uuid}"`, {
-            requestKey: null, // prevents auto-cancelling duplicate pending requests
-          });
-
-        // Update the existing entry in the database
-        await pb
-          .collection('goal_entries')
-          .update(matchedGoalEntryDatabase.id, newGoalEntryDatabase);
-      } catch (error) {
-        console.error('Error updating goal entry:', error);
-      }
-    } else {
-      setGoalEntries((prev) => [newGoalEntry, ...prev]);
-      pb.collection('goal_entries').create(newGoalEntryDatabase);
+  const createGoalEntryInDatabase = async (entry: any) => {
+    try {
+      await pb.collection('goal_entries').create(entry);
+    } catch (error) {
+      console.error('Failed to create goal entry in DB:', error);
     }
   };
 
   const updateGoalEntry = (uuid: string, forDate: Date = new Date()) => {
     const matchedGoalEntry = goalEntries.find((entry) => entry.uuid === uuid);
+
     if (!matchedGoalEntry) return;
 
-    const forDateUTC = forDate.toISOString().split('T')[0];
+    // Normalize all dates to YYYY-MM-DD for safe comparison
+    const forDateString = forDate.toISOString().split('T')[0];
+    const startDateString = new Date(matchedGoalEntry.startDate!)
+      .toISOString()
+      .split('T')[0];
+    const endDateString = new Date(matchedGoalEntry.endDate!)
+      .toISOString()
+      .split('T')[0];
+    // @TODO `created` is not available until we refetch from the DB!
+    const createdDateString = new Date(matchedGoalEntry.startDate!)
+      .toISOString()
+      .split('T')[0];
+
     const completedDates = matchedGoalEntry.completedDates || [];
 
-    if (completedDates.includes(forDateUTC)) {
+    if (completedDates.includes(forDateString)) {
       return; // Already marked as complete for this date
     }
 
     const shouldCountTowardsTimeframe =
-      forDate >= new Date(matchedGoalEntry.startDate!) &&
-      forDate <= new Date(matchedGoalEntry.endDate!);
+      forDateString >= startDateString && forDateString <= endDateString;
 
-    const shouldCountTowardsPeriod =
-      forDate >= new Date(matchedGoalEntry.created!);
+    const shouldCountTowardsPeriod = forDateString >= createdDateString;
 
-    const updatedCompletedDates = [forDateUTC, ...completedDates];
+    const updatedCompletedDates = [forDateString, ...completedDates];
 
     const updatedEntry = {
       ...matchedGoalEntry,
@@ -203,7 +194,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       return updatedEntries;
     });
 
-    // Update Pocketbase
+    // Update PocketBase
     updateGoalEntryInDatabase(matchedGoalEntry, updatedEntry);
 
     return updatedEntry;

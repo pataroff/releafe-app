@@ -4,7 +4,6 @@ import { useFonts } from 'expo-font';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 import { PaperProvider } from 'react-native-paper';
 
 import { AuthProvider } from './src/context/AuthContext';
@@ -25,12 +24,22 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import * as Notifications from 'expo-notifications';
 
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from 'react-native-reanimated';
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),
+});
+
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
 });
 
 export default function App() {

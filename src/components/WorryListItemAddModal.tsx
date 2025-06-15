@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   StyleSheet,
@@ -24,6 +24,8 @@ import { Fonts } from '../styles';
 import Feather from '@expo/vector-icons/Feather';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '../utils/toastConfig';
+import { evaluateAllAchievements } from '../utils/achievements';
+import { useGamification } from '../context/GamificationContext';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -34,6 +36,7 @@ interface WorryListItemAddModalProps {
   >;
   modalReframingVisible: boolean;
   setModalReframingVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  handleDrawer: () => void;
 }
 
 export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
@@ -41,8 +44,10 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
   setModalAddWorryListItemVisible,
   modalReframingVisible,
   setModalReframingVisible,
+  handleDrawer,
 }) => {
   const {
+    worryEntries,
     category,
     priority,
     title,
@@ -54,6 +59,8 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     createOrUpdateWorryEntry,
     resetWorryEntryFields,
   } = useWorry();
+
+  const { unlockedAchievements, unlockAchievement } = useGamification();
 
   const [worryListItemAddModalIndex, setWorryListItemAddModalIndex] =
     useState<number>(0);
@@ -83,6 +90,12 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
     setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
     setWorryListItemAddModalIndex(0);
     resetWorryEntryFields();
+
+    evaluateAllAchievements('onWorryCreated', {
+      worryEntries,
+      unlockedAchievements,
+      unlockAchievement,
+    });
   };
 
   const handleStorePress = () => {
@@ -107,9 +120,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
   const handleReframing = () => {
     setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
     setWorryListItemAddModalIndex(0);
-    setTimeout(() => {
-      setModalReframingVisible(!modalReframingVisible);
-    }, 100);
+    setModalReframingVisible(true);
   };
 
   const handlePriority = (priority: Priority) => {
@@ -493,7 +504,7 @@ const styles = StyleSheet.create({
   storeButtonText: {
     ...Fonts.sofiaProBold[Platform.OS],
     color: 'white',
-    fontSize: 12,
+    fontSize: 14,
   } as TextStyle,
   successHeadingText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
@@ -505,6 +516,7 @@ const styles = StyleSheet.create({
   } as TextStyle,
   successCtaDescriptionText: {
     ...Fonts.sofiaProLight[Platform.OS],
+    lineHeight: 18,
     fontSize: 14,
   } as TextStyle,
   cancelButton: {

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
 import {
   View,
@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TextInput,
   Pressable,
-  Dimensions,
   Platform,
   TextStyle,
 } from 'react-native';
@@ -15,8 +14,6 @@ import { Fonts } from '../styles';
 
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
-
-const windowWidth = Dimensions.get('window').width;
 
 export const LoginForm = () => {
   const { signIn } = useAuth();
@@ -28,14 +25,14 @@ export const LoginForm = () => {
   return (
     <>
       {/* Main Container */}
-      <View style={{ width: windowWidth - 2 * 25 }}>
+      <View style={styles.container}>
         {/* Input Fields */}
         <View>
           <Text style={styles.textInputLabelText}>E-mail</Text>
           <TextInput
             style={styles.textInputField}
-            placeholder='Vul je e-mailadres in...'
             autoCapitalize='none'
+            placeholder='Vul je e-mailadres in...'
             onChangeText={(value) => setEmail(value)}
             value={email}
           ></TextInput>
@@ -63,9 +60,9 @@ export const LoginForm = () => {
         </View>
 
         <View style={styles.signUpBox}>
-          <Text>Nog geen account?</Text>
+          <Text style={styles.signUpText}>Nog geen account?</Text>
           <Pressable onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.signUpText}> Account activieren</Text>
+            <Text style={styles.signUpCTAText}> Account activieren</Text>
           </Pressable>
         </View>
       </View>
@@ -74,6 +71,20 @@ export const LoginForm = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#dedede',
+    borderRadius: 30,
+    padding: 30,
+    backgroundColor: 'white',
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 1,
+  },
   textInputLabelText: {
     ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 16,
@@ -108,12 +119,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginTop: 20,
+    backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#dedede',
     borderRadius: 30,
     paddingVertical: 20,
+    // Shadow Test
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 1,
   },
   signUpText: {
+    ...Fonts.sofiaProLight[Platform.OS],
+    fontSize: 13,
+  } as TextStyle,
+  signUpCTAText: {
     color: '#A9C1A1',
     ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,

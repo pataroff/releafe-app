@@ -20,72 +20,28 @@ import { WorryListItemAddModal } from './WorryListItemAddModal';
 import { ReframingModal } from './ReframingModal';
 import { EarnedPointsModal } from './EarnedPointsModal';
 
-const windowWidth = Dimensions.get('window').width;
+import { useWorry } from '../context/WorryContext';
+import { useNote } from '../context/NoteContext';
+import { useGamification } from '../context/GamificationContext';
 
-const reframingSteps = [
-  {
-    description:
-      'De situatie is automatisch overgenomen vanuit je zorg. Je kan deze hier eventueel nog aanpassen. Het resultaat van deze methode is een Note-to-Self. Als je deze niet wilt koppelen aan je bestaande zorg, kan je dit uitschakelen.',
-    instruction: 'Laten we beginnen!',
-  },
-  {
-    description:
-      'Omschrijf hier hoe je je voelt door deze situatie, zodat we er mee aan de slag kunnen.',
-    placeholder: 'Ik voel me...',
-    instruction:
-      'Het opschrijven van je gevoelens helpt om je emoties te verhelderen en te begrijpen, wat kan leiden tot meer zelfinzicht en een betere emotionele verwerking.',
-  },
-  {
-    description:
-      'Noteer feiten en observaties die jouw gedachte ondersteunen. Dit helpt om te zien of er objectief bewijs is dat jouw zorgen bevestigt.',
-    question: 'Welk bewijs heb ik dat deze gedachte echt waar is?',
-    placeholder: 'Welk bewijs heb ik dat deze gedachte echt waar is?',
-    instruction:
-      'Deze vraag helpt om objectieve feiten te verzamelen die je gedachte ondersteunen, waardoor je inzicht krijgt in de realiteit van je zorgen. Het voorkomt dat je uitsluitend op gevoelens en aannames baseert.',
-  },
-  {
-    description:
-      'Denk aan tegenvoorbeelden en feiten die jouw gedachte weerleggen. Dit helpt om een evenwichtiger beeld te krijgen en je gedachten te relativeren.',
-    question: 'Welk bewijs heb ik dat deze gedachte niet waar is?',
-    placeholder: 'Welk bewijs heb ik dat deze gedachte niet waar is?',
-    instruction:
-      'Door tegenbewijs te overwegen, kun je irrationele gedachten uitdagen en relativeren. Het helpt je een evenwichtiger en realistischer beeld te vormen.',
-  },
-  {
-    description:
-      'Bedenk welk advies of welke troostende woorden je een vriend zou geven in dezelfde situatie. Dit perspectief helpt om milder en realistischer naar je eigen gedachten te kijken.',
-    question:
-      'Wat zou ik tegen een vriend (in) zeggen die deze gedachte heeft?',
-    placeholder:
-      'Wat zou ik tegen een vriend (in) zeggen die deze gedachte heeft?',
-    instruction:
-      'Deze vraag stimuleert empathie en zelfcompassie. door je aan te moedigen jezelf dezelfde steun te geven als aan een vriend. Het kan leiden tot mildere en constructievere zelfreflectie.',
-  },
-  {},
-  {
-    description:
-      'Gebruik een schaal van 1 tot 5 om de waarschijnlijkheid van je negatieve gedachte in te schatten. Dit helpt om de reële kans op het scenario te evalueren en irrationele angsten te verminderen.',
-    question:
-      'Hoe groot denk je dat de kans nu is dat de omschreven, negatieve gedachte realiteit wordt?',
-    placeholder: 'Waarom?',
-    instruction:
-      'Door de waarschijnlijkheid van je zorgen te beoordelen, kun je irrationele angsten verminderen en een realistisch perspectief ontwikkelen. Het helpt om onnodige piekergedachten te relativeren.',
-  },
-  {
-    description:
-      'Zoek naar andere verklaringen of interpretaties van de situatie die realistischer en minder negatiet zin. Dit helpt om je perspectief te verschuiven naar een meer evenwichtige en constructieve mindset.',
-    question:
-      'Wat is een alternatieve, realistische verklaring die ik bij deze situatie heb?',
-    placeholder:
-      'Wat is een alternatieve, realistische verklaring die ik bij deze situatie heb?',
-    instruction:
-      'Deze vraag moedigt je aan om bredere en positievere interpretaties van de situatie te overwegen. Het helpt om starre, negatieve denkpatronen te doorbreken en een evenwichtiger perspectief te krijgen.',
-  },
-];
+import {
+  findAchievementById,
+  evaluateAllAchievements,
+} from '../utils/achievements';
+
+const windowWidth = Dimensions.get('window').width;
 
 // @TODO Correct the `route` type annotation!
 export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
+  const { worryEntries } = useWorry();
+  const { noteEntries } = useNote();
+  const {
+    unlockedAchievements,
+    setUnlockedAchievemnts,
+    updateUnlockedAchievementsInDatabase,
+    setAchievementQueue,
+  } = useGamification();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [modalWorryListVisible, setModalWorryListVisible] =
@@ -120,6 +76,58 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
         visible={earnedPointsModalVisible}
         setVisible={setEarnedPointsModalVisible}
         points={20}
+        onClose={async () => {
+          // NOTE: This solution ensures that achievements are not missed due to stale state.
+          // ⚠️ React state updates (like setUnlockedAchievements) are async and not immediate.
+          // When calling `evaluateAllAchievements` multiple times in a row,
+          // the second call may still receive the old value of `unlockedAchievements`,
+          // causing achievements to be skipped or overwritten.
+          //
+          // ✅ We work around this by maintaining a local `latestUnlockedAchievements` list
+          // that is updated *immediately* when `wrappedUnlockAchievement` is called.
+          // This ensures consistency across consecutive evaluations.
+          //
+          // @TODO Consider refactoring achievement tracking into a reducer or middleware
+          // to fully centralize state and avoid workarounds like this.
+
+          let latestUnlockedAchievements = [...unlockedAchievements];
+
+          const wrappedUnlockAchievement = async (achievementId: string) => {
+            if (latestUnlockedAchievements.includes(achievementId)) return;
+
+            try {
+              const updatedUnlocked = [
+                achievementId,
+                ...latestUnlockedAchievements,
+              ];
+              setUnlockedAchievemnts(updatedUnlocked);
+              latestUnlockedAchievements = updatedUnlocked;
+
+              await updateUnlockedAchievementsInDatabase(updatedUnlocked);
+              const achievement = findAchievementById(achievementId);
+              if (achievement) {
+                setAchievementQueue((prev) => [...prev, achievement]);
+              }
+            } catch (error) {
+              console.error('Error unlocking achievement:', error);
+              setUnlockedAchievemnts(latestUnlockedAchievements);
+            }
+          };
+
+          // @TODO The problem here is that we delete a worry entry post creation of a note entry,
+          // therefore the `onWorryCreated` evaluation will evaluate to false cause worryEntries.length <= 0!
+          await evaluateAllAchievements('onWorryCreated', {
+            worryEntries,
+            unlockedAchievements: latestUnlockedAchievements,
+            unlockAchievement: wrappedUnlockAchievement,
+          });
+
+          await evaluateAllAchievements('onReframingCompleted', {
+            noteEntries,
+            unlockedAchievements: latestUnlockedAchievements,
+            unlockAchievement: wrappedUnlockAchievement,
+          });
+        }}
       />
       {/* Worry List Modal */}
       <WorryListModal
@@ -138,6 +146,7 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
         setModalAddWorryListItemVisible={setModalAddWorryListItemVisible}
         modalReframingVisible={modalReframingVisible}
         setModalReframingVisible={setModalReframingVisible}
+        handleDrawer={handleDrawer}
       />
 
       {/* Reframing Modal */}
@@ -172,9 +181,9 @@ export const WorryDrawer: React.FC<{ route: any }> = ({ route }) => {
           {/* Add Button */}
           <Pressable
             style={styles.addButton}
-            onPress={() =>
-              setModalAddWorryListItemVisible(!modalAddWorryListItemVisible)
-            }
+            onPress={() => {
+              setModalAddWorryListItemVisible(!modalAddWorryListItemVisible);
+            }}
           >
             <Entypo name='plus' size={32} color='#5C6B57' />
           </Pressable>

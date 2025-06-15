@@ -16,7 +16,6 @@ import {
 
 import { useDiary } from '../context/DiaryContext';
 import { useGoal } from '../context/GoalContext';
-import { useGamification } from '../context/GamificationContext';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 

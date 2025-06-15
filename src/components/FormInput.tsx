@@ -19,6 +19,7 @@ interface FormInputProps {
   label: string;
   value: string;
   onChangeText?: (val: string) => void;
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters' | undefined;
   placeholder: string;
   secureTextEntry?: boolean;
   onPress?: () => void;
@@ -34,6 +35,7 @@ export const FormInput: React.FC<FormInputProps> = ({
   label,
   value,
   onChangeText,
+  autoCapitalize = 'none',
   placeholder,
   secureTextEntry = false,
   onPress,
@@ -51,11 +53,11 @@ export const FormInput: React.FC<FormInputProps> = ({
         <Pressable style={{ flex: 1 }} onPress={onPress} disabled={!onPress}>
           <TextInput
             style={styles.textInputField}
+            autoCapitalize={autoCapitalize}
             placeholder={placeholder}
             value={value}
             onChangeText={onChangeText}
             secureTextEntry={secureTextEntry}
-            autoCapitalize='none'
             editable={editable}
             keyboardType={keyboardType}
             maxLength={maxLength}

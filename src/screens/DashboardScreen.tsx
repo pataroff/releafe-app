@@ -6,13 +6,27 @@ import { StyleSheet, ScrollView } from 'react-native';
 import { Header } from '../components/Header';
 import { Performance } from '../components/Performance';
 
+import { useDiary } from '../context/DiaryContext';
+import { useGamification } from '../context/GamificationContext';
 import { useNotification } from '../context/NotificationContext';
+
+import { evaluateAllAchievements } from '../utils/achievements';
 
 export const DashboardScreen: React.FC = () => {
   const title = 'Welzijnsoverzicht';
+  const { diaryEntries } = useDiary();
+  const { unlockedAchievements, unlockAchievement } = useGamification();
   const { scheduleDashboardInactivityNotification } = useNotification();
 
   useEffect(() => {
+    if (diaryEntries.length > 0) {
+      evaluateAllAchievements('onWellBeingDataAvailable', {
+        diaryEntries,
+        unlockedAchievements,
+        unlockAchievement,
+      });
+    }
+
     scheduleDashboardInactivityNotification();
   }, []);
 

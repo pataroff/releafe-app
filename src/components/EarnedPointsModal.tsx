@@ -20,6 +20,7 @@ interface EarnedPointsModalProps {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   points: number;
   goalCompleted?: boolean;
+  onClose?: () => void;
 }
 
 export const EarnedPointsModal: React.FC<EarnedPointsModalProps> = ({
@@ -27,12 +28,14 @@ export const EarnedPointsModal: React.FC<EarnedPointsModalProps> = ({
   setVisible,
   points,
   goalCompleted,
+  onClose,
 }) => {
   const { addPoints } = useGamification();
 
   const handleClose = () => {
     setVisible(!visible);
     addPoints(points);
+    onClose?.();
   };
 
   return (

@@ -31,17 +31,21 @@ interface GamificationContextType {
   unlockedAchievements: string[];
   treeState: TreeState;
   setPoints: React.Dispatch<SetStateAction<number>>;
+  setAchievementQueue: React.Dispatch<SetStateAction<SelectedAchievement[]>>;
   setAppUsageDates: React.Dispatch<SetStateAction<string[]>>;
   setUnlockedItems: React.Dispatch<SetStateAction<string[]>>;
   setUnlockedAchievemnts: React.Dispatch<SetStateAction<string[]>>;
   setTreeState: React.Dispatch<SetStateAction<TreeState>>;
   unlockItem: (itemId: string, cost: number) => void;
-  unlockAchievement: (achievementId: string) => void;
+  unlockAchievement: (achievementId: string) => Promise<void>;
   addPoints: (amount: number) => void;
   updateTreeStateInDatabase: (
     selectedBranchIndex: number | null,
     selectedLeafIndex: number | null,
     selectedFlowerIndex: number | null
+  ) => Promise<void>;
+  updateUnlockedAchievementsInDatabase: (
+    newUnlockedAchievements: string[]
   ) => Promise<void>;
   trackAppUsage: () => Promise<void>;
 }
@@ -68,6 +72,9 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
     useState<boolean>(false);
   const [selectedAchievement, setSelectedAchievement] =
     useState<SelectedAchievement | null>(null);
+  const [achievementQueue, setAchievementQueue] = useState<
+    SelectedAchievement[]
+  >([]);
 
   const [points, setPoints] = useState<number>(0);
   const [appUsageDates, setAppUsageDates] = useState<string[]>([]);
@@ -135,6 +142,16 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
     evaluateAppUsageAchievements();
   }, [isGamificationLoaded]);
 
+  useEffect(() => {
+    if (!achievementModalVisible && achievementQueue.length > 0) {
+      console.log('🎯 Achievement Queue Updated:', achievementQueue);
+      const [next, ...rest] = achievementQueue;
+      setSelectedAchievement(next);
+      setAchievementModalVisible(true);
+      setAchievementQueue(rest);
+    }
+  }, [achievementQueue, achievementModalVisible]);
+
   const trackAppUsage = async () => {
     const today = new Date().toISOString().split('T')[0];
 
@@ -172,19 +189,11 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       await updateUnlockedItemsInDatabase(updatedPoints, updatedUnlockedItems);
-      await evaluateAllAchievements('onItemUnlocked', {
-        unlockedAchievements,
-        unlockAchievement,
-        unlockedItems: updatedUnlockedItems,
-      });
     } catch (error) {
       console.error('Error unlocking item:', error);
 
-      // Rollback local state
       setPoints(previousPoints);
       setUnlockedItems(previousUnlockedItems);
-
-      // @TODO Optionally: show error to user that the action has failed!
     }
   };
 
@@ -199,12 +208,10 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
     setUnlockedAchievemnts(updatedUnlockedAchievements);
 
     try {
-      await updateUnlockedAchievemntsInDatabase(updatedUnlockedAchievements);
-      // @TODO This is a bit slow cause we are waiting on nested async calls to resolve!
+      await updateUnlockedAchievementsInDatabase(updatedUnlockedAchievements);
       const achievement = findAchievementById(achievementId);
       if (achievement) {
-        setSelectedAchievement(achievement);
-        setAchievementModalVisible(true);
+        setAchievementQueue((prev) => [...prev, achievement]);
       }
     } catch (error) {
       console.error('Error unlocking achievement:', error);
@@ -252,7 +259,7 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const updateUnlockedAchievemntsInDatabase = async (
+  const updateUnlockedAchievementsInDatabase = async (
     newUnlockedAchievements: string[]
   ) => {
     const newUnlockedAchievementsJSON = JSON.stringify(newUnlockedAchievements);
@@ -300,6 +307,7 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
         unlockedAchievements,
         treeState,
         setPoints,
+        setAchievementQueue,
         setAppUsageDates,
         setUnlockedItems,
         setUnlockedAchievemnts,
@@ -308,6 +316,7 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
         unlockAchievement,
         addPoints,
         updateTreeStateInDatabase,
+        updateUnlockedAchievementsInDatabase,
         trackAppUsage,
       }}
     >

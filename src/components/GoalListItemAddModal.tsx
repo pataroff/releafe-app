@@ -18,7 +18,11 @@ import { Dropdown } from 'react-native-element-dropdown';
 import '../utils/localeConfig';
 
 import { Timeframe } from '../types';
+import { Fonts } from '../styles';
+
 import { useGoal } from '../context/GoalContext';
+import { useGamification } from '../context/GamificationContext';
+
 import {
   categories,
   categoryGoals,
@@ -29,7 +33,7 @@ import {
   getGoalCategoryString,
   getTimeframeString,
 } from '../utils/goal';
-import { Fonts } from '../styles';
+import { evaluateAllAchievements } from '../utils/achievements';
 
 import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
@@ -54,6 +58,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   setModalAddGoalListItemVisible,
 }) => {
   const {
+    goalEntries,
     category,
     title,
     description,
@@ -62,7 +67,6 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     timeframe,
     targetFrequency,
     startDate,
-    endDate,
     setCategory,
     setTitle,
     setDescription,
@@ -75,6 +79,8 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     createGoalEntry,
     resetGoalEntryFields,
   } = useGoal();
+
+  const { unlockedAchievements, unlockAchievement } = useGamification();
 
   const [goalListItemAddModalIndex, setGoalListItemAddModalIndex] =
     useState<number>(0);
@@ -100,90 +106,6 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
   const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
 
   const scrollView = useRef();
-
-  /*const handleCalendarPeriodSelect = (day: string) => {
-    type MarkedDatesType = Record<
-      string,
-      {
-        selected?: boolean;
-        startingDay?: boolean;
-        endingDay?: boolean;
-        color: string;
-      }
-    >;*/
-
-  /* Helper function to get all dates between two dates
-    const getDatesInRange = (start: Date, end: Date) => {
-      const dates: string[] = [];
-      let currentDate = new Date(start);
-
-      while (currentDate < end) {
-        // Stop before the end date to avoid rounding errors
-        dates.push(currentDate.toISOString().split('T')[0]);
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-
-      // Add the end date explicitly to ensure it's included
-      dates.push(end.toISOString().split('T')[0]);
-
-      return dates;
-    };*/
-
-  /*if (startDate === null) {
-      // Set the start date
-      setStartDate(new Date(day));
-      setMarkedDates((prevMarkedDates) => ({
-        [day]: {
-          selected: true,
-          startingDay: true,
-          color: '#90A38A',
-        },
-      }));
-    } else if (startDate && endDate === null) {
-      // Set the end date and color the range between start and end
-      const selectedEndDate = new Date(day);
-      // Make sure the end date is the later of the two
-      let datesInRange;
-      if(startDate > selectedEndDate)
-      {
-        //setStartDate(selectedEndDate);
-        setEndDate(startDate);
-        datesInRange = getDatesInRange(selectedEndDate, startDate);
-      }
-      else
-      {
-        setEndDate(selectedEndDate);
-        datesInRange = getDatesInRange(startDate, selectedEndDate);
-      }
-
-      setMarkedDates((prevMarkedDates) => {
-        const rangeMarkedDates = datesInRange.reduce<MarkedDatesType>(
-          (acc, date, index) => {
-            if (index === 0) {
-              acc[date] = {
-                selected: true,
-                startingDay: true,
-                color: '#90A38A',
-              };
-            } else if (index === datesInRange.length - 1) {
-              acc[date] = { selected: true, endingDay: true, color: '#5C6B57' };
-            } else {
-              acc[date] = { color: '#E5F1E3' }; // Mark all days in the range with green
-            }
-            return acc;
-          },
-          {}
-        );
-
-        return { ...prevMarkedDates, ...rangeMarkedDates };
-      });
-    } else {
-      // Reset if both start and end date are selected (allowing reselection)
-      setStartDate(null);
-      setEndDate(null);
-      setMarkedDates({});
-    }
-  };*/
 
   const validateTextInput = (text: string, max: number) => {
     const min = 1;
@@ -256,9 +178,6 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
 
     setEndDate(endDate);
 
-    console.log('startDate:', startDate);
-    console.log('endDate:', endDate);
-
     setSentence(
       `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
         specialDropdownValue ? ` ${specialDropdownValue}` : ``
@@ -282,10 +201,17 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     if (timeframe === Timeframe.Daily) {
       setTargetFrequency(1);
     }
-    createGoalEntry();
+
+    const newGoal = createGoalEntry();
     resetGoalEntryFields();
     resetLocalState();
     setModalAddGoalListItemVisible(!modalAddGoalListItemVisible);
+
+    evaluateAllAchievements('onGoalCreated', {
+      goalEntries: [newGoal, ...goalEntries],
+      unlockedAchievements,
+      unlockAchievement,
+    });
   };
 
   const handleClose = () => {

@@ -18,15 +18,22 @@ import { Header } from '../components/Header';
 import { PurchaseModal } from '../components/PurchaseModal';
 
 import { bonsaiShopCategories } from '../utils/gamification';
-import { useGamification } from '../context/GamificationContext';
-import Toast from 'react-native-toast-message';
 import { NotEnoughPointsModal } from '../components/NotEnoughPointsModal';
+
+import { useGamification } from '../context/GamificationContext';
+import { evaluateAllAchievements } from '../utils/achievements';
 
 const windowWidth = Dimensions.get('window').width;
 
 export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
   const title = '';
-  const { points, unlockedItems, unlockItem } = useGamification();
+  const {
+    points,
+    unlockedItems,
+    unlockedAchievements,
+    unlockItem,
+    unlockAchievement,
+  } = useGamification();
 
   const [purchaseModalVisible, setPurchaseModalVisible] =
     useState<boolean>(false);
@@ -46,20 +53,8 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
     setSelectedItem({ itemId, price });
     setPurchaseModalVisible(true);
   };
-  const showToast = (
-    type: 'error' | 'success' | 'info',
-    title: string,
-    message: string
-  ) => {
-    Toast.show({
-      topOffset: 20,
-      type,
-      text1: title,
-      text2: message,
-    });
-  };
 
-  const handleConfirmPurchase = () => {
+  const handleConfirmPurchase = async () => {
     if (!selectedItem) return;
 
     const { itemId, price } = selectedItem;
@@ -74,6 +69,12 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
 
     unlockItem(itemId, price);
     setPurchaseModalVisible(false);
+
+    await evaluateAllAchievements('onItemUnlocked', {
+      unlockedItems: [...unlockedItems, itemId],
+      unlockedAchievements,
+      unlockAchievement,
+    });
   };
 
   return (

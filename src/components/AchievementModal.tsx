@@ -13,9 +13,8 @@ import {
 import { Fonts } from '../styles';
 import { SelectedAchievement } from '../types';
 
-import { useGamification } from '../context/GamificationContext';
-
 import { achievementsLockedIcon } from '../utils/achievements';
+import { useGamification } from '../context/GamificationContext';
 
 import Feather from '@expo/vector-icons/Feather';
 
