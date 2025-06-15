@@ -34,6 +34,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
   const [completedDates, setCompletedDates] = useState<string[]>([]);
   const [completedTimeframe, setCompletedTimeframe] = useState<number>(0);
   const [completedPeriod, setCompletedPeriod] = useState<number>(0);
+  const [createdDate, setCreatedDate] = useState<Date | null>(null);
 
   const { user } = useAuth();
 
@@ -63,7 +64,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
               completedDates,
               completedTimeframe,
               completedPeriod,
-              created,
+              createdDate,
             } = item;
             return {
               id,
@@ -80,7 +81,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
               completedDates,
               completedTimeframe,
               completedPeriod,
-              created,
+              createdDate,
             };
           });
 
@@ -94,7 +95,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     fetchGoalEntries();
   }, [user]);
 
-  const createGoalEntry = async () => {
+  const createGoalEntry = () => {
     const newGoalEntry = {
       id: '',
       uuid: uuidv4(),
@@ -110,6 +111,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       completedDates,
       completedTimeframe,
       completedPeriod,
+      createdDate,
     };
 
     const newGoalEntryDatabase = {
@@ -129,6 +131,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       completedDates,
       completedTimeframe,
       completedPeriod,
+      createdDate,
     };
 
     setGoalEntries((prev) => [newGoalEntry, ...prev]);
@@ -158,8 +161,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     const endDateString = new Date(matchedGoalEntry.endDate!)
       .toISOString()
       .split('T')[0];
-    // @TODO `created` is not available until we refetch from the DB!
-    const createdDateString = new Date(matchedGoalEntry.startDate!)
+    const createdDateString = new Date(matchedGoalEntry.createdDate!)
       .toISOString()
       .split('T')[0];
 
@@ -311,8 +313,10 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     setDiarySentence('');
     setTimeframe(Timeframe.Daily);
     setTargetFrequency(1);
+    // @TODO Are the resets below necessary?
     setStartDate(null);
-    setEndDate(null); // @TODO Is this necessary, cause it is not part from the UI?
+    setEndDate(null);
+    setCreatedDate(null);
   };
 
   return (
@@ -332,6 +336,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         completedDates,
         completedTimeframe,
         completedPeriod,
+        createdDate,
         setGoalEntries,
         setUuid,
         setCategory,
@@ -346,6 +351,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
         setCompletedDates,
         setCompletedTimeframe,
         setCompletedPeriod,
+        setCreatedDate,
         createGoalEntry,
         updateGoalEntry,
         deleteGoalEntry,

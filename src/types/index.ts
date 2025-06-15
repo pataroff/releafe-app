@@ -153,7 +153,7 @@ export interface IGoalEntry {
   completedDates: string[];
   completedTimeframe: number;
   completedPeriod: number;
-  created?: string;
+  createdDate: Date | null;
 }
 
 export interface IGoalContext {
@@ -171,6 +171,7 @@ export interface IGoalContext {
   completedDates: string[];
   completedTimeframe: number;
   completedPeriod: number;
+  createdDate: Date | null;
   setGoalEntries: React.Dispatch<React.SetStateAction<IGoalEntry[]>>;
   setUuid: React.Dispatch<React.SetStateAction<string>>;
   setCategory: React.Dispatch<React.SetStateAction<GoalCategory>>;
@@ -185,6 +186,7 @@ export interface IGoalContext {
   setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setCompletedDates: React.Dispatch<React.SetStateAction<string[]>>;
+  setCreatedDate: React.Dispatch<React.SetStateAction<Date | null>>;
   createGoalEntry: () => IGoalEntry;
   updateGoalEntry: (uuid: string, forDate: Date) => IGoalEntry | undefined;
   deleteGoalEntry: (uuid: string) => void;

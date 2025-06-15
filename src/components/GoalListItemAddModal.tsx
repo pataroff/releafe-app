@@ -76,6 +76,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setTargetFrequency,
     setStartDate,
     setEndDate,
+    setCreatedDate,
     createGoalEntry,
     resetGoalEntryFields,
   } = useGoal();
@@ -161,7 +162,6 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setStartDate(startDate);
 
     let endDate = new Date(startDate);
-
     switch (timeframe) {
       case Timeframe.Daily:
         endDate.setUTCDate(endDate.getUTCDate() + 1);
@@ -177,6 +177,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     }
 
     setEndDate(endDate);
+    setCreatedDate(startDate);
 
     setSentence(
       `Ik wil ${getTimeframeString(timeframe)} ${targetFrequency}x${
@@ -220,29 +221,6 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setModalAddGoalListItemVisible(!modalAddGoalListItemVisible);
   };
 
-  const getNextWeek = () => {
-    const today = new Date();
-    const nextSunday = new Date(today);
-    const dayOfWeek = today.getDay();
-
-    const daysUntilSunday = ((7 - dayOfWeek) % 7) + 1;
-    nextSunday.setDate(today.getDate() + daysUntilSunday);
-    nextSunday.setHours(0, 0, 0, 0);
-
-    return nextSunday.toISOString().split('T')[0];
-  };
-
-  const getNextMonth = () => {
-    const today = new Date();
-    const nextMonth = new Date(today);
-
-    nextMonth.setMonth(today.getMonth() + 1);
-    nextMonth.setDate(2);
-    nextMonth.setHours(0, 0, 0, 0);
-
-    return nextMonth.toISOString().split('T')[0];
-  };
-
   const resetLocalState = () => {
     setTimeframeDropdownValue(Timeframe.Daily);
     setTextInputValue('');
@@ -251,7 +229,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
     setGoalListItemAddModalIndex(0);
   };
 
-  // @TODO: Move this into `utils/goal.ts`!
+  // @TODO: Move this into `utils/goal.tsx`!
   const highlightFrequency = (sentence: string) => {
     const keywords = ['dagelijks', 'wekelijks', 'maandelijks'];
     const words = sentence.split(' ');

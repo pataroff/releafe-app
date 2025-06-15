@@ -322,7 +322,15 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
   );
 
   const shouldShowGoal = (goal: IGoalEntry): boolean => {
-    return !goal.completedDates.includes(date.toISOString().split('T')[0]);
+    const selectedDateString = date.toISOString().split('T')[0];
+    const createdDateString = new Date(goal.createdDate!)
+      .toISOString()
+      .split('T')[0];
+
+    return (
+      selectedDateString >= createdDateString &&
+      !goal.completedDates.includes(date.toISOString().split('T')[0])
+    );
   };
 
   return (

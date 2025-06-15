@@ -35,10 +35,9 @@ export const GoalsOverview = () => {
     title,
     sentence,
     targetFrequency,
-    startDate,
     completedTimeframe,
     completedPeriod,
-    created,
+    createdDate,
   } = goalEntries[goalIndex];
 
   const [timeframeProgressValue, setTimeframeProgressValue] = useState<number>(
@@ -221,18 +220,14 @@ export const GoalsOverview = () => {
           >
             <Text style={styles.statisticsDataBodyText}>
               {/* Start Date */}
-              {/* @TODO How do we handle `created` for local entries prior refetching the db? */}
-              {formatDateString(created ? new Date(created) : new Date())}
+              {formatDateString(new Date(createdDate!))}
             </Text>
             {/* Days Active */}
             <Text style={styles.statisticsDataBodyText}>
-              {(created ? new Date(created) : new Date()) >= new Date()
+              {new Date(createdDate!) >= new Date()
                 ? 1
                 : Math.ceil(
-                    getDaysBetweenDates(
-                      created ? new Date(created) : new Date(),
-                      new Date()
-                    )
+                    getDaysBetweenDates(new Date(createdDate!), new Date())
                   )}
             </Text>
             {/* Completed Period */}

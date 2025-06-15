@@ -41,7 +41,7 @@ export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
     targetFrequency,
     completedTimeframe,
     completedPeriod,
-    created,
+    createdDate,
   } = item;
 
   const { deleteGoalEntry } = useGoal();
@@ -68,25 +68,17 @@ export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
 
   return (
     <View style={styles.goalComponent}>
-      <Modal
-        animationType='none'
-        transparent={true}
-        visible={modalCloseVisible}
-        onRequestClose={() => setModalCloseVisible(!modalCloseVisible)}
-      >
-        <CloseModal
-          closeModalVisible={modalCloseVisible}
-          setCloseModalVisible={setModalCloseVisible}
-          parentModalVisible={modalCloseVisible}
-          setParentModalVisible={setModalCloseVisible}
-          title='Persoonlijk doel verwijderen'
-          description='Je staat op het punt om je persoonlijke doel te verwijderen. Weet je het zeker?'
-          handleClose={handleClose}
-          denyText='Nee, niet verwijderen'
-          confirmText='Ja, verwijder dit doel'
-          closeButtonDisabled={true}
-        />
-      </Modal>
+      <CloseModal
+        closeModalVisible={modalCloseVisible}
+        setCloseModalVisible={setModalCloseVisible}
+        parentModalVisible={modalCloseVisible}
+        setParentModalVisible={setModalCloseVisible}
+        title='Persoonlijk doel verwijderen'
+        description='Je staat op het punt om je persoonlijke doel te verwijderen. Weet je het zeker?'
+        handleClose={handleClose}
+        denyText='Nee, niet verwijderen'
+        confirmText='Ja, verwijder dit doel'
+      />
       <View
         style={{
           display: 'flex',
@@ -146,7 +138,13 @@ export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
               >
                 {/* Points Container */}
                 <View style={styles.pointsContainer}>
-                  <Text style={styles.pointsText}>+50</Text>
+                  <Text style={styles.pointsText}>
+                    {timeframe === Timeframe.Monthly
+                      ? '+50'
+                      : timeframe === Timeframe.Weekly
+                      ? '+30'
+                      : '+10'}
+                  </Text>
 
                   <Image
                     style={styles.shopIcon}
@@ -303,14 +301,17 @@ export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   }}
                 >
                   <Text style={styles.statisticsDataBodyText}>
-                    {formatDateString(new Date(created!))}
+                    {formatDateString(new Date(createdDate!))}
                   </Text>
                   {/* Days Active */}
                   <Text style={styles.statisticsDataBodyText}>
-                    {new Date(created!) > new Date()
+                    {new Date(createdDate!) >= new Date()
                       ? 1
                       : Math.ceil(
-                          getDaysBetweenDates(new Date(created!), new Date())
+                          getDaysBetweenDates(
+                            new Date(createdDate!),
+                            new Date()
+                          )
                         )}
                   </Text>
                   {/* Completed Period */}
