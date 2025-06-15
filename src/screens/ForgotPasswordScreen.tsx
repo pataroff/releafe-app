@@ -66,7 +66,8 @@ export const ForgotPasswordScreen = () => {
 
         <TextInput
           style={styles.textInputField}
-          placeholder='E-mailadres'
+          placeholderTextColor='#dedede'
+          placeholder='Vul je e-mailadres in...'
           autoCapitalize='none'
           keyboardType='email-address'
           value={email}
@@ -91,6 +92,7 @@ export const ForgotPasswordScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: '#999',
     textTransform: 'uppercase',
-    fontSize: 14,
-    ...Fonts.sofiaProMedium[Platform.OS],
+    fontSize: 16,
+    ...Fonts.sofiaProBold[Platform.OS],
   } as TextStyle,
 });

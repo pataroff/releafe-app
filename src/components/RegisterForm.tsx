@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   placeholderTextStyle: {
     ...Fonts.sofiaProItalic[Platform.OS],
     fontSize: 14,
-    color: '#999',
+    color: 'gainsboro',
   } as TextStyle,
   selectedTextStyle: {
     ...Fonts.sofiaProItalic[Platform.OS],

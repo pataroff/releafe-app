@@ -55,6 +55,7 @@ export const FormInput: React.FC<FormInputProps> = ({
             style={styles.textInputField}
             autoCapitalize={autoCapitalize}
             placeholder={placeholder}
+            placeholderTextColor='gainsboro'
             value={value}
             onChangeText={onChangeText}
             secureTextEntry={secureTextEntry}
@@ -107,8 +108,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
   } as TextStyle,
   otpButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '50%',
     backgroundColor: '#A9C1A1',
     borderRadius: 20,
   },

@@ -63,23 +63,23 @@ export default function App() {
         <SafeAreaProvider>
           <NavigationContainer>
             <PaperProvider>
-              <NotificationProvider>
-                <AuthProvider>
-                  <GamificationProvider>
-                    <SettingsProvider>
-                      <DiaryProvider>
-                        <WorryProvider>
-                          <NoteProvider>
-                            <GoalProvider>
+              <AuthProvider>
+                <GamificationProvider>
+                  <SettingsProvider>
+                    <DiaryProvider>
+                      <WorryProvider>
+                        <NoteProvider>
+                          <GoalProvider>
+                            <NotificationProvider>
                               <AppNav />
-                            </GoalProvider>
-                          </NoteProvider>
-                        </WorryProvider>
-                      </DiaryProvider>
-                    </SettingsProvider>
-                  </GamificationProvider>
-                </AuthProvider>
-              </NotificationProvider>
+                            </NotificationProvider>
+                          </GoalProvider>
+                        </NoteProvider>
+                      </WorryProvider>
+                    </DiaryProvider>
+                  </SettingsProvider>
+                </GamificationProvider>
+              </AuthProvider>
             </PaperProvider>
           </NavigationContainer>
         </SafeAreaProvider>

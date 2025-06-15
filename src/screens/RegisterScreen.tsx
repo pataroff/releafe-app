@@ -8,7 +8,6 @@ const windowWidth = Dimensions.get('window').width;
 export const RegisterScreen = () => {
   return (
     <>
-      <StatusBar />
       <ScrollView
         bounces={false}
         showsVerticalScrollIndicator={false}
@@ -16,6 +15,7 @@ export const RegisterScreen = () => {
         contentContainerStyle={styles.contentContainerStyles}
       >
         <Image
+          resizeMode='contain'
           style={styles.logoImage}
           source={require('../../assets/images/logo_releafe_04.png')}
         />
@@ -28,6 +28,7 @@ export const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   contentContainerStyles: {
     flexGrow: 1,

@@ -8,15 +8,16 @@ import { Performance } from '../components/Performance';
 
 import { useDiary } from '../context/DiaryContext';
 import { useGamification } from '../context/GamificationContext';
-import { useNotification } from '../context/NotificationContext';
 
 import { evaluateAllAchievements } from '../utils/achievements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const DASHBOARD_LAST_OPENED_KEY = 'DASHBOARD_LAST_OPENED';
 
 export const DashboardScreen: React.FC = () => {
   const title = 'Welzijnsoverzicht';
   const { diaryEntries } = useDiary();
   const { unlockedAchievements, unlockAchievement } = useGamification();
-  const { scheduleDashboardInactivityNotification } = useNotification();
 
   useEffect(() => {
     if (diaryEntries.length > 0) {
@@ -27,7 +28,12 @@ export const DashboardScreen: React.FC = () => {
       });
     }
 
-    scheduleDashboardInactivityNotification();
+    const storeDashboardOpenTime = async () => {
+      const now = new Date().toISOString();
+      await AsyncStorage.setItem(DASHBOARD_LAST_OPENED_KEY, now);
+    };
+
+    storeDashboardOpenTime();
   }, []);
 
   return (

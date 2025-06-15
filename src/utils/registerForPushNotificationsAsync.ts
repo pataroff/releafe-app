@@ -8,9 +8,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const debugAsyncStorage = async () => {
   const keys = await AsyncStorage.getAllKeys();
   const stores = await AsyncStorage.multiGet(keys);
+  console.log('--- ASYNC STORAGE (START) ---');
   stores.forEach(([key, value]) =>
     console.log(`[AsyncStorage] ${key}: ${value}`)
   );
+  console.log('--- ASYNC STORAGE (END) ---');
 };
 
 export async function registerForPushNotificationsAsync() {

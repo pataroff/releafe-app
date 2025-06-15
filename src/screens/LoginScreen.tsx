@@ -8,7 +8,6 @@ const windowWidth = Dimensions.get('window').width;
 export const LoginScreen = () => {
   return (
     <>
-      <StatusBar />
       <ScrollView
         bounces={false}
         showsVerticalScrollIndicator={false}
@@ -16,6 +15,7 @@ export const LoginScreen = () => {
         contentContainerStyle={styles.contentContainerStyles}
       >
         <Image
+          resizeMode='contain'
           style={styles.logoImage}
           source={require('../../assets/images/logo_releafe_04.png')}
         />
@@ -28,6 +28,7 @@ export const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
     // Shadow Test
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     height: 100,
     width: '100%',
-    marginVertical: 20,
+    marginBottom: 40,
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#dedede',

@@ -28,8 +28,6 @@ import { useAuth } from '../context/AuthContext';
 import { useGoal } from '../context/GoalContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { debugAsyncStorage } from '../utils/registerForPushNotificationsAsync';
-
 const windowWidth = Dimensions.get('window').width;
 
 const RANGE = 'Blad1!A2:C';

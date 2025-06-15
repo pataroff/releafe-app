@@ -33,19 +33,21 @@ export const LoginForm = () => {
             style={styles.textInputField}
             autoCapitalize='none'
             placeholder='Vul je e-mailadres in...'
+            placeholderTextColor='gainsboro'
             onChangeText={(value) => setEmail(value)}
             value={email}
-          ></TextInput>
+          />
 
           <Text style={styles.textInputLabelText}>Wachtwoord</Text>
           <TextInput
             style={styles.textInputField}
             placeholder='Vul je wachtwoord in...'
+            placeholderTextColor='gainsboro'
             autoCapitalize='none'
             secureTextEntry={true}
             onChangeText={(value) => setPassword(value)}
             value={password}
-          ></TextInput>
+          />
 
           <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.forgotPasswordText}>Wachtwoord vergeten?</Text>

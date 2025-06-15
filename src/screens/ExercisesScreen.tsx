@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react';
+
 import {
   StyleSheet,
   Text,
@@ -12,9 +14,22 @@ import { Fonts } from '../styles';
 
 import { ExercisesCategoriesList } from '../components/ExercisesCategoriesList';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const windowWidth = Dimensions.get('window').width;
 
+const EXERCISES_LAST_USED_KEY = 'EXERCISES_LAST_USED';
+
 export const ExercisesScreen: React.FC<{ route: any }> = ({ route }) => {
+  useEffect(() => {
+    const storeExercisesOpenTime = async () => {
+      const now = new Date().toISOString();
+      await AsyncStorage.setItem(EXERCISES_LAST_USED_KEY, now);
+    };
+
+    storeExercisesOpenTime();
+  }, []);
+
   return (
     <ScrollView
       bounces={false}
