@@ -339,6 +339,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
       transparent={true}
       visible={modalDiaryVisible}
       onRequestClose={() => setCloseModalVisible(!closeModalVisible)}
+      statusBarTranslucent={true}
     >
       <CloseModal
         closeModalVisible={closeModalVisible}

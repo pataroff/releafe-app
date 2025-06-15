@@ -439,7 +439,11 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
   return (
     <>
       {isCameraOpen ? (
-        <Modal visible={isCameraOpen} style={{ flex: 1 }}>
+        <Modal
+          visible={isCameraOpen}
+          style={{ flex: 1 }}
+          statusBarTranslucent={true}
+        >
           {!image && !video ? (
             <CameraView
               style={styles.camera}
@@ -566,6 +570,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
           onRequestClose={() =>
             setModalNoteListItemAddVisible(!modalNoteListItemAddVisible)
           }
+          statusBarTranslucent={true}
         >
           <CloseModal
             closeModalVisible={closeModalVisible}

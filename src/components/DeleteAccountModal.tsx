@@ -25,37 +25,46 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const [password, setPassword] = useState('');
 
   return (
-    <Modal animationType='fade' transparent={true} visible={visible}>
-      <View style={styles.modalWrapper}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.title}>Account verwijderen</Text>
-          <Text style={styles.description}>
-            Deze actie is onomkeerbaar. Voer je wachtwoord in om je account te
-            verwijderen.
-          </Text>
+    <View>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={visible}
+        statusBarTranslucent={true}
+      >
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.title}>Account verwijderen</Text>
+            <Text style={styles.description}>
+              Deze actie is onomkeerbaar. Voer je wachtwoord in om je account te
+              verwijderen.
+            </Text>
 
-          <TextInput
-            placeholder='Wachtwoord'
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            style={styles.input}
-          />
+            <TextInput
+              placeholder='Wachtwoord'
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              style={styles.input}
+            />
 
-          <View style={styles.buttonWrapper}>
-            <Pressable
-              style={styles.confirmButton}
-              onPress={() => onConfirm(password)}
-            >
-              <Text style={styles.confirmText}>Ja, verwijder mijn account</Text>
-            </Pressable>
-            <Pressable style={styles.cancelButton} onPress={onCancel}>
-              <Text style={styles.cancelText}>Annuleren</Text>
-            </Pressable>
+            <View style={styles.buttonWrapper}>
+              <Pressable
+                style={styles.confirmButton}
+                onPress={() => onConfirm(password)}
+              >
+                <Text style={styles.confirmText}>
+                  Ja, verwijder mijn account
+                </Text>
+              </Pressable>
+              <Pressable style={styles.cancelButton} onPress={onCancel}>
+                <Text style={styles.cancelText}>Annuleren</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 

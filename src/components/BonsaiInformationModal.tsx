@@ -75,6 +75,7 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
           setInformatiegidsIndex(0);
           setModalBonsaiInformationVisible(!modalBonsaiInformationVisible);
         }}
+        statusBarTranslucent={true}
       >
         <View style={styles.modalWrapper}>
           <View style={styles.modalContainer}>
@@ -105,10 +106,8 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                         Hi {user?.firstName}, welkom bij je bonsaiboom.
                       </Text>
                       <Text style={{ ...styles.informationBody }}>
-                        Hier kun je jouw eigen bonsaiboom verzorgen en aanpassen zoals 
-                        jij dat wilt.
-                        Ontdek wat er allemaal mogelijk is!
-
+                        Hier kun je jouw eigen bonsaiboom verzorgen en aanpassen
+                        zoals jij dat wilt. Ontdek wat er allemaal mogelijk is!
                       </Text>
                     </View>
                   </View>
@@ -137,7 +136,8 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
               {informatiegidsIndex == 1 && (
                 <>
                   <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
-                    Op plekken waar je punten en badges kunt verdienen, zie je deze symbolen:
+                    Op plekken waar je punten en badges kunt verdienen, zie je
+                    deze symbolen:
                   </Text>
                   <View
                     style={{ width: windowWidth / 3.2, paddingVertical: 10 }}
@@ -171,8 +171,9 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
               {informatiegidsIndex == 3 && (
                 <>
                   <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
-                    Rechtsonder vind je je prestaties: de badges die je hebt 
-                    verdiend door actief bezig te zijn met je mentale gezondheid.
+                    Rechtsonder vind je je prestaties: de badges die je hebt
+                    verdiend door actief bezig te zijn met je mentale
+                    gezondheid.
                   </Text>
                   <Image
                     source={require('../../assets/images/bonsai_points_achievements_information_icons.png')}
@@ -189,12 +190,12 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
             {/*Close out Button*/}
             <Pressable
               style={{ position: 'absolute', top: 24, right: 24 }}
-              onPress={() =>
-              {
+              onPress={() => {
                 setInformatiegidsIndex(0);
-                setModalBonsaiInformationVisible(!modalBonsaiInformationVisible)
-              }
-              }
+                setModalBonsaiInformationVisible(
+                  !modalBonsaiInformationVisible
+                );
+              }}
             >
               <Feather name='x-circle' size={24} color='gray' />
             </Pressable>

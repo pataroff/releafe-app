@@ -269,6 +269,7 @@ export const GoalListItemAddModal: React.FC<GoalListItemAddModalProps> = ({
         onRequestClose={() =>
           setModalAddGoalListItemVisible(!modalAddGoalListItemVisible)
         }
+        statusBarTranslucent={true}
       >
         <CloseModal
           closeModalVisible={closeModalVisible}

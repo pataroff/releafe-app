@@ -132,6 +132,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       animationType='fade'
       transparent={true}
       visible={changePasswordModalVisible}
+      statusBarTranslucent={true}
     >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>

@@ -239,7 +239,6 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
     // Mark the selected date with custom styles
     const selectedDateFormatted = getFormattedDate(selectedDate);
-    console.log(selectedDateFormatted);
     markedDates[selectedDateFormatted] = {
       ...(markedDates[selectedDateFormatted] || {}),
       selected: true,
@@ -404,10 +403,12 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             </Text>
             <Slider
               disable={true}
-              style={{ width: '100%', height: 40 }}
+              containerStyle={{ width: '100%', borderRadius: 30 }}
               progress={sliderValue}
               minimumValue={min}
               maximumValue={max}
+              sliderHeight={15}
+              thumbWidth={25}
               theme={{
                 minimumTrackTintColor: '#E4E1E1',
                 maximumTrackTintColor: '#E4E1E1',
@@ -490,7 +491,8 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
               style={styles.dataTextInputContainer}
               multiline={true}
               placeholder='Niet ingevuld'
-            ></TextInput>
+              placeholderTextColor='black'
+            />
           </View>
 
           {/* Text Index Controls */}

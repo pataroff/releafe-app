@@ -26,7 +26,12 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
   onCancel,
 }) => {
   return (
-    <Modal animationType='fade' transparent={true} visible={visible}>
+    <Modal
+      animationType='fade'
+      transparent={true}
+      visible={visible}
+      statusBarTranslucent={true}
+    >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
           <Text style={styles.title}>Aankoop voltooien</Text>
@@ -45,7 +50,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
           </View>
         </View>
       </View>
-      <Toast/>
+      <Toast />
     </Modal>
   );
 };

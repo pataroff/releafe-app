@@ -46,7 +46,7 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
 
   return (
     <>
-      <StatusBar style='light' backgroundColor='transparent' />
+      <StatusBar style='light' />
       {/* Background  */}
       <View
         style={{

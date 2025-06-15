@@ -74,6 +74,7 @@ export const CloseModal: React.FC<CloseModalProps> = ({
         transparent={true}
         visible={closeModalVisible}
         onRequestClose={() => setCloseModalVisible(!setCloseModalVisible)}
+        statusBarTranslucent={true}
       >
         <View style={styles.modalWrapper}>
           <View style={styles.modalContainer}>

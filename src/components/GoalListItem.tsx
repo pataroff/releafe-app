@@ -8,7 +8,6 @@ import {
   Pressable,
   Platform,
   TextStyle,
-  Modal,
 } from 'react-native';
 
 import { ProgressBar } from 'react-native-paper';

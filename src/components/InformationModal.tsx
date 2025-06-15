@@ -149,6 +149,7 @@ export const InformationModal: React.FC<InformationModalProps> = ({
           setInformatiegidsIndex(0);
           setModalInformationVisible(!modalInformationVisible);
         }}
+        statusBarTranslucent={true}
       >
         <View style={styles.modalWrapper}>
           <View style={styles.modalContainer}>

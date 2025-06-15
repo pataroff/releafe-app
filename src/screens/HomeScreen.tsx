@@ -259,6 +259,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
         onRequestClose={() =>
           setQuestionMarkModalActive(!questionMarkModalActive)
         }
+        statusBarTranslucent={true}
       >
         <View style={styles.modalWrapper}>
           <View style={styles.modalContainer}>

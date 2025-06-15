@@ -162,6 +162,7 @@ export const NoteListItemExpandedModal: React.FC<
       onRequestClose={() =>
         setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible)
       }
+      statusBarTranslucent={true}
     >
       <CloseModal
         closeModalVisible={modalCloseVisible}

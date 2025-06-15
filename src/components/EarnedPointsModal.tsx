@@ -40,7 +40,12 @@ export const EarnedPointsModal: React.FC<EarnedPointsModalProps> = ({
 
   return (
     <View>
-      <Modal animationType='fade' transparent={true} visible={visible}>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={visible}
+        statusBarTranslucent={true}
+      >
         <View style={styles.modalWrapper}>
           <View style={styles.modalContainer}>
             {/* Close Button */}

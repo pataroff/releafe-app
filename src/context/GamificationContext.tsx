@@ -11,7 +11,6 @@ import pb from '../lib/pocketbase';
 import { useAuth } from './AuthContext';
 
 import {
-  achievementsLockedIcon,
   findAchievementById,
   evaluateAllAchievements,
 } from '../utils/achievements';

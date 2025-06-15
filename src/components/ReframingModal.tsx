@@ -307,6 +307,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
       transparent={true}
       visible={modalReframingVisible}
       onRequestClose={() => setCloseModalVisible(!closeModalVisible)}
+      statusBarTranslucent={true}
     >
       <CloseModal
         closeModalVisible={closeModalVisible}

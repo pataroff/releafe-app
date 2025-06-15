@@ -49,6 +49,7 @@ export const AchievementModal: React.FC<AchievementModalProps> = ({
         animationType='fade'
         transparent={true}
         visible={achievementModalVisible}
+        statusBarTranslucent={true}
       >
         <View style={styles.modalWrapper}>
           <View style={styles.modalContainer}>

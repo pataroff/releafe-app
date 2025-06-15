@@ -21,7 +21,12 @@ export const NotEnoughPointsModal: React.FC<NotEnoughPointsModalProps> = ({
   onClose,
 }) => {
   return (
-    <Modal animationType='fade' transparent={true} visible={visible}>
+    <Modal
+      animationType='fade'
+      transparent={true}
+      visible={visible}
+      statusBarTranslucent={true}
+    >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>
           <Text style={styles.title}>Niet voldoende punten</Text>

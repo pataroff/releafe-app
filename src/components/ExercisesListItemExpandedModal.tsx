@@ -57,6 +57,7 @@ export const ExercisesListItemExpandedModal: React.FC<
           !modalExercisesListItemExpandedVisible
         );
       }}
+      statusBarTranslucent={true}
     >
       <View style={styles.modalWrapper}>
         <View style={styles.modalContainer}>

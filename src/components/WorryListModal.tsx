@@ -52,6 +52,7 @@ export const WorryListModal: React.FC<WorryListModalProps> = ({
         transparent={true}
         visible={modalWorryListVisible}
         onRequestClose={() => handleDrawer()}
+        statusBarTranslucent={true}
       >
         <View style={styles.modalWrapper}>
           <View style={styles.modalContainer}>

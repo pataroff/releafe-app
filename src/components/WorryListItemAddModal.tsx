@@ -134,6 +134,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
       transparent={true}
       visible={modalAddWorryListItemVisible}
       onRequestClose={() => handleClose()}
+      statusBarTranslucent={true}
     >
       <CloseModal
         closeModalVisible={closeModalVisible}
