@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
   },
   contentContainerStyles: {
     flexGrow: 1,
-    borderWidth: 1,
-    width: windowWidth,
-    paddingHorizontal: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    width: windowWidth,
+    paddingHorizontal: 25,
+    paddingVertical: 80,
   },
   logoContainer: {
     paddingHorizontal: 15,
