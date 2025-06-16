@@ -105,7 +105,7 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
                       <Text style={styles.informationTitleIntro}>
                         Hi {user?.firstName}, welkom bij je bonsaiboom.
                       </Text>
-                      <Text style={{ ...styles.informationBody }}>
+                      <Text style={styles.informationBody}>
                         Hier kun je jouw eigen bonsaiboom verzorgen en aanpassen
                         zoals jij dat wilt. Ontdek wat er allemaal mogelijk is!
                       </Text>
@@ -135,21 +135,37 @@ export const BonsaiInformationModal: React.FC<BonsaiInformationModalProps> = ({
               {/*Second Page*/}
               {informatiegidsIndex == 1 && (
                 <>
-                  <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
+                  <Text style={[styles.informationBody, { marginBottom: 10 }]}>
                     Op plekken waar je punten en badges kunt verdienen, zie je
                     deze symbolen:
                   </Text>
+                  {/* Reward Container */}
                   <View
-                    style={{ width: windowWidth / 3.2, paddingVertical: 10 }}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      columnGap: 5,
+                      marginVertical: 10,
+                    }}
                   >
-                    <Image
-                      source={require('../../assets/images/information_achievement_points_icon.png')}
-                      style={{
-                        objectFit: 'contain',
-                        width: '100%',
-                        height: 36,
-                      }}
-                    />
+                    {/* Points Container */}
+                    <View style={styles.pointsContainer}>
+                      <Text style={styles.pointsText}>+15</Text>
+
+                      <Image
+                        style={styles.shopIcon}
+                        source={require('../../assets/images/bonsai_tree_icons/shop_icon.png')}
+                        resizeMode='contain'
+                      />
+                    </View>
+                    {/* Trophy Container */}
+                    <View style={styles.trophyContainer}>
+                      <Image
+                        style={styles.trophyIcon}
+                        source={require('../../assets/images/bonsai_tree_icons/trophy_icon.png')}
+                        resizeMode='contain'
+                      />
+                    </View>
                   </View>
                 </>
               )}
@@ -281,21 +297,6 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 0,
     paddingBottom: 20,
   },
-  h1Text: {
-    ...Fonts.sofiaProBold[Platform.OS],
-    fontSize: 20,
-    color: 'white',
-  } as TextStyle,
-  bodyText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
-    fontSize: 14,
-    color: 'white',
-  } as TextStyle,
-  labelStyle: {
-    ...Fonts.sofiaProSemiBold[Platform.OS],
-    color: 'black',
-    fontSize: 16,
-  } as TextStyle,
   informationTitleIntro: {
     ...Fonts.sofiaProMedium[Platform.OS],
     color: 'black',
@@ -308,8 +309,8 @@ const styles = StyleSheet.create({
   } as TextStyle,
   informationBody: {
     ...Fonts.sofiaProLight[Platform.OS],
-    color: 'black',
     fontSize: 14,
+    lineHeight: 18,
   } as TextStyle,
   informationBodyBold: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
@@ -363,4 +364,38 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   } as TextStyle,
+  pointsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 72,
+    height: 31,
+    columnGap: 5,
+    backgroundColor: '#90A38A',
+    borderRadius: 7.5,
+    padding: 5,
+  },
+  pointsText: {
+    ...Fonts.sofiaProSemiBold[Platform.OS],
+    color: 'white',
+    fontSize: 16,
+  } as TextStyle,
+  shopIcon: {
+    width: 29,
+    height: 20,
+    marginBottom: 5,
+  },
+  trophyContainer: {
+    width: 35,
+    padding: 5,
+    borderRadius: 7.5,
+    backgroundColor: '#FCF2D0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trophyIcon: {
+    width: 23,
+    height: 20,
+  },
 });

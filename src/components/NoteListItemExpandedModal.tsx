@@ -347,7 +347,7 @@ export const NoteListItemExpandedModal: React.FC<
                 marginTop: 10,
                 display: 'flex',
                 flexDirection: 'row',
-                alignSelf: 'flex-end',
+                alignSelf: 'flex-start',
                 columnGap: 10,
               }}
             >

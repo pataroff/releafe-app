@@ -397,7 +397,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
           </View>
 
           {/* Sliders Data */}
-          <View style={styles.dataSlidersContainer}>
+          <View style={styles.dataContainer}>
             <Text style={styles.dataHeadingText}>
               {sliderTitlesAndDescriptions[sliderQuestionIndex][0]}
             </Text>
@@ -480,7 +480,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
           <Divider style={{ marginHorizontal: 30 }} bold={true} />
 
-          <View style={{ marginTop: 30, paddingHorizontal: 25 }}>
+          <View style={styles.dataContainer}>
             <Text style={styles.dataHeadingText}>Aanvullende vragen</Text>
             <Text style={styles.dataDescriptionText}>
               {textQuestions[textQuestionIndex]}
@@ -621,9 +621,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     marginTop: 30,
   },
-  dataSlidersContainer: {
+  dataContainer: {
     paddingHorizontal: 30,
     marginTop: 30,
+    rowGap: 20,
   },
   dataTitleText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
@@ -632,7 +633,6 @@ const styles = StyleSheet.create({
   dataHeadingText: {
     ...Fonts.sofiaProMedium[Platform.OS],
     fontSize: 16,
-    marginBottom: 5,
   } as TextStyle,
   dataDescriptionText: {
     ...Fonts.sofiaProRegular[Platform.OS],
@@ -681,14 +681,13 @@ const styles = StyleSheet.create({
     color: 'white',
   } as TextStyle,
   dataTextInputContainer: {
-    verticalAlign: Platform.OS === 'android' ? 'top' : undefined,
+    verticalAlign: Platform.OS === 'android' ? 'top' : {},
     fontSize: 14,
     height: 150,
     ...Fonts.sofiaProRegular[Platform.OS],
     borderRadius: 10,
     paddingTop: 20,
     paddingLeft: 20,
-    marginTop: 20,
     backgroundColor: '#F6F7F8',
   } as TextStyle,
 });

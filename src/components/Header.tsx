@@ -94,7 +94,6 @@ export const Header: React.FC<{ title: string; route?: any }> = ({
                 {showBackButton && (
                   <Pressable onPress={() => navigation.goBack()}>
                     <MaterialCommunityIcons
-                      style={{ marginBottom: 5 }}
                       name='chevron-left-circle-outline'
                       size={35}
                       color='white'

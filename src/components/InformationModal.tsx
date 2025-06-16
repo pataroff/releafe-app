@@ -177,11 +177,9 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                   </View>
 
                   {/* Body Container */}
-                  <View style={{ marginTop: 20, rowGap: 20 }}>
+                  <View style={{ marginTop: 10, rowGap: 20 }}>
                     <Text style={styles.informationBody}>
-                      Fijn dat je er bent.
-                    </Text>
-                    <Text style={styles.informationBody}>
+                      Fijn dat je er bent. {'\n'} {'\n'}
                       Releafe helpt je stap voor stap om goed voor je mentale
                       gezondheid te zorgen. Je leert omgaan met zorgen en
                       gevoelens zoals stress. Ook ontdek je hoe je meer aandacht
@@ -221,7 +219,7 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                     </Text>
                   </View>
                   <Text
-                    style={{ ...styles.informationBody, marginVertical: 20 }}
+                    style={[styles.informationBody, { marginVertical: 20 }]}
                   >
                     {informatiegidsSteps[informatiegidsIndex].description}
                   </Text>
@@ -239,68 +237,79 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                         style={{
                           display: 'flex',
                           flexDirection: 'row',
+                          alignItems: 'center',
                           width: '100%',
-                          paddingRight: 30,
+                          columnGap: 15,
                         }}
                       >
-                        <View style={{ alignSelf: 'center' }}>
-                          <Image
-                            source={
-                              informatiegidsNavigationElements[index].icon
-                            }
-                            style={styles.navigationScreenIcon}
-                          ></Image>
-                        </View>
+                        <Image
+                          source={informatiegidsNavigationElements[index].icon}
+                          style={styles.navigationScreenIcon}
+                        />
 
-                        <Text style={styles.informationBodyBold}>
-                          {informatiegidsNavigationElements[index].boldtext}
+                        <View
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            flexShrink: 1,
+                          }}
+                        >
+                          <Text style={styles.informationBodyBold}>
+                            {informatiegidsNavigationElements[index].boldtext}
+                          </Text>
                           <Text style={styles.informationBody}>
-                            {'\n'}
                             {informatiegidsNavigationElements[index].text}
                           </Text>
-                        </Text>
+                        </View>
                       </View>
                     );
                   })}
                 </View>
               )}
               {/*Third Page*/}
-              {informatiegidsIndex == 2 && (
-                <>
-                  {Array.from({
-                    length: informatiegidsExerciseElements.length,
-                  }).map((_, index) => {
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          marginBottom: 10,
-                          marginRight: 30,
-                        }}
-                      >
-                        <View style={{ alignSelf: 'center' }}>
+              <View style={{ rowGap: 20 }}>
+                {informatiegidsIndex == 2 && (
+                  <>
+                    {Array.from({
+                      length: informatiegidsExerciseElements.length,
+                    }).map((_, index) => {
+                      return (
+                        <View
+                          key={index}
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            width: '100%',
+                            columnGap: 15,
+                          }}
+                        >
                           <Image
                             source={informatiegidsExerciseElements[index].icon}
                             style={styles.navigationScreenIcon}
-                          ></Image>
+                          />
+                          <View
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
+                              flexShrink: 1,
+                            }}
+                          >
+                            <Text style={styles.informationBodyBold}>
+                              {informatiegidsExerciseElements[index].title}
+                            </Text>
+                            <Text style={styles.informationBody}>
+                              {informatiegidsExerciseElements[index].text}
+                            </Text>
+                          </View>
                         </View>
-                        <View
-                          style={{ display: 'flex', flexDirection: 'column' }}
-                        >
-                          <Text style={styles.informationBodyBold}>
-                            {informatiegidsExerciseElements[index].title}
-                          </Text>
-                          <Text style={styles.informationBody}>
-                            {informatiegidsExerciseElements[index].text}
-                          </Text>
-                        </View>
-                      </View>
-                    );
-                  })}
-                </>
-              )}
+                      );
+                    })}
+                  </>
+                )}
+              </View>
               {/*Fourth Page*/}
               {informatiegidsIndex == 3 && (
                 <>
@@ -308,35 +317,61 @@ export const InformationModal: React.FC<InformationModalProps> = ({
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
-                      columnGap: 10,
                     }}
                   >
-                    <Image
-                      source={require('../../assets/images/information_achievement_points_icon.png')}
+                    {/* Reward Container */}
+                    <View
                       style={{
-                        objectFit: 'contain',
-                        width: windowWidth / 3.2,
-                        height: 36,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        columnGap: 5,
+                        marginBottom: 20,
                       }}
-                    />
-                    <Text style={{ ...styles.informationBody }}>
+                    >
+                      {/* Points Container */}
+                      <View style={styles.pointsContainer}>
+                        <Text style={styles.pointsText}>+15</Text>
+
+                        <Image
+                          style={styles.shopIcon}
+                          source={require('../../assets/images/bonsai_tree_icons/shop_icon.png')}
+                          resizeMode='contain'
+                        />
+                      </View>
+                      {/* Trophy Container */}
+                      <View style={styles.trophyContainer}>
+                        <Image
+                          style={styles.trophyIcon}
+                          source={require('../../assets/images/bonsai_tree_icons/trophy_icon.png')}
+                          resizeMode='contain'
+                        />
+                      </View>
+                    </View>
+                    <Text style={styles.informationBody}>
                       Met deze punten kun je jouw eigen bonsaiboom verzorgen en
                       laten groeien – bijvoorbeeld door extra bladeren of
                       bloesems toe te voegen.
                     </Text>
-                    <Text style={{ ...styles.informationBody }}>
+                    <Text style={styles.informationBody}>
                       Je vindt je bonsaiboom door rechtsboven op je profiel te
                       klikken.
                     </Text>
-                    <Image
-                      source={require('../../assets/images/bonsai_tree_tree.png')}
+                    <View
                       style={{
-                        objectFit: 'contain',
-                        alignSelf: 'center',
-                        width: windowWidth / 1.2,
-                        maxHeight: windowHeight / 3,
+                        height: 215,
+                        width: '100%',
+                        marginVertical: 20,
                       }}
-                    />
+                    >
+                      <Image
+                        resizeMode='contain'
+                        source={require('../../assets/images/bonsai_tree_tree.png')}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                        }}
+                      />
+                    </View>
                   </View>
                 </>
               )}
@@ -487,22 +522,19 @@ const styles = StyleSheet.create({
   informationTitleIntro: {
     marginTop: 20,
     ...Fonts.sofiaProMedium[Platform.OS],
-    color: 'black',
     fontSize: 20,
   } as TextStyle,
   informationTitle: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
-    color: 'black',
     fontSize: 18,
   } as TextStyle,
   informationBody: {
     ...Fonts.sofiaProLight[Platform.OS],
-    color: 'black',
+    lineHeight: 18,
     fontSize: 14,
   } as TextStyle,
   informationBodyBold: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
-    color: 'black',
     fontSize: 14,
   } as TextStyle,
   drawerItem: {
@@ -528,26 +560,56 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   navigationScreenIcon: {
-    objectFit: 'contain',
-    paddingHorizontal: 10,
-    height: 26,
-    width: '100%',
-    marginRight: 20,
-    alignSelf: 'center',
+    height: 25,
+    width: 25,
   },
   websiteButton: {
     width: 200,
     alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 10,
-    borderColor: 'black',
-    paddingVertical: 6,
+    height: 40,
     backgroundColor: '#5C6B57',
     marginVertical: 20,
   },
   websiteButtonText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
-    fontSize: 14,
+    fontSize: 16,
     color: 'white',
     textAlign: 'center',
   } as TextStyle,
+  pointsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 72,
+    height: 31,
+    columnGap: 5,
+    backgroundColor: '#90A38A',
+    borderRadius: 7.5,
+    padding: 5,
+  },
+  pointsText: {
+    ...Fonts.sofiaProSemiBold[Platform.OS],
+    color: 'white',
+    fontSize: 16,
+  } as TextStyle,
+  shopIcon: {
+    width: 29,
+    height: 20,
+    marginBottom: 5,
+  },
+  trophyContainer: {
+    width: 35,
+    padding: 5,
+    borderRadius: 7.5,
+    backgroundColor: '#FCF2D0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trophyIcon: {
+    width: 23,
+    height: 20,
+  },
 });

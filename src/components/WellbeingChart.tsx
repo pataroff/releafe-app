@@ -43,8 +43,6 @@ import { ChartTimeframe } from '../types';
 import { Fonts } from '../styles';
 
 // @ts-expect-error
-import poppinsLight from '../../assets/fonts/Poppins-Light.ttf';
-// @ts-expect-error
 import sofiaProSemiBold from '../../assets/fonts/SofiaProSemiBold.ttf';
 // @ts-expect-error
 import sofiaProLight from '../../assets/fonts/SofiaProLight.ttf';
@@ -69,7 +67,7 @@ const WEEKLY_LABELS = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
 const MONTHLY_LABELS = [
   'Jan',
   'Feb',
-  'Maart',
+  'Mrt',
   'Apr',
   'Mei',
   'Juni',
@@ -1529,7 +1527,7 @@ export const WellbeingChart = ({
                         color={lineProperties[label].color}
                         strokeWidth={2}
                         connectMissingData={true} // @TODO Is this needed with the filled data gaps approach?
-                        animate={{ type: 'timing', duration: 300 }} // @WARN This line breaks the charts on snack-expo!
+                        // animate={{ type: 'timing', duration: 300 }} // @WARN This line breaks the charts on snack-expo!
                         curveType='natural'
                       />
 

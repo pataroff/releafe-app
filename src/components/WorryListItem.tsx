@@ -12,14 +12,14 @@ import {
 
 import { Fonts } from '../styles';
 
-import { IWorryListItem } from '../types';
+import { IWorryEntry } from '../types';
 import { getPriorityColor, getCategory } from '../utils/worry';
 import { useWorry } from '../context/WorryContext';
 import { CloseModal } from './CloseModal';
 import Entypo from '@expo/vector-icons/Entypo';
 
 interface WorryListItemProps {
-  item: IWorryListItem;
+  item: IWorryEntry;
   modalWorryListVisible: boolean;
   setModalWorryListVisible: React.Dispatch<React.SetStateAction<boolean>>;
   modalAddWorryListItemVisible: boolean;
@@ -295,8 +295,9 @@ const styles = StyleSheet.create({
     fontSize: 11,
   } as TextStyle,
   worryListItemDescriptionText: {
-    ...Fonts.sofiaProRegular[Platform.OS],
+    ...Fonts.sofiaProLight[Platform.OS],
     fontSize: 13,
+    lineHeight: 18,
   } as TextStyle,
   worryListExpandedArrow: {
     position: 'absolute',

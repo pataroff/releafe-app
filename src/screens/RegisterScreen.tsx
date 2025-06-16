@@ -1,5 +1,4 @@
-import { ScrollView, StyleSheet, Image, Dimensions } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { View, ScrollView, StyleSheet, Image, Dimensions } from 'react-native';
 
 import { RegisterForm } from '../components/RegisterForm';
 
@@ -14,11 +13,13 @@ export const RegisterScreen = () => {
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
-        <Image
-          resizeMode='contain'
-          style={styles.logoImage}
-          source={require('../../assets/images/logo_releafe_04.png')}
-        />
+        <View style={styles.logoContainer}>
+          <Image
+            resizeMode='contain'
+            style={{ width: '100%', height: '100%' }}
+            source={require('../../assets/images/logo_releafe_04.png')}
+          />
+        </View>
         <RegisterForm />
       </ScrollView>
     </>
@@ -38,10 +39,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 80,
   },
-  logoImage: {
+  logoContainer: {
     paddingHorizontal: 15,
     height: 100,
     width: '100%',
+    marginBottom: 40,
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#dedede',

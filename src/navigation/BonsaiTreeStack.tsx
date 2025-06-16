@@ -14,11 +14,7 @@ export const BonsaiTreeStack: React.FC = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen
-        name='BonsaiTree1'
-        component={BonsaiTreeScreen}
-        initialParams={{ bonsaiTreeStackScreen: true }}
-      />
+      <Stack.Screen name='BonsaiTree1' component={BonsaiTreeScreen} />
       <Stack.Screen
         name='BonsaiTreeShop'
         component={BonsaiTreeShopScreen}

@@ -1,5 +1,4 @@
-import { ScrollView, StyleSheet, Image, Dimensions } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { View, ScrollView, StyleSheet, Image, Dimensions } from 'react-native';
 
 import { LoginForm } from '../components/LoginForm';
 
@@ -14,11 +13,13 @@ export const LoginScreen = () => {
         style={styles.container}
         contentContainerStyle={styles.contentContainerStyles}
       >
-        <Image
-          resizeMode='contain'
-          style={styles.logoImage}
-          source={require('../../assets/images/logo_releafe_04.png')}
-        />
+        <View style={styles.logoContainer}>
+          <Image
+            style={{ width: '100%', height: '100%' }}
+            resizeMode='contain'
+            source={require('../../assets/images/logo_releafe_04.png')}
+          />
+        </View>
         <LoginForm />
       </ScrollView>
     </>
@@ -29,12 +30,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    // Shadow Test
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
-    elevation: 1,
   },
   contentContainerStyles: {
     flexGrow: 1,
@@ -44,7 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  logoImage: {
+  logoContainer: {
     paddingHorizontal: 15,
     height: 100,
     width: '100%',
