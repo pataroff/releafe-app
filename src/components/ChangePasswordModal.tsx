@@ -128,66 +128,70 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   };
 
   return (
-    <Modal
-      animationType='fade'
-      transparent={true}
-      visible={changePasswordModalVisible}
-      statusBarTranslucent={true}
-    >
-      <View style={styles.modalWrapper}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.title}>Stel nieuw wachtwoord in</Text>
-          <Text style={styles.description}>Voer een nieuw wachtwoord in.</Text>
+    <View>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={changePasswordModalVisible}
+        statusBarTranslucent={true}
+      >
+        <View style={styles.modalWrapper}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.title}>Stel nieuw wachtwoord in</Text>
+            <Text style={styles.description}>
+              Voer een nieuw wachtwoord in.
+            </Text>
 
-          <View style={styles.passwordContainer}>
-            <TextInput
-              placeholder='Nieuw wachtwoord'
-              secureTextEntry={!showPassword}
-              value={password}
-              onChangeText={setPassword}
-              style={styles.input}
-            />
-            <Pressable
-              onPress={() => setShowPassowrd(!showPassword)}
-              style={styles.iconContainer}
-            >
-              <Feather
-                name={showPassword ? 'eye-off' : 'eye'}
-                size={20}
-                color='#aaa'
+            <View style={styles.passwordContainer}>
+              <TextInput
+                placeholder='Nieuw wachtwoord'
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+                style={styles.input}
               />
-            </Pressable>
-          </View>
+              <Pressable
+                onPress={() => setShowPassowrd(!showPassword)}
+                style={styles.iconContainer}
+              >
+                <Feather
+                  name={showPassword ? 'eye-off' : 'eye'}
+                  size={20}
+                  color='#aaa'
+                />
+              </Pressable>
+            </View>
 
-          <View style={styles.passwordContainer}>
-            <TextInput
-              placeholder='Bevestig wachtwoord'
-              secureTextEntry={!showConfirmPassword}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              style={styles.input}
-            />
-            <Pressable
-              onPress={() => setShowConfirmPassowrd(!showConfirmPassword)}
-              style={styles.iconContainer}
-            >
-              <Feather
-                name={showConfirmPassword ? 'eye-off' : 'eye'}
-                size={20}
-                color='#aaa'
+            <View style={styles.passwordContainer}>
+              <TextInput
+                placeholder='Bevestig wachtwoord'
+                secureTextEntry={!showConfirmPassword}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                style={styles.input}
               />
-            </Pressable>
-          </View>
+              <Pressable
+                onPress={() => setShowConfirmPassowrd(!showConfirmPassword)}
+                style={styles.iconContainer}
+              >
+                <Feather
+                  name={showConfirmPassword ? 'eye-off' : 'eye'}
+                  size={20}
+                  color='#aaa'
+                />
+              </Pressable>
+            </View>
 
-          <View style={styles.buttonWrapper}>
-            <Pressable style={styles.confirmButton} onPress={handleConfirm}>
-              <Text style={styles.confirmText}>Wachtwoord wijzigen</Text>
-            </Pressable>
+            <View style={styles.buttonWrapper}>
+              <Pressable style={styles.confirmButton} onPress={handleConfirm}>
+                <Text style={styles.confirmText}>Wachtwoord wijzigen</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
-      </View>
-      <Toast config={toastConfig} />
-    </Modal>
+        <Toast config={toastConfig} />
+      </Modal>
+    </View>
   );
 };
 
