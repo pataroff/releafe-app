@@ -235,12 +235,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent', // #F9F9F9
-    paddingBottom: 80,
   },
   contentContainerStyles: {
     flexGrow: 1,
     alignItems: 'center',
     // justifyContent: 'space-evenly',
+    paddingBottom: 80,
     backgroundColor: 'transparent', // #F9F9F9
   },
   headersContainer: {

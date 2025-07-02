@@ -11,7 +11,11 @@ import {
   TextStyle,
   Platform,
   TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { Priority } from '../types';
 import { DropdownComponent } from './DropdownComponent';
@@ -176,10 +180,17 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
           </View>
 
           {/* Main Content Wrapper */}
-          <View
-            style={{
-              flex: 1,
+
+          <KeyboardAwareScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: 'flex-start',
             }}
+            keyboardShouldPersistTaps='handled'
+            enableOnAndroid={true}
+            enableAutomaticScroll={true}
+            extraScrollHeight={Platform.OS === 'ios' ? 100 : 0}
           >
             <View
               style={{
@@ -444,7 +455,7 @@ export const WorryListItemAddModal: React.FC<WorryListItemAddModalProps> = ({
                 </>
               )}
             </View>
-          </View>
+          </KeyboardAwareScrollView>
         </View>
         <Toast config={toastConfig} />
       </View>

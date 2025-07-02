@@ -108,7 +108,7 @@ export const ChangePasswordScreen: React.FC = () => {
       return;
     }
 
-    await changePassword(oldPassword, newPassword, confirmNewPassword);
+    await changePassword(newPassword, confirmNewPassword, oldPassword);
   };
 
   const renderPasswordInput = (

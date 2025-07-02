@@ -223,7 +223,7 @@ export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                 </Text>
               </View>
 
-              <Text style={styles.h3Text}>Statistieken</Text>
+              <Text style={styles.h3Text}>Voortgang:</Text>
 
               {/* Timeframe Progress Bar */}
               <View
@@ -242,8 +242,7 @@ export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                   }}
                 >
                   <Text style={styles.progressBarText}>
-                    Statistieken voor tijdsframe (
-                    {getTimeframeString(timeframe)})
+                    Aantal keer behaald
                   </Text>
 
                   <Text style={styles.completedTimeframeText}>
@@ -257,7 +256,14 @@ export const GoalListItem: React.FC<{ item: IGoalEntry }> = ({ item }) => {
                 />
                 {/* Timeframe Percentage Text */}
                 <Text style={styles.percentageText}>
-                  {Math.round((completedTimeframe / targetFrequency) * 100)}%
+                  {/* Timeframe Percentage Text */}
+                  <Text style={styles.percentageText}>
+                    {Math.min(
+                      100,
+                      Math.round((completedTimeframe / targetFrequency) * 100)
+                    )}
+                    %
+                  </Text>
                 </Text>
               </View>
 

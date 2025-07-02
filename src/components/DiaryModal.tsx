@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import {
   StyleSheet,
@@ -11,7 +11,6 @@ import {
   Dimensions,
   Platform,
   TextStyle,
-  TouchableWithoutFeedback,
 } from 'react-native';
 
 import { useDiary } from '../context/DiaryContext';
@@ -19,7 +18,7 @@ import { useGoal } from '../context/GoalContext';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { useSharedValue, cancelAnimation } from 'react-native-reanimated';
+import { useSharedValue } from 'react-native-reanimated';
 import { Slider } from 'react-native-awesome-slider';
 
 import { CheckBox } from '@rneui/themed';
@@ -125,17 +124,16 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
 
   const { goalEntries, updateGoalEntry } = useGoal();
 
-  // Handle incoming date from route
   useEffect(() => {
+    const effectiveDate = route?.params?.date ?? date;
+
+    // If route param exists, update state
     if (route?.params?.date) {
       setDate(route.params.date);
       setModalDiaryVisible(true);
     }
-  }, [route?.params?.date]);
 
-  // Populate values if diary entry exists for current date
-  useEffect(() => {
-    const formattedDate = getFormattedDate(date);
+    const formattedDate = getFormattedDate(effectiveDate);
     const matchedEntry = diaryEntries.find(
       (entry) => getFormattedDate(entry.date) === formattedDate
     );
@@ -143,8 +141,11 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     if (matchedEntry) {
       setSliderValues(matchedEntry.sliderValues);
       setTextValues(matchedEntry.textValues);
+    } else {
+      resetSliderValues();
+      resetTextValues();
     }
-  }, [date, diaryEntries]);
+  }, [route?.params?.date, date, diaryEntries]);
 
   const navigation = useNavigation();
 
@@ -451,22 +452,41 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                       🎉 Je hebt vandaag al je doelen behaald!
                     </Text>
                   ) : (
-                    <ScrollView
-                      style={styles.goalsChecklistContainer}
-                      contentContainerStyle={
-                        styles.goalsChecklistContentContainer
-                      }
-                    >
-                      {/* Goal Checklist Container */}
-                      {goalEntries.filter(shouldShowGoal).map((goal, index) => (
-                        <GoalsChecklistItem
-                          key={index}
-                          goal={goal}
-                          checked={checkedGoals.includes(goal.uuid)}
-                          setCheckedGoals={setCheckedGoals}
-                        />
-                      ))}
-                    </ScrollView>
+                    <>
+                      <ScrollView
+                        // @TODO Make it more obvious that this is scrollable!
+                        showsVerticalScrollIndicator={true}
+                        style={styles.goalsChecklistContainer}
+                        contentContainerStyle={
+                          styles.goalsChecklistContentContainer
+                        }
+                      >
+                        {/* Goal Checklist Container */}
+                        {goalEntries
+                          .filter(shouldShowGoal)
+                          .map((goal, index) => (
+                            <GoalsChecklistItem
+                              key={index}
+                              goal={goal}
+                              checked={checkedGoals.includes(goal.uuid)}
+                              setCheckedGoals={setCheckedGoals}
+                            />
+                          ))}
+                      </ScrollView>
+                      <Text
+                        style={
+                          {
+                            ...Fonts.sofiaProLight[Platform.OS],
+                            fontSize: 13,
+                            color: '#888',
+                            textAlign: 'center',
+                            marginTop: 10,
+                          } as TextStyle
+                        }
+                      >
+                        Scroll down to see more
+                      </Text>
+                    </>
                   )}
                 </View>
               )}

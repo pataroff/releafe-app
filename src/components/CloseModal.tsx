@@ -169,12 +169,12 @@ const styles = StyleSheet.create({
   },
   title: {
     ...Fonts.sofiaProBold[Platform.OS],
-    fontSize: 20,
+    fontSize: 18,
     color: '#333',
   } as TextStyle,
   description: {
     ...Fonts.sofiaProRegular[Platform.OS],
-    fontSize: 16,
+    fontSize: 15,
     color: '#666',
   } as TextStyle,
   buttonWrapper: {

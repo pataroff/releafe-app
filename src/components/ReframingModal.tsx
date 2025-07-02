@@ -357,7 +357,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                           <Text style={styles.headersDescriptionText}>
                             De situatie is automatisch overgenomen uit je zorg.
                             Je kunt deze hier indien nodig aanpassen.{'\n\n'}Na
-                            deze oefening krijg je een bericht aan jezelf. Dit
+                            deze oefening krijg je een Bericht aan jezelf. Dit
                             bericht wordt opgeslagen in je lijst met berichten.
                             De zorg verdwijnt dan automatisch uit je
                             Zorgenbakje.
@@ -366,7 +366,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                       ) : (
                         <>
                           <Text style={styles.headersDescriptionText}>
-                            Na deze oefening krijg je een bericht aan jezelf.
+                            Na deze oefening krijg je een Bericht aan jezelf.
                             Dit bericht wordt opgeslagen in je lijst met
                             berichten.
                           </Text>
@@ -406,7 +406,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
               )}
 
               {/* Worry List Item Preview */}
-              {reframingModalIndex >= 1 && (
+              {reframingModalIndex >= reframingSteps.length - 1 && (
                 <View style={[styles.worryListItemContainer]}>
                   {/* Priority Bar */}
                   <View
@@ -851,14 +851,47 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                               style={
                                 {
                                   ...Fonts.sofiaProRegular[Platform.OS],
+                                  marginVertical: 5,
                                 } as TextStyle
                               }
                             >
                               {item.body}
                             </Text>
+
+                            {/* Render slider after Waarschijnlijkheid */}
+                            {item.heading === 'Waarschijnlijkheid' && (
+                              <Slider
+                                disable={true}
+                                progress={reframingModalSliderState[6].value}
+                                onValueChange={(value) => {
+                                  reframingModalSliderState[6].setter(value);
+                                  setSliderTouchedState((prev) => ({
+                                    ...prev,
+                                    6: true,
+                                  }));
+                                }}
+                                minimumValue={min}
+                                maximumValue={max}
+                                disableTrackPress={true}
+                                disableTapEvent={true}
+                                containerStyle={{
+                                  borderRadius: 30,
+                                }}
+                                sliderHeight={15}
+                                thumbWidth={25}
+                                theme={{
+                                  minimumTrackTintColor: '#E4E1E1',
+                                  maximumTrackTintColor: '#E4E1E1',
+                                  bubbleBackgroundColor: '#C1DEBE',
+                                }}
+                                renderThumb={() => <CustomThumb />}
+                                bubble={(s: number) => s.toFixed(1)}
+                              />
+                            )}
                           </View>
                         );
                       })}
+
                       <View
                         style={{
                           marginVertical: 20,
@@ -906,6 +939,37 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                               >
                                 {data.body}
                               </Text>
+
+                              {/* Render slider after Gevoelsomschrijving */}
+                              {data.heading === 'Gevoelsomschrijving' && (
+                                <Slider
+                                  disable={true}
+                                  progress={reframingModalSliderState[1].value}
+                                  onValueChange={(value) => {
+                                    reframingModalSliderState[1].setter(value);
+                                    setSliderTouchedState((prev) => ({
+                                      ...prev,
+                                      1: true,
+                                    }));
+                                  }}
+                                  minimumValue={min}
+                                  maximumValue={max}
+                                  disableTrackPress={true}
+                                  disableTapEvent={true}
+                                  containerStyle={{
+                                    borderRadius: 30,
+                                  }}
+                                  sliderHeight={15}
+                                  thumbWidth={25}
+                                  theme={{
+                                    minimumTrackTintColor: '#E4E1E1',
+                                    maximumTrackTintColor: '#E4E1E1',
+                                    bubbleBackgroundColor: '#C1DEBE',
+                                  }}
+                                  renderThumb={() => <CustomThumb />}
+                                  bubble={(s: number) => s.toFixed(1)}
+                                />
+                              )}
                             </View>
                           ))}
                       </View>
@@ -1164,5 +1228,6 @@ const styles = StyleSheet.create({
   bodyText: {
     ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
+    marginVertical: 5,
   } as TextStyle,
 });

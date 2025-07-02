@@ -1284,7 +1284,7 @@ export const WellbeingChart = ({
   const getTitle = () => {
     if (chartTimeframe === 'MONTHLY') {
       const date = new Date(currentYear, currentMonth);
-      return `${date.toLocaleString('en-US', {
+      return `${date.toLocaleString('nl-NL', {
         month: 'long',
       })} ${currentYear}`;
     }
@@ -1438,9 +1438,10 @@ export const WellbeingChart = ({
         }
         axisOptions={{
           font,
+          labelPosition: 'outset',
           tickCount: {
             x: paginatedData?.length || getXAxisTickCount(chartTimeframe),
-            y: 5,
+            y: 6,
           },
           tickValues: {
             x: Array.from(
@@ -1450,10 +1451,11 @@ export const WellbeingChart = ({
               },
               (_, i) => i
             ),
-            y: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            y: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           },
         }}
-        domainPadding={30}
+        padding={5}
+        domainPadding={25}
       >
         {({ points }: { points: Record<LineKeys, PointsArray> }) => {
           const sortedLabels = [

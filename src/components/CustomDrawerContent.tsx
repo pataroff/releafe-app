@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
+  Dimensions,
+  StyleSheet,
   Text,
   Image,
-  StyleSheet,
   Pressable,
-  TextStyle,
   Platform,
-  Dimensions,
+  TextStyle,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useAuth } from '../context/AuthContext';
-
 import {
   DrawerContentScrollView,
   DrawerItemList,
@@ -29,30 +28,80 @@ import { BonsaiInformationModal } from './BonsaiInformationModal';
 import { ChangePasswordModal } from './ChangePasswordModal';
 import { CloseModal } from './CloseModal';
 
+import { useNavigationState } from '@react-navigation/native';
+
 const windowWidth = Dimensions.get('window').width;
 
 const HAS_SEEN_HOME_GUIDE_KEY = 'hasSeenHomeGuide';
 const HAS_SEEN_BONSAI_GUIDE_KEY = 'hasSeenBonsaiGuide';
 
-// @DTODO This is just for testing purposes, remove after!
+// 🔥 DEVELOPMENT ONLY: Clear all AsyncStorage keys
 const clearLocalStorage = async () => {
-  await AsyncStorage.clear();
+  try {
+    await AsyncStorage.clear();
+    console.log('[DEV] Local storage cleared.');
+  } catch (e) {
+    console.warn('[DEV] Failed to clear local storage:', e);
+  }
 };
 
 export const CustomDrawerContent: React.FC = (props) => {
+  const { navigation } = props;
   const { user, signOut } = useAuth();
-  const { navigation, state } = props;
 
-  const [isInformationModalVisible, setIsInformationModalVisible] =
-    useState<boolean>(false);
+  const [modalInformationVisible, setModalInformationVisible] = useState(false);
+  const [modalBonsaiInformationVisible, setModalBonsaiInformationVisible] =
+    useState(false);
   const [changePasswordModalVisible, setChangePasswordModalVisible] =
-    useState<boolean>(false);
+    useState(false);
+  const [closeModalVisible, setCloseModalVisible] = useState(false);
 
-  const [closeModalVisible, setCloseModalVisible] = useState<boolean>(false);
-  const [isUserClaimed, setIsUserClaimed] = useState<boolean>(user?.isClaimed);
+  const getActiveRoute = (state: any): any => {
+    if (!state || !state.routes || state.index == null) return undefined;
 
-  const currentRoute = state.routes[state.index];
-  const nestedRoute = currentRoute.state?.routes?.[currentRoute.state.index];
+    const route = state.routes[state.index];
+
+    // Recurse until we reach the deepest screen
+    if (route.state) return getActiveRoute(route.state);
+    return route;
+  };
+
+  const activeRoute = useNavigationState((state) => getActiveRoute(state));
+  const routeName = activeRoute?.name;
+  const routeScreen = activeRoute?.params?.screen;
+
+  useEffect(() => {
+    // clearLocalStorage();
+
+    if (!user?.isClaimed) {
+      setChangePasswordModalVisible(true);
+      return;
+    }
+
+    if (!routeName) return;
+
+    const checkAndShowGuide = async () => {
+      try {
+        if (routeName === 'BonsaiTree' && routeScreen === 'BonsaiTree1') {
+          const seen = await AsyncStorage.getItem(HAS_SEEN_BONSAI_GUIDE_KEY);
+          if (!seen) {
+            setModalBonsaiInformationVisible(true);
+            await AsyncStorage.setItem(HAS_SEEN_BONSAI_GUIDE_KEY, 'true');
+          }
+        } else {
+          const seen = await AsyncStorage.getItem(HAS_SEEN_HOME_GUIDE_KEY);
+          if (!seen) {
+            setModalInformationVisible(true);
+            await AsyncStorage.setItem(HAS_SEEN_HOME_GUIDE_KEY, 'true');
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to check guide modal:', e);
+      }
+    };
+
+    checkAndShowGuide();
+  }, [routeName, routeScreen]);
 
   const menuConfigGroup1 = [
     {
@@ -64,7 +113,7 @@ export const CustomDrawerContent: React.FC = (props) => {
         }),
     },
     {
-      label: 'Bonsai boom',
+      label: 'Bonsaiboom',
       icon: require('../../assets/images/drawer_icons/drawer_bonsai_tree_icon.png'),
       action: () =>
         navigation.navigate('BonsaiTree', { screen: 'BonsaiTree1' }),
@@ -88,7 +137,13 @@ export const CustomDrawerContent: React.FC = (props) => {
       label: 'Informatiegids',
       icon: require('../../assets/images/drawer_icons/drawer_info_icon.png'),
       action: () => {
-        setIsInformationModalVisible(true);
+        const isBonsai =
+          routeName === 'BonsaiTree' && routeScreen === 'BonsaiTree1';
+        if (isBonsai) {
+          setModalBonsaiInformationVisible(true);
+        } else {
+          setModalInformationVisible(true);
+        }
       },
     },
 
@@ -100,54 +155,26 @@ export const CustomDrawerContent: React.FC = (props) => {
     },
   ];
 
-  useEffect(() => {
-    if (!isUserClaimed) {
-      setChangePasswordModalVisible(true);
-    } else {
-      checkAndShowGuideModal();
-    }
-  }, [nestedRoute?.name]);
-
-  const checkAndShowGuideModal = async () => {
-    const routeName = nestedRoute?.name || 'Home';
-
-    if (routeName === 'Home') {
-      const hasSeenHomeGuide = await AsyncStorage.getItem(
-        HAS_SEEN_HOME_GUIDE_KEY
-      );
-      if (!hasSeenHomeGuide) {
-        setIsInformationModalVisible(true);
-        await AsyncStorage.setItem(HAS_SEEN_HOME_GUIDE_KEY, 'true');
-      }
-    } else if (routeName === 'BonsaiTree') {
-      const hasSeenBonsaiGuide = await AsyncStorage.getItem(
-        HAS_SEEN_BONSAI_GUIDE_KEY
-      );
-      if (!hasSeenBonsaiGuide) {
-        setIsInformationModalVisible(true);
-        await AsyncStorage.setItem(HAS_SEEN_BONSAI_GUIDE_KEY, 'true');
-      }
-    }
-  };
-
   return (
     <>
-      {!isUserClaimed && (
+      {changePasswordModalVisible && (
         <ChangePasswordModal
           changePasswordModalVisible={changePasswordModalVisible}
           setChangePasswordModalVisible={setChangePasswordModalVisible}
-          setIsUserClaimed={setIsUserClaimed}
         />
       )}
-      {nestedRoute?.name === 'BonsaiTree' ? (
-        <BonsaiInformationModal
-          modalBonsaiInformationVisible={isInformationModalVisible}
-          setModalBonsaiInformationVisible={setIsInformationModalVisible}
-        />
-      ) : (
+
+      {modalInformationVisible && (
         <InformationModal
-          modalInformationVisible={isInformationModalVisible}
-          setModalInformationVisible={setIsInformationModalVisible}
+          modalInformationVisible={modalInformationVisible}
+          setModalInformationVisible={setModalInformationVisible}
+        />
+      )}
+
+      {modalBonsaiInformationVisible && (
+        <BonsaiInformationModal
+          modalBonsaiInformationVisible={modalBonsaiInformationVisible}
+          setModalBonsaiInformationVisible={setModalBonsaiInformationVisible}
         />
       )}
 

@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import {
   View,
@@ -114,6 +116,9 @@ const nudgingItems = [
 ];
 
 export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
+  const scrollRef = useRef<ScrollView>(null);
+  const [today, setToday] = useState<Date>(new Date());
+
   const navigation = useNavigation();
   const title = 'Home';
 
@@ -188,107 +193,133 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
     });
   }, [activeIndex]);
 
-  useEffect(() => {
-    const fetchQuote = async () => {
-      const today = new Date().toISOString().split('T')[0];
-
-      try {
-        const stored = await AsyncStorage.getItem(QUOTE_KEY);
-
-        if (stored) {
-          const { date, quote } = JSON.parse(stored);
-
-          if (date === today) {
-            setQuote(quote);
-            return; // ✅ already up to date
-          }
-        }
-
-        // Either no quote stored or it's a new day
-        const res = await fetch(
-          `https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEETS_ID}/values/${RANGE}?key=${process.env.GOOGLE_SHEETS_API_KEY}`
-        );
-
-        const data = await res.json();
-
-        if (!data.values || data.values.length === 0) return;
-
-        const quotes = data.values.map(([id, text, author]: string[]) => ({
-          id,
-          text,
-          author,
-        }));
-
-        let nextIndex = 0;
-
-        if (stored) {
-          const { index } = JSON.parse(stored);
-          nextIndex = (index + 1) % quotes.length; // ✅ wrap around if past last
-        }
-
-        const newQuote = quotes[nextIndex];
-
-        await AsyncStorage.setItem(
-          QUOTE_KEY,
-          JSON.stringify({ date: today, index: nextIndex, quote: newQuote })
-        );
-
-        setQuote(newQuote);
-      } catch (error) {
-        console.error('Failed to fetch quote of the day:', error);
-      }
-    };
-
-    fetchQuote();
-  }, []);
-
-  // Resetting goal timeframes
-  useEffect(() => {
-    refreshGoalTimeframes();
-  }, [goalEntries]);
-
   const itemWidth = windowWidth * 0.8;
   const sidePadding = (windowWidth - itemWidth) / 2;
+  const fetchQuote = async () => {
+    const today = new Date().toISOString().split('T')[0];
+
+    try {
+      const stored = await AsyncStorage.getItem(QUOTE_KEY);
+
+      if (stored) {
+        const { date, quote } = JSON.parse(stored);
+
+        if (date === today) {
+          setQuote(quote);
+          return; // ✅ already up to date
+        }
+      }
+
+      // Either no quote stored or it's a new day
+      const res = await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEETS_ID}/values/${RANGE}?key=${process.env.GOOGLE_SHEETS_API_KEY}`
+      );
+
+      const data = await res.json();
+
+      if (!data.values || data.values.length === 0) return;
+
+      const quotes = data.values.map(([id, text, author]: string[]) => ({
+        id,
+        text,
+        author,
+      }));
+
+      let nextIndex = 0;
+
+      if (stored) {
+        const { index } = JSON.parse(stored);
+        nextIndex = (index + 1) % quotes.length; // ✅ wrap around if past last
+      }
+
+      const newQuote = quotes[nextIndex];
+
+      await AsyncStorage.setItem(
+        QUOTE_KEY,
+        JSON.stringify({ date: today, index: nextIndex, quote: newQuote })
+      );
+
+      setQuote(newQuote);
+    } catch (error) {
+      console.error('Failed to fetch quote of the day:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      scrollToTopNextFrame();
+      fetchQuote();
+      refreshGoalTimeframes();
+      setToday(new Date());
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
+
+  useEffect(() => {
+    fetchQuote();
+    refreshGoalTimeframes();
+  }, []);
 
   return (
     <>
-      <Modal
-        animationType='none'
-        transparent={true}
-        visible={questionMarkModalActive}
-        onRequestClose={() =>
-          setQuestionMarkModalActive(!questionMarkModalActive)
-        }
-        statusBarTranslucent={true}
-      >
-        <View style={styles.modalWrapper}>
-          <View style={styles.modalContainer}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}
-            >
-              <View style={{ rowGap: 20 }}>
-                <Text style={styles.nudgingBodyText}>
-                  Op basis van jouw gebruik van de app geven we je hier tips om
-                  je volgende stap te zetten.
-                </Text>
+      <View>
+        <Modal
+          animationType='none'
+          transparent={true}
+          visible={questionMarkModalActive}
+          onRequestClose={() =>
+            setQuestionMarkModalActive(!questionMarkModalActive)
+          }
+          statusBarTranslucent={true}
+        >
+          <View style={styles.modalWrapper}>
+            <View style={styles.modalContainer}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <View style={{ rowGap: 20 }}>
+                  <Text style={styles.nudgingBodyText}>
+                    Op basis van jouw gebruik van de app geven we je hier tips
+                    om je volgende stap te zetten.
+                  </Text>
+                </View>
               </View>
+              <Pressable
+                onPress={() =>
+                  setQuestionMarkModalActive(!questionMarkModalActive)
+                }
+              >
+                <Feather name='x-circle' size={24} color='gray' />
+              </Pressable>
             </View>
-            <Pressable
-              onPress={() =>
-                setQuestionMarkModalActive(!questionMarkModalActive)
-              }
-            >
-              <Feather name='x-circle' size={24} color='gray' />
-            </Pressable>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </View>
+
       <Header title={title} route={route} />
       <ScrollView
+        ref={scrollRef}
         bounces={false}
         showsVerticalScrollIndicator={false}
         style={styles.container}
@@ -304,7 +335,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
             Het is vandaag
             <Text style={styles.dateBodyText}>
               {' '}
-              {new Date().toLocaleString('nl-NL', {
+              {today.toLocaleString('nl-NL', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
@@ -543,8 +574,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
   },
   modalContainer: {
+    flexShrink: 0,
     borderRadius: 30,
-    height: 270,
     width: windowWidth - 2 * 15,
     backgroundColor: 'white',
     padding: 25,

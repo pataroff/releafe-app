@@ -21,6 +21,89 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+const informatiegidsSteps = [
+  {
+    title: 'Releafe',
+    description: '',
+  },
+  {
+    title: 'Onderdelen',
+    description:
+      'Releafe heeft verschillende onderdelen die je kunt gebruiken.',
+  },
+  {
+    title: 'Toolkit',
+    description:
+      'In de toolkit vind je verschillende oefeningen en hulpmiddelen die je kunnen helpen.',
+  },
+  {
+    title: 'Bonsaiboom',
+    description:
+      'Op verschillende plekken in de app kun je Releafe-punten verdienen, bijvoorbeeld door je dagboek in te vullen of aan een persoonlijk doel te werken.',
+  },
+  {
+    title: 'Notificaties',
+    description:
+      'Releafe kan je meldingen sturen. Bijvoorbeeld om je te herinneren aan het invullen van je dagboek of om een oefening te doen. Wat je ontvangt, hangt af van je meldingsinstellingen.',
+    icon: require('../../assets/images/bell_icon.png'),
+  },
+  {
+    title: 'Feedback',
+    description:
+      'Heb je een vraag, is iets niet duidelijk of werkt de app niet goed? Laat het ons weten! Op onze website vind je meer informatie over mentale gezondheid en over de Releafe-app. Je kunt daar ook contact met ons opnemen.',
+    icon: require('../../assets/images/information_icon.png'),
+  },
+];
+const informatiegidsNavigationElements = [
+  {
+    icon: require('../../assets/images/navigation_bar/home_icon.png'),
+    boldtext: 'Hoofdscherm',
+    text: 'Hier zie je wat je al hebt gedaan en wat een goede volgende stap kan zijn. Zo weet je altijd waar je staat en hoe je verder kunt.',
+  },
+  {
+    icon: require('../../assets/images/navigation_bar/diary_icon.png'),
+    boldtext: 'Dagboek',
+    text: 'In het dagboek geef je elke dag aan hoe je je voelt en wat er is gebeurd. Je houdt ook bij hoe het gaat met je persoonlijke doelen.',
+  },
+  {
+    icon: require('../../assets/images/navigation_bar/wellbeing_overview_icon.png'),
+    boldtext: 'Welzijnsoverzicht',
+    text: 'Hier zie je hoe het met je gaat op basis van je dagboek. Ook kun je terugkijken naar eerdere dagen.',
+  },
+  {
+    icon: require('../../assets/images/navigation_bar/toolkit_icon.png'),
+    boldtext: 'Toolkit',
+    text: 'De toolkit bevat oefeningen en hulpmiddelen die je helpen om goed voor je mentale gezondheid te zorgen.',
+  },
+];
+const informatiegidsExerciseElements = [
+  {
+    icon: require('../../assets/images/custom_icons/persoonlijke_doelen_icon.png'),
+    title: 'Persoonlijke doelen',
+    text: 'Stel doelen die goed zijn voor je mentale gezondheid en belangrijk voor jou zijn. Je kunt ze aanpassen zoals jij dat wilt.',
+  },
+  {
+    icon: require('../../assets/images/custom_icons/zorgenbakje_icon.png'),
+    title: 'Zorgenbakje',
+    text: 'Schrijf je zorgen op en bewaar ze tijdelijk in het Zorgenbakje. Zo zet je ze even van je af.',
+  },
+  {
+    icon: require('../../assets/images/custom_icons/reframing_icon.png'),
+    title: 'Reframen',
+    text: 'Kijk op een andere manier naar je zorgen. Zo leer je omgaan met negatieve gedachten.',
+  },
+  {
+    icon: require('../../assets/images/custom_icons/berichten_aan_jezelf_icon.png'),
+    title: 'Bericht aan jezelf',
+    text: 'Schrijf een bericht aan jezelf dat je erbij kunt pakken als je het nodig hebt.',
+  },
+  {
+    icon: require('../../assets/images/custom_icons/oefeningen_icon.png'),
+    title: 'Ontspanningsoefeningen',
+    text: 'Doe oefeningen die je helpen om te ontspannen en tot rust te komen.',
+  },
+];
+
 interface InformationModalProps {
   modalInformationVisible: boolean;
   setModalInformationVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -55,89 +138,6 @@ export const InformationModal: React.FC<InformationModalProps> = ({
       }
     });
   };
-
-  const informatiegidsSteps = [
-    {
-      title: 'Releafe',
-      description: '',
-    },
-    {
-      title: 'Onderdelen',
-      description:
-        'Releafe heeft verschillende onderdelen die je kunt gebruiken.',
-    },
-    {
-      title: 'Toolkit',
-      description:
-        'In de toolkit vind je verschillende oefeningen en hulpmiddelen die je kunnen helpen.',
-    },
-    {
-      title: 'Bonsaiboom',
-      description:
-        'Op verschillende plekken in de app kun je Releafe-punten verdienen, bijvoorbeeld door je dagboek in te vullen of aan een persoonlijk doel te werken.',
-    },
-    {
-      title: 'Notificaties',
-      description:
-        'Releafe kan je meldingen sturen. Bijvoorbeeld om je te herinneren je dagboek in te vullen of een oefening te doen. Wat je ontvangt, hangt af van hoe jij dit instelt.',
-      icon: require('../../assets/images/bell_icon.png'),
-    },
-    {
-      title: 'Feedback',
-      description:
-        'Heb je een vraag, is iets niet duidelijk of werkt de app niet goed? Laat het ons weten! Op onze website vind je meer informatie over mentale gezondheid en over de Releafe-app. Je kunt daar ook contact met ons opnemen.',
-      icon: require('../../assets/images/information_icon.png'),
-    },
-  ];
-  const informatiegidsNavigationElements = [
-    {
-      icon: require('../../assets/images/navigation_bar/home_icon.png'),
-      boldtext: 'Hoofdscherm',
-      text: 'Hier zie je wat je al hebt gedaan en wat een goede volgende stap kan zijn. Zo weet je altijd waar je staat en hoe je verder kunt.',
-    },
-    {
-      icon: require('../../assets/images/navigation_bar/diary_icon.png'),
-      boldtext: 'Dagboek',
-      text: 'In het dagboek geef je elke dag aan hoe je je voelt en wat er is gebeurd. Je houdt ook bij hoe het gaat met je persoonlijke doelen.',
-    },
-    {
-      icon: require('../../assets/images/navigation_bar/wellbeing_overview_icon.png'),
-      boldtext: 'Welzijnsoverzicht',
-      text: 'Hier zie je hoe het met je gaat op basis van je dagboek. Ook kun je terugkijken naar eerdere dagen.',
-    },
-    {
-      icon: require('../../assets/images/navigation_bar/toolkit_icon.png'),
-      boldtext: 'Toolkit',
-      text: 'De toolkit bevat oefeningen en hulpmiddelen die je helpen om goed voor je mentale gezondheid te zorgen.',
-    },
-  ];
-  const informatiegidsExerciseElements = [
-    {
-      icon: require('../../assets/images/custom_icons/persoonlijke_doelen_icon.png'),
-      title: 'Persoonlijke doelen',
-      text: 'Stel doelen die goed zijn voor je mentale gezondheid en belangrijk voor jou zijn. Je kunt ze aanpassen zoals jij dat wilt.',
-    },
-    {
-      icon: require('../../assets/images/custom_icons/zorgenbakje_icon.png'),
-      title: 'Zorgenbakje',
-      text: 'Schrijf je zorgen op en bewaar ze tijdelijk in het Zorgenbakje. Zo zet je ze even van je af.',
-    },
-    {
-      icon: require('../../assets/images/custom_icons/reframing_icon.png'),
-      title: 'Reframen',
-      text: 'Kijk op een andere manier naar je zorgen. Zo leer je omgaan met negatieve gedachten.',
-    },
-    {
-      icon: require('../../assets/images/custom_icons/berichten_aan_jezelf_icon.png'),
-      title: 'Bericht aan jezelf',
-      text: 'Schrijf een bericht aan jezelf dat je erbij kunt pakken als je het nodig hebt.\nTip: vraag iemand die je lief is om een bericht voor je te maken.',
-    },
-    {
-      icon: require('../../assets/images/custom_icons/oefeningen_icon.png'),
-      title: 'Ontspanningsoefeningen',
-      text: 'Doe oefeningen zoals mindfulness, meditatie, bewegen en ademhalen. Ze helpen je om te ontspannen en tot rust te komen.',
-    },
-  ];
 
   return (
     <View>
@@ -377,28 +377,10 @@ export const InformationModal: React.FC<InformationModalProps> = ({
               )}
               {/*Fifth Page*/}
               {informatiegidsIndex == 4 && (
-                <>
-                  <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
-                    Meldingen staan standaard aan. Wil je dat veranderen? Je
-                    kunt dit aanpassen via je instellingen. Ga naar het
-                    onderdeel ‘
-                    <View style={{ width: windowWidth / 34 }}>
-                      <Image
-                        source={require('../../assets/images/drawer_icons/drawer_settings_icon.png')}
-                        style={{
-                          objectFit: 'contain',
-                          width: '100%',
-                          height: 12,
-                        }}
-                      />
-                    </View>
-                    Extra meldingen’ in het scherm ‘Meldingen’.
-                  </Text>
-                  <Text style={styles.informationBody}>
-                    Je instellingen vind je door rechtsboven op je profiel te
-                    klikken.
-                  </Text>
-                </>
+                <Text style={{ ...styles.informationBody, marginBottom: 10 }}>
+                  Meldingen staan standaard aan. Wil je dit veranderen? Dan kun
+                  je dat doen via de instellingen van je telefoon.
+                </Text>
               )}
               {/*Sixth Page*/}
               {informatiegidsIndex == 5 && (
@@ -570,11 +552,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 40,
     backgroundColor: '#5C6B57',
-    marginVertical: 20,
+    marginVertical: 10,
   },
   websiteButtonText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],
-    fontSize: 16,
+    fontSize: 15,
     color: 'white',
     textAlign: 'center',
   } as TextStyle,

@@ -12,7 +12,6 @@ import {
   Dimensions,
 } from 'react-native';
 
-import { useNotification } from '../context/NotificationContext';
 import { useGoal } from '../context/GoalContext';
 
 import { GoalListItemAddModal } from '../components/GoalListItemAddModal';
@@ -47,8 +46,8 @@ export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
             <Text style={styles.headersTitleText}>Persoonlijke doelen</Text>
             <Text style={styles.headersDescriptionText}>
               Stel een doel dat je helpt om je mentaal gezond te voelen. Door er
-              met aandacht aan te werken, ontdek je stap voor stap wat jou helpt
-              om je goed te voelen.
+              met aandacht aan te werken, ontdek je stap voor stap wat jou
+              helpt.
             </Text>
             {/* Headers Inner Container */}
             <View style={styles.headersInnerContainer}>
@@ -87,8 +86,7 @@ export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
               <View style={styles.noDataContainer}>
                 <Text style={styles.noDataTitleText}>Geen doelen</Text>
                 <Text style={styles.noDataDescriptionText}>
-                  Bekijk hier je persoonlijke doelen, of voeg een nieuw doel
-                  toe.
+                  Je hebt nog geen doelen aangemaakt.
                 </Text>
               </View>
             )}

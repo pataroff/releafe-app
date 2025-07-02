@@ -15,12 +15,16 @@ import { Fonts } from '../styles';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
+import Feather from '@expo/vector-icons/Feather';
+
 export const LoginForm = () => {
   const { signIn } = useAuth();
   const navigation = useNavigation();
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+
+  const [show, setShow] = useState<boolean>(false);
 
   return (
     <>
@@ -39,15 +43,25 @@ export const LoginForm = () => {
           />
 
           <Text style={styles.textInputLabelText}>Wachtwoord</Text>
-          <TextInput
-            style={styles.textInputField}
-            placeholder='Vul je wachtwoord in...'
-            placeholderTextColor='gainsboro'
-            autoCapitalize='none'
-            secureTextEntry={true}
-            onChangeText={(value) => setPassword(value)}
-            value={password}
-          />
+          <View
+            style={{ display: 'flex', flexDirection: 'row', width: '100%' }}
+          >
+            <TextInput
+              style={styles.textInputField}
+              placeholder='Vul je wachtwoord in...'
+              placeholderTextColor='gainsboro'
+              autoCapitalize='none'
+              secureTextEntry={!show}
+              onChangeText={(value) => setPassword(value)}
+              value={password}
+            />
+            <Pressable
+              onPress={() => setShow(!show)}
+              style={styles.iconContainer}
+            >
+              <Feather name={show ? 'eye-off' : 'eye'} size={20} color='#aaa' />
+            </Pressable>
+          </View>
 
           <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.forgotPasswordText}>Wachtwoord vergeten?</Text>
@@ -94,6 +108,7 @@ const styles = StyleSheet.create({
   textInputField: {
     ...Fonts.sofiaProItalic[Platform.OS],
     height: 40,
+    width: '100%',
     borderWidth: 1,
     borderColor: '#dedede',
     borderRadius: 30,
@@ -149,4 +164,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     ...Fonts.sofiaProMedium[Platform.OS],
   } as TextStyle,
+  iconContainer: {
+    position: 'absolute',
+    right: 15,
+    top: 20,
+  },
 });

@@ -29,6 +29,8 @@ import { useSharedValue } from 'react-native-reanimated';
 
 import { useDiary } from '../context/DiaryContext';
 
+import { textSteps } from '../utils/diary';
+
 import Toast from 'react-native-toast-message';
 
 const showToast = (
@@ -71,12 +73,7 @@ const sliderTitlesAndDescriptions = [
   ['Slaap', 'Je had de nacht ervoor gemiddeld geslapen.'],
 ];
 
-const textQuestions = [
-  'Heb jij je vandaag ergens zorgen over gemaakt?',
-  'Zijn er ook andere dingen gebeurd die je gevoel hebben beïnvloed?',
-  'Heb je ook dingen vermeden?',
-  'Wat heeft je vandaag dankbaar, trots of blij gemaakt?',
-];
+const textQuestions = textSteps.map((step) => step.question);
 
 interface PerformanceCalendarProps {
   selectedDiaryEntry: IDiaryEntry | null;
@@ -133,10 +130,15 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
       setSelectedDiaryEntry(matchedEntry);
       setDisplayDate(getFormattedDisplayDate(matchedEntry.date));
       setDisplayTime(getFormattedDisplayTime(matchedEntry.date));
+      setSliderQuestionIndex(0);
+      setTextQuestionIndex(0);
     } else {
       setSelectedDate(appendCurrentTime(new Date(selectedDay)));
       setSelectedDiaryEntry(null);
       setDisplayDate(getFormattedDisplayDate(new Date(selectedDay)));
+      setSliderQuestionIndex(0);
+      setTextQuestionIndex(0);
+
       console.log('No diary entry found for selected date: ', selectedDay);
     }
   };

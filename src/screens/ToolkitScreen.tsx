@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
 import {
@@ -15,7 +15,7 @@ import {
 
 import { Fonts } from '../styles';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -54,6 +54,8 @@ const toolsIcons = [
 export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
 
+  const scrollRef = useRef<ScrollView>(null);
+
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'Toolkit',
@@ -82,10 +84,35 @@ export const ToolkitScreen: React.FC<{ route: any }> = ({ route }) => {
     }
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      scrollToTopNextFrame();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
+
   return (
     <>
       <StatusBar />
       <ScrollView
+        ref={scrollRef}
         bounces={false}
         showsVerticalScrollIndicator={false}
         style={styles.container}

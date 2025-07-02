@@ -98,6 +98,19 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
 
   const createOrUpdateDiaryEntry = (): IDiaryEntry => {
     const formattedDate = getFormattedDate(date);
+    const [year, month, day] = getFormattedDate(date).split('-').map(Number);
+    const now = new Date();
+
+    // month - 1 because JS Date months are 0-indexed
+    const dateWithCurrentTime = new Date(
+      year,
+      month - 1,
+      day,
+      now.getHours(),
+      now.getMinutes(),
+      now.getSeconds(),
+      now.getMilliseconds()
+    );
 
     const matchedDiaryEntry = diaryEntries.find(
       (entry) => getFormattedDate(entry.date) === formattedDate
@@ -107,7 +120,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
 
     const newDiaryEntry: IDiaryEntry = {
       uuid,
-      date,
+      date: dateWithCurrentTime, // Fresher date than the one when the diary creation process was started
       sliderValues,
       textValues,
     };
@@ -115,7 +128,7 @@ export const DiaryProvider: React.FC<{ children: React.ReactElement }> = ({
     const newDiaryEntryDatabase = {
       uuid,
       user: user?.id,
-      date,
+      date: dateWithCurrentTime,
       sliderValues: serializeRecord(sliderValues),
       textValues: serializeRecord(textValues),
     };

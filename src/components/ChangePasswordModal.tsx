@@ -20,7 +20,6 @@ import Feather from 'react-native-vector-icons/Feather';
 interface ChangePasswordModalProps {
   changePasswordModalVisible: boolean;
   setChangePasswordModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsUserClaimed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const UPPERCASE_REGEX = /[A-Z]/;
@@ -32,7 +31,6 @@ const MIN_PASSWORD_LENGTH = 8;
 export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   changePasswordModalVisible,
   setChangePasswordModalVisible,
-  setIsUserClaimed,
 }) => {
   const { changePassword } = useAuth();
 
@@ -123,7 +121,6 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     const success = await changePassword(password, confirmPassword);
     if (success) {
       setChangePasswordModalVisible(false);
-      setIsUserClaimed(true);
     }
   };
 

@@ -55,10 +55,10 @@ export const PerformanceOverview: React.FC = () => {
                     >
                       <Text style={styles.performanceHeadingText}>{label}</Text>
                       <Text style={styles.performanceBodyText}>
-                        Je bent op
+                        Je bent bij
                         <Text style={styles.performanceLevelText}>
                           {' '}
-                          niveau{' '}
+                          stap{' '}
                           {treeState[key as TreeStateKey] !== null
                             ? treeState[key as TreeStateKey]! + 1
                             : 0}
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   } as TextStyle,
   performanceHeadingText: {
-    ...Fonts.sofiaProBold[Platform.OS],
+    ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 16,
   } as TextStyle,
   performanceBodyText: {

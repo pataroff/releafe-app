@@ -25,10 +25,26 @@ import {
 } from '../utils/goal';
 import { useGoal } from '../context/GoalContext';
 
-export const GoalsOverview = () => {
+export const GoalsOverview: React.FC = () => {
   const { goalEntries } = useGoal();
-
   const [goalIndex, setGoalIndex] = useState<number>(0);
+
+  // Clamp index immediately if out of bounds BEFORE any hook return
+  const clampedGoalIndex = Math.min(
+    goalIndex,
+    Math.max(0, goalEntries.length - 1)
+  );
+
+  useEffect(() => {
+    if (goalIndex !== clampedGoalIndex) {
+      setGoalIndex(clampedGoalIndex);
+    }
+  }, [goalEntries.length]);
+
+  // Still allow early return for empty goals
+  if (goalEntries.length === 0) return null;
+
+  const currentGoal = goalEntries[clampedGoalIndex];
 
   const {
     category,
@@ -38,7 +54,7 @@ export const GoalsOverview = () => {
     completedTimeframe,
     completedPeriod,
     createdDate,
-  } = goalEntries[goalIndex];
+  } = currentGoal;
 
   const [timeframeProgressValue, setTimeframeProgressValue] = useState<number>(
     completedTimeframe / 10
@@ -155,9 +171,10 @@ export const GoalsOverview = () => {
             />
             {/* Timeframe Percentage Text */}
             <Text style={styles.percentageText}>
-              {completedTimeframe >= targetFrequency
-                ? 100
-                : Math.round((completedTimeframe / targetFrequency) * 100)}
+              {Math.min(
+                100,
+                Math.round((completedTimeframe / targetFrequency) * 100)
+              )}
               %
             </Text>
           </View>

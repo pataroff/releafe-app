@@ -33,7 +33,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const isSmallerScreen = windowHeight <= 667;
 
-const settings = ['Wachtword wijzigen', 'Profiel verwijderen'];
+const settings = ['Wachtwoord wijzigen', 'Profiel verwijderen'];
 
 export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
   const navigation = useNavigation();
@@ -178,7 +178,7 @@ export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
               size={80}
               label={user?.firstName[0] + user?.lastName[0]}
             />
-            <Pressable
+            {/* <Pressable
               style={{
                 position: 'absolute',
                 bottom: 0,
@@ -190,7 +190,7 @@ export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
               }}
             >
               <MaterialCommunityIcons name='pencil' size={24} color='white' />
-            </Pressable>
+            </Pressable> */}
           </View>
           {/* Profile Information Container */}
           <View
