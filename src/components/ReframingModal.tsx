@@ -32,8 +32,6 @@ import { useAuth } from '../context/AuthContext';
 import { Priority } from '../types';
 import { getCategory, getPriorityColor, reframingSteps } from '../utils/worry';
 
-import { useGamification } from '../context/GamificationContext';
-
 import { SharedValue } from 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -858,18 +856,10 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                               {item.body}
                             </Text>
 
-                            {/* Render slider after Waarschijnlijkheid */}
                             {item.heading === 'Waarschijnlijkheid' && (
                               <Slider
                                 disable={true}
                                 progress={reframingModalSliderState[6].value}
-                                onValueChange={(value) => {
-                                  reframingModalSliderState[6].setter(value);
-                                  setSliderTouchedState((prev) => ({
-                                    ...prev,
-                                    6: true,
-                                  }));
-                                }}
                                 minimumValue={min}
                                 maximumValue={max}
                                 disableTrackPress={true}
@@ -940,18 +930,10 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
                                 {data.body}
                               </Text>
 
-                              {/* Render slider after Gevoelsomschrijving */}
                               {data.heading === 'Gevoelsomschrijving' && (
                                 <Slider
                                   disable={true}
                                   progress={reframingModalSliderState[1].value}
-                                  onValueChange={(value) => {
-                                    reframingModalSliderState[1].setter(value);
-                                    setSliderTouchedState((prev) => ({
-                                      ...prev,
-                                      1: true,
-                                    }));
-                                  }}
                                   minimumValue={min}
                                   maximumValue={max}
                                   disableTrackPress={true}

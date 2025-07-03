@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
@@ -23,9 +23,13 @@ import { NotEnoughPointsModal } from '../components/NotEnoughPointsModal';
 import { useGamification } from '../context/GamificationContext';
 import { evaluateAllAchievements } from '../utils/achievements';
 
+import { useFocusEffect } from '@react-navigation/native';
+
 const windowWidth = Dimensions.get('window').width;
 
 export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
+  const scrollRef = useRef<ScrollView>(null);
+
   const title = '';
   const {
     points,
@@ -43,6 +47,30 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
     itemId: string;
     price: number;
   } | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      scrollToTopNextFrame();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
 
   const handleIconPress = (itemId: string, price: number) => {
     if (unlockedItems.includes(itemId)) {
@@ -93,6 +121,7 @@ export const BonsaiTreeShopScreen: React.FC = ({ route }) => {
         onCancel={() => setPurchaseModalVisible(false)}
       />
       <ScrollView
+        ref={scrollRef}
         bounces={false}
         showsVerticalScrollIndicator={false}
         style={styles.container}
@@ -240,7 +269,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     // justifyContent: 'space-evenly',
-    paddingBottom: 80,
+    paddingBottom: 100,
     backgroundColor: 'transparent', // #F9F9F9
   },
   headersContainer: {

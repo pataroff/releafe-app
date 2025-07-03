@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
@@ -36,6 +36,8 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export const BonsaiTreeScreen: React.FC = ({ route }) => {
+  const scrollRef = useRef<ScrollView>(null);
+
   const title = 'Bonsaiboom';
   const navigation = useNavigation();
 
@@ -67,6 +69,30 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
     setSelectedLeafIndex,
     setSelectedFlowerIndex,
   ];
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      scrollToTopNextFrame();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
 
   // 1. Sync `treeState` from database into local state when it loads
   useEffect(() => {
@@ -151,6 +177,7 @@ export const BonsaiTreeScreen: React.FC = ({ route }) => {
           {/* Main content */}
           <View style={{ flex: 1, zIndex: 2 }}>
             <ScrollView
+              ref={scrollRef}
               nestedScrollEnabled={true}
               keyboardShouldPersistTaps='handled'
               bounces={false}

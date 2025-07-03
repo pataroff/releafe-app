@@ -28,6 +28,9 @@ import { MemoItem } from './MemoItem';
 
 import { CloseModal } from './CloseModal';
 
+import { Slider } from 'react-native-awesome-slider';
+import { useSharedValue } from 'react-native-reanimated';
+
 const windowWidth = Dimensions.get('window').width;
 
 interface NoteListItemExpandedModalProps {
@@ -42,6 +45,19 @@ interface NoteListItemExpandedModalProps {
   setModalNoteListItemAddVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const CustomThumb: React.FC<{}> = () => {
+  return (
+    <View
+      style={{
+        backgroundColor: '#C1DEBE',
+        height: 28,
+        width: 28,
+        borderRadius: 99,
+      }}
+    ></View>
+  );
+};
+
 export const NoteListItemExpandedModal: React.FC<
   NoteListItemExpandedModalProps
 > = ({
@@ -55,6 +71,9 @@ export const NoteListItemExpandedModal: React.FC<
 }) => {
   const [showUnreframedData, setShowUnreframedData] = useState<boolean>(false);
   const [fileUrl, setFileUrl] = useState<string>('');
+
+  const min = useSharedValue(0);
+  const max = useSharedValue(10);
 
   const { getNoteEntryMediaFileUrl, updateNoteEntryFields, deleteNoteEntry } =
     useNote();
@@ -78,21 +97,28 @@ export const NoteListItemExpandedModal: React.FC<
     audioMetering,
   } = selectedNote;
 
+  const sliderValue1 = useSharedValue(thoughtLikelihoodSliderOne);
+  const sliderValue2 = useSharedValue(thoughtLikelihoodSliderTwo);
+
+  useEffect(() => {
+    sliderValue1.value = thoughtLikelihoodSliderOne;
+    sliderValue2.value = thoughtLikelihoodSliderTwo;
+  }, [thoughtLikelihoodSliderOne, thoughtLikelihoodSliderTwo]);
+
   useEffect(() => {
     const fetchUrl = async () => {
-      // Reset the fileUrl to avoid flash
       setFileUrl('');
 
-      if (mediaFile) {
-        const url = await getNoteEntryMediaFileUrl(uuid);
+      if (!mediaFile) return;
 
-        console.log(url);
-        console.log('UUID:', uuid);
-        if (url) {
-          setFileUrl(url);
-        }
+      if (typeof mediaFile === 'string') {
+        const url = await getNoteEntryMediaFileUrl(uuid);
+        if (url) setFileUrl(url);
+      } else if (typeof mediaFile === 'object' && mediaFile.uri) {
+        setFileUrl(mediaFile.uri); // direct local preview
       }
     };
+
     fetchUrl();
   }, [mediaFile]);
 
@@ -103,7 +129,6 @@ export const NoteListItemExpandedModal: React.FC<
     {
       heading: 'Waarschijnlijkheid',
       body: thoughtLikelihood,
-      sliderValue: thoughtLikelihoodSliderTwo,
     },
   ];
 
@@ -115,7 +140,6 @@ export const NoteListItemExpandedModal: React.FC<
     {
       heading: 'Gevoelsomschrijving',
       body: feelingDescription,
-      sliderValue: thoughtLikelihoodSliderOne,
     },
   ];
 
@@ -193,6 +217,8 @@ export const NoteListItemExpandedModal: React.FC<
                   flexDirection: 'row',
                   alignItems: 'center',
                   columnGap: 10,
+                  flex: 1,
+                  paddingRight: 30,
                 }}
               >
                 {/* Category Container */}
@@ -209,7 +235,16 @@ export const NoteListItemExpandedModal: React.FC<
                 >
                   {getCategory(category)}
                 </View>
-                <Text style={styles.headersTitleText}>{title}</Text>
+                <Text
+                  style={[
+                    styles.headersTitleText,
+                    { flexShrink: 1, flexWrap: 'wrap' },
+                  ]}
+                  numberOfLines={2}
+                  ellipsizeMode='tail'
+                >
+                  {title}
+                </Text>
               </View>
               <Pressable
                 style={{ position: 'absolute', right: 0 }}
@@ -228,144 +263,193 @@ export const NoteListItemExpandedModal: React.FC<
           <ScrollView
             showsVerticalScrollIndicator={false}
             bounces={false}
-            style={styles.mainContainer}
-            contentContainerStyle={styles.mainContentContainer}
+            style={styles.container}
+            contentContainerStyle={styles.contentContainer}
           >
-            {mediaFile && typeof mediaFile === 'string' ? (
-              <>
-                <Text style={styles.bodyText}>{description}</Text>
+            <View style={styles.mainContentContainer}>
+              {forThoughtEvidence === '' ? (
+                <>
+                  <Text style={styles.bodyText}>{description}</Text>
 
-                {!fileUrl ? (
+                  {mediaFile && fileUrl && (
+                    <>
+                      {fileUrl.endsWith('.jpg') || fileUrl.endsWith('.png') ? (
+                        <Image
+                          style={{
+                            width: '100%',
+                            height: 400,
+                            marginVertical: 20,
+                          }}
+                          source={{ uri: fileUrl }}
+                        />
+                      ) : mediaFile?.name?.startsWith('recording') ||
+                        fileUrl.includes('recording') ? (
+                        <View style={{ marginVertical: 20 }}>
+                          <MemoItem uri={fileUrl} metering={audioMetering} />
+                        </View>
+                      ) : (
+                        <Video
+                          source={{ uri: fileUrl }}
+                          style={{
+                            width: '100%',
+                            height: 400,
+                            marginVertical: 20,
+                          }}
+                          resizeMode={ResizeMode.COVER}
+                          useNativeControls
+                          isLooping
+                        />
+                      )}
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* Reframed Data Container */}
+                  {reframedData.map((data, index) => {
+                    const { heading, body } = data;
+
+                    if (!heading && !body) {
+                      return;
+                    }
+
+                    return (
+                      <View key={index} style={{ marginBottom: 20 }}>
+                        {/* Render heading if available */}
+                        {heading && (
+                          <Text style={styles.headingText}>{heading}</Text>
+                        )}
+
+                        {/* Render body text */}
+                        {body && <Text style={styles.bodyText}>{body}</Text>}
+
+                        {heading === 'Waarschijnlijkheid' && (
+                          <Slider
+                            disable={true}
+                            progress={sliderValue1}
+                            minimumValue={min}
+                            maximumValue={max}
+                            disableTrackPress={true}
+                            disableTapEvent={true}
+                            containerStyle={{
+                              borderRadius: 30,
+                            }}
+                            sliderHeight={15}
+                            thumbWidth={25}
+                            theme={{
+                              minimumTrackTintColor: '#E4E1E1',
+                              maximumTrackTintColor: '#E4E1E1',
+                              bubbleBackgroundColor: '#C1DEBE',
+                            }}
+                            renderThumb={() => <CustomThumb />}
+                            bubble={(s: number) => s.toFixed(1)}
+                          />
+                        )}
+                      </View>
+                    );
+                  })}
+
+                  {/* Unreframed Data Container */}
                   <View
                     style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginVertical: 30,
+                      flexDirection: showUnreframedData
+                        ? 'column-reverse'
+                        : 'column',
                     }}
                   >
-                    {/* Loading Spinner */}
-                    <ActivityIndicator
-                      size={'large'}
-                      animating={true}
-                      color='#A9C1A1'
-                    />
+                    <Pressable
+                      style={{ alignSelf: 'center', alignItems: 'center' }}
+                      onPress={() => setShowUnreframedData(!showUnreframedData)}
+                    >
+                      <Text style={styles.showOldSituationText}>
+                        {showUnreframedData
+                          ? 'Oude situatie verbergen'
+                          : 'Oude situatie bekijken'}
+                      </Text>
+
+                      <Feather
+                        name={
+                          showUnreframedData ? 'chevron-up' : 'chevron-down'
+                        }
+                        size={20}
+                        color={'gray'}
+                      />
+                    </Pressable>
+
+                    {showUnreframedData &&
+                      unreframedData.map((data, index) => {
+                        const { heading, body } = data;
+
+                        if (!heading && !body) {
+                          return;
+                        }
+
+                        return (
+                          <View key={index} style={{ marginBottom: 20 }}>
+                            <Text
+                              style={[styles.headingText, { color: 'gray' }]}
+                            >
+                              {heading}
+                            </Text>
+                            <Text style={[styles.bodyText, { color: 'gray' }]}>
+                              {body}
+                            </Text>
+
+                            {heading === 'Gevoelsomschrijving' && (
+                              <Slider
+                                disable={true}
+                                progress={sliderValue2}
+                                minimumValue={min}
+                                maximumValue={max}
+                                disableTrackPress={true}
+                                disableTapEvent={true}
+                                containerStyle={{
+                                  borderRadius: 30,
+                                }}
+                                sliderHeight={15}
+                                thumbWidth={25}
+                                theme={{
+                                  minimumTrackTintColor: '#E4E1E1',
+                                  maximumTrackTintColor: '#E4E1E1',
+                                  bubbleBackgroundColor: '#C1DEBE',
+                                }}
+                                renderThumb={() => <CustomThumb />}
+                                bubble={(s: number) => s.toFixed(1)}
+                              />
+                            )}
+                          </View>
+                        );
+                      })}
                   </View>
-                ) : mediaFile.endsWith('.jpg') || mediaFile.endsWith('.pdf') ? (
+                </>
+              )}
+
+              {/* Buttons Container */}
+              <View
+                style={{
+                  marginTop: 10,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignSelf: 'flex-start',
+                  columnGap: 10,
+                }}
+              >
+                <Pressable onPress={() => handleEdit()}>
                   <Image
-                    style={{ width: '100%', height: 400, marginVertical: 20 }}
-                    source={{ uri: fileUrl }}
+                    resizeMode='contain'
+                    style={{ width: 46, height: 46 }}
+                    source={require('../../assets/images/edit_icon.png')}
                   />
-                ) : mediaFile.startsWith('recording') ? (
-                  <View style={{ marginVertical: 20 }}>
-                    <MemoItem uri={fileUrl} metering={audioMetering} />
-                  </View>
-                ) : (
-                  <Video
-                    source={{ uri: fileUrl }}
-                    style={{ width: '100%', height: 400, marginVertical: 20 }}
-                    resizeMode={ResizeMode.COVER}
-                    useNativeControls
-                    isLooping
+                </Pressable>
+
+                <Pressable onPress={() => handleDelete()}>
+                  <Image
+                    resizeMode='contain'
+                    style={{ width: 43, height: 46 }}
+                    source={require('../../assets/images/delete_icon.png')}
                   />
-                )}
-              </>
-            ) : (
-              <>
-                {/* Reframed Data Container */}
-                {reframedData.map((data, index) => {
-                  const { heading, body } = data;
-
-                  if (!heading && !body) {
-                    return;
-                  }
-
-                  return (
-                    <View key={index} style={{ marginBottom: 20 }}>
-                      {/* Render heading if available */}
-                      {heading && (
-                        <Text style={styles.headingText}>{heading}</Text>
-                      )}
-
-                      {/* Render body text */}
-                      {body && <Text style={styles.bodyText}>{body}</Text>}
-                    </View>
-                  );
-                })}
-
-                {/* Unreframed Data Container */}
-                <View
-                  style={{
-                    flexDirection: showUnreframedData
-                      ? 'column-reverse'
-                      : 'column',
-                  }}
-                >
-                  <Pressable
-                    style={{ alignSelf: 'center', alignItems: 'center' }}
-                    onPress={() => setShowUnreframedData(!showUnreframedData)}
-                  >
-                    <Text style={styles.showOldSituationText}>
-                      {showUnreframedData
-                        ? 'Oude situatie verbergen'
-                        : 'Oude situatie bekijken'}
-                    </Text>
-
-                    <Feather
-                      name={showUnreframedData ? 'chevron-up' : 'chevron-down'}
-                      size={20}
-                      color={'gray'}
-                    />
-                  </Pressable>
-
-                  {showUnreframedData &&
-                    unreframedData.map((data, index) => {
-                      const { heading, body } = data;
-
-                      if (!heading && !body) {
-                        return;
-                      }
-
-                      return (
-                        <View key={index} style={{ marginBottom: 20 }}>
-                          <Text style={[styles.headingText, { color: 'gray' }]}>
-                            {heading}
-                          </Text>
-                          <Text style={[styles.bodyText, { color: 'gray' }]}>
-                            {body}
-                          </Text>
-                        </View>
-                      );
-                    })}
-                </View>
-              </>
-            )}
-
-            {/* Buttons Container */}
-            <View
-              style={{
-                marginTop: 10,
-                display: 'flex',
-                flexDirection: 'row',
-                alignSelf: 'flex-start',
-                columnGap: 10,
-              }}
-            >
-              <Pressable onPress={() => handleEdit()}>
-                <Image
-                  resizeMode='contain'
-                  style={{ width: 46, height: 46 }}
-                  source={require('../../assets/images/edit_icon.png')}
-                />
-              </Pressable>
-
-              <Pressable onPress={() => handleDelete()}>
-                <Image
-                  resizeMode='contain'
-                  style={{ width: 43, height: 46 }}
-                  source={require('../../assets/images/delete_icon.png')}
-                />
-              </Pressable>
+                </Pressable>
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -403,17 +487,18 @@ const styles = StyleSheet.create({
   headersTitleText: {
     ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 18,
-    flexShrink: 1,
   } as TextStyle,
-  mainContainer: {
-    flexGrow: 0,
-    borderRadius: 25,
-    marginTop: 20,
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
     marginHorizontal: 20,
-    backgroundColor: '#ffffff',
+    paddingBottom: 80,
   },
   mainContentContainer: {
     backgroundColor: '#ffffff',
+    borderRadius: 25,
+    marginTop: 20,
     padding: 25,
   },
   headingText: {
@@ -423,6 +508,7 @@ const styles = StyleSheet.create({
   bodyText: {
     ...Fonts.sofiaProRegular[Platform.OS],
     fontSize: 13,
+    marginBottom: 10,
   } as TextStyle,
   optionsText: {
     ...Fonts.sofiaProMediumItalic[Platform.OS],

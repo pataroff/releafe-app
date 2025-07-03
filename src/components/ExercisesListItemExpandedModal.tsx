@@ -77,6 +77,7 @@ export const ExercisesListItemExpandedModal: React.FC<
                   flexDirection: 'row',
                   alignItems: 'center',
                   columnGap: 10,
+                  paddingRight: 30,
                 }}
               >
                 {/* Icon Container */}
@@ -97,7 +98,13 @@ export const ExercisesListItemExpandedModal: React.FC<
                     resizeMode='contain'
                   />
                 </View>
-                <Text style={styles.headersTitleText}>{title}</Text>
+                <Text
+                  style={styles.headersTitleText}
+                  numberOfLines={2}
+                  ellipsizeMode='tail'
+                >
+                  {title}
+                </Text>
               </View>
               <Pressable
                 style={{ position: 'absolute', right: 0 }}
@@ -239,6 +246,7 @@ const styles = StyleSheet.create({
     ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 18,
     flexShrink: 1,
+    flexWrap: 'wrap',
   } as TextStyle,
   mainContainer: {
     flexGrow: 0,

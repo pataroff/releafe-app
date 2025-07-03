@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 
 import {
   StyleSheet,
@@ -28,9 +28,13 @@ import {
   achievementsDataContainer,
 } from '../utils/achievements';
 
+import { useFocusEffect } from '@react-navigation/native';
+
 const windowWidth = Dimensions.get('window').width;
 
 export const AchievementsScreen: React.FC<{ route: any }> = ({ route }) => {
+  const scrollRef = useRef<ScrollView>(null);
+
   const title = 'Prestaties';
   const { unlockedAchievements } = useGamification();
 
@@ -44,6 +48,30 @@ export const AchievementsScreen: React.FC<{ route: any }> = ({ route }) => {
       description: '',
       parentTitle: '',
     });
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      scrollToTopNextFrame();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
 
   const handleAchievementPress = (
     achievement: Achievement,
@@ -68,6 +96,7 @@ export const AchievementsScreen: React.FC<{ route: any }> = ({ route }) => {
       <Header title={title} route={route} />
 
       <ScrollView
+        ref={scrollRef}
         bounces={false}
         showsVerticalScrollIndicator={false}
         style={styles.container}

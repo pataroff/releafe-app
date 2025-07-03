@@ -1,7 +1,37 @@
+import { useRef, useCallback } from 'react';
+
 import { ScrollView, StyleSheet } from 'react-native';
 import { DiaryFarewell } from '../components/DiaryFarewell';
 
+import { useFocusEffect } from '@react-navigation/native';
+
 export const DiaryScreen2: React.FC = () => {
+  const scrollRef = useRef<ScrollView>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      scrollToTopNextFrame();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
+
   return (
     <>
       <ScrollView

@@ -46,11 +46,7 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
   };
 
   // Special State
-  const [mediaFile, setMediaFile] = useState<MediaFile>({
-    uri: '',
-    type: '',
-    name: '',
-  });
+  const [mediaFile, setMediaFile] = useState<MediaFile | string>('');
   const [audioMetering, setAudioMetering] = useState<number[]>([]);
 
   const { user } = useAuth();
@@ -126,11 +122,11 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
       title,
       description,
       feelingDescription,
-      thoughtLikelihoodSliderOne,
+      thoughtLikelihoodSliderOne: thoughtLikelihoodSliderOne.value,
       forThoughtEvidence,
       againstThoughtEvidence,
       friendAdvice,
-      thoughtLikelihoodSliderTwo,
+      thoughtLikelihoodSliderTwo: thoughtLikelihoodSliderTwo.value,
       thoughtLikelihood,
       alternativePerspective,
       mediaFile,
@@ -145,11 +141,11 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
       title,
       description,
       feelingDescription,
-      thoughtLikelihoodSliderOne,
+      thoughtLikelihoodSliderOne: thoughtLikelihoodSliderOne.value,
       forThoughtEvidence,
       againstThoughtEvidence,
       friendAdvice,
-      thoughtLikelihoodSliderTwo,
+      thoughtLikelihoodSliderTwo: thoughtLikelihoodSliderTwo.value,
       thoughtLikelihood,
       alternativePerspective,
       mediaFile,
@@ -289,22 +285,22 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
   const updateNoteEntryFields = (
     uuid: string,
     feelingDescription: string,
-    thoughtLikelihoodSliderOne: SharedValue<number>,
+    thoughtLikelihoodSliderOne: number,
     forThoughtEvidence: string,
     againstThoughtEvidence: string,
     friendAdvice: string,
-    thoughtLikelihoodSliderTwo: SharedValue<number>,
+    thoughtLikelihoodSliderTwo: number,
     thoughtLikelihood: string,
     alternativePerspective: string,
     mediaFile: MediaFile
   ) => {
     setUuid(uuid);
     setFeelingDescription(feelingDescription);
-    setThoughtLikelihoodSliderOne(thoughtLikelihoodSliderOne.value);
+    setThoughtLikelihoodSliderOne(thoughtLikelihoodSliderOne);
     setForThoughtEvidence(forThoughtEvidence);
     setAgainstThoughtEvidence(againstThoughtEvidence);
     setFriendAdvice(friendAdvice);
-    setThoughtLikelihoodSliderTwo(thoughtLikelihoodSliderTwo.value);
+    setThoughtLikelihoodSliderTwo(thoughtLikelihoodSliderTwo);
     setThoughtLikelihood(thoughtLikelihood);
     setAlternativePerspective(alternativePerspective);
     setMediaFile(mediaFile);

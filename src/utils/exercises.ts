@@ -6,19 +6,19 @@ export const categories = [
     description: 'Kies een oefening waarmee jij aan de slag wilt.',
   },
   {
-    title: 'Mindfulness',
+    title: 'Voelen',
     description:
-      'Met mindfulness leer je om meer bewust en aanwezig te zijn in het hier en nu. Dit helpt je beter om te gaan met stress en spanningsklachten.',
+      'In deze oefeningen sta je stil bij je lichaam. Je voelt bijvoorbeeld waar spanning zit of wat er gebeurt als je rustig zit of ligt. Je wordt je bewuster van jezelf.',
   },
   {
-    title: 'Lichaamsbeweging',
+    title: 'Bewegen',
     description:
-      'Bewegen helpt je om je fitter te voelen, je hoofd leeg te maken en spanning los te laten. Zelfs een klein beetje beweging doet al iets goeds voor je lichaam én je geest.',
+      'Hier doe je rustige bewegingen met aandacht. Je beweegt bewust en langzaam, zoals bij wandelen of stretchen. Zo leer je beter luisteren naar je lichaam.',
   },
   {
-    title: 'Ademhaling',
+    title: 'Ademen',
     description:
-      'Je adem is altijd bij je. Door bewust te ademen, geef je jezelf rust. Ademhalingsoefeningen helpen om spanning los te laten en meer in het moment te zijn. Goed voor je lijf én je hoofd.',
+      ' Bij deze oefeningen let je op je adem. Je merkt hoe je adem in en uit je lichaam stroomt. Dit helpt om rustiger te worden in je hoofd én in je lichaam.',
   },
 ];
 
@@ -248,15 +248,15 @@ export const categoryIcons = [
 
 export const getExerciseCategory = (category: string) => {
   switch (category) {
-    case 'Mindfulness':
+    case 'Voelen':
       return ExerciseCategory.Mindfulness;
     case 'Meditatie':
       return ExerciseCategory.Meditatie;
     case 'Ontspanning':
       return ExerciseCategory.Ontspanning;
-    case 'Lichaamsbeweging':
+    case 'Bewegen':
       return ExerciseCategory.Lichaamsbeweging;
-    case 'Ademhaling':
+    case 'Ademen':
       return ExerciseCategory.Ademhaling;
     default:
       return ExerciseCategory.Mindfulness;
@@ -266,15 +266,15 @@ export const getExerciseCategory = (category: string) => {
 export const getExerciseCategoryString = (category: ExerciseCategory) => {
   switch (category) {
     case ExerciseCategory.Mindfulness:
-      return 'Mindfulness';
+      return 'Voelen';
     case ExerciseCategory.Meditatie:
       return 'Meditatie';
     case ExerciseCategory.Ontspanning:
       return 'Ontspanning';
     case ExerciseCategory.Lichaamsbeweging:
-      return 'Lichaamsbeweging';
+      return 'Bewegen';
     case ExerciseCategory.Ademhaling:
-      return 'Ademhaling';
+      return 'Ademen';
   }
 };
 

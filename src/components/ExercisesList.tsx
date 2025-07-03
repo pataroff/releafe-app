@@ -49,27 +49,45 @@ export const ExercisesList: React.FC<ExercisesListProps> = ({
       contentContainerStyle={styles.exercisesListContentContainer}
     >
       {isGrouped
-        ? // Handle grouped categories
-          exercisesData.map(([categoryKey, exercises], index) => {
-            const filteredExercises = filterExercises(exercises);
-            if (filteredExercises.length === 0)
+        ? // Grouped case
+          (() => {
+            const filteredByCategory = exercisesData.map(
+              ([categoryKey, exercises]) => [
+                categoryKey,
+                filterExercises(exercises),
+              ]
+            );
+
+            const allEmpty = filteredByCategory.every(
+              ([_, filtered]) => filtered.length === 0
+            );
+
+            if (allEmpty) {
               return (
-                <Text key={index} style={styles.noDataText}>
+                <Text style={styles.noDataText}>
                   Geen favoriete oefeningen gevonden.
                 </Text>
               );
-            return (
-              <View key={String(categoryKey)} style={{ rowGap: 20 }}>
-                <Text style={styles.categoryText}>
-                  {getExerciseCategoryString(categoryKey)}
-                </Text>
-                {filteredExercises.map((exercise, idx) => (
-                  <ExercisesListItem key={idx} exercise={exercise} />
-                ))}
-              </View>
-            );
-          })
-        : // Handle single category
+            }
+
+            return filteredByCategory.map(([categoryKey, filtered], index) => {
+              if (filtered.length === 0) return null;
+
+              return (
+                <View>
+                  <Text style={styles.categoryText}>
+                    {getExerciseCategoryString(categoryKey)}
+                  </Text>
+                  <View key={String(categoryKey)} style={{ rowGap: 20 }}>
+                    {filtered.map((exercise, idx) => (
+                      <ExercisesListItem key={idx} exercise={exercise} />
+                    ))}
+                  </View>
+                </View>
+              );
+            });
+          })()
+        : // Single category
           exercisesData.map(([categoryKey, exercises], index) => {
             if (categoryKey == getExerciseCategory(category)) {
               const filteredExercises = filterExercises(exercises);
@@ -82,13 +100,15 @@ export const ExercisesList: React.FC<ExercisesListProps> = ({
                 );
 
               return (
-                <View key={index} style={{ rowGap: 20 }}>
+                <View>
                   <Text style={styles.categoryText}>
                     {getExerciseCategoryString(categoryKey)}
                   </Text>
-                  {filteredExercises.map((exercise, idx) => (
-                    <ExercisesListItem key={idx} exercise={exercise} />
-                  ))}
+                  <View key={index} style={{ rowGap: 20 }}>
+                    {filteredExercises.map((exercise, idx) => (
+                      <ExercisesListItem key={idx} exercise={exercise} />
+                    ))}
+                  </View>
                 </View>
               );
             }
@@ -115,7 +135,7 @@ const styles = StyleSheet.create({
     ...Fonts.sofiaProBold[Platform.OS],
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 10,
+    marginTop: 20,
   } as TextStyle,
   noDataText: {
     ...Fonts.sofiaProSemiBold[Platform.OS],

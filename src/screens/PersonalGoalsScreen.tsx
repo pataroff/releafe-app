@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
 import {
@@ -20,13 +20,40 @@ import { GoalListItem } from '../components/GoalListItem';
 import { Fonts } from '../styles';
 import Entypo from '@expo/vector-icons/Entypo';
 
+import { useFocusEffect } from '@react-navigation/native';
+
 const windowWidth = Dimensions.get('window').width;
 
 export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
+  const scrollRef = useRef<ScrollView>(null);
   const { goalEntries } = useGoal();
 
   const [modalAddGoalListItemVisible, setModalAddGoalListItemVisible] =
     useState<boolean>(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      scrollToTopNextFrame();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
 
   return (
     <>
@@ -35,6 +62,7 @@ export const PersonalGoalsScreen: React.FC<{ route: any }> = ({ route }) => {
         setModalAddGoalListItemVisible={setModalAddGoalListItemVisible}
       />
       <ScrollView
+        ref={scrollRef}
         bounces={false}
         showsVerticalScrollIndicator={false}
         style={styles.container}

@@ -272,11 +272,6 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
     }, [])
   );
 
-  useEffect(() => {
-    fetchQuote();
-    refreshGoalTimeframes();
-  }, []);
-
   return (
     <>
       <View>

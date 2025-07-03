@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
 import {
   StyleSheet,
@@ -16,19 +16,44 @@ import { ExercisesCategoriesList } from '../components/ExercisesCategoriesList';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { useFocusEffect } from '@react-navigation/native';
+
 const windowWidth = Dimensions.get('window').width;
 
 const EXERCISES_LAST_USED_KEY = 'EXERCISES_LAST_USED';
 
 export const ExercisesScreen: React.FC<{ route: any }> = ({ route }) => {
-  useEffect(() => {
-    const storeExercisesOpenTime = async () => {
-      const now = new Date().toISOString();
-      await AsyncStorage.setItem(EXERCISES_LAST_USED_KEY, now);
-    };
+  const scrollRef = useRef<ScrollView>(null);
 
-    storeExercisesOpenTime();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      const storeExercisesOpenTime = async () => {
+        const now = new Date().toISOString();
+        await AsyncStorage.setItem(EXERCISES_LAST_USED_KEY, now);
+      };
+
+      scrollToTopNextFrame();
+      storeExercisesOpenTime();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
 
   return (
     <ScrollView

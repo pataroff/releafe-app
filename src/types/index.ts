@@ -251,11 +251,11 @@ export interface INoteEntry {
   title: string;
   description: string;
   feelingDescription: string;
-  thoughtLikelihoodSliderOne: SharedValue<number>;
+  thoughtLikelihoodSliderOne: number;
   forThoughtEvidence: string;
   againstThoughtEvidence: string;
   friendAdvice: string;
-  thoughtLikelihoodSliderTwo: SharedValue<number>;
+  thoughtLikelihoodSliderTwo: number;
   thoughtLikelihood: string;
   alternativePerspective: string;
   mediaFile: MediaFile;
@@ -297,11 +297,11 @@ export interface INoteContext {
   updateNoteEntryFields: (
     uuid: string,
     feelingDescription: string,
-    thoughtLikelihoodSliderOne: SharedValue<number>,
+    thoughtLikelihoodSliderOne: number,
     forThoughtEvidence: string,
     againstThoughtEvidence: string,
     friendAdvice: string,
-    thoughtLikelihoodSliderTwo: SharedValue<number>,
+    thoughtLikelihoodSliderTwo: number,
     thoughtLikelihood: string,
     alternativePerspective: string,
     mediaFile: MediaFile

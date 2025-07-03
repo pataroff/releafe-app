@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
 import {
@@ -24,6 +24,8 @@ import { useGamification } from '../context/GamificationContext';
 
 import { evaluateAllAchievements } from '../utils/achievements';
 
+import { useFocusEffect } from '@react-navigation/native';
+
 const windowWidth = Dimensions.get('window').width;
 
 const reframingOptionsData = [
@@ -39,6 +41,8 @@ const reframingOptionsData = [
 
 // @TODO Correct the `route` type annotation!
 export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
+  const scrollRef = useRef<ScrollView>(null);
+
   const navigation = useNavigation();
   const { noteEntries } = useNote();
   const { unlockedAchievements, unlockAchievement } = useGamification();
@@ -49,6 +53,30 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
 
   const [earnedPointsModalVisible, setEarnedPointsModalVisible] =
     useState<boolean>(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      scrollToTopNextFrame();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
 
   useEffect(() => {
     navigation.setOptions({ headerTitle: 'Zorgenbakje' });
@@ -80,6 +108,7 @@ export const ReframingScreen: React.FC<{ route: any }> = ({ route }) => {
 
       <StatusBar />
       <ScrollView
+        ref={scrollRef}
         bounces={false}
         showsVerticalScrollIndicator={false}
         style={styles.container}

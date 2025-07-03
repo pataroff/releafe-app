@@ -30,13 +30,6 @@ export const DashboardScreen: React.FC = () => {
         unlockAchievement,
       });
     }
-
-    const storeDashboardOpenTime = async () => {
-      const now = new Date().toISOString();
-      await AsyncStorage.setItem(DASHBOARD_LAST_OPENED_KEY, now);
-    };
-
-    storeDashboardOpenTime();
   }, [diaryEntries]);
 
   useFocusEffect(
@@ -55,7 +48,13 @@ export const DashboardScreen: React.FC = () => {
         });
       };
 
+      const storeDashboardOpenTime = async () => {
+        const now = new Date().toISOString();
+        await AsyncStorage.setItem(DASHBOARD_LAST_OPENED_KEY, now);
+      };
+
       scrollToTopNextFrame();
+      storeDashboardOpenTime();
 
       return () => {
         cancelled = true;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 
 import {
   StyleSheet,
@@ -17,17 +17,46 @@ import { useNavigation } from '@react-navigation/native';
 
 import { ExercisesList } from '../components/ExercisesList';
 
+import { useFocusEffect } from '@react-navigation/native';
+
 const windowWidth = Dimensions.get('window').width;
 
 export const ExercisesScreen2: React.FC<{ route: any }> = ({ route }) => {
+  const scrollRef = useRef<ScrollView>(null);
+
   const { category, description } = route.params;
   const navigation = useNavigation();
 
   const [showOnlyFavourites, setShowOnlyFavourites] = useState<boolean>(false);
 
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      scrollToTopNextFrame();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
+
   return (
     <>
       <ScrollView
+        ref={scrollRef}
         showsVerticalScrollIndicator={false}
         bounces={false}
         style={styles.container}
@@ -141,6 +170,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#f9f9f9',
+    paddingBottom: 100,
   },
   headersContainer: {
     width: windowWidth,

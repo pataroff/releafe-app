@@ -13,6 +13,7 @@ import {
   TextStyle,
   Dimensions,
   Keyboard,
+  ScrollView,
 } from 'react-native';
 
 import { Fonts } from '../styles';
@@ -614,13 +615,15 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
 
               {/* @TODO: Apply this to other TextInput components within the app! */}
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View
-                  style={{
+                <ScrollView
+                  style={{ flex: 1 }}
+                  contentContainerStyle={{
                     display: 'flex',
                     flexDirection: 'column',
                     rowGap: 15,
                     marginTop: 20,
                     marginHorizontal: 20,
+                    paddingBottom: 80,
                   }}
                 >
                   {/* Dropdown + Title */}
@@ -646,7 +649,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                       style={
                         {
                           ...Fonts.sofiaProRegular[Platform.OS],
-                          verticalAlign: Platform.OS == 'android' ? 'top' : {},
+                          textAlignVertical: 'top',
                           backgroundColor: '#F6F7F8',
                           //fontStyle: 'italic',
                           borderRadius: 10,
@@ -811,7 +814,7 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
                       </Text>
                     </Pressable>
                   </View>
-                </View>
+                </ScrollView>
               </TouchableWithoutFeedback>
             </View>
             <Toast config={toastConfig} />

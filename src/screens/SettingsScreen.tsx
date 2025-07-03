@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import {
   StyleSheet,
@@ -29,6 +29,8 @@ import { EditableSettingsInput } from '../components/EditableSettingsInput';
 import { LinearGradient } from 'expo-linear-gradient';
 import { DeleteAccountModal } from '../components/DeleteAccountModal';
 
+import { useFocusEffect } from '@react-navigation/native';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const isSmallerScreen = windowHeight <= 667;
@@ -36,6 +38,7 @@ const isSmallerScreen = windowHeight <= 667;
 const settings = ['Wachtwoord wijzigen', 'Profiel verwijderen'];
 
 export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
+  const scrollRef = useRef<ScrollView>(null);
   const navigation = useNavigation();
   const { user, updateUser, deleteUser } = useAuth();
 
@@ -94,6 +97,30 @@ export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
     }
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      const scrollToTopNextFrame = () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ y: 0, animated: false });
+          } else {
+            scrollToTopNextFrame(); // Try again next frame
+          }
+        });
+      };
+
+      scrollToTopNextFrame();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
       const updatedFields: Partial<IUserData> = {};
@@ -135,6 +162,7 @@ export const SettingsScreen: React.FC<{ route: any }> = ({ route }) => {
         style={styles.background}
       />
       <ScrollView
+        ref={scrollRef}
         bounces={false}
         showsVerticalScrollIndicator={false}
         style={styles.container}
