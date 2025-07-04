@@ -191,7 +191,7 @@ export const RegisterForm = () => {
       />
 
       <Pressable style={styles.signInButton} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Account activieren</Text>
+        <Text style={styles.buttonText}>Account activeren</Text>
       </Pressable>
 
       <View style={styles.signUpBox}>

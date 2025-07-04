@@ -78,7 +78,7 @@ export const LoginForm = () => {
         <View style={styles.signUpBox}>
           <Text style={styles.signUpText}>Nog geen account?</Text>
           <Pressable onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.signUpCTAText}> Account activieren</Text>
+            <Text style={styles.signUpCTAText}> Account activeren</Text>
           </Pressable>
         </View>
       </View>

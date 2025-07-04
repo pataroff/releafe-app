@@ -11,6 +11,7 @@ import {
   Dimensions,
   Platform,
   TextStyle,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 import { useDiary } from '../context/DiaryContext';
@@ -305,7 +306,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     });
   };
 
-  const handleClose = async (shouldSave: boolean) => {
+  const handleClose = async (shouldSave?: boolean) => {
     if (shouldSave) {
       createOrUpdateDiaryEntry();
     }
@@ -354,7 +355,6 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
         denyText='Opslaan en afsluiten'
         confirmText='Niet opslaan en afsluiten'
       />
-      {/* This is required in order for the slider to work on Android! */}
       <GestureHandlerRootView>
         <View style={styles.modalWrapper}>
           <View style={styles.modalContainer}>
@@ -386,143 +386,148 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
               </Text>
             </View>
 
-            <View style={{ flex: 1 }}>
-              {/* Slider Question Component */}
-              {diaryModalIndex < 6 && (
-                <View style={styles.componentContainer}>
-                  <Text style={styles.headingText}>
-                    {sliderSteps[sliderQuestionIndex].question}
-                  </Text>
-                  <View style={{ marginVertical: 25 }}>
-                    <Slider
-                      progress={sliderValue}
-                      onSlidingComplete={(value) => {
-                        const clampedValue = Math.min(
-                          Math.max(value, min.value),
-                          max.value
-                        );
+            {/* Main Content Wrapper */}
+            <ScrollView
+              bounces={false}
+              showsVerticalScrollIndicator={false}
+              style={styles.mainContainer}
+              contentContainerStyle={styles.mainContentContainerStyles}
+            >
+              {/* Main Content Container */}
+              <View style={{ flex: 1 }}>
+                {/* Slider Question Component */}
+                {diaryModalIndex < 6 && (
+                  <View style={styles.componentContainer}>
+                    <Text style={styles.headingText}>
+                      {sliderSteps[sliderQuestionIndex].question}
+                    </Text>
+                    <View style={{ marginVertical: 25 }}>
+                      <Slider
+                        progress={sliderValue}
+                        onSlidingComplete={(value) => {
+                          const clampedValue = Math.min(
+                            Math.max(value, min.value),
+                            max.value
+                          );
 
-                        addSliderValue(sliderQuestionIndex, clampedValue);
-                      }}
-                      minimumValue={min}
-                      maximumValue={max}
-                      disableTrackPress={true}
-                      disableTapEvent={true}
-                      containerStyle={{ borderRadius: 30, width: '100%' }}
-                      sliderHeight={15}
-                      thumbWidth={25}
-                      theme={{
-                        minimumTrackTintColor: '#E4E1E1',
-                        maximumTrackTintColor: '#E4E1E1',
-                        bubbleBackgroundColor: '#C1DEBE',
-                      }}
-                      renderThumb={() => <CustomThumb />}
-                      // @TODO Remove the bubble!
-                      bubble={(s: number) => s.toFixed(1)}
+                          addSliderValue(sliderQuestionIndex, clampedValue);
+                        }}
+                        minimumValue={min}
+                        maximumValue={max}
+                        disableTrackPress={true}
+                        disableTapEvent={true}
+                        containerStyle={{ borderRadius: 30, width: '100%' }}
+                        sliderHeight={15}
+                        thumbWidth={25}
+                        theme={{
+                          minimumTrackTintColor: '#E4E1E1',
+                          maximumTrackTintColor: '#E4E1E1',
+                          bubbleBackgroundColor: '#C1DEBE',
+                        }}
+                        renderThumb={() => <CustomThumb />}
+                        // @TODO Remove the bubble!
+                        bubble={(s: number) => s.toFixed(1)}
+                      />
+                    </View>
+                    {/* Slider Options Container */}
+                    <View style={styles.optionsContainer}>
+                      <Text style={styles.optionsText}>
+                        {sliderSteps[sliderQuestionIndex].options[0]}
+                      </Text>
+                      <Text style={styles.optionsText}>
+                        {sliderSteps[sliderQuestionIndex].options[1]}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+
+                {/* Goals Checklist Component */}
+                {diaryModalIndex == 6 && (
+                  <View
+                    style={[
+                      styles.componentContainer,
+                      { maxHeight: windowHeight - 400 },
+                    ]}
+                  >
+                    <Text style={styles.headingText}>
+                      Vink aan welke van de volgende doelen jij vandaag hebt
+                      behaald.
+                    </Text>
+
+                    {/* Goal Completion Text */}
+                    {goalEntries.filter(shouldShowGoal).length === 0 ? (
+                      <Text style={styles.noGoalsText}>
+                        🎉 Je hebt vandaag al je doelen behaald!
+                      </Text>
+                    ) : (
+                      <>
+                        <ScrollView
+                          showsVerticalScrollIndicator={true}
+                          style={styles.goalsChecklistContainer}
+                          contentContainerStyle={
+                            styles.goalsChecklistContentContainer
+                          }
+                        >
+                          {/* Goal Checklist Container */}
+                          {goalEntries
+                            .filter(shouldShowGoal)
+                            .map((goal, index) => (
+                              <GoalsChecklistItem
+                                key={index}
+                                goal={goal}
+                                checked={checkedGoals.includes(goal.uuid)}
+                                setCheckedGoals={setCheckedGoals}
+                              />
+                            ))}
+                        </ScrollView>
+                        <Text
+                          style={
+                            {
+                              ...Fonts.sofiaProLight[Platform.OS],
+                              fontSize: 13,
+                              color: '#888',
+                              textAlign: 'center',
+                              marginTop: 10,
+                            } as TextStyle
+                          }
+                        >
+                          Scroll down to see more
+                        </Text>
+                      </>
+                    )}
+                  </View>
+                )}
+
+                {/* Text Question Component */}
+                {diaryModalIndex > 6 && (
+                  <View style={styles.componentContainer}>
+                    <Text style={[styles.bodyText]}>
+                      {textSteps[textQuestionIndex].question}
+                    </Text>
+                    <TextInput
+                      style={
+                        {
+                          verticalAlign: Platform.OS === 'android' ? 'top' : {},
+                          ...Fonts.sofiaProRegular[Platform.OS],
+                          marginTop: 20,
+                          padding: 10,
+                          borderRadius: 10,
+                          backgroundColor: '#f6f7f8',
+                          height: 165,
+                        } as TextStyle
+                      }
+                      value={textValues[textQuestionIndex] || ''}
+                      onChangeText={(value) =>
+                        handleTextChange(textQuestionIndex, value)
+                      }
+                      placeholder={textSteps[textQuestionIndex].placeholder}
+                      placeholderTextColor='rgba(0,0,0,0.5)'
+                      multiline
                     />
                   </View>
-                  {/* Slider Options Container */}
-                  <View style={styles.optionsContainer}>
-                    <Text style={styles.optionsText}>
-                      {sliderSteps[sliderQuestionIndex].options[0]}
-                    </Text>
-                    <Text style={styles.optionsText}>
-                      {sliderSteps[sliderQuestionIndex].options[1]}
-                    </Text>
-                  </View>
-                </View>
-              )}
-
-              {/* Goals Checklist Component */}
-              {diaryModalIndex == 6 && (
-                <View
-                  style={[
-                    styles.componentContainer,
-                    { maxHeight: windowHeight - 400 },
-                  ]}
-                >
-                  <Text style={styles.headingText}>
-                    Vink aan welke van de volgende doelen jij vandaag hebt
-                    behaald.
-                  </Text>
-
-                  {/* Goal Completion Text */}
-                  {goalEntries.filter(shouldShowGoal).length === 0 ? (
-                    <Text style={styles.noGoalsText}>
-                      🎉 Je hebt vandaag al je doelen behaald!
-                    </Text>
-                  ) : (
-                    <>
-                      <ScrollView
-                        // @TODO Make it more obvious that this is scrollable!
-                        showsVerticalScrollIndicator={true}
-                        style={styles.goalsChecklistContainer}
-                        contentContainerStyle={
-                          styles.goalsChecklistContentContainer
-                        }
-                      >
-                        {/* Goal Checklist Container */}
-                        {goalEntries
-                          .filter(shouldShowGoal)
-                          .map((goal, index) => (
-                            <GoalsChecklistItem
-                              key={index}
-                              goal={goal}
-                              checked={checkedGoals.includes(goal.uuid)}
-                              setCheckedGoals={setCheckedGoals}
-                            />
-                          ))}
-                      </ScrollView>
-                      <Text
-                        style={
-                          {
-                            ...Fonts.sofiaProLight[Platform.OS],
-                            fontSize: 13,
-                            color: '#888',
-                            textAlign: 'center',
-                            marginTop: 10,
-                          } as TextStyle
-                        }
-                      >
-                        Scroll down to see more
-                      </Text>
-                    </>
-                  )}
-                </View>
-              )}
-
-              {/* Text Question Component */}
-              {diaryModalIndex > 6 && (
-                <View style={styles.componentContainer}>
-                  <Text style={[styles.bodyText]}>
-                    {textSteps[textQuestionIndex].question}
-                  </Text>
-                  <TextInput
-                    style={
-                      {
-                        ...Fonts.sofiaProRegular[Platform.OS],
-                        marginTop: 20,
-                        padding: 10,
-                        borderRadius: 10,
-                        backgroundColor: '#f6f7f8',
-                        height: 165,
-                      } as TextStyle
-                    }
-                    value={textValues[textQuestionIndex] || ''}
-                    onChangeText={(value) =>
-                      handleTextChange(textQuestionIndex, value)
-                    }
-                    placeholder={textSteps[textQuestionIndex].placeholder}
-                    placeholderTextColor='rgba(0,0,0,0.5)'
-                    multiline
-                    scrollEnabled
-                    autoFocus
-                    textAlign='left'
-                    textAlignVertical='top'
-                  />
-                </View>
-              )}
-            </View>
+                )}
+              </View>
+            </ScrollView>
 
             {/* Progress Wrapper */}
             <View
@@ -599,6 +604,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
     </Modal>
   );
 };
+
 const styles = StyleSheet.create({
   modalWrapper: {
     flex: 1,
@@ -748,4 +754,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   } as TextStyle,
+  mainContainer: {
+    flex: 1,
+  },
+  mainContentContainerStyles: {
+    flexGrow: 1,
+    alignItems: 'center',
+    paddingBottom: 100,
+  },
 });

@@ -143,6 +143,9 @@ export const ExercisesListItemExpandedModal: React.FC<
             <WebView
               javaScriptEnabled
               contentMode='desktop'
+              userAgent={
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+              } // Same as 'contentMode' but for Android!
               bounces={false}
               showsVerticalScrollIndicator={false}
               style={{ marginVertical: 20, height: 300 }}

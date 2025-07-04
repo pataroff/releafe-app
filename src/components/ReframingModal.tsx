@@ -405,7 +405,7 @@ export const ReframingModal: React.FC<ReframingModalProps> = ({
 
               {/* Worry List Item Preview */}
               {reframingModalIndex >= reframingSteps.length - 1 && (
-                <View style={[styles.worryListItemContainer]}>
+                <View style={styles.worryListItemContainer}>
                   {/* Priority Bar */}
                   <View
                     style={{
