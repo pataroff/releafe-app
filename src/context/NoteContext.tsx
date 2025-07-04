@@ -292,7 +292,8 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     thoughtLikelihoodSliderTwo: number,
     thoughtLikelihood: string,
     alternativePerspective: string,
-    mediaFile: MediaFile
+    mediaFile: MediaFile,
+    audioMetering: number[]
   ) => {
     setUuid(uuid);
     setFeelingDescription(feelingDescription);
@@ -304,6 +305,7 @@ export const NoteProvider: React.FC<{ children: React.ReactElement }> = ({
     setThoughtLikelihood(thoughtLikelihood);
     setAlternativePerspective(alternativePerspective);
     setMediaFile(mediaFile);
+    setAudioMetering(audioMetering);
   };
 
   const getNoteEntryMediaFileUrl = async (

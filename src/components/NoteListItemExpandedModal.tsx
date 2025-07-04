@@ -157,12 +157,16 @@ export const NoteListItemExpandedModal: React.FC<
       thoughtLikelihoodSliderTwo,
       thoughtLikelihood,
       alternativePerspective,
-      mediaFile
+      mediaFile,
+      audioMetering
     );
 
     setModalNoteListItemExpandedVisible(!modalNoteListItemExpandedVisible);
 
-    if (mediaFile) {
+    if (
+      (mediaFile && typeof mediaFile == 'object' && mediaFile.uri !== '') ||
+      (mediaFile && typeof mediaFile == 'string' && mediaFile !== '')
+    ) {
       setModalNoteListItemAddVisible(!modalNoteListItemAddVisible);
     } else {
       setModalReframingVisible(!modalReframingVisible);

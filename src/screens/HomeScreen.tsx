@@ -249,6 +249,11 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
     useCallback(() => {
       let cancelled = false;
 
+      if (!goalEntries.length) {
+        console.log('Skipping refresh — goalEntries not ready yet.');
+        return;
+      }
+
       const scrollToTopNextFrame = () => {
         requestAnimationFrame(() => {
           if (cancelled) return;
@@ -269,7 +274,7 @@ export const HomeScreen: React.FC<{ route: any }> = ({ route }) => {
       return () => {
         cancelled = true;
       };
-    }, [])
+    }, [goalEntries])
   );
 
   return (

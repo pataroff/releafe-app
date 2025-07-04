@@ -304,7 +304,8 @@ export interface INoteContext {
     thoughtLikelihoodSliderTwo: number,
     thoughtLikelihood: string,
     alternativePerspective: string,
-    mediaFile: MediaFile
+    mediaFile: MediaFile,
+    audioMetering: number[] | null
   ) => void;
   resetNoteEntryFields: () => void;
   getNoteEntryMediaFileUrl: (uuid: string) => Promise<string | undefined>;

@@ -240,10 +240,12 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
     }
   };
 
-  const refreshGoalTimeframes = async () => {
+  const refreshGoalTimeframes = () => {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
     const todayUTC = today.toISOString().split('T')[0];
+
+    const staleGoals: IGoalEntry[] = [];
 
     for (const goal of goalEntries) {
       if (!goal.endDate) continue;
@@ -263,9 +265,9 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
             ? 30
             : 1;
 
-        // Keep incrementing until endDate reaches or passes today
         while (newEndDate <= today) {
           newStartDate = new Date(newEndDate);
+          newEndDate = new Date(newEndDate);
           newEndDate.setUTCDate(newEndDate.getUTCDate() + incrementDays);
         }
 
@@ -276,30 +278,40 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
           endDate: newEndDate,
         };
 
-        // Update locally
+        // Update local state
         setGoalEntries((prev) => {
           const index = prev.findIndex((g) => g.uuid === goal.uuid);
+          if (index === -1) return prev;
           const copy = [...prev];
           copy[index] = updatedGoal;
           return copy;
         });
 
-        // Update in PocketBase
-        try {
-          const matchedGoalEntryDatabase = await pb
-            .collection('goal_entries')
-            .getFirstListItem(`uuid="${goal.uuid}"`, { requestKey: null });
+        staleGoals.push(updatedGoal);
+      }
+    }
 
-          await pb
-            .collection('goal_entries')
-            .update(matchedGoalEntryDatabase.id, {
-              completedTimeframe: 0,
-              startDate: newStartDate,
-              endDate: newEndDate,
-            });
-        } catch (error) {
-          console.error(`Error updating goal ${goal.uuid}:`, error);
-        }
+    if (staleGoals.length > 0) {
+      refreshGoalTimeframesInDatabase(staleGoals); // don't await
+    }
+  };
+
+  const refreshGoalTimeframesInDatabase = async (goals: IGoalEntry[]) => {
+    for (const goal of goals) {
+      try {
+        const matchedGoalEntryDatabase = await pb
+          .collection('goal_entries')
+          .getFirstListItem(`uuid="${goal.uuid}"`, { requestKey: null });
+
+        await pb
+          .collection('goal_entries')
+          .update(matchedGoalEntryDatabase.id, {
+            completedTimeframe: 0,
+            startDate: goal.startDate,
+            endDate: goal.endDate,
+          });
+      } catch (error) {
+        console.error(`Error syncing goal ${goal.uuid}:`, error);
       }
     }
   };

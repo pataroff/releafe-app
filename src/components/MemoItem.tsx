@@ -105,6 +105,11 @@ export const MemoItem = ({
   let lines = [];
   let numLines = 25;
 
+  if (!Array.isArray(metering) || metering.length === 0) {
+    console.warn('No metering data available for MemoItem');
+    return null;
+  }
+
   for (let i = 0; i < numLines; i++) {
     const meteringIndex = Math.floor((i * metering.length) / numLines);
     const nextMeteringIndex = Math.ceil(((i + 1) * metering.length) / numLines);
@@ -153,7 +158,7 @@ export const MemoItem = ({
         <Text
           style={
             {
-              verticalAlign: Platform.OS == 'android'? "top" : {},
+              verticalAlign: Platform.OS == 'android' ? 'top' : {},
               position: 'absolute',
               right: 0,
               bottom: 0,

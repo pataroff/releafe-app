@@ -616,6 +616,8 @@ export const NoteListItemAddModal: React.FC<NoteListModalProps> = ({
               {/* @TODO: Apply this to other TextInput components within the app! */}
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <ScrollView
+                  bounces={false}
+                  showsVerticalScrollIndicator={false}
                   style={{ flex: 1 }}
                   contentContainerStyle={{
                     display: 'flex',
