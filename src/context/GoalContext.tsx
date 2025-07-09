@@ -252,7 +252,7 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
       const endDate = new Date(goal.endDate);
       endDate.setUTCHours(0, 0, 0, 0);
 
-      if (endDate < today) {
+      if (endDate <= today) {
         let newStartDate = new Date(endDate);
         let newEndDate = new Date(newStartDate);
 
