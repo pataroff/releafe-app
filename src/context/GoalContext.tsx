@@ -243,7 +243,6 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
   const refreshGoalTimeframes = () => {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
-    const todayUTC = today.toISOString().split('T')[0];
 
     const staleGoals: IGoalEntry[] = [];
 
@@ -252,9 +251,8 @@ export const GoalProvider: React.FC<{ children: React.ReactElement }> = ({
 
       const endDate = new Date(goal.endDate);
       endDate.setUTCHours(0, 0, 0, 0);
-      const endDateUTC = endDate.toISOString().split('T')[0];
 
-      if (endDateUTC < todayUTC) {
+      if (endDate < today) {
         let newStartDate = new Date(endDate);
         let newEndDate = new Date(newStartDate);
 
