@@ -29,11 +29,7 @@ export const Performance: React.FC = () => {
   const [chartTimeframe, setChartTimeframe] = useState<ChartTimeframe>(
     ChartTimeframe.Weekly
   );
-  const [selectedFields, setSelectedFields] = useState<string[]>([
-    'slaap',
-    'energie',
-    'stress',
-  ]);
+  const [selectedFields, setSelectedFields] = useState<string[]>(['algeheel']);
 
   const [selectedDiaryEntry, setSelectedDiaryEntry] =
     useState<IDiaryEntry | null>(null);

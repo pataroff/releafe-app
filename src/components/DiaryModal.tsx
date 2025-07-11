@@ -491,7 +491,7 @@ export const DiaryModal: React.FC<DiaryModalProps> = ({
                             } as TextStyle
                           }
                         >
-                          Scroll down to see more
+                          Scroll omlaag voor meer
                         </Text>
                       </>
                     )}
