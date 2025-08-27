@@ -16,6 +16,7 @@ export const evaluateScheduleNotification = async (
     if (existingId) {
       await Notifications.cancelScheduledNotificationAsync(existingId);
       await AsyncStorage.removeItem(key);
+      await scheduleFn();
     }
   }
 };
