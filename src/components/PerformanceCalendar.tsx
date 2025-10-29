@@ -93,6 +93,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
   const [displayDate, setDisplayDate] = useState<string>('');
   const [displayTime, setDisplayTime] = useState<string>('');
 
+  const [layoutReady, setLayoutReady] = useState<boolean>(false);
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState<number>(0);
   const [textQuestionIndex, setTextQuestionIndex] = useState<number>(0);
 
@@ -298,68 +299,72 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
   return (
     <>
-      <CalendarProvider
-        style={{
-          marginTop: 40,
-          // Shadow Test
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.1,
-          shadowRadius: 2,
-          elevation: 2,
-        }}
-        date={getFormattedDate(selectedDate)}
-      >
-        {/* https://github.com/wix/react-native-calendars/issues/1937#issuecomment-2186829555 */}
-        <ExpandableCalendar
-          calendarWidth={windowWidth - 2 * 20}
-          style={{ borderRadius: 30, overflow: 'hidden' }}
-          theme={{
-            todayTextColor: 'black',
-            selectedDayBackgroundColor: 'transparent', // !IMPORTANT
-            selectedDayTextColor: 'black', // !IMPORTANT
-            textMonthFontFamily: 'SofiaPro-Medium',
-            textDayFontFamily: 'SofiaPro-Regular',
-            arrowColor: 'black',
-            monthTextColor: 'black',
-            // @ts-ignore
-            'stylesheet.dot': {
-              dot: {
-                position: 'absolute',
-                top: -5,
-                width: 7,
-                height: 7,
-                borderRadius: 30,
-              },
-            },
-          }}
-          monthFormat='MMMM yyyy'
-          firstDay={1}
-          closeOnDayPress={false}
-          renderArrow={(direction) =>
-            direction === 'left' ? (
-              <Feather
-                name='chevron-left'
-                size={24}
-                color='black'
-                style={{ marginLeft: 40 }}
-              />
-            ) : (
-              <Feather
-                name='chevron-right'
-                size={24}
-                color='black'
-                style={{ marginRight: 40 }}
-              />
-            )
-          }
-          onDayPress={(date) => {
-            handleSelect(date.dateString);
-          }}
-          markingType='custom'
-          markedDates={getMarkedDates}
-        />
-      </CalendarProvider>
+      <View onLayout={() => setLayoutReady(true)}>
+        {layoutReady && (
+          <CalendarProvider
+            style={{
+              marginTop: 40,
+              // Shadow Test
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.1,
+              shadowRadius: 2,
+              elevation: 2,
+            }}
+            date={getFormattedDate(selectedDate)}
+          >
+            {/* https://github.com/wix/react-native-calendars/issues/1937#issuecomment-2186829555 */}
+            <ExpandableCalendar
+              calendarWidth={windowWidth - 2 * 20}
+              style={{ borderRadius: 30, overflow: 'hidden' }}
+              theme={{
+                todayTextColor: 'black',
+                selectedDayBackgroundColor: 'transparent', // !IMPORTANT
+                selectedDayTextColor: 'black', // !IMPORTANT
+                textMonthFontFamily: 'SofiaPro-Medium',
+                textDayFontFamily: 'SofiaPro-Regular',
+                arrowColor: 'black',
+                monthTextColor: 'black',
+                // @ts-ignore
+                'stylesheet.dot': {
+                  dot: {
+                    position: 'absolute',
+                    top: -5,
+                    width: 7,
+                    height: 7,
+                    borderRadius: 30,
+                  },
+                },
+              }}
+              monthFormat='MMMM yyyy'
+              firstDay={1}
+              closeOnDayPress={false}
+              renderArrow={(direction) =>
+                direction === 'left' ? (
+                  <Feather
+                    name='chevron-left'
+                    size={24}
+                    color='black'
+                    style={{ marginLeft: 40 }}
+                  />
+                ) : (
+                  <Feather
+                    name='chevron-right'
+                    size={24}
+                    color='black'
+                    style={{ marginRight: 40 }}
+                  />
+                )
+              }
+              onDayPress={(date) => {
+                handleSelect(date.dateString);
+              }}
+              markingType='custom'
+              markedDates={getMarkedDates}
+            />
+          </CalendarProvider>
+        )}
+      </View>
 
       {selectedDiaryEntry ? (
         <View

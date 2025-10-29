@@ -14,12 +14,16 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IDiaryEntry, IGoalEntry, IWorryEntry } from '../types';
 
-import { useDiary } from '../context/DiaryContext';
-import { useWorry } from '../context/WorryContext';
+import { useDiary } from './DiaryContext';
+import { useWorry } from './WorryContext';
 import { useGoal } from './GoalContext';
 
-import { debugAsyncStorage } from '../utils/registerForPushNotificationsAsync';
-import { evaluateScheduleNotification } from '../utils/notifications';
+import {
+  evaluateScheduleNotification,
+  shouldRemindDashboardInactivity,
+  shouldRemindExercisesInactivity,
+  shouldRemindWorryBox
+} from '../utils/notifications';
 
 interface NotificationContextType {
   expoPushToken: string | null;
@@ -132,64 +136,53 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   }, []);
 
   useEffect(() => {
-    // @TODO Refactor, remove the trigger from `evaluateScheduleNotificaiton` and put it inside the called function!
-    // Notification 1
-    const today = new Date().toISOString().split('T')[0];
-
-    const isDiaryCompletedToday = diaryEntries.some(
-      (entry) => new Date(entry.date).toISOString().split('T')[0] === today
-    );
-
-    evaluateScheduleNotification(
-      !isDiaryCompletedToday,
-      DIARY_NOTIFICATION_KEY,
-      () =>
-        scheduleDailyNotification(
+    (async () => {
+      // @TODO Refactor, remove the trigger from `evaluateScheduleNotificaiton` and put it inside the called function!
+      // Notification 1: daily notifications
+      scheduleDailyNotification(
           '20:30',
           'Hoe gaat het vandaag met je?',
           'Neem even de tijd om je dagboek in te vullen – even stilstaan bij hoe het gaat.',
-          {
-            screen: 'Diary',
-            params: { screen: 'Diary1' },
-          }
-        )
-    );
+          {screen: 'Diary', params: {screen: 'Diary1'}}
+      );
 
-    // Notification 2
-    evaluateScheduleNotification(
-      goalEntries.length <= 0,
-      PERSONAL_GOALS_NOTIFICATION_KEY,
-      scheduleEvery3DaysNotification
-    );
+      // Notification 2: every 3 days
+      evaluateScheduleNotification(
+          goalEntries.length <= 0,
+          PERSONAL_GOALS_NOTIFICATION_KEY,
+          scheduleEvery3DaysNotification
+      );
 
-    // Notification 3
-    evaluateScheduleNotification(
-      goalEntries.some(
-        (goal) => goal.timeframe === 'WEEKLY' || goal.timeframe === 'MONTHLY'
-      ),
-      PERSONAL_GOALS_NOTIFICATION_KEY,
-      () => scheduleReminder3DaysNotification(goalEntries)
-    );
+      // Notification 3: before weekly/monthly deadline
+      evaluateScheduleNotification(
+          goalEntries.some(g => g.timeframe === 'WEEKLY' || g.timeframe === 'MONTHLY'),
+          PERSONAL_GOALS_DEADLINE_NOTIFICATION_KEY,
+          () => scheduleReminder3DaysNotification(goalEntries)
+      );
 
-    // Notification 4
-    evaluateScheduleNotification(
-      true,
-      DASHBOARD_INACTIVITY_NOTIFICATION_KEY,
-      scheduleDashboardInactivityNotification
-    );
+      // Notification 4: dashboard inactivity
+      const dashboardInactivityTrigger = await shouldRemindDashboardInactivity();
+      evaluateScheduleNotification(
+          dashboardInactivityTrigger,
+          DASHBOARD_INACTIVITY_NOTIFICATION_KEY,
+          scheduleDashboardInactivityNotification
+      );
 
-    // Notification 5
-    // @TODO This one hasn't been tested as the conditions to trigger are tricky!
-    evaluateScheduleNotification(true, WORRY_BOX_NOTIFICATION_KEY, () =>
-      scheduleReminderWorryBoxNotification(worryEntries, diaryEntries)
-    );
+      // Notification 5
+      await evaluateScheduleNotification(
+          shouldRemindWorryBox(worryEntries, diaryEntries),
+          WORRY_BOX_NOTIFICATION_KEY,
+          () => scheduleReminderWorryBoxNotification(worryEntries, diaryEntries)
+      );
 
-    // Notification 6
-    evaluateScheduleNotification(
-      true,
-      EXERCISES_INACTIVITY_NOTIFICATION_KEY,
-      scheduleExerciseInactivityNotification
-    );
+      // Notification 6: exercises inactivity
+      const exercisesInactivityTrigger = await shouldRemindExercisesInactivity()
+      evaluateScheduleNotification(
+          exercisesInactivityTrigger,
+          EXERCISES_INACTIVITY_NOTIFICATION_KEY,
+          scheduleExerciseInactivityNotification
+      );
+    })();
   }, [diaryEntries, goalEntries, worryEntries]);
 
   const scheduleDailyNotification = async (
@@ -198,15 +191,17 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     body: string,
     route?: string | {}
   ) => {
-    // Cancel previous daily notification if it exists
     const existingNotificationId = await AsyncStorage.getItem(
       DIARY_NOTIFICATION_KEY
     );
 
+    let isStillScheduled = false;
     if (existingNotificationId) {
-      await Notifications.cancelScheduledNotificationAsync(
-        existingNotificationId
-      );
+      const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+      isStillScheduled = scheduled.some((n) => n.identifier === existingNotificationId);
+      if (isStillScheduled) return;
+      // Cancel previous daily notification if it exists
+      await AsyncStorage.removeItem(DIARY_NOTIFICATION_KEY);
     }
 
     const [hour, minute] = time.split(':').map(Number);
@@ -231,24 +226,13 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   };
 
   const scheduleEvery3DaysNotification = async () => {
-    const existingNotificationId = await AsyncStorage.getItem(
-      PERSONAL_GOALS_NOTIFICATION_KEY
-    );
-    if (existingNotificationId) {
-      await Notifications.cancelScheduledNotificationAsync(
-        existingNotificationId
-      );
-    }
-
     // Calculate the next 16:00 time 3 days from now
     const now = new Date();
     const triggerDate = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + 3,
-      16, // 16:00 hours
-      0,
-      0
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 3,
+        16, 0, 0, 0
     );
 
     const newNotificationId = await Notifications.scheduleNotificationAsync({
@@ -298,16 +282,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       return a < b ? earliest : current;
     });
 
-    const existingNotificationId = await AsyncStorage.getItem(
-      PERSONAL_GOALS_DEADLINE_NOTIFICATION_KEY
-    );
-
-    if (existingNotificationId) {
-      await Notifications.cancelScheduledNotificationAsync(
-        existingNotificationId
-      );
-    }
-
     const deadline = new Date(soonest.endDate!);
     deadline.setDate(deadline.getDate() - 3);
     deadline.setHours(10, 0, 0, 0);
@@ -343,23 +317,12 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   };
 
   const scheduleDashboardInactivityNotification = async () => {
-    const lastOpenedRaw = await AsyncStorage.getItem('DASHBOARD_LAST_OPENED');
-    if (!lastOpenedRaw) return;
-
-    const lastOpened = new Date(lastOpenedRaw);
     const now = new Date();
+    const triggerDate = new Date();
+    triggerDate.setHours(15, 0, 0, 0); // Today at 15:00
 
-    const daysSinceOpen = Math.floor(
-      (now.getTime() - lastOpened.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    if (daysSinceOpen < 6) return;
-
-    const trigger = new Date();
-    trigger.setHours(15, 0, 0, 0); // Today at 15:00
-
-    if (trigger.getTime() <= now.getTime()) {
-      trigger.setDate(trigger.getDate() + 1); // Schedule for tomorrow
+    if (triggerDate.getTime() <= now.getTime()) {
+      triggerDate.setDate(triggerDate.getDate() + 1); // Schedule for tomorrow
     }
 
     const newNotificationId = await Notifications.scheduleNotificationAsync({
@@ -375,11 +338,11 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
-        year: trigger.getFullYear(),
-        month: trigger.getMonth() + 1,
-        day: trigger.getDate(),
-        hour: trigger.getHours(),
-        minute: trigger.getMinutes(),
+        year: triggerDate.getFullYear(),
+        month: triggerDate.getMonth() + 1,
+        day: triggerDate.getDate(),
+        hour: triggerDate.getHours(),
+        minute: triggerDate.getMinutes(),
       },
     });
 
@@ -387,54 +350,13 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       DASHBOARD_INACTIVITY_NOTIFICATION_KEY,
       newNotificationId
     );
-    console.log('DASHBOARD_INACTIVITY_NOTIFICATION_KEY', newNotificationId);
   };
 
   const scheduleReminderWorryBoxNotification = async (
     worryEntries: IWorryEntry[],
     diaryEntries: IDiaryEntry[]
   ) => {
-    const existingNotificationId = await AsyncStorage.getItem(
-      WORRY_BOX_NOTIFICATION_KEY
-    );
-
-    if (existingNotificationId) {
-      await Notifications.cancelScheduledNotificationAsync(
-        existingNotificationId
-      );
-    }
-
     const now = new Date();
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(now.getDate() - 7);
-
-    const recentWorries = worryEntries.filter(
-      (entry) => new Date(entry.date) >= sevenDaysAgo
-    );
-
-    if (recentWorries.length > 0) {
-      return; // Skip scheduling
-    }
-
-    const recentDiaryEntries = diaryEntries.filter(
-      (entry) => new Date(entry.date) >= sevenDaysAgo
-    );
-
-    if (recentDiaryEntries.length === 0) {
-      return; // Skip due to no data to calculate average
-    }
-
-    const totalAnxiety = recentDiaryEntries.reduce(
-      (sum, entry) => sum + entry.sliderValues[1],
-      0
-    );
-
-    const averageAnxiety = totalAnxiety / recentDiaryEntries.length;
-
-    if (averageAnxiety < 7) {
-      return; // Only schedule if average is 7 or more
-    }
-
     const triggerDate = new Date(
       now.getFullYear(),
       now.getMonth(),
@@ -469,48 +391,15 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     });
 
     await AsyncStorage.setItem(WORRY_BOX_NOTIFICATION_KEY, newNotificationId);
-    console.log('WORRY_BOX_NOTIFICATION_KEY', newNotificationId);
   };
 
   const scheduleExerciseInactivityNotification = async () => {
-    const existingNotificationId = await AsyncStorage.getItem(
-      EXERCISES_INACTIVITY_NOTIFICATION_KEY
-    );
-    const lastUsedRaw = await AsyncStorage.getItem('EXERCISES_LAST_USED');
-
-    if (!lastUsedRaw) {
-      return;
-    }
-
-    const lastUsed = new Date(lastUsedRaw);
     const now = new Date();
-
-    const diffInDays = Math.floor(
-      (now.getTime() - lastUsed.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    if (diffInDays < 7) {
-      // User has used it recently — cancel any existing notification
-      if (existingNotificationId) {
-        await Notifications.cancelScheduledNotificationAsync(
-          existingNotificationId
-        );
-        await AsyncStorage.removeItem(EXERCISES_INACTIVITY_NOTIFICATION_KEY);
-      }
-      return;
-    }
-
-    // Schedule for today at 20:30 (or tomorrow if it's already past that time)
     const triggerDate = new Date();
     triggerDate.setHours(20, 30, 0, 0);
-    if (triggerDate < now) {
-      triggerDate.setDate(triggerDate.getDate() + 1);
-    }
 
-    if (existingNotificationId) {
-      await Notifications.cancelScheduledNotificationAsync(
-        existingNotificationId
-      );
+    if (triggerDate.getTime() <= now.getTime()) {
+      triggerDate.setDate(triggerDate.getDate() + 1); // Schedule for tomorrow
     }
 
     const newNotificationId = await Notifications.scheduleNotificationAsync({
