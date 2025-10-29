@@ -32,6 +32,9 @@ import { useDiary } from '../context/DiaryContext';
 import { textSteps } from '../utils/diary';
 
 import Toast from 'react-native-toast-message';
+import moment from "moment-timezone";
+
+const tz = moment.tz.guess();
 
 const showToast = (
   type: 'error' | 'success' | 'info' | 'longError',
@@ -123,7 +126,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
   const handleSelect = (selectedDay: string) => {
     const matchedEntry = diaryEntries.find(
-      (entry) => entry.date.toISOString().slice(0, 10) === selectedDay
+        (entry) => getFormattedDate(entry.date) === selectedDay
     );
 
     if (matchedEntry) {
@@ -134,9 +137,10 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
       setSliderQuestionIndex(0);
       setTextQuestionIndex(0);
     } else {
-      setSelectedDate(appendCurrentTime(new Date(selectedDay)));
+      const date = convertDateFromLocal(selectedDay);
+      setSelectedDate(date);
       setSelectedDiaryEntry(null);
-      setDisplayDate(getFormattedDisplayDate(new Date(selectedDay)));
+      setDisplayDate(getFormattedDisplayDate(date));
       setSliderQuestionIndex(0);
       setTextQuestionIndex(0);
 
@@ -145,13 +149,9 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
   };
 
   const handleEditPress = () => {
-    const today = new Date();
-    const selected = new Date(selectedDate);
-
-    today.setUTCHours(0, 0, 0, 0);
-    selected.setUTCHours(0, 0, 0, 0);
-
-    if (selected <= today) {
+    const todayLocal = moment().tz(tz);
+    const selected = moment(selectedDate).tz(tz);
+    if (selected.isSameOrBefore(todayLocal, 'day')) {
       // @ts-expect-error
       navigation.navigate('Diary', {
         screen: 'Diary1',
@@ -198,23 +198,10 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
     }
   };
 
-  const getFormattedDate = (date: Date) => {
-    return date.toISOString().slice(0, 10);
-  };
+  const getFormattedDate = (date: Date) => moment(date).tz(tz).format('YYYY-MM-DD');
+  const getFormattedDisplayDate = (date: Date) => moment(date).tz(tz).locale('nl').format('dddd D MMMM');
+  const getFormattedDisplayTime = (date: Date) => moment(date).tz(tz).format('HH:mm');
 
-  const getFormattedDisplayDate = (date: Date) => {
-    return date.toLocaleString('nl-NL', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-    });
-  };
-
-  const getFormattedDisplayTime = (date: Date) => {
-    return date.toLocaleTimeString('nl-NL', {
-      timeStyle: 'short',
-    });
-  };
 
   const getDotColor = (index: number) => {
     return dotColorMap.get(Math.floor(index));
@@ -264,15 +251,9 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
     return markedDates;
   }, [diaryEntries, selectedDate]);
 
-  const appendCurrentTime = (date: Date) => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
-    const milliseconds = now.getMilliseconds();
-    date.setHours(hours, minutes, seconds, milliseconds);
-    return date;
-  };
+  const convertDateFromLocal = (date: string) =>
+    moment.tz(date, 'YYYY-MM-DD', tz).toDate();
+
 
   const min = useSharedValue(1);
   const max = useSharedValue(10);
@@ -494,7 +475,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             </Text>
             <TextInput
               editable={false}
-              value={selectedDiaryEntry.textValues[textQuestionIndex]}
+              value={selectedDiaryEntry.textValues[textQuestionIndex] ?? ''}
               style={styles.dataTextInputContainer}
               multiline={true}
               placeholder='Niet ingevuld'

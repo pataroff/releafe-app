@@ -25,7 +25,6 @@ const windowWidth = Dimensions.get('window').width;
 export const Performance: React.FC = () => {
   const { diaryEntries } = useDiary();
 
-  const [isOpen, setIsOpen] = useState(false);
   const [chartTimeframe, setChartTimeframe] = useState<ChartTimeframe>(
     ChartTimeframe.Weekly
   );
