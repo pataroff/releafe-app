@@ -1,4 +1,6 @@
-import './gesture-handler';
+import 'react-native-gesture-handler';
+import 'react-native-reanimated';
+import 'moment/locale/nl';
 
 import { useFonts } from 'expo-font';
 
@@ -17,6 +19,7 @@ import { GamificationProvider } from './src/context/GamificationContext';
 
 import AppNav from './src/navigation/AppNav';
 
+import moment from "moment-timezone";
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './src/utils/toastConfig';
 
@@ -41,6 +44,8 @@ configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
   strict: false,
 });
+
+moment.locale('nl');
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({

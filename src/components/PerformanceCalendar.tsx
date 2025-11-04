@@ -32,6 +32,9 @@ import { useDiary } from '../context/DiaryContext';
 import { textSteps } from '../utils/diary';
 
 import Toast from 'react-native-toast-message';
+import moment from "moment-timezone";
+
+const tz = moment.tz.guess();
 
 const showToast = (
   type: 'error' | 'success' | 'info' | 'longError',
@@ -93,6 +96,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
   const [displayDate, setDisplayDate] = useState<string>('');
   const [displayTime, setDisplayTime] = useState<string>('');
 
+  const [layoutReady, setLayoutReady] = useState<boolean>(false);
   const [sliderQuestionIndex, setSliderQuestionIndex] = useState<number>(0);
   const [textQuestionIndex, setTextQuestionIndex] = useState<number>(0);
 
@@ -122,7 +126,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
   const handleSelect = (selectedDay: string) => {
     const matchedEntry = diaryEntries.find(
-      (entry) => entry.date.toISOString().slice(0, 10) === selectedDay
+        (entry) => getFormattedDate(entry.date) === selectedDay
     );
 
     if (matchedEntry) {
@@ -133,9 +137,10 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
       setSliderQuestionIndex(0);
       setTextQuestionIndex(0);
     } else {
-      setSelectedDate(appendCurrentTime(new Date(selectedDay)));
+      const date = convertDateFromLocal(selectedDay);
+      setSelectedDate(date);
       setSelectedDiaryEntry(null);
-      setDisplayDate(getFormattedDisplayDate(new Date(selectedDay)));
+      setDisplayDate(getFormattedDisplayDate(date));
       setSliderQuestionIndex(0);
       setTextQuestionIndex(0);
 
@@ -144,13 +149,9 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
   };
 
   const handleEditPress = () => {
-    const today = new Date();
-    const selected = new Date(selectedDate);
-
-    today.setUTCHours(0, 0, 0, 0);
-    selected.setUTCHours(0, 0, 0, 0);
-
-    if (selected <= today) {
+    const todayLocal = moment().tz(tz);
+    const selected = moment(selectedDate).tz(tz);
+    if (selected.isSameOrBefore(todayLocal, 'day')) {
       // @ts-expect-error
       navigation.navigate('Diary', {
         screen: 'Diary1',
@@ -197,23 +198,10 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
     }
   };
 
-  const getFormattedDate = (date: Date) => {
-    return date.toISOString().slice(0, 10);
-  };
+  const getFormattedDate = (date: Date) => moment(date).tz(tz).format('YYYY-MM-DD');
+  const getFormattedDisplayDate = (date: Date) => moment(date).tz(tz).locale('nl').format('dddd D MMMM');
+  const getFormattedDisplayTime = (date: Date) => moment(date).tz(tz).format('HH:mm');
 
-  const getFormattedDisplayDate = (date: Date) => {
-    return date.toLocaleString('nl-NL', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-    });
-  };
-
-  const getFormattedDisplayTime = (date: Date) => {
-    return date.toLocaleTimeString('nl-NL', {
-      timeStyle: 'short',
-    });
-  };
 
   const getDotColor = (index: number) => {
     return dotColorMap.get(Math.floor(index));
@@ -263,15 +251,9 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
     return markedDates;
   }, [diaryEntries, selectedDate]);
 
-  const appendCurrentTime = (date: Date) => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
-    const milliseconds = now.getMilliseconds();
-    date.setHours(hours, minutes, seconds, milliseconds);
-    return date;
-  };
+  const convertDateFromLocal = (date: string) =>
+    moment.tz(date, 'YYYY-MM-DD', tz).toDate();
+
 
   const min = useSharedValue(1);
   const max = useSharedValue(10);
@@ -298,68 +280,72 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
 
   return (
     <>
-      <CalendarProvider
-        style={{
-          marginTop: 40,
-          // Shadow Test
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.1,
-          shadowRadius: 2,
-          elevation: 2,
-        }}
-        date={getFormattedDate(selectedDate)}
-      >
-        {/* https://github.com/wix/react-native-calendars/issues/1937#issuecomment-2186829555 */}
-        <ExpandableCalendar
-          calendarWidth={windowWidth - 2 * 20}
-          style={{ borderRadius: 30, overflow: 'hidden' }}
-          theme={{
-            todayTextColor: 'black',
-            selectedDayBackgroundColor: 'transparent', // !IMPORTANT
-            selectedDayTextColor: 'black', // !IMPORTANT
-            textMonthFontFamily: 'SofiaPro-Medium',
-            textDayFontFamily: 'SofiaPro-Regular',
-            arrowColor: 'black',
-            monthTextColor: 'black',
-            // @ts-ignore
-            'stylesheet.dot': {
-              dot: {
-                position: 'absolute',
-                top: -5,
-                width: 7,
-                height: 7,
-                borderRadius: 30,
-              },
-            },
-          }}
-          monthFormat='MMMM yyyy'
-          firstDay={1}
-          closeOnDayPress={false}
-          renderArrow={(direction) =>
-            direction === 'left' ? (
-              <Feather
-                name='chevron-left'
-                size={24}
-                color='black'
-                style={{ marginLeft: 40 }}
-              />
-            ) : (
-              <Feather
-                name='chevron-right'
-                size={24}
-                color='black'
-                style={{ marginRight: 40 }}
-              />
-            )
-          }
-          onDayPress={(date) => {
-            handleSelect(date.dateString);
-          }}
-          markingType='custom'
-          markedDates={getMarkedDates}
-        />
-      </CalendarProvider>
+      <View onLayout={() => setLayoutReady(true)}>
+        {layoutReady && (
+          <CalendarProvider
+            style={{
+              marginTop: 40,
+              // Shadow Test
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.1,
+              shadowRadius: 2,
+              elevation: 2,
+            }}
+            date={getFormattedDate(selectedDate)}
+          >
+            {/* https://github.com/wix/react-native-calendars/issues/1937#issuecomment-2186829555 */}
+            <ExpandableCalendar
+              calendarWidth={windowWidth - 2 * 20}
+              style={{ borderRadius: 30, overflow: 'hidden' }}
+              theme={{
+                todayTextColor: 'black',
+                selectedDayBackgroundColor: 'transparent', // !IMPORTANT
+                selectedDayTextColor: 'black', // !IMPORTANT
+                textMonthFontFamily: 'SofiaPro-Medium',
+                textDayFontFamily: 'SofiaPro-Regular',
+                arrowColor: 'black',
+                monthTextColor: 'black',
+                // @ts-ignore
+                'stylesheet.dot': {
+                  dot: {
+                    position: 'absolute',
+                    top: -5,
+                    width: 7,
+                    height: 7,
+                    borderRadius: 30,
+                  },
+                },
+              }}
+              monthFormat='MMMM yyyy'
+              firstDay={1}
+              closeOnDayPress={false}
+              renderArrow={(direction) =>
+                direction === 'left' ? (
+                  <Feather
+                    name='chevron-left'
+                    size={24}
+                    color='black'
+                    style={{ marginLeft: 40 }}
+                  />
+                ) : (
+                  <Feather
+                    name='chevron-right'
+                    size={24}
+                    color='black'
+                    style={{ marginRight: 40 }}
+                  />
+                )
+              }
+              onDayPress={(date) => {
+                handleSelect(date.dateString);
+              }}
+              markingType='custom'
+              markedDates={getMarkedDates}
+            />
+          </CalendarProvider>
+        )}
+      </View>
 
       {selectedDiaryEntry ? (
         <View
@@ -489,7 +475,7 @@ export const PerformanceCalendar: React.FC<PerformanceCalendarProps> = ({
             </Text>
             <TextInput
               editable={false}
-              value={selectedDiaryEntry.textValues[textQuestionIndex]}
+              value={selectedDiaryEntry.textValues[textQuestionIndex] ?? ''}
               style={styles.dataTextInputContainer}
               multiline={true}
               placeholder='Niet ingevuld'

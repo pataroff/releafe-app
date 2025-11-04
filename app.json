@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "dev.expo.releafeapp",
@@ -81,9 +83,9 @@
     "newArchEnabled": true,
     "extra": {
       "eas": {
-        "projectId": "2379856a-8b9f-46a2-8e1c-0d5b50e0169b"
+        "projectId": "1cfbfbd7-a764-43e8-922d-d0d057fab87e"
       }
     },
-    "owner": "iwwan_01"
+    "owner": "opencii"
   }
 }
